@@ -1,0 +1,2 @@
+# pictogramas-web
+React PWA
