@@ -4,8 +4,16 @@ import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import { CardActionArea } from '@mui/material';
+import axios from 'axios'
 
 export default function Inicio(props){
+  const [pictogramas, setPictogramas] = React.useState([])
+  const apiArasaac = process.env.URL
+
+  const getPictogramas = async () => {
+    const response = await axios.get(apiArasaac + '/pictograms/2243')
+    setPictogramas(response.data)
+  }
 
   return(
     <Card sx={{ maxWidth: 345 }}>
