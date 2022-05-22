@@ -1,13 +1,37 @@
 import { IDBPDatabase, openDB } from "idb";
+import { createIDBEntity, DbEntity } from "idb-query";
 
-class IndexedDbService {
+export interface IPictogram {
+  id: number;
+  blob: Blob;
+  description: string;
+  tags: string[];
+}
+
+export class IndexedDbService {
   private database: string;
   private db: any;
+  private PictogramDbEntity: DbEntity<IPictogram, "id"> | null = null;
 
   constructor(database: string) {
     this.database = database;
   }
 
+  public async searchPictogramsBy(
+    key: string,
+    valueContains: string
+  ): Promise<IPictogram[]> {
+    if (!this.PictogramDbEntity)
+      this.PictogramDbEntity = createIDBEntity<IPictogram, "id">(
+        this.db, // need to provide database handle
+        "pictograms", // store name
+        "id" // keyPath
+      );
+
+    return this.PictogramDbEntity.query()
+      .filter((pic: any) => pic[key].contains(valueContains))
+      .all();
+  }
   public async createObjectStore(tableNames: string[]) {
     try {
       this.db = await openDB(this.database, 1, {
@@ -37,7 +61,7 @@ class IndexedDbService {
     return result;
   }
 
-  public async getAllValue(tableName: string) {
+  public async getAllValues(tableName: string): Promise<any[]> {
     const tx = this.db.transaction(tableName, "readonly");
     const store = tx.objectStore(tableName);
     const result = await store.getAll();
@@ -60,7 +84,7 @@ class IndexedDbService {
       const result = await store.put(value);
       console.log("Put Bulk Data ", JSON.stringify(result));
     }
-    return this.getAllValue(tableName);
+    return this.getAllValues(tableName);
   }
 
   public async deleteValue(tableName: string, id: number) {
