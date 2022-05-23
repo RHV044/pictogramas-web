@@ -1,22 +1,17 @@
 import { IDBPDatabase, openDB } from "idb";
 import { createIDBEntity, DbEntity } from "idb-query";
-
-export interface IPictogram {
-  id: number;
-  blob: Blob;
-  description: string;
-  tags: string[];
-}
+import { apply } from "json-merge-patch";
+import { IPictogram } from "../models/pictogram";
 
 export class IndexedDbService {
   private database: string;
   private db: any;
   private PictogramDbEntity: DbEntity<IPictogram, "id"> | null = null;
 
-  constructor(database: string) {
-    this.database = database;
+  constructor() {
+    this.database = "pictogramas_db";
+    this.initializeSchema();
   }
-
   public async searchPictogramsBy(
     key: string,
     valueContains: string
@@ -32,7 +27,10 @@ export class IndexedDbService {
       .filter((pic: any) => pic[key].contains(valueContains))
       .all();
   }
-  public async createObjectStore(tableNames: string[]) {
+  public async createObjectStore(
+    tableNames: string[],
+    autoIncrement?: boolean
+  ) {
     try {
       this.db = await openDB(this.database, 1, {
         upgrade(db: IDBPDatabase) {
@@ -41,7 +39,7 @@ export class IndexedDbService {
               continue;
             }
             db.createObjectStore(tableName, {
-              autoIncrement: true,
+              autoIncrement: autoIncrement ?? false,
               keyPath: "id",
             });
           }
@@ -69,10 +67,15 @@ export class IndexedDbService {
     return result;
   }
 
-  public async putValue(tableName: string, value: object) {
+  public async putOrPatchValue(tableName: string, value: any) {
     const tx = this.db.transaction(tableName, "readwrite");
     const store = tx.objectStore(tableName);
-    const result = await store.put(value);
+
+    let source = await store.get(value.id);
+    let newValue = value;
+    if (source) newValue = apply(source, value);
+
+    const result = await store.put(newValue);
     console.log("Put Data ", JSON.stringify(result));
     return result;
   }
@@ -99,6 +102,8 @@ export class IndexedDbService {
     console.log("Deleted Data", id);
     return id;
   }
-}
 
-export default IndexedDbService;
+  private async initializeSchema() {
+    await this.createObjectStore(["pictograms"]); //Pictograms's table
+  }
+}

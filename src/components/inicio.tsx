@@ -4,42 +4,24 @@ import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 import { Autocomplete, Button, CardActionArea, TextField } from "@mui/material";
-import axios from "axios";
-import {
-  IndexedDbService as IndexedDb,
-  IPictogram,
-} from "../services/indexeddb-service";
-import { initialize } from "workbox-google-analytics";
-
-const db = new IndexedDb("pictogramas_db");
+import { downloadPictogramsFromArasaac } from "../services/arasaac-service";
+import { IndexedDbService } from "../services/indexeddb-service";
+const db = new IndexedDbService();
 
 export default function Inicio(props: any) {
   // TODO: El DOM no toma los cambios de la lista de pictogramasId, no se bien como funciona el State en React pero faltaria implementarlo.
-
-  let pictogramsId: string[] = [];
-  const initializeDb = async () => {
-    await db.createObjectStore(["pictograms"]);
-
-
-    pictogramsId = (await db.getAllValues("pictograms")).map((x) =>
-      x.id.toString()
-    );
-    return true;
-  };
-
-  initializeDb();
 
   return (
     <div>
       <Button
         variant="contained"
-        onClick={() => downloadPictogramsFromArasaac(2334, 3000)}
+        onClick={() => downloadPictogramsFromArasaac([2329])}
       >
         Descargar todo Arasaac
       </Button>
       <Autocomplete
         id="grouped-demo"
-        options={pictogramsId}
+        options={["2334", "542", "1233"]}
         getOptionLabel={(option) => option}
         sx={{ width: 300 }}
         renderInput={(params) => (
@@ -66,26 +48,4 @@ export default function Inicio(props: any) {
       </Card>
     </div>
   );
-}
-async function downloadPictogramsFromArasaac(from: number, to: number) {
-  const apiArasaac = process.env.URL ?? "https://api.arasaac.org/api";
-
-  for (let i = from; i <= to; i++) {
-    let response = axios.get(`${apiArasaac}/pictograms/${i}`, {
-      responseType: "arraybuffer",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "image/png",
-      },
-    });
-    response
-      .then((x) => {
-        db.putValue("pictograms", { blob: new Blob([x.data]) } as IPictogram);
-      })
-      .finally(() => {
-        console.log("finally");
-      });
-  }
-
-  return undefined;
 }
