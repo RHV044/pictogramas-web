@@ -1,29 +1,40 @@
-import React from "react";
+import React, { useRef } from "react";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
-import { Autocomplete, Button, CardActionArea, TextField } from "@mui/material";
-import { downloadPictogramsFromArasaac } from "../services/arasaac-service";
+import {
+  Autocomplete,
+  Button,
+  CardActionArea,
+  CircularProgress,
+  TextField,
+} from "@mui/material";
+import { LoadPictogramsFromArasaac } from "../services/arasaac-service";
 import { IndexedDbService } from "../services/indexeddb-service";
+import { IPictogram } from "../models/pictogram";
 const db = new IndexedDbService();
+
+let myContainerRef: React.MutableRefObject<null>;
 
 export default function Inicio(props: any) {
   // TODO: El DOM no toma los cambios de la lista de pictogramasId, no se bien como funciona el State en React pero faltaria implementarlo.
+  myContainerRef = useRef(null);
 
   return (
     <div>
-      <Button
-        variant="contained"
-        onClick={() => downloadPictogramsFromArasaac([2329])}
-      >
+      <Button variant="contained" onClick={() => LoadPictogramsFromArasaac()}>
+        <CircularProgress variant="determinate" value={0} />
         Descargar todo Arasaac
       </Button>
       <Autocomplete
-        id="grouped-demo"
-        options={["2334", "542", "1233"]}
+        id="select-pictogramid"
+        options={["2334", "2244", "1233"]}
         getOptionLabel={(option) => option}
         sx={{ width: 300 }}
+        onChange={(event, value) => {
+          if (value) selectPictogramIdChanged(value);
+        }}
         renderInput={(params) => (
           <TextField {...params} label="Buscar pictograma por id" />
         )}
@@ -46,6 +57,14 @@ export default function Inicio(props: any) {
           </CardContent>
         </CardActionArea>
       </Card>
+      <img id="image" alt="Pictogram selected" src="" />
     </div>
   );
+}
+async function selectPictogramIdChanged(value: string) {
+  let picto: IPictogram = await db.getValue("pictograms", Number(value));
+
+  document
+    .getElementById("image")
+    ?.setAttribute("src", URL.createObjectURL(picto.blob));
 }
