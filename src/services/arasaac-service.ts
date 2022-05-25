@@ -4,7 +4,10 @@ import { IndexedDbService } from "../services/indexeddb-service";
 const db = new IndexedDbService();
 const apiArasaac = process.env.URL ?? "https://api.arasaac.org/api";
 
-export async function LoadPictogramsFromArasaac() {
+export async function LoadPictogramsFromArasaac(
+  setPictosIds: any,
+  setDownloadPercentage: any
+) {
   // Get json data about every pictogram
   axios
     .get(`${apiArasaac}/pictograms/all/es`, {
@@ -14,12 +17,18 @@ export async function LoadPictogramsFromArasaac() {
     })
     .then(async (infoResponse) => {
       let allInfoPictograms: any[] = infoResponse.data;
-      await downloadImageAndSavePictograms(allInfoPictograms, 3);
+      await downloadImageAndSavePictograms(
+        allInfoPictograms,
+        3,
+        setDownloadPercentage
+      );
+      setPictosIds(allInfoPictograms.map((x) => x._id?.toString()));
     });
 }
 async function downloadImageAndSavePictograms(
   allInfoPictograms: any[],
-  retriesOnFail: number
+  retriesOnFail: number,
+  setDownloadPercentage: any
 ) {
   if (retriesOnFail < 0) {
     console.log(
@@ -32,6 +41,7 @@ async function downloadImageAndSavePictograms(
 
   // Chrome doesn't allow more than 6k requests simultaneusly, so we take groups
   const maxParallelRequests = 1000;
+  let auxCount = 0;
   let count = 0;
   let start = 0;
   let end = 1;
@@ -49,6 +59,7 @@ async function downloadImageAndSavePictograms(
     start = end;
 
     let groupRequestPromises: Promise<any>[] = aGroupOfInfoPictograms.map(
+      // eslint-disable-next-line no-loop-func
       async (pictoInfo: any) => {
         // Get the pictogram's image
         return axios
@@ -56,11 +67,12 @@ async function downloadImageAndSavePictograms(
             headers: {
               Accept: "image/png",
             },
+            responseType: "blob",
           })
           .then(async (imageResponse) => {
             let picto = {
               id: pictoInfo._id,
-              blob: new Blob([imageResponse.data]),
+              blob: imageResponse.data,
               // For us, keywords and tags are the same.
               tags: [
                 ...pictoInfo.tags,
@@ -77,6 +89,8 @@ async function downloadImageAndSavePictograms(
             } as IPictogram;
 
             await db.putOrPatchValue("pictograms", picto);
+            auxCount++;
+            setDownloadPercentage((auxCount / allInfoPictograms.length) * 100);
           })
           .catch((e) => {
             console.log(e);
@@ -89,10 +103,17 @@ async function downloadImageAndSavePictograms(
   }
 
   //Retry
-  if (failedRequests.length > 0)
-    downloadImageAndSavePictograms(failedRequests, retriesOnFail--);
-  else
+  if (failedRequests.length > 0) {
+    let retry = retriesOnFail - 1;
+    downloadImageAndSavePictograms(
+      failedRequests,
+      retry,
+      setDownloadPercentage
+    );
+  } else {
     console.log(
       `<<<<<<<<<<<<<<<<<<      TODOS LOS PICTOS DESCARGADOS      >>>>>>>>>>>>>>>>>>>>`
     );
+    setDownloadPercentage(100);
+  }
 }

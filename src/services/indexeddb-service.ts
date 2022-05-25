@@ -51,6 +51,9 @@ export class IndexedDbService {
     }
   }
 
+  public async getPictogram(id: number): Promise<IPictogram> {
+    return this.getValue("pictograms", id) as Promise<IPictogram>;
+  }
   public async getValue(tableName: string, id: number) {
     const tx = this.db.transaction(tableName, "readonly");
     const store = tx.objectStore(tableName);
