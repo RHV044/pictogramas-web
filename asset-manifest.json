@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/pictogramas-web/static/css/main.073c9b0a.css",
+    "main.js": "/pictogramas-web/static/js/main.2e6a583f.js",
+    "static/js/787.c9d761df.chunk.js": "/pictogramas-web/static/js/787.c9d761df.chunk.js",
+    "service-worker.js": "/pictogramas-web/service-worker.js",
+    "index.html": "/pictogramas-web/index.html",
+    "main.073c9b0a.css.map": "/pictogramas-web/static/css/main.073c9b0a.css.map",
+    "main.2e6a583f.js.map": "/pictogramas-web/static/js/main.2e6a583f.js.map",
+    "787.c9d761df.chunk.js.map": "/pictogramas-web/static/js/787.c9d761df.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.073c9b0a.css",
+    "static/js/main.2e6a583f.js"
+  ]
+}
