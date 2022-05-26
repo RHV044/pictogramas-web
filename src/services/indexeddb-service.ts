@@ -1,50 +1,51 @@
 import { IDBPDatabase, openDB } from "idb";
-import { createIDBEntity, DbEntity } from "idb-query";
 import { apply } from "json-merge-patch";
 import { IPictogram } from "../models/pictogram";
 
 export class IndexedDbService {
   private database: string;
   private db: any;
-  private PictogramDbEntity: DbEntity<IPictogram, "id"> | null = null;
 
   constructor() {
     this.database = "pictogramas_db";
     this.initializeSchema();
   }
-  public async searchPictogramsBy(
-    key: string,
-    valueContains: string
-  ): Promise<IPictogram[]> {
-    if (!this.PictogramDbEntity)
-      this.PictogramDbEntity = createIDBEntity<IPictogram, "id">(
-        this.db, // need to provide database handle
-        "pictograms", // store name
-        "id" // keyPath
-      );
+  public async searchPictogramsByTag(tag: string): Promise<IPictogram[]> {
+    let lowerCaseTag = tag.toLowerCase();
 
-    return this.PictogramDbEntity.query()
-      .filter((pic: any) => pic[key].contains(valueContains))
-      .all();
+    let transaction = this.db.transaction("pictograms", "readonly");
+    let objectStore = transaction.objectStore("pictograms");
+
+    var index = objectStore.index("tags-index");
+
+    return await index.getAll(lowerCaseTag);
   }
-  public async createObjectStore(
-    tableNames: string[],
-    autoIncrement?: boolean
-  ) {
+  public async initializeSchema() {
     try {
-      this.db = await openDB(this.database, 1, {
-        upgrade(db: IDBPDatabase) {
-          for (const tableName of tableNames) {
-            if (db.objectStoreNames.contains(tableName)) {
-              continue;
-            }
-            db.createObjectStore(tableName, {
-              autoIncrement: autoIncrement ?? false,
+      this.db = await openDB(this.database, 2, {
+        upgrade(
+          db: IDBPDatabase,
+          oldVersion: number,
+          newVersion: number,
+          transaction
+        ) {
+          let objectStore;
+          if (!db.objectStoreNames.contains("pictograms")) {
+            objectStore = db.createObjectStore("pictograms", {
+              autoIncrement: false,
               keyPath: "id",
             });
+          } else {
+            objectStore = transaction.objectStore("pictograms");
           }
+
+          objectStore.createIndex("tags-index", "tags", {
+            unique: false,
+            multiEntry: true,
+          });
         },
       });
+      console.log("database opened");
     } catch (error) {
       console.log(error);
       return false;
@@ -104,9 +105,5 @@ export class IndexedDbService {
     await store.delete(id);
     console.log("Deleted Data", id);
     return id;
-  }
-
-  private async initializeSchema() {
-    await this.createObjectStore(["pictograms"]); //Pictograms's table
   }
 }

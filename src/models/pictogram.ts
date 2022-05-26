@@ -1,6 +1,7 @@
 export interface IPictogram {
   id: number;
   blob: Blob;
+  name: string;
   description: string;
   tags: string[];
   schematic: boolean;

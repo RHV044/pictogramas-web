@@ -2,7 +2,6 @@ import React, { useRef, useState } from "react";
 import {
   Autocomplete,
   Button,
-  CardActionArea,
   CircularProgress,
   TextField,
 } from "@mui/material";
@@ -11,8 +10,6 @@ import { IndexedDbService } from "../services/indexeddb-service";
 import { IPictogram } from "../models/pictogram";
 import Pictogram from "./pictogram";
 const db = new IndexedDbService();
-
-let myContainerRef: React.MutableRefObject<null>;
 
 export default function Inicio(props: any) {
   const [imageUrl, setImageUrl] = useState("");
@@ -29,23 +26,47 @@ export default function Inicio(props: any) {
         Descargar todo Arasaac
       </Button>
       <CircularProgress variant="determinate" value={downloadPercentage} />
+      <br></br>
       <TextField
-        id="standard-basic"
-        label="Standard"
+        id="input-tag-filter"
+        label="Filtrar pictogramas por etiqueta o palabras clave"
         variant="standard"
         onChange={(event) => {
           if (event?.target?.value)
-            selectPictogramIdChanged(event.target.value, setImageUrl);
+            inputTagFilterChanged(event.target.value, setPictosIds);
         }}
+      /><br></br>
+      <Autocomplete
+        id="select-pictogramid"
+        options={pictosIds}
+        getOptionLabel={(option) => option}
+        sx={{ width: 300 }}
+        onChange={(event, value) => {
+          if (value) selectPictogramIdChanged(value, setImageUrl);
+        }}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            label="Elija el pictograma que desea visualizar"
+          />
+        )}
       />
       <Pictogram pictoImageUrl={imageUrl} />
     </div>
   );
 }
 async function selectPictogramIdChanged(value: string, setImageUrl: any) {
-  let picto: IPictogram = await db.getPictogram(Number(value));
+  let arr = value.split("#");
+  let picto: IPictogram = await db.getPictogram(Number(arr[arr.length - 1]));
   if (picto?.blob) {
     let url = URL.createObjectURL(picto.blob);
     setImageUrl(url);
   } else setImageUrl(undefined);
+}
+async function inputTagFilterChanged(
+  value: string,
+  setPictosIds: React.Dispatch<React.SetStateAction<string[]>>
+) {
+  let searchResult = await db.searchPictogramsByTag(value);
+  setPictosIds(searchResult.map((x) => `${x.name}#${x.id}`).sort());
 }
