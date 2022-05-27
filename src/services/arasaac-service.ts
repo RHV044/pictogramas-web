@@ -75,12 +75,12 @@ async function downloadImageAndSavePictograms(
               blob: imageResponse.data,
               // For us, keywords and tags are the same.
               tags: [
-                ...pictoInfo.tags.map((t: string) => t.toLowerCase()),
+                ...pictoInfo.tags.map((t: string) => t?.toLowerCase()),
                 ...pictoInfo.keywords.map((kw: any) =>
-                  kw.keyword.toLowerCase()
+                  kw.keyword?.toLowerCase()
                 ),
               ],
-              name: pictoInfo.keywords[0].keyword.toLowerCase(),
+              name: pictoInfo.keywords[0]?.keyword?.toLowerCase(),
               description: pictoInfo.desc,
               schematic: pictoInfo.schematic,
               sex: pictoInfo.sex,
