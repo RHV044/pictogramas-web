@@ -11,7 +11,7 @@ import { IPictogram } from "../models/pictogram";
 import Pictogram from "./pictogram";
 const db = new IndexedDbService();
 
-export default function Inicio(props: any) {
+export default function Pictogramas(props: any) {
   const [imageUrl, setImageUrl] = useState("");
   const [downloadPercentage, setDownloadPercentage] = useState(0);
   const [pictosIds, setPictosIds] = useState([] as string[]);
