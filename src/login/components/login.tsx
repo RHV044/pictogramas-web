@@ -23,7 +23,7 @@ export default function Login({
         <TextField id="filled-basic" label="Contraseña" variant="filled" />
         <Button type="button" color="primary" className="form__custom-button"
           onClick={() => {
-            //props.setUsuario(usuario);
+            //props.setUsuario(usuario); //TODO: Como se usa redux con Typescript?
             navigate("/pictogramas" + location.search);
           }}
         >
