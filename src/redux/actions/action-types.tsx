@@ -1,0 +1,1 @@
+export const ACT_SET_USUARIO = "ACT_SET_USUARIO";
