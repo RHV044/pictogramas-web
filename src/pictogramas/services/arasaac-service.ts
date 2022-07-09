@@ -2,7 +2,7 @@ import axios from "axios";
 import { IPictogram } from "../models/pictogram";
 import { IndexedDbService } from "./indexeddb-service";
 const db = new IndexedDbService();
-const apiArasaac = process.env.URL ?? "https://api.arasaac.org/api";
+const apiArasaac = process.env.URL_ARASAAC ?? "https://api.arasaac.org/api";
 
 export async function LoadPictogramsFromArasaac(
   setPictosIds: any,
