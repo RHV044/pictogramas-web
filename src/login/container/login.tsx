@@ -1,5 +1,5 @@
 import { setUsuario } from "../../redux/actions/action-creators";
-import Login from "../components/login";
+import SeleccionarCuenta from "../components/seleccionarCuenta";
 import { connect } from "react-redux"
 
 function mapDispatchToProps(dispatch: (arg0: { type: string; payload: { nombreUsuario: any; }; }) => void){
@@ -11,4 +11,4 @@ function mapDispatchToProps(dispatch: (arg0: { type: string; payload: { nombreUs
   }
 }
 
-export default connect(null, mapDispatchToProps)(Login)
+export default connect(null, mapDispatchToProps)(SeleccionarCuenta)

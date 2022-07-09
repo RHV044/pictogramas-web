@@ -6,11 +6,8 @@ import {
   useLocation,
 } from "react-router-dom";
 
-export default function Login({
-  props
-}: {
-  props: any
-}) {
+const AgregarCuenta = (props: any) => {
+
   let navigate = useNavigate();
   let location = useLocation();
   const [usuario, setUsuario] = useState("");
@@ -27,9 +24,11 @@ export default function Login({
             navigate("/pictogramas" + location.search);
           }}
         >
-          Log in
+          Agregar Cuenta
         </Button>
       </form>
     </div>
   );
 }
+
+export default AgregarCuenta
