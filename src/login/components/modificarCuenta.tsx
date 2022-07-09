@@ -21,7 +21,7 @@ const ModificarCuenta = (props: any) => {
         <Button type="button" color="primary" className="form__custom-button"
           onClick={() => {
             //props.setUsuario(usuario); //TODO: Como se usa redux con Typescript?
-            navigate("/pictogramas" + location.search);
+            navigate("/cuenta/seleccionar" + location.search);
           }}
         >
           Cambiar Contrasela

@@ -1,5 +1,6 @@
 
-import { Button, Card, CardActionArea, CardContent, CardHeader, TextField } from '@mui/material';
+import { Box, Button, Card, CardActionArea, CardContent, CardHeader, CardMedia, IconButton, TextField } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { Container } from '@mui/system';
 import { useEffect, useState } from 'react';
 import {
@@ -25,29 +26,52 @@ const SeleccionarCuenta = (props: any) => {
       {
         usuarios.map((usuario) => {
         return (<Container>
-          <Card
-            // style={{ borderRadius: '50%', paddingTop: '81.25%', margin: '28px' }}
+          <Card                        
+            sx={{ maxWidth: 345 }}               
+            style={{ marginTop: '10px' }}
             onClick={() => {
               navigate('/pictogramas' + location.search);
             }}
           >
             <CardActionArea>
+              <CardMedia
+                component="img"
+                height="140"
+                image="https://www.lavanguardia.com/files/content_image_mobile_filter/uploads/2017/04/24/5fa3cfbde979b.jpeg"
+                alt="MESSI"
+              >
+              </CardMedia>
               <CardHeader title={usuario.username}></CardHeader>
               <CardContent>{/* Quizas agregar una imagen */}</CardContent>
             </CardActionArea>
           </Card>
           <Button
+            variant="outlined"
+            style={{ marginBottom: '10px' }}
             onClick={() => {
               navigate('/cuenta/modificar' + location.search);
             }}
           > Modificar Cuenta </Button>
+          <IconButton
+            onClick={() => {
+              setUsuarios(usuarios.filter(u => u.username != usuario.username))
+            }}
+          >
+            <DeleteIcon />
+          </IconButton>
         </Container>)
       })}
-      <Button
-        onClick={() => {
-          navigate('/cuenta/agregar' + location.search);
-        }}
-      > Agregar Cuenta </Button>
+      <Box textAlign='center'>
+        <Button
+          variant="contained"
+          style={{ alignItems:'center' }}
+          onClick={() => {
+            navigate('/cuenta/agregar' + location.search);
+          }}
+        > 
+          Agregar Cuenta 
+        </Button>
+      </Box>
     </Container>
   );
 }

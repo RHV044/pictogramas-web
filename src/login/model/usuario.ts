@@ -1,6 +1,5 @@
 export interface IUsuario {
-  id: number;
+  id?: number;
   username: string;
-  password: string;
-  children?: JSX.Element|JSX.Element[];
+  password: string;  
 }
