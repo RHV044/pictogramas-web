@@ -1,6 +1,6 @@
 import axios from "axios";
 import { IPictogram } from "../models/pictogram";
-import { IndexedDbService } from "./indexeddb-service";
+import { IndexedDbService } from "../../services/indexeddb-service";
 const db = new IndexedDbService();
 const apiArasaac = process.env.URL_ARASAAC ?? "https://api.arasaac.org/api";
 

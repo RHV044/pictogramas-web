@@ -4,6 +4,14 @@ import { IUsuario } from "../model/usuario";
 
 const apiArasaac = process.env.URL_PICTOGRAMAS ?? "http://localhost:5000";
 
+export let usuarioLogueado: IUsuario|null = null 
+
+export function setUsuarioLogueado(
+  usuario:IUsuario
+  ) {
+    usuarioLogueado = usuario
+  }
+
 export async function ObtenerUsuarios(
   setUsuarios: any
 ) {

@@ -6,7 +6,7 @@ import {
   TextField,
 } from "@mui/material";
 import { LoadPictogramsFromArasaac } from "../services/arasaac-service";
-import { IndexedDbService } from "../services/indexeddb-service";
+import { IndexedDbService } from "../../services/indexeddb-service";
 import { IPictogram } from "../models/pictogram";
 import Pictogram from "./pictogram";
 const db = new IndexedDbService();

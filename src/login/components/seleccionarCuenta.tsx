@@ -8,7 +8,9 @@ import {
   useLocation,
 } from "react-router-dom";
 import { IUsuario } from '../model/usuario';
-import { ObtenerUsuarios } from '../services/usuarios-services';
+import { ObtenerUsuarios, setUsuarioLogueado } from '../services/usuarios-services';
+import { IndexedDbService } from '../../services/indexeddb-service';
+const db = new IndexedDbService();
 
 const SeleccionarCuenta = (props: any) => {
 
@@ -30,6 +32,7 @@ const SeleccionarCuenta = (props: any) => {
             sx={{ maxWidth: 345 }}               
             style={{ marginTop: '10px' }}
             onClick={() => {
+              setUsuarioLogueado(usuario);
               navigate('/pictogramas' + location.search);
             }}
           >
@@ -48,7 +51,9 @@ const SeleccionarCuenta = (props: any) => {
           <Button
             variant="outlined"
             style={{ marginBottom: '10px' }}
-            onClick={() => {
+            onClick={async () => {
+              console.log('guardamos el usuario: ', usuario)
+              setUsuarioLogueado(usuario);
               navigate('/cuenta/modificar' + location.search);
             }}
           > Modificar Cuenta </Button>
@@ -66,10 +71,21 @@ const SeleccionarCuenta = (props: any) => {
           variant="contained"
           style={{ alignItems:'center' }}
           onClick={() => {
-            navigate('/cuenta/agregar' + location.search);
+            navigate('/cuenta/vincular' + location.search);
           }}
         > 
-          Agregar Cuenta 
+          Vincular Cuenta
+        </Button>
+      </Box>
+      <Box textAlign='center'>
+        <Button
+          variant="contained"
+          style={{ alignItems:'center' }}
+          onClick={() => {
+            navigate('/cuenta/crear' + location.search);
+          }}
+        > 
+          Crear Cuenta
         </Button>
       </Box>
     </Container>

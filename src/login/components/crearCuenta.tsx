@@ -7,7 +7,7 @@ import {
 } from "react-router-dom";
 import { CrearUsuario } from '../services/usuarios-services';
 
-const AgregarCuenta = (props: any) => {
+const CrearCuenta = (props: any) => {
 
   let navigate = useNavigate();
   let location = useLocation();
@@ -28,11 +28,11 @@ const AgregarCuenta = (props: any) => {
             navigate("/cuenta/seleccionar" + location.search);
           }}
         >
-          Agregar Cuenta
+          Crear Cuenta
         </Button>
       </form>
     </div>
   );
 }
 
-export default AgregarCuenta
+export default CrearCuenta

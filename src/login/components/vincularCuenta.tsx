@@ -1,41 +1,38 @@
 
 import { Button, TextField } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
   useNavigate,
   useLocation,
 } from "react-router-dom";
-import { IndexedDbService } from '../../services/indexeddb-service';
-import { IUsuario } from '../model/usuario';
-import { usuarioLogueado } from '../services/usuarios-services';
-const db = new IndexedDbService();
+import { CrearUsuario } from '../services/usuarios-services';
 
-const ModificarCuenta = (props: any) => {
+const VincularCuenta = (props: any) => {
 
   let navigate = useNavigate();
   let location = useLocation();
-  const [usuario, setUsuario] = useState(usuarioLogueado as IUsuario);
+  const [usuario, setUsuario] = useState("");
+  const [password, setPassword] = useState("");
 
   return (
     <div className="App">
       <form className="form">
         <TextField id="filled-basic" label="Usuario" variant="filled" 
-          value={usuario.nombreUsuario} disabled={true}/>
+          value={usuario} onChange={(evt) => {setUsuario(evt.target.value)}} />
         <TextField id="filled-basic" label="Contraseña" variant="filled" 
-          onChange={(evt) => {
-              usuario.password = evt.target.value
-            }}/>
+          value={password} onChange={(evt) => {setPassword(evt.target.value)}}/>
         <Button type="button" color="primary" className="form__custom-button"
           onClick={() => {
-            // cambiar contraseña
+            CrearUsuario({nombreUsuario: usuario, password: password})
+            //props.setUsuario(usuario); //TODO: Como se usa redux con Typescript?
             navigate("/cuenta/seleccionar" + location.search);
           }}
         >
-          Cambiar Contrasela
+          Vincular Cuenta
         </Button>
       </form>
     </div>
   );
 }
 
-export default ModificarCuenta
+export default VincularCuenta

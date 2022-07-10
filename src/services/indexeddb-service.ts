@@ -1,6 +1,6 @@
 import { IDBPDatabase, openDB } from "idb";
 import { apply } from "json-merge-patch";
-import { IPictogram } from "../models/pictogram";
+import { IPictogram } from "../pictogramas/models/pictogram";
 
 export class IndexedDbService {
   private database: string;
@@ -22,7 +22,8 @@ export class IndexedDbService {
   }
   public async initializeSchema() {
     try {
-      this.db = await openDB(this.database, 2, {
+      console.log('inicializa base')
+      this.db = await openDB(this.database, 3, {
         upgrade(
           db: IDBPDatabase,
           oldVersion: number,
@@ -30,6 +31,13 @@ export class IndexedDbService {
           transaction
         ) {
           let objectStore;
+          if (!db.objectStoreNames.contains("usuarios")) {
+            objectStore = db.createObjectStore("usuarios", {
+              autoIncrement: false,
+              keyPath: "id",
+            });
+          }
+
           if (!db.objectStoreNames.contains("pictograms")) {
             objectStore = db.createObjectStore("pictograms", {
               autoIncrement: false,
