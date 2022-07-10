@@ -41,7 +41,7 @@ const SeleccionarCuenta = (props: any) => {
                 alt="MESSI"
               >
               </CardMedia>
-              <CardHeader title={usuario.username}></CardHeader>
+              <CardHeader title={usuario.nombreUsuario}></CardHeader>
               <CardContent>{/* Quizas agregar una imagen */}</CardContent>
             </CardActionArea>
           </Card>
@@ -54,7 +54,7 @@ const SeleccionarCuenta = (props: any) => {
           > Modificar Cuenta </Button>
           <IconButton
             onClick={() => {
-              setUsuarios(usuarios.filter(u => u.username != usuario.username))
+              setUsuarios(usuarios.filter(u => u.nombreUsuario != usuario.nombreUsuario))
             }}
           >
             <DeleteIcon />

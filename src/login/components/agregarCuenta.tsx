@@ -23,7 +23,7 @@ const AgregarCuenta = (props: any) => {
           value={password} onChange={(evt) => {setPassword(evt.target.value)}}/>
         <Button type="button" color="primary" className="form__custom-button"
           onClick={() => {
-            CrearUsuario({username: usuario, password: password})
+            CrearUsuario({nombreUsuario: usuario, password: password})
             //props.setUsuario(usuario); //TODO: Como se usa redux con Typescript?
             navigate("/cuenta/seleccionar" + location.search);
           }}
