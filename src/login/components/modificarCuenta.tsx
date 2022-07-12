@@ -27,8 +27,8 @@ const ModificarCuenta = (props: any) => {
             }}/>
         <Button type="button" color="primary" className="form__custom-button"
           onClick={() => {
+            // TODO: Solo actualiza el usuario en la base, es necesario actualizar en el indexdbb?
             ActualizarUsuario(usuario)
-            // cambiar contraseña
             navigate("/cuenta/seleccionar" + location.search);
           }}
         >

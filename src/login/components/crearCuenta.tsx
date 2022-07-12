@@ -23,8 +23,8 @@ const CrearCuenta = (props: any) => {
           value={password} onChange={(evt) => {setPassword(evt.target.value)}}/>
         <Button type="button" color="primary" className="form__custom-button"
           onClick={() => {
+            // TODO: Se debe crear en la base y registrar en el indexdbb
             CrearUsuario({nombreUsuario: usuario, password: password})
-            //props.setUsuario(usuario); //TODO: Como se usa redux con Typescript?
             navigate("/cuenta/seleccionar" + location.search);
           }}
         >
