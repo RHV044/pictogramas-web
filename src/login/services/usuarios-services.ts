@@ -40,3 +40,14 @@ export async function CrearUsuario(
       console.log('creamos un usuario')
     })
 }
+
+export async function ActualizarUsuario(
+  usuario:IUsuario
+  ) {
+    axios.patch(apiArasaac + '/usuarios',
+    usuario
+    )
+    .then(() => {
+      console.log('creamos un usuario')
+    })
+}

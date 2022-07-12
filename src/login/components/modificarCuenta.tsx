@@ -7,7 +7,7 @@ import {
 } from "react-router-dom";
 import { IndexedDbService } from '../../services/indexeddb-service';
 import { IUsuario } from '../model/usuario';
-import { usuarioLogueado } from '../services/usuarios-services';
+import { ActualizarUsuario, usuarioLogueado } from '../services/usuarios-services';
 const db = new IndexedDbService();
 
 const ModificarCuenta = (props: any) => {
@@ -27,6 +27,7 @@ const ModificarCuenta = (props: any) => {
             }}/>
         <Button type="button" color="primary" className="form__custom-button"
           onClick={() => {
+            ActualizarUsuario(usuario)
             // cambiar contraseña
             navigate("/cuenta/seleccionar" + location.search);
           }}
