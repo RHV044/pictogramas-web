@@ -11,12 +11,6 @@ const PictogramasPorCategoria = (props: any) => {
 
   useEffect(() => {
     ObtenerPictogramasPorCategoria(setPictogramas, props.categoria)
-    // TODO: Tendriamos que traer aca los streams?
-    // pictogramas.map(async (pictograma) => {
-    //   let stream = await ObtenerPictogramaAsStream(pictograma.id)
-    //   console.log('stream de pictograma: ', stream)
-    //   pictograma.blob = stream
-    // })
   }, []);
 
   return (
@@ -35,14 +29,7 @@ const PictogramasPorCategoria = (props: any) => {
                 <CardMedia
                   component="img"
                   height="140"
-                  // image={
-                  //   ObtenerPictogramaAsStream(pictograma.id).then( response => 
-                  //     Buffer.from(response, "binary").toString("base64")
-                  //   )                    
-                  // }
-                  //image={apiPictogramas+'/pictogramas/'+pictograma.id+'/obtener'}
-                  //image={URL.createObjectURL(pictograma.blob)}
-                  image='pictograma'
+                  image={apiPictogramas+'/pictogramas/'+pictograma.id+'/obtener'}
                   alt={pictograma.keywords[0].keyword}
                 ></CardMedia>
                 <CardHeader title={pictograma.keywords[0].keyword}></CardHeader>
