@@ -20,7 +20,13 @@ const SeleccionarCuenta = (props: any) => {
 
   useEffect(() => {
     console.log('vamos a obtener los usuarios')
-    ObtenerUsuarios(setUsuarios)
+    // TODO: Los usuarios hay que traerlos de indexddb
+    //ObtenerUsuarios(setUsuarios)
+    db.getAllValues("usuarios")
+      .then(usuarios => {
+        console.log(usuarios)
+        setUsuarios(usuarios)
+      })
   }, []);
 
   return (
@@ -58,7 +64,8 @@ const SeleccionarCuenta = (props: any) => {
             }}
           > Modificar Cuenta </Button>
           <IconButton
-            onClick={() => {
+            onClick={async () => {
+              await db.deleteValue("usuarios", usuario.id != null ? usuario.id : 0)
               setUsuarios(usuarios.filter(u => u.nombreUsuario != usuario.nombreUsuario))
             }}
           >

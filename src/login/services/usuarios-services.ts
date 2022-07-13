@@ -17,34 +17,36 @@ export async function ObtenerUsuarios(
 ) {
   axios.get(apiArasaac + '/usuarios')
     .then(response => {
-      console.log('obtuvimos los usuarios')
-      console.log(response.data)
       setUsuarios(response.data)
     })
-  //setUsuarios([{id: 1, username: 'gvaquero', password: '123'},{id: 2, username: 'leo', password: '123'}])
+}
+
+export async function ObtenerUsuario(
+  username: string,
+  password: string
+) {
+  return await axios.get(apiArasaac + '/usuarios/' + username + '/' + password)
+    .then(response => {
+      console.log('usuario obtenido: ', response.data)
+      return response.data
+    })
 }
 
 export async function CrearUsuario(
   usuario:IUsuario
   ) {
-    axios.post(apiArasaac + '/usuarios',
-    usuario
-    //  stringify(usuario),
-    //  {
-    //   headers: {
-    //       'content-type': 'application/x-www-form-urlencoded'
-    //      }
-    //   }
+    return await axios.post(apiArasaac + '/usuarios',
+      usuario
     )
-    .then(() => {
-      console.log('creamos un usuario')
+    .then((usuario) => {
+      return usuario.data
     })
 }
 
 export async function ActualizarUsuario(
   usuario:IUsuario
   ) {
-    axios.patch(apiArasaac + '/usuarios',
+    await axios.patch(apiArasaac + '/usuarios',
     usuario
     )
     .then(() => {

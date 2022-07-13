@@ -26,9 +26,9 @@ const ModificarCuenta = (props: any) => {
               usuario.password = evt.target.value
             }}/>
         <Button type="button" color="primary" className="form__custom-button"
-          onClick={() => {
-            // TODO: Solo actualiza el usuario en la base, es necesario actualizar en el indexdbb?
-            ActualizarUsuario(usuario)
+          onClick={async () => {
+            await ActualizarUsuario(usuario)
+            await db.putOrPatchValue("usuarios", usuario)
             navigate("/cuenta/seleccionar" + location.search);
           }}
         >

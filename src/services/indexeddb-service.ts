@@ -6,7 +6,7 @@ export class IndexedDbService {
   private database: string;
   private db: any;
 
-  constructor() {
+ constructor() {
     this.database = "pictogramas_db";
     this.initializeSchema();
   }
