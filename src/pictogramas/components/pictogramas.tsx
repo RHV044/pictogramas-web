@@ -9,9 +9,12 @@ import { LoadPictogramsFromArasaac } from "../services/arasaac-service";
 import { IndexedDbService } from "../../services/indexeddb-service";
 import { IPictogram } from "../models/pictogram";
 import Pictogram from "./pictogram";
+import { useLocation, useNavigate } from "react-router-dom";
 const db = new IndexedDbService();
 
 export default function Pictogramas(props: any) {
+  let navigate = useNavigate();
+  let location = useLocation();
   const [imageUrl, setImageUrl] = useState("");
   const [downloadPercentage, setDownloadPercentage] = useState(0);
   const [pictosIds, setPictosIds] = useState([] as string[]);
@@ -52,6 +55,14 @@ export default function Pictogramas(props: any) {
         )}
       />
       <Pictogram pictoImageUrl={imageUrl} />
+      <Button
+        variant="contained"
+        onClick={() =>{
+          navigate('/categorias' + location.search);
+        }}
+      >
+        Ver Categorias
+      </Button>
     </div>
   );
 }
