@@ -25,7 +25,6 @@ const CrearCuenta = (props: any) => {
           value={password} onChange={(evt) => {setPassword(evt.target.value)}}/>
         <Button type="button" color="primary" className="form__custom-button"
           onClick={async () => {
-            // TODO: Se debe crear en la base y registrar en el indexdbb
             let usuario = await CrearUsuario({nombreUsuario: username, password: password})
             await db.putOrPatchValue("usuarios", usuario)            
             navigate("/cuenta/seleccionar" + location.search);

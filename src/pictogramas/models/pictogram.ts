@@ -1,3 +1,5 @@
+import { IKeyword } from "./keyword";
+
 export interface IPictogram {
   id: number;
   blob: Blob;
@@ -11,4 +13,5 @@ export interface IPictogram {
   aacColor: boolean;
   skin: boolean;
   hair: boolean;
+  keywords: IKeyword[]
 }

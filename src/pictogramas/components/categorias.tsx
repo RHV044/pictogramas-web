@@ -9,10 +9,12 @@ import { Container } from '@mui/system';
 import { useEffect, useState } from 'react';
 import { ICategoria } from '../models/categoria';
 import { ObtenerCategorias } from '../services/pictogramas-services';
+import PictogramasPorCategoria from './pictogramasPorCategoria';
 
 const Categorias = (props: any) => {
 
   const [categorias, setCategorias] = useState([] as ICategoria[]);
+  const [categoriaSeleccionada, setCategoriaSeleccionada] = useState({} as ICategoria|null)
 
   useEffect(() => {
     ObtenerCategorias(setCategorias);
@@ -30,7 +32,15 @@ const Categorias = (props: any) => {
                 //EXPANDIR CATEGORIA
               }}
             >
-              <CardActionArea>
+              <CardActionArea
+                onClick={() => {
+                  console.log('Clickearon una categoria: ', categoria.id)
+                  if (categoriaSeleccionada == null || categoriaSeleccionada !== categoria)
+                    setCategoriaSeleccionada(categoria)
+                  else
+                    setCategoriaSeleccionada(null)
+                }}
+              >
                 <CardMedia
                   component="img"
                   height="140"
@@ -41,6 +51,8 @@ const Categorias = (props: any) => {
                 <CardContent>{/* Quizas agregar una imagen */}</CardContent>
               </CardActionArea>
             </Card>
+            {categoria === categoriaSeleccionada && <PictogramasPorCategoria categoria={categoriaSeleccionada.id}>
+            </PictogramasPorCategoria> }
           </Container>
         );
       })}

@@ -2,7 +2,7 @@ import axios from "axios";
 import { stringify } from "querystring";
 import { IUsuario } from "../model/usuario";
 
-const apiArasaac = process.env.URL_PICTOGRAMAS ?? "http://localhost:5000";
+const apiPictogramas = process.env.URL_PICTOGRAMAS ?? "http://localhost:5000";
 
 export let usuarioLogueado: IUsuario|null = null 
 
@@ -15,7 +15,7 @@ export function setUsuarioLogueado(
 export async function ObtenerUsuarios(
   setUsuarios: any
 ) {
-  axios.get(apiArasaac + '/usuarios')
+  axios.get(apiPictogramas + '/usuarios')
     .then(response => {
       setUsuarios(response.data)
     })
@@ -25,7 +25,7 @@ export async function ObtenerUsuario(
   username: string,
   password: string
 ) {
-  return await axios.get(apiArasaac + '/usuarios/' + username + '/' + password)
+  return await axios.get(apiPictogramas + '/usuarios/' + username + '/' + password)
     .then(response => {
       console.log('usuario obtenido: ', response.data)
       return response.data
@@ -35,7 +35,7 @@ export async function ObtenerUsuario(
 export async function CrearUsuario(
   usuario:IUsuario
   ) {
-    return await axios.post(apiArasaac + '/usuarios',
+    return await axios.post(apiPictogramas + '/usuarios',
       usuario
     )
     .then((usuario) => {
@@ -46,7 +46,7 @@ export async function CrearUsuario(
 export async function ActualizarUsuario(
   usuario:IUsuario
   ) {
-    await axios.patch(apiArasaac + '/usuarios',
+    await axios.patch(apiPictogramas + '/usuarios',
     usuario
     )
     .then(() => {
