@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Autocomplete,
   Button,
@@ -10,6 +10,8 @@ import { IndexedDbService } from "../../services/indexeddb-service";
 import { IPictogram } from "../models/pictogram";
 import Pictogram from "./pictogram";
 import { useLocation, useNavigate } from "react-router-dom";
+import Categorias from "./categorias";
+import Seleccion from "./seleccion";
 const db = new IndexedDbService();
 
 export default function Pictogramas(props: any) {
@@ -18,8 +20,12 @@ export default function Pictogramas(props: any) {
   const [imageUrl, setImageUrl] = useState("");
   const [downloadPercentage, setDownloadPercentage] = useState(0);
   const [pictosIds, setPictosIds] = useState([] as string[]);
+  const [pictogramas, setPictogramas] = useState([] as IPictogram[]);
+
   return (
     <div>
+      <Seleccion setPictogramas={setPictogramas} pictogramas={pictogramas} /> 
+      <hr />
       <Button
         variant="contained"
         onClick={() =>
@@ -55,14 +61,16 @@ export default function Pictogramas(props: any) {
         )}
       />
       <Pictogram pictoImageUrl={imageUrl} />
-      <Button
+      <hr />      
+      <Categorias setPictogramas={setPictogramas} pictogramas={pictogramas}/>
+      {/* <Button
         variant="contained"
         onClick={() =>{
           navigate('/categorias' + location.search);
         }}
       >
         Ver Categorias
-      </Button>
+      </Button> */}
     </div>
   );
 }

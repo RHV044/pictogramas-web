@@ -51,7 +51,7 @@ const SeleccionarCuenta = (props: any) => {
               >
               </CardMedia>
               <CardHeader title={usuario.nombreUsuario}></CardHeader>
-              <CardContent>{/* Quizas agregar una imagen */}</CardContent>
+              <CardContent></CardContent>
             </CardActionArea>
           </Card>
           <Button

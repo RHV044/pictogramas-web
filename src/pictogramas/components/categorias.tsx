@@ -24,8 +24,9 @@ const Categorias = (props: any) => {
     <Container>
       {categorias.map((categoria) => {
         return (
-          <Container>
+          <Container key={categoria.nombre}>
             <Card
+              key={categoria.nombre}
               sx={{ maxWidth: 345 }}
               style={{ marginTop: '10px' }}
               onClick={() => {
@@ -48,10 +49,10 @@ const Categorias = (props: any) => {
                   alt="MESSI"
                 ></CardMedia>
                 <CardHeader title={categoria.nombre}></CardHeader>
-                <CardContent>{/* Quizas agregar una imagen */}</CardContent>
+                <CardContent></CardContent>
               </CardActionArea>
             </Card>
-            {categoria === categoriaSeleccionada && <PictogramasPorCategoria categoria={categoriaSeleccionada.id}>
+            {categoria === categoriaSeleccionada && <PictogramasPorCategoria categoria={categoriaSeleccionada.id} setPictogramas={props.setPictogramas} pictogramas={props.pictogramas}>
             </PictogramasPorCategoria> }
           </Container>
         );

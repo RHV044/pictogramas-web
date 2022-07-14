@@ -1,36 +1,37 @@
-import { Card, CardActionArea, CardContent, CardHeader, CardMedia, Container } from "@mui/material";
-import { useEffect, useState } from "react"
+import { Card, CardActionArea, CardContent, CardHeader, CardMedia } from "@mui/material";
+import { Container } from "@mui/system";
+import { useEffect, useState } from "react";
 import { IPictogram } from "../models/pictogram";
-import { ObtenerPictogramasPorCategoria } from "../services/pictogramas-services";
 
 const apiPictogramas = process.env.URL_PICTOGRAMAS ?? "http://localhost:5000";
 
-const PictogramasPorCategoria = (props: any) => {
+const Seleccion = (props: {pictogramas: IPictogram[], setPictogramas: any}) => {
 
   const [pictogramas, setPictogramas] = useState([] as IPictogram[]);
 
   useEffect(() => {
-    ObtenerPictogramasPorCategoria(setPictogramas, props.categoria)
-  }, []);
+    console.log('pictogramas Actualizados: ', props.pictogramas)
+    setPictogramas(props.pictogramas)
+  }, [props.pictogramas])
 
-  return (
+  useEffect(() => {
+    console.log('pictogramas Actualizados: ', props.pictogramas)
+    setPictogramas(props.pictogramas)
+  })
+
+  return(
     <Container>
-      {pictogramas.map((pictograma) => {
+      {pictogramas.map((pictograma: IPictogram) => {
         return (
           <Container>
             <Card
               sx={{ maxWidth: 345 }}
               style={{ marginTop: '10px' }}
               onClick={() => {
+                props.setPictogramas(props.pictogramas.filter((p: IPictogram) => p.id != pictograma.id))
               }}
             >
-              <CardActionArea
-              onClick={() => {
-                let pictogramasSeleccionados = props.pictogramas
-                pictogramasSeleccionados.push(pictograma)
-                props.setPictogramas(pictogramasSeleccionados)
-                console.log('se agrego un pictograma: ', props.pictogramas)
-              }}>
+              <CardActionArea>
                 <CardMedia
                   component="img"
                   height="140"
@@ -42,10 +43,11 @@ const PictogramasPorCategoria = (props: any) => {
               </CardActionArea>
             </Card>
           </Container>
-        );
-      })}
+        )
+      })
+    }
     </Container>
-  );
+  )
 }
 
-export default PictogramasPorCategoria
+export default Seleccion

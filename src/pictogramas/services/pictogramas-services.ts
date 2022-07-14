@@ -23,13 +23,3 @@ export async function ObtenerPictogramasPorCategoria(
       setPictogramas(response.data)
     })
 }
-
-export function ObtenerPictogramaAsStream(
-  idPictograma: number
-) {
-  return axios.get(apiPictogramas + '/pictogramas/'+ idPictograma+'/obtener')
-    .then(response => {
-      console.log('pictograma como imagen: ', response.data)
-      return response.data
-    })
-}
