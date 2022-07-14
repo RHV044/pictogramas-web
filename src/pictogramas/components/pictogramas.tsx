@@ -21,10 +21,22 @@ export default function Pictogramas(props: any) {
   const [downloadPercentage, setDownloadPercentage] = useState(0);
   const [pictosIds, setPictosIds] = useState([] as string[]);
   const [pictogramas, setPictogramas] = useState([] as IPictogram[]);
+  // Usando otra lista al menos renderiza uno
+  const [pictogramasSeleccionados, setpictogramasSeleccionados] = useState([] as IPictogram[]);
+
+  const UpdatePictogramas = (pics: IPictogram[]) => {
+    setpictogramasSeleccionados(pics)
+    console.log('PICTOGRAMAS - Nuevos pictogramas seleccionados:', pics)
+    console.log('PICTOGRAMAS:', pictogramasSeleccionados)
+  }
+
+  useEffect(() => {
+    console.log('PICTOGRAMAS USE EFFECT')
+  }, [pictogramas])
 
   return (
     <div>
-      <Seleccion setPictogramas={setPictogramas} pictogramas={pictogramas} /> 
+      <Seleccion pictogramas={pictogramasSeleccionados} setPictogramas={UpdatePictogramas}/> 
       <hr />
       <Button
         variant="contained"
@@ -62,7 +74,10 @@ export default function Pictogramas(props: any) {
       />
       <Pictogram pictoImageUrl={imageUrl} />
       <hr />      
-      <Categorias setPictogramas={setPictogramas} pictogramas={pictogramas}/>
+      {/* Si paso setPictogramas tampoco me actualiza */}
+      {/* <Categorias setPictogramas={setPictogramas} pictogramas={pictogramas}/> */}
+      <Categorias setPictogramas={UpdatePictogramas} pictogramas={pictogramas}/>
+
       {/* <Button
         variant="contained"
         onClick={() =>{

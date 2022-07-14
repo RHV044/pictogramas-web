@@ -5,7 +5,7 @@ import { IPictogram } from "../models/pictogram";
 
 const apiPictogramas = process.env.URL_PICTOGRAMAS ?? "http://localhost:5000";
 
-const Seleccion = (props: {pictogramas: IPictogram[], setPictogramas: any}) => {
+const Seleccion = (props: { pictogramas: IPictogram[]; setPictogramas: (arg0: IPictogram[]) => void; }) => {
 
   const [pictogramas, setPictogramas] = useState([] as IPictogram[]);
 
@@ -17,18 +17,20 @@ const Seleccion = (props: {pictogramas: IPictogram[], setPictogramas: any}) => {
   useEffect(() => {
     console.log('pictogramas Actualizados: ', props.pictogramas)
     setPictogramas(props.pictogramas)
-  })
+  },[])
 
   return(
     <Container>
       {pictogramas.map((pictograma: IPictogram) => {
         return (
-          <Container>
-            <Card
+          <Container key={Math.random()*1000}>
+            <Card 
               sx={{ maxWidth: 345 }}
               style={{ marginTop: '10px' }}
               onClick={() => {
-                props.setPictogramas(props.pictogramas.filter((p: IPictogram) => p.id != pictograma.id))
+                let nuevaLista =pictogramas.filter((p: IPictogram) => p.id != pictograma.id)
+                console.log('removiendo pictograma, van a quedar: ', nuevaLista)
+                props.setPictogramas(nuevaLista)
               }}
             >
               <CardActionArea>
