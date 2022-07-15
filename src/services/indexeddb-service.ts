@@ -10,6 +10,17 @@ export class IndexedDbService {
     this.database = "pictogramas_db";
     this.initializeSchema();
   }
+
+  async initialize() {
+    await this.initializeSchema();
+ }
+
+ static async create() {
+    const o = new IndexedDbService();
+    await o.initialize();
+    return o;
+ }
+
   public async searchPictogramsByTag(tag: string): Promise<IPictogram[]> {
     let lowerCaseTag = tag.toLowerCase();
 

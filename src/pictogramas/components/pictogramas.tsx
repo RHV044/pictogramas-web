@@ -22,10 +22,10 @@ export default function Pictogramas(props: any) {
   const [pictosIds, setPictosIds] = useState([] as string[]);
   const [pictogramas, setPictogramas] = useState([] as IPictogram[]);
   // Usando otra lista al menos renderiza uno
-  const [pictogramasSeleccionados, setpictogramasSeleccionados] = useState([] as IPictogram[]);
+  const [pictogramasSeleccionados, setPictogramasSeleccionados] = useState([] as IPictogram[]);
 
   const UpdatePictogramas = (pics: IPictogram[]) => {
-    setpictogramasSeleccionados(pics)
+    setPictogramasSeleccionados(pics)
     console.log('PICTOGRAMAS - Nuevos pictogramas seleccionados:', pics)
     console.log('PICTOGRAMAS:', pictogramasSeleccionados)
   }
@@ -33,6 +33,10 @@ export default function Pictogramas(props: any) {
   useEffect(() => {
     console.log('PICTOGRAMAS USE EFFECT')
   }, [pictogramas])
+
+  useEffect(() => {
+    console.log('PICTOGRAMAS seleccionados USE EFFECT')
+  }, [pictogramasSeleccionados])
 
   return (
     <div>

@@ -13,10 +13,11 @@ import { IndexedDbService } from '../../services/indexeddb-service';
 const db = new IndexedDbService();
 
 const SeleccionarCuenta = (props: any) => {
-
+  
   let navigate = useNavigate();
   let location = useLocation();
   const [usuarios, setUsuarios] = useState([] as IUsuario[]);
+  //const [db, setDb] = useState (await IndexedDbService.create())
 
   useEffect(() => {
     console.log('vamos a obtener los usuarios')

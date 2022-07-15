@@ -23,7 +23,7 @@ const Seleccion = (props: { pictogramas: IPictogram[]; setPictogramas: (arg0: IP
     <Container>
       {pictogramas.map((pictograma: IPictogram) => {
         return (
-          <Container key={Math.random()*1000}>
+          <Container>
             <Card 
               sx={{ maxWidth: 345 }}
               style={{ marginTop: '10px' }}
