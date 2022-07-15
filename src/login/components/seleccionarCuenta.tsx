@@ -10,24 +10,28 @@ import {
 import { IUsuario } from '../model/usuario';
 import { ObtenerUsuarios, setUsuarioLogueado } from '../services/usuarios-services';
 import { IndexedDbService } from '../../services/indexeddb-service';
-const db = new IndexedDbService();
+//const db = new IndexedDbService();
 
 const SeleccionarCuenta = (props: any) => {
   
   let navigate = useNavigate();
   let location = useLocation();
   const [usuarios, setUsuarios] = useState([] as IUsuario[]);
-  //const [db, setDb] = useState (await IndexedDbService.create())
+  const [db, setDb] = useState (IndexedDbService.create())
+  const [db1, setDb1] = useState(new IndexedDbService())
 
   useEffect(() => {
     console.log('vamos a obtener los usuarios')
     // TODO: Los usuarios hay que traerlos de indexddb
     //ObtenerUsuarios(setUsuarios)
-    db.getAllValues("usuarios")
+    db.then(d => {
+      setDb1(d)
+      d.getAllValues("usuarios")
       .then(usuarios => {
         console.log(usuarios)
         setUsuarios(usuarios)
       })
+    })
   }, []);
 
   return (
@@ -66,7 +70,7 @@ const SeleccionarCuenta = (props: any) => {
           > Modificar Cuenta </Button>
           <IconButton
             onClick={async () => {
-              await db.deleteValue("usuarios", usuario.id != null ? usuario.id : 0)
+              await db1.deleteValue("usuarios", usuario.id != null ? usuario.id : 0)
               setUsuarios(usuarios.filter(u => u.nombreUsuario != usuario.nombreUsuario))
             }}
           >
