@@ -16,4 +16,6 @@ export interface IPictogram {
   keywords: IKeyword[];
   idArasaac: number;
   idUsuario: number;
+  categorias: number[];
+  imagen: any
 }

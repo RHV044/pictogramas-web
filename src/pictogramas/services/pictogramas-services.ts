@@ -23,3 +23,9 @@ export async function ObtenerPictogramasPorCategoria(
       setPictogramas(response.data)
     })
 }
+
+export async function ObtenerImagen(
+  pictograma: number
+){
+  return await (await axios.get(apiPictogramas + '/pictogramas/' + pictograma +'/obtener')).data
+}

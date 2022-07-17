@@ -83,11 +83,16 @@ export class IndexedDbService {
     return this.getValue("pictograms", id) as Promise<IPictogram>;
   }
   public async getValue(tableName: string, id: number) {
-    const tx = this.db.transaction(tableName, "readonly");
-    const store = tx.objectStore(tableName);
-    const result = await store.get(id);
-    console.log("Get Data ", JSON.stringify(result));
-    return result;
+    try{
+      const tx = this.db.transaction(tableName, "readonly");
+      const store = tx.objectStore(tableName);
+      const result = await store.get(id);
+      console.log("Get Data ", JSON.stringify(result));
+      return result;      
+    }
+    catch (e){
+      return null
+    }
   }
 
   public async getAllValues(tableName: string): Promise<any[]> {
