@@ -138,4 +138,13 @@ export class IndexedDbService {
     console.log("Deleted Data", id);
     return id;
   }
+
+  public async countValues(tableName: string){
+    const tx = this.db.transaction(tableName, "readonly");
+    const store = tx.objectStore(tableName);
+    const result = await store.getAll();
+    const total = result.length;
+    console.log("Count all values: ", total);
+    return total;
+  }
 }
