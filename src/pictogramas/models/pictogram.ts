@@ -13,5 +13,7 @@ export interface IPictogram {
   aacColor: boolean;
   skin: boolean;
   hair: boolean;
-  keywords: IKeyword[]
+  keywords: IKeyword[];
+  idArasaac: number;
+  idUsuario: number;
 }

@@ -1,4 +1,7 @@
+import { IPictogram } from "./pictogram";
+
 export interface ICategoria { 
   id: number,
-  nombre: string
+  nombre: string,
+  pictogramas: IPictogram[]
 }

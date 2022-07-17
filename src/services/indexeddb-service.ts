@@ -49,6 +49,14 @@ export class IndexedDbService {
             });
           }
 
+          // Esta bueno separar por categorias o me conviene reutlizar pictograms?
+          if (!db.objectStoreNames.contains("categorias")) {
+            objectStore = db.createObjectStore("categorias", {
+              autoIncrement: false,
+              keyPath: "id",
+            });
+          }
+
           if (!db.objectStoreNames.contains("pictograms")) {
             objectStore = db.createObjectStore("pictograms", {
               autoIncrement: false,
