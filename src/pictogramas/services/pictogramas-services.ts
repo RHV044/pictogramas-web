@@ -34,7 +34,7 @@ export async function ObtenerImagen(
 export async function ObtenerImagenAsBlob(
   pictograma: IPictogram
 ){
-  axios.get(`${apiPictogramas}/pictogramas/${pictograma}/obtener`, {
+  axios.get(`${apiPictogramas}/pictogramas/${pictograma.id}/obtener`, {
     headers: {
       Accept: "image/png",
     },
