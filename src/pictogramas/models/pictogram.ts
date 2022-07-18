@@ -1,11 +1,13 @@
+import { ICategoria } from "./categoria";
 import { IKeyword } from "./keyword";
+import { ITag } from "./tag";
 
 export interface IPictogram {
   id: number;
   blob: Blob;
   name: string;
   description: string;
-  tags: string[];
+  tags: ITag[];
   schematic: boolean;
   sex: boolean;
   violence: boolean;
@@ -16,6 +18,6 @@ export interface IPictogram {
   keywords: IKeyword[];
   idArasaac: number;
   idUsuario: number;
-  categorias: number[];
+  categorias: ICategoria[];
   imagen: any
 }

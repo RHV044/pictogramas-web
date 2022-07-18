@@ -59,4 +59,11 @@ export async function ObtenerTotalPictogramas(){
     })
 }
 
+export async function ObtenerInformacionPictogramas(){
+  return await axios.get(apiPictogramas + '/pictogramas/informacion')
+    .then(response => {
+      return response.data
+    })
+}
+
 
