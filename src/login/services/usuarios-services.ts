@@ -41,9 +41,8 @@ export async function CrearUsuario(
   usuario:IUsuario  
   ) {
     var AES = require("crypto-js/aes");
-    usuario.password = AES.encrypt(usuario.password, encryptKey);
     return await axios.post(apiPictogramas + '/usuarios',
-      usuario
+      {nombreUsuario : usuario.nombreUsuario, password: AES.encrypt(usuario.password, encryptKey)}
     )
     .then((usuario) => {
       return usuario.data
