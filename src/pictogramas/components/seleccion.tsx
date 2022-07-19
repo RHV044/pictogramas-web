@@ -47,7 +47,7 @@ const Seleccion = (props: { pictogramas: IPictogram[]; setPictogramas: (arg0: IP
           </Container>
         )
       })
-    }
+    }    
     </Container>
   )
 }

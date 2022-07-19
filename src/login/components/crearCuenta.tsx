@@ -15,6 +15,7 @@ const CrearCuenta = (props: any) => {
   let location = useLocation();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false)
 
   return (
     <div className="App">
@@ -22,6 +23,7 @@ const CrearCuenta = (props: any) => {
         <TextField id="filled-basic" label="Usuario" variant="filled" 
           value={username} onChange={(evt) => {setUsername(evt.target.value)}} />
         <TextField id="filled-basic" label="Contraseña" variant="filled" 
+          type={showPassword ? "text" : "password"}
           value={password} onChange={(evt) => {setPassword(evt.target.value)}}/>
         <Button type="button" color="primary" className="form__custom-button"
           onClick={async () => {
