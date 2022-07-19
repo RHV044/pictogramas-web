@@ -32,7 +32,7 @@ const ModificarCuenta = (props: any) => {
             navigate("/cuenta/seleccionar" + location.search);
           }}
         >
-          Cambiar Contrasela
+          Cambiar Contraseña
         </Button>
       </form>
     </div>

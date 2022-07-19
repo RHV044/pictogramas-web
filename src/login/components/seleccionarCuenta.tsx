@@ -1,5 +1,5 @@
 
-import { Box, Button, Card, CardActionArea, CardContent, CardHeader, CardMedia, IconButton, TextField } from '@mui/material';
+import { Box, Button, Card, CardActionArea, CardContent, CardHeader, CardMedia, Grid, IconButton, TextField } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Container } from '@mui/system';
 import { useEffect, useState } from 'react';
@@ -36,9 +36,11 @@ const SeleccionarCuenta = (props: any) => {
 
   return (
     <Container>
-      {
+    <Grid container>
+    {
         usuarios.map((usuario) => {
-        return (<Container>
+        return (
+        <Grid item xs={12} sm={6} md={4}>
           <Card                        
             sx={{ maxWidth: 345 }}               
             style={{ marginTop: '10px' }}
@@ -76,12 +78,14 @@ const SeleccionarCuenta = (props: any) => {
           >
             <DeleteIcon />
           </IconButton>
-        </Container>)
+        </Grid>)
       })}
-      <Box textAlign='center'>
+      
+    </Grid>  
+    <Box textAlign='center'>
         <Button
           variant="contained"
-          style={{ alignItems:'center' }}
+          style={{ alignItems:'center', marginBottom: '10px' }}
           onClick={() => {
             navigate('/cuenta/vincular' + location.search);
           }}
@@ -92,7 +96,7 @@ const SeleccionarCuenta = (props: any) => {
       <Box textAlign='center'>
         <Button
           variant="contained"
-          style={{ alignItems:'center' }}
+          style={{ alignItems:'center', marginBottom: '10px' }}
           onClick={() => {
             navigate('/cuenta/crear' + location.search);
           }}
@@ -100,7 +104,7 @@ const SeleccionarCuenta = (props: any) => {
           Crear Cuenta
         </Button>
       </Box>
-    </Container>
+   </Container>  
   );
 }
 
