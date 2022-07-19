@@ -1,28 +1,43 @@
 import axios from "axios";
 import { stringify } from "querystring";
+import { IndexedDbService } from "../../services/indexeddb-service";
+import { ICategoria } from "../models/categoria";
 import { IPictogram } from "../models/pictogram";
-
 
 const apiPictogramas = process.env.URL_PICTOGRAMAS ?? "http://localhost:5000";
 
 export async function ObtenerCategorias(
   setCategorias: any
 ) {
-  return await axios.get(apiPictogramas + '/categorias')
+  let db = await IndexedDbService.create();
+  let categorias = await db.getAllValues('categorias');
+  if (categorias){
+    return await setCategorias(categorias)
+  }
+  else{
+    return await axios.get(apiPictogramas + '/categorias')
     .then(response => {
       setCategorias(response.data)
     })
+  }
 }
 
 export async function ObtenerPictogramasPorCategoria(
   setPictogramas: any,
   categoria: number
 ) {
+  let db = await IndexedDbService.create();
+  let pictogramas = await db.getAllValues('pictograms');
+  if (pictogramas){
+    return await setPictogramas(pictogramas.filter((p: IPictogram) => p.categorias && p.categorias.some((c: ICategoria) => c.id == categoria)))
+  }
+  else {
   return await axios.get(apiPictogramas + '/pictogramas/categorias/id/'+ categoria)
     .then(response => {
       console.log('pictogramas por categoria: ', response.data)
       setPictogramas(response.data)
     })
+  }
 }
 
 export async function ObtenerImagen(

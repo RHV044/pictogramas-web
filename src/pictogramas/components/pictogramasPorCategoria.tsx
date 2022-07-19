@@ -34,7 +34,9 @@ const PictogramasPorCategoria = (props: any) => {
                 <CardMedia
                   component="img"
                   height="140"
-                  image={apiPictogramas+'/pictogramas/'+pictograma.id+'/obtener'}
+                  //image={apiPictogramas+'/pictogramas/'+pictograma.id+'/obtener'}
+                  //image={pictograma.imagen}         
+                  src={`data:image/png;base64, ${pictograma.imagen}`}         
                   alt={pictograma.keywords[0].keyword}
                 ></CardMedia>
                 <CardHeader title={pictograma.keywords[0].keyword}></CardHeader>

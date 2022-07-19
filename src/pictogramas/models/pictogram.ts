@@ -19,5 +19,5 @@ export interface IPictogram {
   idArasaac: number;
   idUsuario: number;
   categorias: ICategoria[];
-  imagen: any
+  imagen: string;
 }
