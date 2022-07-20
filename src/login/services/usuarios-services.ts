@@ -2,8 +2,9 @@ import axios from "axios";
 import { stringify } from "querystring";
 import { IUsuario } from "../model/usuario";
 
+var CryptoJS = require("crypto-js");
 const apiPictogramas = process.env.URL_PICTOGRAMAS ?? "http://localhost:5000";
-const encryptKey = process.env.ENCRYPT_KEY ?? "WmZq4t7weShVmYq3KaPdSgVk*G-JaNdRz%C*F)J@6w9z$C&Fp3s6v9y$UkXp2s5vcRfUjXn2H@McQfTj";
+const encryptKey = process.env.ENCRYPT_KEY ?? "8080808080808080";
 
 export let usuarioLogueado: IUsuario|null = null 
 
@@ -26,11 +27,7 @@ export async function ObtenerUsuario(
   username: string,
   password: string
 ) {
-  var AES = require("crypto-js/aes");
-  let usuario = {nombreUsuario : username, password: AES.encrypt(password, encryptKey)}
-  return await axios.put(apiPictogramas + '/usuarios', 
-    usuario
-  )
+  return await axios.get(apiPictogramas + '/usuarios/' + username + '/' + password)
     .then(response => {
       console.log('usuario obtenido: ', response.data)
       return response.data
@@ -39,21 +36,25 @@ export async function ObtenerUsuario(
 
 export async function CrearUsuario(
   usuario:IUsuario  
-  ) {
-    var AES = require("crypto-js/aes");
+  ) {    
+    let user = {nombreUsuario: usuario.nombreUsuario, password : usuario.password} as IUsuario
+    user.password = CryptoJS.AES.encrypt(user.password, encryptKey,
+      {
+        iv: encryptKey
+      }
+    ).toString()
+    console.log(user.password)
     return await axios.post(apiPictogramas + '/usuarios',
-      {nombreUsuario : usuario.nombreUsuario, password: AES.encrypt(usuario.password, encryptKey)}
+      usuario
     )
-    .then((usuario) => {
-      return usuario.data
+    .then((resp) => {
+      return resp.data
     })
 }
 
 export async function ActualizarUsuario(
   usuario:IUsuario
   ) {
-    var AES = require("crypto-js/aes");
-    usuario.password = AES.encrypt(usuario.password, encryptKey);
     await axios.patch(apiPictogramas + '/usuarios',
     usuario
     )
