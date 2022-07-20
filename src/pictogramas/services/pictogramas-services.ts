@@ -22,6 +22,15 @@ export async function ObtenerCategorias(
   }
 }
 
+export async function ObtenerYGuardarCategorias(
+  setCategorias: any
+) {
+  return await axios.get(apiPictogramas + '/categorias')
+  .then(response => {
+    setCategorias(response.data)
+  })  
+}
+
 export async function ObtenerPictogramasPorCategoria(
   setPictogramas: any,
   categoria: number
@@ -29,7 +38,15 @@ export async function ObtenerPictogramasPorCategoria(
   let db = await IndexedDbService.create();
   let pictogramas = await db.getAllValues('pictograms');
   if (pictogramas){
-    return await setPictogramas(pictogramas.filter((p: IPictogram) => p.categorias && p.categorias.some((c: ICategoria) => c.id == categoria)))
+    let pictogramasFiltrados = pictogramas.filter((p: IPictogram) => p.categorias && p.categorias.some((c: ICategoria) => c.id == categoria))
+    // pictogramasFiltrados.forEach(async (p: IPictogram) => {
+    //   let imagen = (await db.getValue('imagenes', p.id)).imagen
+    //   p.imagen = imagen
+    // })
+    for(var i=0; i<pictogramasFiltrados.length; ++i)
+      pictogramasFiltrados[i].imagen = (await db.getValue('imagenes', pictogramasFiltrados[i].id)).imagen
+
+    return await setPictogramas(pictogramasFiltrados)
   }
   else {
   return await axios.get(apiPictogramas + '/pictogramas/categorias/id/'+ categoria)

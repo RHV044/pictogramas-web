@@ -6,9 +6,11 @@ import {
   ObtenerInformacionPictogramas,
   ObtenerTotalCategorias,
   ObtenerTotalPictogramas,
+  ObtenerYGuardarCategorias,
 } from '../pictogramas/services/pictogramas-services';
 import { IndexedDbService } from './indexeddb-service';
 import axios from "axios";
+import { IPictogramaImagen } from '../pictogramas/models/pictogramaImagen';
 
 const apiPictogramas = process.env.URL_PICTOGRAMAS ?? "http://localhost:5000";
 
@@ -35,7 +37,7 @@ export class UpdateService {
       `Total categorias: ${totalCategorias} vs total categorias locales: ${totalCategoriasLocales}`
     );
     if (totalCategoriasLocales !== totalCategorias){
-      await ObtenerCategorias(
+      await ObtenerYGuardarCategorias(
         async (cats: ICategoria[]) => (await db.putBulkValue('categorias', cats))
       );
     }
@@ -73,9 +75,12 @@ export class UpdateService {
               // Get the pictogram's image
               return axios.get(`${apiPictogramas}/pictogramas/${pictoInfo.id}/obtener/base64`)
               .then(async (response) => {    
-                pictoInfo.imagen = response.data
-                console.log('se obtuvo la imagen: ', pictoInfo.imagen)
+                let pictogramaImagen = {id: pictoInfo.id, imagen:response.data} as IPictogramaImagen
+                // pictoInfo.imagen = response.data
+                pictoInfo.imagen = ''
                 await db.putOrPatchValue("pictograms", pictoInfo);
+                // console.log('se obtuvo la imagen: ', pictoInfo.imagen)
+                await db.putOrPatchValue("imagenes", pictogramaImagen);
               })
             }
           );

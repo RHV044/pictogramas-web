@@ -17,7 +17,7 @@ const PictogramasPorCategoria = (props: any) => {
     <Container>
       {pictogramas.map((pictograma) => {
         return (
-          <Container>
+          <Container key={pictograma.id}>
             <Card
               sx={{ maxWidth: 345 }}
               style={{ marginTop: '10px' }}
@@ -35,7 +35,8 @@ const PictogramasPorCategoria = (props: any) => {
                   component="img"
                   height="140"
                   //image={apiPictogramas+'/pictogramas/'+pictograma.id+'/obtener'}
-                  //image={pictograma.imagen}         
+                  //image={pictograma.imagen}  
+                  //TODO: Optimizar o ver alternativa para levantar los base64       
                   src={`data:image/png;base64, ${pictograma.imagen}`}         
                   alt={pictograma.keywords[0].keyword}
                 ></CardMedia>

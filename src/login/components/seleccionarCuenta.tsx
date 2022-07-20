@@ -40,7 +40,8 @@ const SeleccionarCuenta = (props: any) => {
     {
         usuarios.map((usuario) => {
         return (
-        <Grid item xs={12} sm={6} md={4}>
+        <Grid key={usuario.id}        
+        item xs={12} sm={6} md={4}>
           <Card                        
             sx={{ maxWidth: 345 }}               
             style={{ marginTop: '10px' }}

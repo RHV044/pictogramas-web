@@ -24,9 +24,8 @@ const Categorias = (props: any) => {
     <Container>
       {categorias.map((categoria) => {
         return (
-          <Container key={categoria.nombre}>
+          <Container key={categoria.id + '-' + categoria.nombre}>
             <Card
-              key={categoria.nombre}
               sx={{ maxWidth: 345 }}
               style={{ marginTop: '10px' }}
               onClick={() => {

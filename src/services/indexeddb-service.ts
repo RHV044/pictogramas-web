@@ -57,6 +57,13 @@ export class IndexedDbService {
             });
           }
 
+          if (!db.objectStoreNames.contains("imagenes")) {
+            objectStore = db.createObjectStore("imagenes", {
+              autoIncrement: false,
+              keyPath: "id",
+            });
+          }
+
           if (!db.objectStoreNames.contains("pictograms")) {
             objectStore = db.createObjectStore("pictograms", {
               autoIncrement: false,
@@ -87,7 +94,7 @@ export class IndexedDbService {
       const tx = this.db.transaction(tableName, "readonly");
       const store = tx.objectStore(tableName);
       const result = await store.get(id);
-      console.log("Get Data ", JSON.stringify(result));
+      //console.log("Get Data ", JSON.stringify(result));
       return result;      
     }
     catch (e){

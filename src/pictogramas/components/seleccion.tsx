@@ -8,27 +8,28 @@ const apiPictogramas = process.env.URL_PICTOGRAMAS ?? "http://localhost:5000";
 const Seleccion = (props: { pictogramas: IPictogram[]; setPictogramas: (arg0: IPictogram[]) => void; }) => {
 
   const [pictogramas, setPictogramas] = useState([] as IPictogram[]);
+  var i = 0;
 
   useEffect(() => {
     console.log('pictogramas Actualizados: ', props.pictogramas)
     setPictogramas(props.pictogramas)
   }, [props.pictogramas])
 
-  useEffect(() => {
-    console.log('pictogramas Actualizados: ', props.pictogramas)
-    setPictogramas(props.pictogramas)
-  },[])
+  // useEffect(() => {
+  //   console.log('pictogramas Actualizados: ', props.pictogramas)
+  //   setPictogramas(props.pictogramas)
+  // },[])
 
   return(
     <Container>
       {pictogramas.map((pictograma: IPictogram) => {
         return (
-          <Container>
+          <Container key={i++}>
             <Card 
               sx={{ maxWidth: 345 }}
               style={{ marginTop: '10px' }}
               onClick={() => {
-                let nuevaLista =pictogramas.filter((p: IPictogram) => p.id != pictograma.id)
+                let nuevaLista = pictogramas.filter((p: IPictogram) => p.id != pictograma.id)
                 console.log('removiendo pictograma, van a quedar: ', nuevaLista)
                 props.setPictogramas(nuevaLista)
               }}

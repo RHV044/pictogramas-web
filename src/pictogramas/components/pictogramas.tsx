@@ -25,18 +25,10 @@ export default function Pictogramas(props: any) {
   const [pictogramasSeleccionados, setPictogramasSeleccionados] = useState([] as IPictogram[]);
 
   const UpdatePictogramas = (pics: IPictogram[]) => {
+    setPictogramas(pics)
     setPictogramasSeleccionados(pics)
-    console.log('PICTOGRAMAS - Nuevos pictogramas seleccionados:', pics)
     console.log('PICTOGRAMAS:', pictogramasSeleccionados)
   }
-
-  useEffect(() => {
-    console.log('PICTOGRAMAS USE EFFECT')
-  }, [pictogramas])
-
-  useEffect(() => {
-    console.log('PICTOGRAMAS seleccionados USE EFFECT')
-  }, [pictogramasSeleccionados])
 
   return (
     <div>
@@ -81,15 +73,6 @@ export default function Pictogramas(props: any) {
       {/* Si paso setPictogramas tampoco me actualiza */}
       {/* <Categorias setPictogramas={setPictogramas} pictogramas={pictogramas}/> */}
       <Categorias setPictogramas={UpdatePictogramas} pictogramas={pictogramas}/>
-
-      {/* <Button
-        variant="contained"
-        onClick={() =>{
-          navigate('/categorias' + location.search);
-        }}
-      >
-        Ver Categorias
-      </Button> */}
     </div>
   );
 }
