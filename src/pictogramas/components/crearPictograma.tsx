@@ -7,15 +7,32 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { Checkbox } from '@mui/material';
+import Filtros from './filtros';
+import { ICategoria } from '../models/categoria';
+import { ObtenerCategorias } from '../services/pictogramas-services';
+import { useEffect, useState } from 'react';
 
 const FormDialog = () => {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
+  const [categoriasFiltradas, setCategoriasFiltradas] = useState(
+    [] as ICategoria[]
+  );
+  const [categorias, setCategorias] = useState([] as ICategoria[]);
+  const [file, setFile] = useState(null as any)
+
+  useEffect(() => {
+    ObtenerCategorias(setCategorias);
+  }, []);
 
   const handleClickOpen = () => {
     setOpen(true);
   };
 
   const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleCrear = () => {
     setOpen(false);
   };
 
@@ -28,17 +45,48 @@ const FormDialog = () => {
         <DialogTitle>Creacion de Pictograma</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Seleccione las propiedades y categorias con las que cumple el pictograma para ayudar en la busqueda y filtrado
+            Seleccione las propiedades y categorias con las que cumple el
+            pictograma para ayudar en la busqueda y filtrado
           </DialogContentText>
           Violento <Checkbox />
+          <br />
+          Sexual <Checkbox />
+          <br />
+          Esquematico <Checkbox />
+          <br />
+          Aac <Checkbox />
+          <br />
+          Aac Color <Checkbox />
+          <br />
+          Tiene piel <Checkbox />
+          <br />
+          Tiene pelo <Checkbox />
+          <br />
+          {categorias.length > 0 && (
+            <Filtros
+              filtros={categorias}
+              setFiltros={setCategoriasFiltradas}
+              filtro={'Categorias'}
+            />
+          )}
+          <br />
+          <Button variant="contained" component="label">
+            Adjuntar Archivo
+            <input type="file" hidden 
+            onChange={(evt) => {
+              setFile(evt.target.files ? evt.target.files[0].name : null)
+              console.log(file)
+            }}/>
+          </Button>
+          { file && {file} }
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Crear</Button>
+          <Button onClick={handleCrear}>Crear</Button>
           <Button onClick={handleClose}>Cancelar</Button>
         </DialogActions>
       </Dialog>
     </div>
   );
-}
+};
 
-export default FormDialog
+export default FormDialog;
