@@ -4,6 +4,7 @@ import {
   CardContent,
   CardHeader,
   CardMedia,
+  Grid,
 } from '@mui/material';
 import { Container } from '@mui/system';
 import { useEffect, useState } from 'react';
@@ -22,8 +23,11 @@ const Categorias = (props: any) => {
 
   return (
     <Container>
+      <Grid container>
       {categorias.map((categoria) => {
         return (
+          <Grid key={categoria.id + '-' + categoria.nombre}        
+            item xs={4} sm={6} md={4}> 
           <Container key={categoria.id + '-' + categoria.nombre}>
             <Card
               sx={{ maxWidth: 345 }}
@@ -54,8 +58,10 @@ const Categorias = (props: any) => {
             {categoria === categoriaSeleccionada && <PictogramasPorCategoria categoria={categoriaSeleccionada.id} setPictogramas={props.setPictogramas} pictogramas={props.pictogramas}>
             </PictogramasPorCategoria> }
           </Container>
+          </ Grid>
         );
       })}
+      </Grid>
     </Container>
   );
 };

@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import {
+  AppBar,
   Autocomplete,
   Button,
   CircularProgress,
@@ -12,6 +13,9 @@ import Pictogram from "./pictogram";
 import { useLocation, useNavigate } from "react-router-dom";
 import Categorias from "./categorias";
 import Seleccion from "./seleccion";
+import { UpdateService } from "../../services/update-service";
+import ResponsiveAppBar from "../../commons/appBar";
+import FormDialog from "./crearPictograma";
 const db = new IndexedDbService();
 
 export default function Pictogramas(props: any) {
@@ -32,6 +36,7 @@ export default function Pictogramas(props: any) {
 
   return (
     <div>
+      <ResponsiveAppBar/>
       <Seleccion pictogramas={pictogramasSeleccionados} setPictogramas={UpdatePictogramas}/> 
       <hr />
       <Button
@@ -42,6 +47,15 @@ export default function Pictogramas(props: any) {
       >
         Descargar todo Arasaac
       </Button>
+      <Button
+        variant="contained"
+        onClick={() =>{
+          let updateService = new UpdateService();
+        }}
+      >
+        Descargar Pictogramas Nuestros
+      </Button>
+      
       <CircularProgress variant="determinate" value={downloadPercentage} />
       <br></br>
       <TextField
@@ -69,7 +83,8 @@ export default function Pictogramas(props: any) {
         )}
       />
       <Pictogram pictoImageUrl={imageUrl} />
-      <hr />      
+      <hr />     
+      <FormDialog />
       {/* Si paso setPictogramas tampoco me actualiza */}
       {/* <Categorias setPictogramas={setPictogramas} pictogramas={pictogramas}/> */}
       <Categorias setPictogramas={UpdatePictogramas} pictogramas={pictogramas}/>

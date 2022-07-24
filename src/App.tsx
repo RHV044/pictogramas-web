@@ -7,10 +7,8 @@ import ModificarCuenta from './login/components/modificarCuenta';
 import CrearCuenta from './login/components/crearCuenta';
 import Categorias from './pictogramas/components/categorias';
 import Pictogramas2 from './pictogramas/components/pictogramas2';
-import { UpdateService } from './services/update-service';
 
 function App() {
-  let updateService = new UpdateService();
 
   return (
     <BrowserRouter>
