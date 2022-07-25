@@ -5,7 +5,7 @@ import { IPictogram } from "../models/pictogram";
 
 const apiPictogramas = process.env.URL_PICTOGRAMAS ?? "http://localhost:5000";
 
-const Seleccion = (props: { pictogramas: IPictogram[]; setPictogramas: (arg0: IPictogram[]) => void; }) => {
+export default function Seleccion(props: { pictogramas: IPictogram[]; setPictogramas: (arg0: IPictogram[]) => void; }){
 
   const [pictogramas, setPictogramas] = useState([] as IPictogram[]);
   var i = 0;
@@ -53,4 +53,3 @@ const Seleccion = (props: { pictogramas: IPictogram[]; setPictogramas: (arg0: IP
   )
 }
 
-export default Seleccion

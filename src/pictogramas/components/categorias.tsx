@@ -12,7 +12,7 @@ import { ICategoria } from '../models/categoria';
 import { ObtenerCategorias } from '../services/pictogramas-services';
 import PictogramasPorCategoria from './pictogramasPorCategoria';
 
-const Categorias = (props: any) => {
+export default function Categorias(props: any) {
 
   const [categorias, setCategorias] = useState([] as ICategoria[]);
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState({} as ICategoria|null)
@@ -55,8 +55,10 @@ const Categorias = (props: any) => {
                 <CardContent></CardContent>
               </CardActionArea>
             </Card>
-            {categoria === categoriaSeleccionada && <PictogramasPorCategoria categoria={categoriaSeleccionada.id} setPictogramas={props.setPictogramas} pictogramas={props.pictogramas}>
-            </PictogramasPorCategoria> }
+            { categoria === categoriaSeleccionada && 
+            <PictogramasPorCategoria categoria={categoriaSeleccionada.id} setPictogramas={props.setPictogramas} pictogramas={props.pictogramas}>
+            </PictogramasPorCategoria> 
+            }
           </Container>
           </ Grid>
         );
@@ -66,4 +68,4 @@ const Categorias = (props: any) => {
   );
 };
 
-export default Categorias;
+

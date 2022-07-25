@@ -12,11 +12,14 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const pages = ['Pizarras', 'Actividades', 'Estadisticas'];
 const settings = ['Configuracion', 'Cambiar Cuenta'];
 
 const ResponsiveAppBar = () => {
+  let navigate = useNavigate();
+  let location = useLocation();
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
 
@@ -34,6 +37,11 @@ const ResponsiveAppBar = () => {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
+
+  const handleChange = (setting: string) => {
+    setAnchorElUser(null);
+    navigate(`/${setting.toLocaleLowerCase().replace(/ /g,'')}` + location.search);
+  }
 
   return (
     <AppBar position="static">
@@ -148,7 +156,7 @@ const ResponsiveAppBar = () => {
               onClose={handleCloseUserMenu}
             >
               {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                <MenuItem key={setting} onClick={() => handleChange(setting)}>
                   <Typography textAlign="center">{setting}</Typography>
                 </MenuItem>
               ))}

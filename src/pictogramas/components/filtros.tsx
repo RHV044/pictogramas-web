@@ -1,7 +1,7 @@
 import { Autocomplete, Checkbox, FormControlLabel, Grid, TextField } from "@mui/material";
 import React, { useEffect, useState } from "react";
 
-const Filtros = (props: any) => {
+export default function Filtros(props: any) {
 
   const [filtrosSeleccionados, setfiltrosSeleccionados] = useState([] as any[])
   const [filtros, setFiltros] = useState(props.filtros as any[])
@@ -53,4 +53,4 @@ const Filtros = (props: any) => {
   );
 };
 
-export default Filtros;
+

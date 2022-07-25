@@ -12,7 +12,7 @@ import { ICategoria } from '../models/categoria';
 import { ObtenerCategorias } from '../services/pictogramas-services';
 import { useEffect, useState } from 'react';
 
-const FormDialog = () => {
+export default function FormDialog() {
   const [open, setOpen] = useState(false);
   const [categoriasFiltradas, setCategoriasFiltradas] = useState(
     [] as ICategoria[]
@@ -89,4 +89,4 @@ const FormDialog = () => {
   );
 };
 
-export default FormDialog;
+
