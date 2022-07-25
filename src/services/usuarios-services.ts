@@ -1,6 +1,7 @@
 import axios from "axios";
 import { stringify } from "querystring";
-import { IUsuario } from "../model/usuario";
+import { IUsuario } from "../login/model/usuario";
+import { ICategoria } from "../pictogramas/models/categoria";
 
 var CryptoJS = require("crypto-js");
 const apiPictogramas = process.env.URL_PICTOGRAMAS ?? "http://localhost:5000";
@@ -60,5 +61,27 @@ export async function ActualizarUsuario(
     )
     .then(() => {
       console.log('creamos un usuario')
+    })
+}
+
+export async function SubirPictograma(
+  usuario: any,
+  file: any,
+  categoriasFiltradas: ICategoria[],
+  filtros: any
+){
+  let formData = new FormData();
+  let categorias = categoriasFiltradas.map(c => c.id).toString()
+  formData.append("file", file);
+  formData.append("categoriasFiltradas", categorias);
+  formData.append("filtros", filtros);
+  let config = {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    }
+  }
+  return await axios.post(apiPictogramas + `/usuarios/${usuario}/pictogramas`, formData, config)
+    .then(response => {
+      return response.data
     })
 }

@@ -5,7 +5,7 @@ import {
   useNavigate,
   useLocation,
 } from "react-router-dom";
-import { CrearUsuario, ObtenerUsuario } from '../services/usuarios-services';
+import { CrearUsuario, ObtenerUsuario } from '../../services/usuarios-services';
 import { IndexedDbService } from '../../services/indexeddb-service';
 const db = new IndexedDbService();
 
