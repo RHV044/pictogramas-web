@@ -1,11 +1,11 @@
 import ResponsiveAppBar from "../commons/appBar";
 
-export default function Configuracion(){
+export default function Estadisticas(){
 
   return(
     <div>
       <ResponsiveAppBar />
-      Configuracion
+      Estadisticas
     </div>
   )
 }

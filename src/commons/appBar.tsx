@@ -38,9 +38,8 @@ const ResponsiveAppBar = () => {
     setAnchorElUser(null);
   };
 
-  const handleChange = (setting: string) => {
-    setAnchorElUser(null);
-    navigate(`/${setting.toLocaleLowerCase().replace(/ /g,'')}` + location.search);
+  const handleChange = (page: string) => {
+    navigate(`/${page.toLocaleLowerCase().replace(/ /g,'')}` + location.search);
   }
 
   return (
@@ -52,7 +51,7 @@ const ResponsiveAppBar = () => {
             variant="h6"
             noWrap
             component="a"
-            href="/"
+            href="/pictogramas"
             sx={{
               mr: 2,
               display: { xs: 'none', md: 'flex' },
@@ -96,7 +95,7 @@ const ResponsiveAppBar = () => {
               }}
             >
               {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
+                <MenuItem key={page} onClick={() => handleChange(page)}>
                   <Typography textAlign="center">{page}</Typography>
                 </MenuItem>
               ))}
@@ -125,7 +124,7 @@ const ResponsiveAppBar = () => {
             {pages.map((page) => (
               <Button
                 key={page}
-                onClick={handleCloseNavMenu}
+                onClick={() => handleChange(page)}
                 sx={{ my: 2, color: 'white', display: 'block' }}
               >
                 {page}

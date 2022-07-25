@@ -7,6 +7,9 @@ import ModificarCuenta from './login/components/modificarCuenta';
 import CrearCuenta from './login/components/crearCuenta';
 import Categorias from './pictogramas/components/categorias';
 import Configuracion from './configuracion/configuracion';
+import Pizarras from './pizarras/pizarras';
+import Estadisticas from './estadisticas/estadisticas';
+import Actividades from './actividades/actividades';
 
 function App() {
 
@@ -19,9 +22,13 @@ function App() {
         <Route path="/cuenta/crear" element={<CrearCuenta props={undefined} />} />
         <Route path="/pictogramas" element={<Pictogramas/>} />
         <Route path="/categorias" element={<Categorias/>} />
+        <Route path="/configuracion" element={<Configuracion/>} />
+        <Route path="/pizarras" element={<Pizarras/>} />
+        <Route path="/estadisticas" element={<Estadisticas/>} />
+        <Route path="/actividades" element={<Actividades/>} />
+
         <Route path="/" element={<Navigate to="/cuenta/seleccionar" />} />
         <Route path="/pictogramas-web" element={<Navigate to="/cuenta/seleccionar" />} />
-        <Route path="/configuracion" element={<Configuracion/>} />
         <Route path="/cambiarcuenta" element={<Navigate to="/cuenta/seleccionar" />} />
       </Routes>
     </BrowserRouter>
