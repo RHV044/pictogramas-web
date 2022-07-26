@@ -20,6 +20,8 @@ export default function FormDialog() {
   );
   const [categorias, setCategorias] = useState([] as ICategoria[]);
   const [file, setFile] = useState(null as any)
+  const [fileName, setFileName] = useState("" as string)
+  const [fileBase64, setFileBase64] = useState(null as any)
 
   const [violento, setViolento] = useState(false)
   const [sexual, setSexual] = useState(false)
@@ -50,9 +52,22 @@ export default function FormDialog() {
     filtros.aacColor = aacColor
     filtros.skin = skin
     filtros.hair = hair
-    SubirPictograma(usuarioLogueado?.id, file, categoriasFiltradas, filtros)
+    SubirPictograma(usuarioLogueado?.id, file, fileName, fileBase64, categoriasFiltradas, filtros)
     setOpen(false);
   };
+
+  function getBase64(file: any) {
+    var reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = function () {
+      console.log(reader.result);
+      if(reader.result)
+        setFileBase64(reader.result)
+    };
+    reader.onerror = function (error) {
+      console.log('Error: ', error);
+    };
+ }
 
   return (
     <div>
@@ -92,12 +107,17 @@ export default function FormDialog() {
           <Button variant="contained" component="label">
             Adjuntar Archivo
             <input type="file" hidden 
-            onChange={(evt) => {
-              setFile(evt.target.files)
+            onChange={(evt) => { 
+              if (evt.target.files){
+                setFile(evt.target.files)
+                setFileName(evt.target.files[0].name) 
+                getBase64(evt.target.files[0]) 
+              }          
               console.log(file)
             }}/>
           </Button>
-          { file && {file} }
+          <br />
+          {fileName !== "" && <div> Archivo: {fileName} </div>}
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCrear}>Crear</Button>

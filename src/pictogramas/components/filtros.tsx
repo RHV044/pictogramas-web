@@ -18,7 +18,7 @@ export default function Filtros(props: any) {
           disableCloseOnSelect
           defaultValue={filtrosSeleccionados}
           onChange={(event, value) => setfiltrosSeleccionados(value)}
-          renderOption={(props, option: any, { selected }) => (
+          renderOption={(propps, option: any, { selected }) => (
             <React.Fragment key={option.id}>
               <Checkbox
                 style={{ color: '#d71920' }}
@@ -28,11 +28,14 @@ export default function Filtros(props: any) {
                   {
                     let newFilters = [...filtrosSeleccionados]
                     newFilters.push(option)
+                    props.setFiltros(newFilters)
                     setfiltrosSeleccionados(newFilters)
                     console.log('Filtros seleccionados: ', filtrosSeleccionados)
                   }
                   else {
-                    setfiltrosSeleccionados(filtrosSeleccionados.filter(f => f.nombre !== option.nombre))
+                    let filtrado = filtrosSeleccionados.filter(f => f.nombre !== option.nombre)
+                    props.setFiltros(filtrado)
+                    setfiltrosSeleccionados(filtrado)
                   }
                 }}
               />

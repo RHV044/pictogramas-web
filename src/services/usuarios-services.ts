@@ -67,20 +67,49 @@ export async function ActualizarUsuario(
 export async function SubirPictograma(
   usuario: any,
   file: any,
+  fileName: string,
+  fileBase64: any,
   categoriasFiltradas: ICategoria[],
   filtros: any
 ){
-  let formData = new FormData();
-  let categorias = categoriasFiltradas.map(c => c.id).toString()
-  formData.append("file", file);
-  formData.append("categoriasFiltradas", categorias);
-  formData.append("filtros", filtros);
-  let config = {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    }
+  // let formData = new FormData();
+  // let categorias = categoriasFiltradas.map(c => c.id).toString()
+  // formData.append("file", file);
+  // formData.append("categoriasFiltradas", categorias);
+  // formData.append("filtros", filtros);
+  // let config = {
+  //   headers: {
+  //     "Content-Type": "multipart/form-data",
+  //   }
+  // }
+  const body = {
+    Schematic: filtros.esquematico,
+    Sex: filtros.sexual,
+    Violence: filtros.violento,
+    Aac: filtros.aac,
+    AacColor: filtros.aacColor,
+    Skin: filtros.skin,
+    Hair: filtros.hair,
+    CategoriasFiltradas: categoriasFiltradas, 
+    FileName: fileName,
+    File: fileBase64 
   }
-  return await axios.post(apiPictogramas + `/usuarios/${usuario}/pictogramas`, formData, config)
+  let jsonBody = JSON.stringify(body)
+  console.log('body json: ', jsonBody)
+  return await axios.post(apiPictogramas + `/usuarios/${usuario}/pictogramas`,
+    // body,
+    // {
+    //   headers: {
+    //       'content-type': 'application/json'
+    //   }
+    // }
+    jsonBody,
+    {
+        headers: {
+            'content-type': 'application/x-www-form-urlencoded'
+        }
+    }
+    )
     .then(response => {
       return response.data
     })
