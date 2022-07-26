@@ -7,7 +7,7 @@ import {
 } from "react-router-dom";
 import { IndexedDbService } from '../../services/indexeddb-service';
 import { IUsuario } from '../model/usuario';
-import { ActualizarUsuario, usuarioLogueado } from '../services/usuarios-services';
+import { ActualizarUsuario, usuarioLogueado } from '../../services/usuarios-services';
 const db = new IndexedDbService();
 
 const ModificarCuenta = (props: any) => {

@@ -11,6 +11,7 @@ import Filtros from './filtros';
 import { ICategoria } from '../models/categoria';
 import { ObtenerCategorias } from '../services/pictogramas-services';
 import { useEffect, useState } from 'react';
+import { SubirPictograma, usuarioLogueado } from '../../services/usuarios-services';
 
 export default function FormDialog() {
   const [open, setOpen] = useState(false);
@@ -19,6 +20,14 @@ export default function FormDialog() {
   );
   const [categorias, setCategorias] = useState([] as ICategoria[]);
   const [file, setFile] = useState(null as any)
+
+  const [violento, setViolento] = useState(false)
+  const [sexual, setSexual] = useState(false)
+  const [esquematico, setEsquematico] = useState(false)
+  const [aac, setAac] = useState(false)
+  const [aacColor, setAacColor] = useState(false)
+  const [skin, setSkin] = useState(false)
+  const [hair, setHair] = useState(false)
 
   useEffect(() => {
     ObtenerCategorias(setCategorias);
@@ -33,6 +42,15 @@ export default function FormDialog() {
   };
 
   const handleCrear = () => {
+    let filtros: { [key: string]: boolean } = {};
+    filtros.violento = violento
+    filtros.sexual = sexual
+    filtros.esquematico = esquematico
+    filtros.aac = aac
+    filtros.aacColor = aacColor
+    filtros.skin = skin
+    filtros.hair = hair
+    SubirPictograma(usuarioLogueado?.id, file, categoriasFiltradas, filtros)
     setOpen(false);
   };
 
@@ -48,20 +66,21 @@ export default function FormDialog() {
             Seleccione las propiedades y categorias con las que cumple el
             pictograma para ayudar en la busqueda y filtrado
           </DialogContentText>
-          Violento <Checkbox />
+          Violento <Checkbox checked={violento} onChange={(e) => setViolento(e.target.checked)} />
           <br />
-          Sexual <Checkbox />
+          Sexual <Checkbox checked={sexual} onChange={(e) => setSexual(e.target.checked)}/>
           <br />
-          Esquematico <Checkbox />
+          Esquematico <Checkbox checked={esquematico} onChange={(e) => setEsquematico(e.target.checked)}/>
           <br />
-          Aac <Checkbox />
+          Aac <Checkbox checked={aac} onChange={(e) => setAac(e.target.checked)}/>
           <br />
-          Aac Color <Checkbox />
+          Aac Color <Checkbox checked={aacColor} onChange={(e) => setAacColor(e.target.checked)}/>
           <br />
-          Tiene piel <Checkbox />
+          Tiene piel <Checkbox checked={skin} onChange={(e) => setSkin(e.target.checked)}/>
           <br />
-          Tiene pelo <Checkbox />
+          Tiene pelo <Checkbox checked={hair} onChange={(e) => setHair(e.target.checked)}/>
           <br />
+          {/* TODO: Habria que ver tambien de agregar los Tags */}
           {categorias.length > 0 && (
             <Filtros
               filtros={categorias}
@@ -74,7 +93,7 @@ export default function FormDialog() {
             Adjuntar Archivo
             <input type="file" hidden 
             onChange={(evt) => {
-              setFile(evt.target.files ? evt.target.files[0].name : null)
+              setFile(evt.target.files)
               console.log(file)
             }}/>
           </Button>

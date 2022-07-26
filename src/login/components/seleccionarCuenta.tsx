@@ -8,7 +8,7 @@ import {
   useLocation,
 } from "react-router-dom";
 import { IUsuario } from '../model/usuario';
-import { ObtenerUsuarios, setUsuarioLogueado } from '../services/usuarios-services';
+import { ObtenerUsuarios, setUsuarioLogueado } from '../../services/usuarios-services';
 import { IndexedDbService } from '../../services/indexeddb-service';
 //const db = new IndexedDbService();
 
