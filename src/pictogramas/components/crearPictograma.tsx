@@ -18,6 +18,8 @@ export default function FormDialog() {
   const [categoriasFiltradas, setCategoriasFiltradas] = useState(
     [] as ICategoria[]
   );
+
+  const [keyword, setKeyword] = useState("" as string) 
   const [categorias, setCategorias] = useState([] as ICategoria[]);
   const [file, setFile] = useState(null as any)
   const [fileName, setFileName] = useState("" as string)
@@ -52,7 +54,7 @@ export default function FormDialog() {
     filtros.aacColor = aacColor
     filtros.skin = skin
     filtros.hair = hair
-    SubirPictograma(usuarioLogueado?.id, file, fileName, fileBase64, categoriasFiltradas, filtros)
+    SubirPictograma(usuarioLogueado?.id, keyword, file, fileName, fileBase64, categoriasFiltradas, filtros)
     setOpen(false);
   };
 
@@ -81,6 +83,10 @@ export default function FormDialog() {
             Seleccione las propiedades y categorias con las que cumple el
             pictograma para ayudar en la busqueda y filtrado
           </DialogContentText>
+          <br />
+          <TextField id="outlined-basic" label="Palabra" variant="outlined" 
+            value={keyword} onChange={(evt) => setKeyword(evt.target.value)} />
+          <br />
           Violento <Checkbox checked={violento} onChange={(e) => setViolento(e.target.checked)} />
           <br />
           Sexual <Checkbox checked={sexual} onChange={(e) => setSexual(e.target.checked)}/>
