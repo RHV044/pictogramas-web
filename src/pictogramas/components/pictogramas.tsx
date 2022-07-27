@@ -105,7 +105,7 @@ export default function Pictogramas(props: any) {
           />
           <PictogramasPorCategoria
             categoria={categoriaSeleccionada.id}
-            setPictogramas={setPictogramas}
+            setPictogramas={UpdatePictogramas}
             pictogramas={pictogramas}
           ></PictogramasPorCategoria>
         </div>
