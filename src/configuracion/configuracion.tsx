@@ -23,17 +23,16 @@ export default function Configuracion() {
     <div>
       <ResponsiveAppBar />
       <Container>
-
-        <Grid container>
-          <Grid item md={12}>
-            <FormControl component="fieldset">
-              <FormLabel>
+            <FormControl component="fieldset" style={{width: '50%'}}>
+              <FormLabel style={{padding: 10}}>
                 <h1> <SettingsIcon color="action" /> Configuracion</h1>
               </FormLabel>
-              <Paper>
+              <Paper style={{width: '100%'}}>
+                <Container style={{padding: 10}}>
                 Nombre <input type="text" defaultValue={usuarioLogueado?.nombreUsuario} /> <br/>
                 <Autocomplete id="select-nivel" 
                 options={niveles} 
+                style={{padding: 10}}
                 renderInput={(params) => (
                   <TextField
                     {...params}
@@ -41,8 +40,10 @@ export default function Configuracion() {
                   />
                 )}
                 />
-                <FormGroup aria-label="center">
+                </Container>
+                <FormGroup aria-label="center" style={{paddingRight: 10}}>
                   <FormControlLabel
+                    style={{alignItems: 'left'}}
                     control={
                       <Switch />
                     }
@@ -87,8 +88,7 @@ export default function Configuracion() {
                 </FormGroup>
               </Paper>
             </FormControl>
-          </Grid>
-          <Grid item md={12}>
+
             <Stack spacing={2} direction="row">
               <Button
                 variant="contained"
@@ -102,8 +102,7 @@ export default function Configuracion() {
                 }}
               >Cancelar</Button>
             </Stack>
-          </Grid>
-        </Grid>
+
       </Container>
     </div>
   )
