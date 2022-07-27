@@ -22,14 +22,14 @@ export default function PictogramasPorCategoria(props: any) {
 
   return (
     <Container>
-      <Grid container>
+      <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 10, md: 12 }}>
         {pictogramas.map((pictograma) => {
           return (
             //Como estan dentro de la categoria, se visualizan abajo, habria que extraerlo a otro lugar
-            <Grid key={pictograma.id} item xs={12} sm={12} md={12}>
+            <Grid key={pictograma.id} item xs={12} sm={4} md={2}>
               <Container key={pictograma.id}>
                 <Card
-                  sx={{ maxWidth: 345 }}
+                  sx={{ maxWidth: 245, minWidth:150 }}
                   style={{ marginTop: '10px' }}
                   onClick={() => {}}
                 >
