@@ -15,10 +15,7 @@ import Speech from 'react-speech';
 
 const apiPictogramas = process.env.URL_PICTOGRAMAS ?? 'http://localhost:5000';
 
-export default function Seleccion(props: {
-  pictogramas: IPictogram[];
-  setPictogramas: (arg0: IPictogram[]) => void;
-}) {
+export default function Seleccion(props: any) {
   const [pictogramas, setPictogramas] = useState([] as IPictogram[]);
   var i = 0;
 
@@ -26,11 +23,6 @@ export default function Seleccion(props: {
     console.log('pictogramas Actualizados: ', props.pictogramas);
     setPictogramas(props.pictogramas);
   }, [props.pictogramas]);
-
-  // useEffect(() => {
-  //   console.log('pictogramas Actualizados: ', props.pictogramas)
-  //   setPictogramas(props.pictogramas)
-  // },[])
 
   return (
     <Container style={{padding: 10}}>

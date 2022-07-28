@@ -30,7 +30,7 @@ export default function Pictogramas(props: any) {
   const [pictogramas, setPictogramas] = useState([] as IPictogram[]);
   // Usando otra lista al menos renderiza uno
   const [pictogramasSeleccionados, setPictogramasSeleccionados] = useState(
-    [] as IPictogram[]
+    [] as IPictogram[] | null
   );
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState(
     null as ICategoria | null
@@ -38,15 +38,21 @@ export default function Pictogramas(props: any) {
 
   const UpdatePictogramas = (pics: IPictogram[]) => {
     setPictogramas(pics);
+    // Esto se hace pero en la 2da vez el componente seleccion no se renderiza nuevamente
+    setPictogramasSeleccionados(null);
     setPictogramasSeleccionados(pics);
     console.log('PICTOGRAMAS:', pictogramasSeleccionados);
   };
+
+  useEffect(() => {
+
+  }, [pictogramasSeleccionados])
 
   return (
     <div>
       <ResponsiveAppBar />
       <br />
-      <Seleccion        
+      <Seleccion                
         pictogramas={pictogramasSeleccionados}
         setPictogramas={UpdatePictogramas}
       />
