@@ -98,11 +98,4 @@ export async function ObtenerInformacionPictogramas(){
     })
 }
 
-export async function SubirArchivo(
-  file: any,
-  usuario: number
-){
-
-}
-
 

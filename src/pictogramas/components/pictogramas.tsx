@@ -45,7 +45,8 @@ export default function Pictogramas(props: any) {
   return (
     <div>
       <ResponsiveAppBar />
-      <Seleccion
+      <br />
+      <Seleccion        
         pictogramas={pictogramasSeleccionados}
         setPictogramas={UpdatePictogramas}
       />
@@ -113,6 +114,7 @@ export default function Pictogramas(props: any) {
 
       {/* Si paso setPictogramas tampoco me actualiza */}
       {/* <Categorias setPictogramas={setPictogramas} pictogramas={pictogramas}/> */}
+      <br />
       <Categorias
         setPictogramas={UpdatePictogramas}
         pictogramas={pictogramas}

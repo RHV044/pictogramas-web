@@ -1,4 +1,5 @@
 import {
+  Button,
   Card,
   CardActionArea,
   CardContent,
@@ -9,6 +10,8 @@ import {
 import { Container } from '@mui/system';
 import { useEffect, useState } from 'react';
 import { IPictogram } from '../models/pictogram';
+import React from 'react';
+import Speech from 'react-speech';
 
 const apiPictogramas = process.env.URL_PICTOGRAMAS ?? 'http://localhost:5000';
 
@@ -30,7 +33,7 @@ export default function Seleccion(props: {
   // },[])
 
   return (
-    <Container>
+    <Container style={{padding: 10}}>
       <Grid
         container
         spacing={{ xs: 2, md: 3 }}
@@ -58,12 +61,13 @@ export default function Seleccion(props: {
                     <CardMedia
                       component="img"
                       height="140"
-                      image={
-                        apiPictogramas +
-                        '/pictogramas/' +
-                        pictograma.id +
-                        '/obtener'
-                      }
+                      // image={
+                      //   apiPictogramas +
+                      //   '/pictogramas/' +
+                      //   pictograma.id +
+                      //   '/obtener'
+                      // }
+                      src={`data:image/png;base64, ${pictograma.imagen}`}
                       alt={pictograma.keywords[0].keyword}
                     ></CardMedia>
                     <CardHeader
@@ -77,6 +81,52 @@ export default function Seleccion(props: {
           );
         })}
       </Grid>
+      {pictogramas.length > 0 && 
+        <div>
+            <Speech 
+              // styles={"cursor: pointer; pointer-events: all; outline: none; background-color: gainsboro; border: 1px solid rgb(255, 255, 255); border-radius: 6px;"}
+              // styles={{style}}
+              textAsButton={true}
+              displayText="Interpretacion Literal"
+              text={(pictogramas.map(p => p.keywords[0].keyword)).toString()}
+            />
+        </div>
+        }
     </Container>
   );
 }
+
+const style = {
+  container: { },
+  text: { },
+  buttons: { },
+  play: {
+    hover: {
+      backgroundColor: 'GhostWhite'
+    },
+    button: {
+      cursor: 'pointer',
+      //pointerEvents: 'play',
+      outline: 'none',
+      backgroundColor: 'Gainsboro',
+      border: 'solid 1px rgba(255,255,255,1)',
+      borderRadius: 6
+    }
+  },
+  pause: {
+    play: { },
+    hover: { }
+  },
+  stop: {
+    play: {
+      hover: { },
+      button: { }
+    },
+  },
+  resume: {
+    play: {
+      hover: { },
+      button: { }
+    }
+  }
+};
