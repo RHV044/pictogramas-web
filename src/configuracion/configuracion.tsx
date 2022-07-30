@@ -3,12 +3,12 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import Switch from "@mui/material/Switch";
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
-import { Autocomplete, Button, FormControl, FormHelperText, FormLabel, Grid, InputLabel, MenuItem, Paper, Select, Slider, Stack, TextField } from "@mui/material";
+import { Autocomplete, Button, Checkbox, FormControl, FormHelperText, FormLabel, Grid, InputLabel, MenuItem, Paper, Select, Slider, Stack, TextField } from "@mui/material";
 import { Container } from "@mui/system";
 import { IUsuario } from '../login/model/usuario';
 import { IndexedDbService } from '../services/indexeddb-service';
 import { useState } from "react";
-import { usuarioLogueado } from "../services/usuarios-services";
+import { ActualizarUsuario, usuarioLogueado } from "../services/usuarios-services";
 import { useNavigate } from "react-router-dom";
 
 export default function Configuracion() {
@@ -25,7 +25,7 @@ export default function Configuracion() {
       <Container>
         <FormControl component="fieldset" style={{ width: '50%' }}>
           <FormLabel style={{ padding: 10 }}>
-            <h1> <SettingsIcon color="action" /> Configuracion</h1>
+            <h1> <SettingsIcon color="action" /> Configuración</h1>
           </FormLabel>
           <Paper style={{ width: '100%' }}>
             <Container style={{ padding: 10 }}>
@@ -35,13 +35,13 @@ export default function Configuracion() {
                 <Select
                   labelId="nivel-label"
                   id="nivel-select-helper"
-                  // value={age}
+                  // value={nivel}
                   label="Nivel"
                 // onChange={handleChange}
                 >                  
-                  <MenuItem value={10}>Básico</MenuItem>
-                  <MenuItem value={20}>Intermedio</MenuItem>
-                  <MenuItem value={30}>Avanzado</MenuItem>
+                  <MenuItem>Inicial</MenuItem>
+                  <MenuItem>Intermedio</MenuItem>
+                  <MenuItem>Avanzado</MenuItem>
                 </Select>                
               </FormControl>
 
@@ -49,43 +49,43 @@ export default function Configuracion() {
             <FormGroup aria-label="center" style={{ paddingRight: 10 }}>
               <FormControlLabel
                 style={{ alignItems: 'left' }}
-                control={
-                  <Switch />
+                control={                  
+                  <Checkbox />
                 }
                 label="Permitir Contenido violento"
                 labelPlacement="start"
               />
               <FormControlLabel
                 control={
-                  <Switch />
+                  <Checkbox />
                 }
                 label="Permitir Contenido sexual"
                 labelPlacement="start"
               />
               <FormControlLabel
                 control={
-                  <Switch />
+                  <Checkbox />
                 }
                 label="Tiene piel"
                 labelPlacement="start"
               />
               <FormControlLabel
                 control={
-                  <Switch />
+                  <Checkbox />
                 }
                 label="Tiene pelo"
                 labelPlacement="start"
               />
               <FormControlLabel
                 control={
-                  <Switch />
+                  <Checkbox />
                 }
                 label="Aac"
                 labelPlacement="start"
               />
               <FormControlLabel
                 control={
-                  <Switch />
+                  <Checkbox />
                 }
                 label="AacColor"
                 labelPlacement="start"
@@ -98,6 +98,11 @@ export default function Configuracion() {
           <Button
             variant="contained"
             style={{ alignItems: 'center', margin: '10px' }}
+            onClick = {async () => {
+              // await ActualizarUsuario(usuarioLogueado)
+              (await db).putOrPatchValue("usuarios", usuarioLogueado)              
+              window.location.reload()
+            }}
           >Guardar</Button>
           <Button
             variant="outlined"
