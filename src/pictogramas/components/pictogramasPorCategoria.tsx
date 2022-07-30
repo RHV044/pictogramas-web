@@ -15,7 +15,6 @@ const apiPictogramas = process.env.URL_PICTOGRAMAS ?? 'http://localhost:5000';
 
 export default function PictogramasPorCategoria(props: any) {
   const [pictogramas, setPictogramas] = useState([] as IPictogram[]);
-  const [algo, setAlgo] = useState([] as IPictogram[] | null)
 
   useEffect(() => {
     ObtenerPictogramasPorCategoria(setPictogramas, props.categoria);
@@ -39,7 +38,6 @@ export default function PictogramasPorCategoria(props: any) {
                       let pictogramasSeleccionados = props.pictogramas;
                       pictogramasSeleccionados.push(pictograma);
                       props.setPictogramas(pictogramasSeleccionados);
-                      setAlgo(pictogramasSeleccionados)
                       console.log(
                         'se agrego un pictograma: ',
                         props.pictogramas
