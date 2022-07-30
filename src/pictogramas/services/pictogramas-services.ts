@@ -1,6 +1,7 @@
 import axios from "axios";
 import { stringify } from "querystring";
 import { IndexedDbService } from "../../services/indexeddb-service";
+import { usuarioLogueado } from "../../services/usuarios-services";
 import { ICategoria } from "../models/categoria";
 import { IPictogram } from "../models/pictogram";
 
@@ -85,14 +86,24 @@ export async function ObtenerTotalCategorias(){
 }
 
 export async function ObtenerTotalPictogramas(){
-  return await axios.get(apiPictogramas + '/pictogramas/total')
+  let url: string;
+  if(usuarioLogueado != null && usuarioLogueado.id != null)
+    url = '/pictogramas/total?UsuarioId=' + usuarioLogueado.id 
+  else 
+    url = '/pictogramas/total'
+  return await axios.get(apiPictogramas + url)
     .then(response => {
       return response.data
     })
 }
 
 export async function ObtenerInformacionPictogramas(){
-  return await axios.get(apiPictogramas + '/pictogramas/informacion')
+  let url: string;
+  if(usuarioLogueado != null && usuarioLogueado.id != null)
+    url = '/pictogramas/informacion?UsuarioId=' + usuarioLogueado.id 
+  else 
+    url = '/pictogramas/informacion'
+  return await axios.get(apiPictogramas + url)
     .then(response => {
       return response.data
     })
