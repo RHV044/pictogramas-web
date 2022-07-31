@@ -8,7 +8,7 @@ import {
   useLocation,
 } from "react-router-dom";
 import { IUsuario } from '../model/usuario';
-import { ObtenerUsuarios, setUsuarioLogueado } from '../../services/usuarios-services';
+import { cerrarSesionUsuario, getUsuarioLogueado, ObtenerUsuarios, setUsuarioLogueado, usuarioLogueado } from '../../services/usuarios-services';
 import { IndexedDbService } from '../../services/indexeddb-service';
 //const db = new IndexedDbService();
 
@@ -19,6 +19,15 @@ const SeleccionarCuenta = (props: any) => {
   const [usuarios, setUsuarios] = useState([] as IUsuario[]);
   const [db, setDb] = useState (IndexedDbService.create())
   const [db1, setDb1] = useState(new IndexedDbService())
+
+  cerrarSesionUsuario();
+  
+  getUsuarioLogueado().then(usuario => {
+    if(usuario){
+      setUsuarioLogueado(usuario);
+      navigate('/pictogramas' + location.search);
+    }
+  })  
 
   useEffect(() => {
     console.log('vamos a obtener los usuarios')

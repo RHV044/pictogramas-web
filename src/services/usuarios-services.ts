@@ -2,18 +2,34 @@ import axios from "axios";
 import { stringify } from "querystring";
 import { IUsuario } from "../login/model/usuario";
 import { ICategoria } from "../pictogramas/models/categoria";
+import { IndexedDbService } from "./indexeddb-service";
 
 var CryptoJS = require("crypto-js");
 const apiPictogramas = process.env.URL_PICTOGRAMAS ?? "http://localhost:5000";
 const encryptKey = process.env.ENCRYPT_KEY ?? "8080808080808080";
-
+var indexDb = new IndexedDbService();
 export let usuarioLogueado: IUsuario|null = null 
 
 export function setUsuarioLogueado(
   usuario:IUsuario
   ) {
-    usuarioLogueado = usuario
+    usuario.logueado = true;
+    usuarioLogueado = usuario;
+    indexDb.putOrPatchValue("usuarios",usuario);
   }
+
+  export function cerrarSesionUsuario(    
+    ) {
+      if(usuarioLogueado){
+        usuarioLogueado.logueado = false;
+        indexDb.putOrPatchValue("usuarios", usuarioLogueado);
+      }                  
+    }
+  
+    export async function getUsuarioLogueado(){
+        let usuarios: IUsuario[] = await indexDb.getAllValues("usuarios");
+        return usuarios.find(u => u.logueado)
+    }
 
 export async function ObtenerUsuarios(
   setUsuarios: any
