@@ -41,9 +41,9 @@ export async function ObtenerPictogramasPorCategoria(
   // Alternativa - Buscar por indice con la categoria
   // TODO: categorias es un array de objetos id, nombre
   // Como hago para buscar con este indice?
-  let categ = await db.getValue('categorias', categoria)
-  let picts = await db.getPictogramasPorIndice(categ)
-  console.log('Pictogramas filtrados 1: ', picts)
+  //let categ = await db.getValue('categorias', categoria)
+  // let picts = await db.getPictogramasPorIndice(categ)
+  // console.log('Pictogramas filtrados 1: ', picts)
   // Actual 
   let pictogramas = await db.getAllValues('pictograms');
   console.log('Pictogramas filtrados 2: ', pictogramas)
