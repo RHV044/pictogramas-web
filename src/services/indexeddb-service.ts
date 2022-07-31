@@ -1,6 +1,9 @@
 import { IDBPDatabase, openDB } from "idb";
 import { apply } from "json-merge-patch";
+import { IUsuario } from "../login/model/usuario";
+import { ICategoria } from "../pictogramas/models/categoria";
 import { IPictogram } from "../pictogramas/models/pictogram";
+import { getUsuarioLogueado, usuarioLogueado } from "./usuarios-services";
 
 export class IndexedDbService {
   private database: string;
@@ -73,7 +76,7 @@ export class IndexedDbService {
             objectStore = transaction.objectStore("pictograms");
           }
 
-          objectStore.createIndex("tags-index", "tags", {
+          objectStore.createIndex("categorias-index", "categorias", {
             unique: false,
             multiEntry: true,
           });
@@ -107,6 +110,25 @@ export class IndexedDbService {
     const store = tx.objectStore(tableName);
     const result = await store.getAll();
     console.log("Get All Data", JSON.stringify(result));
+    return result;
+  }
+
+  public async getPictogramasPorIndice(valor: ICategoria){
+    const tx = this.db.transaction('pictogramas', "readonly");
+    const index = tx.store.index('categorias-index');
+
+    var query = index.openCursor(IDBKeyRange.only(valor));
+    var results = [] as IPictogram[];
+    query.onsuccess = function(event) {
+      var cursor = this.result;
+      if(!cursor) return;
+      results.push(cursor.value);
+      cursor.continue();
+    };
+
+    return results
+
+    const result = await index.getAll(valor);
     return result;
   }
 
@@ -153,5 +175,22 @@ export class IndexedDbService {
     const total = result.length;
     console.log("Count all values: ", total);
     return total;
+  }
+
+  public async countPictogramasPorUsuario(tableName: string, userid: number | null){
+    const tx = this.db.transaction(tableName, "readonly");
+    const store = tx.objectStore(tableName);
+    const result = await store.getAll();
+    let total : number
+    let pictogramasFiltrados = result
+    console.log('Pictogramas totales a ser filtrados: ', pictogramasFiltrados)
+    if(userid !== null)
+      pictogramasFiltrados = result.filter((p: IPictogram) => (p.idUsuario === null || p.idUsuario === userid || p.idArasaac !== null))
+    else
+      pictogramasFiltrados = result.filter((p: IPictogram) => (p.idUsuario === null || p.idArasaac !== null))
+
+    console.log('Pictogramas totales ya filtrados: ', pictogramasFiltrados)
+    total = pictogramasFiltrados.length;
+    return total
   }
 }

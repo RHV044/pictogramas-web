@@ -11,6 +11,7 @@ import {
 import { IndexedDbService } from './indexeddb-service';
 import axios from "axios";
 import { IPictogramaImagen } from '../pictogramas/models/pictogramaImagen';
+import { getUsuarioLogueado } from './usuarios-services';
 
 const apiPictogramas = process.env.URL_PICTOGRAMAS ?? "http://localhost:5000";
 
@@ -42,7 +43,13 @@ export class UpdateService {
       );
     }
 
-    let totalPictogramasLocales = await db.countValues('pictograms');
+    let usuario = await getUsuarioLogueado();
+    let totalPictogramasLocales = 1;
+    if(usuario != null && usuario !== undefined && usuario.id != null)
+      totalPictogramasLocales = await db.countPictogramasPorUsuario('pictograms', usuario.id);
+    else
+      totalPictogramasLocales = await db.countPictogramasPorUsuario('pictograms', null);
+    console.log('Pictogramas locales totales: ', totalPictogramasLocales)
     let totalPictogramas = await ObtenerTotalPictogramas();
     console.log(
       `Total pictogramas: ${totalPictogramas} vs total pictogramas locales: ${totalPictogramasLocales}`
@@ -52,7 +59,15 @@ export class UpdateService {
       let informacion = await ObtenerInformacionPictogramas();
       db.putBulkValue('pictograms', informacion);
       
-      db.getAllValues('pictograms').then(async (pictogramas) => {
+      db.getAllValues('pictograms').then(async (pictogramas : IPictogram[]) => {     
+
+        console.log('se procede a obtener las imagenes de todos los pictogramas');
+        console.log('se procede a obtener las imagenes de todos los pictogramas');
+        console.log('se procede a obtener las imagenes de todos los pictogramas');
+        if(usuario != null && usuario !== undefined && usuario.id != null)
+          pictogramas = pictogramas.filter(p => (p.idUsuario === null || p.idUsuario === usuario?.id || p.idArasaac !== null))
+        else
+          pictogramas = pictogramas.filter(p => (p.idUsuario === null || p.idArasaac !== null))
         const maxParallelRequests = 500;
         let count = 0;
         let start = 0;
@@ -69,6 +84,7 @@ export class UpdateService {
           count += end - start;
           start = end;
   
+          console.log('Se lanza la primera promesa');
           let groupRequestPromises: Promise<any>[] = aGroupOfInfoPictograms.map(
             // eslint-disable-next-line no-loop-func
             async (pictoInfo: IPictogram) => {

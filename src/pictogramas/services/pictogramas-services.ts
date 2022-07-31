@@ -1,7 +1,7 @@
 import axios from "axios";
 import { stringify } from "querystring";
 import { IndexedDbService } from "../../services/indexeddb-service";
-import { usuarioLogueado } from "../../services/usuarios-services";
+import { getUsuarioLogueado, usuarioLogueado } from "../../services/usuarios-services";
 import { ICategoria } from "../models/categoria";
 import { IPictogram } from "../models/pictogram";
 
@@ -37,9 +37,24 @@ export async function ObtenerPictogramasPorCategoria(
   categoria: number
 ) {
   let db = await IndexedDbService.create();
+
+  // Alternativa - Buscar por indice con la categoria
+  // TODO: categorias es un array de objetos id, nombre
+  // Como hago para buscar con este indice?
+  let categ = await db.getValue('categorias', categoria)
+  let picts = await db.getPictogramasPorIndice(categ)
+  console.log('Pictogramas filtrados 1: ', picts)
+  // Actual 
   let pictogramas = await db.getAllValues('pictograms');
+  console.log('Pictogramas filtrados 2: ', pictogramas)
+
+  let usuario = await getUsuarioLogueado();
+  if(usuario != null && usuario !== undefined && usuario.id != null)
+    pictogramas = pictogramas.filter(p => (p.IdUsuario === null || p.IdUsuario === usuario?.id || p.idArasaac !== null))
+  else
+    pictogramas = pictogramas.filter(p => (p.IdUsuario === null || p.idArasaac !== null))
   if (pictogramas){
-    let pictogramasFiltrados = pictogramas.filter((p: IPictogram) => p.categorias && p.categorias.some((c: ICategoria) => c.id == categoria))
+    let pictogramasFiltrados = pictogramas.filter((p: IPictogram) => p.categorias && p.categorias.some((c: ICategoria) => c.id === categoria))
     // pictogramasFiltrados.forEach(async (p: IPictogram) => {
     //   let imagen = (await db.getValue('imagenes', p.id)).imagen
     //   p.imagen = imagen
@@ -85,28 +100,28 @@ export async function ObtenerTotalCategorias(){
     })
 }
 
-export async function ObtenerTotalPictogramas(){
+export async function ObtenerTotalPictogramas() {
   let url: string;
-  if(usuarioLogueado != null && usuarioLogueado.id != null)
-    url = '/pictogramas/total?UsuarioId=' + usuarioLogueado.id 
+  let usuario = await getUsuarioLogueado();
+  if (usuario != null && usuario.id != null)
+    url = '/pictogramas/total?UsuarioId=' + usuario.id;
   else 
-    url = '/pictogramas/total'
-  return await axios.get(apiPictogramas + url)
-    .then(response => {
-      return response.data
-    })
+    url = '/pictogramas/total';
+  return await axios.get(apiPictogramas + url).then((response) => {
+    return response.data;
+  });
 }
 
-export async function ObtenerInformacionPictogramas(){
+export async function ObtenerInformacionPictogramas() {
   let url: string;
-  if(usuarioLogueado != null && usuarioLogueado.id != null)
-    url = '/pictogramas/informacion?UsuarioId=' + usuarioLogueado.id 
+  let usuario = await getUsuarioLogueado();
+  if (usuario != null && usuario.id != null)
+    url = '/pictogramas/informacion?UsuarioId=' + usuario.id;
   else 
-    url = '/pictogramas/informacion'
-  return await axios.get(apiPictogramas + url)
-    .then(response => {
-      return response.data
-    })
+    url = '/pictogramas/informacion';
+  return await axios.get(apiPictogramas + url).then((response) => {
+    return response.data;
+  });
 }
 
 
