@@ -32,6 +32,14 @@ export async function ObtenerYGuardarCategorias(
   })  
 }
 
+export async function ObtenerPictogramas(
+
+) {
+  let db = await IndexedDbService.create();
+  let pictogramas = await db.getAllValues('pictograms');
+  return pictogramas
+}
+
 export async function ObtenerPictogramasPorCategoria(
   setPictogramas: any,
   categoria: number
@@ -42,11 +50,11 @@ export async function ObtenerPictogramasPorCategoria(
   // TODO: categorias es un array de objetos id, nombre
   // Como hago para buscar con este indice?
   //let categ = await db.getValue('categorias', categoria)
-  // let picts = await db.getPictogramasPorIndice(categ)
-  // console.log('Pictogramas filtrados 1: ', picts)
+  //let pictogramas = await db.getPictogramasPorIndice(categ)
+  //console.log('Pictogramas filtrados 1: ', pictogramas)
   // Actual 
   let pictogramas = await db.getAllValues('pictograms');
-  console.log('Pictogramas filtrados 2: ', pictogramas)
+  //console.log('Pictogramas filtrados 2: ', pictogramas)
 
   let usuario = await getUsuarioLogueado();
   if(usuario != null && usuario !== undefined && usuario.id != null)

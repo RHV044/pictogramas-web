@@ -3,7 +3,14 @@ import {
   AppBar,
   Autocomplete,
   Button,
+  Card,
+  CardActionArea,
+  CardContent,
+  CardHeader,
+  CardMedia,
   CircularProgress,
+  Container,
+  Grid,
   TextField,
 } from '@mui/material';
 import { LoadPictogramsFromArasaac } from '../services/arasaac-service';
@@ -19,6 +26,7 @@ import FormDialog from './crearPictograma';
 import { ICategoria } from '../models/categoria';
 import CategoriaSeleccionada from './categoriaSeleccionada';
 import PictogramasPorCategoria from './pictogramasPorCategoria';
+import { ObtenerPictogramas } from '../services/pictogramas-services';
 const db = new IndexedDbService();
 
 export default function Pictogramas(props: any) {
@@ -35,6 +43,9 @@ export default function Pictogramas(props: any) {
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState(
     null as ICategoria | null
   );
+  const [pictogramasFiltrados, setPictogramasFiltrados] = useState(
+    [] as IPictogram[]
+  );
 
   const UpdatePictogramas = (pics: IPictogram[]) => {
     setPictogramas(pics);
@@ -45,14 +56,25 @@ export default function Pictogramas(props: any) {
   };
 
   useEffect(() => {
+    ObtenerPictogramas().then((pictogramas) => {
+      setPictogramas(pictogramas);
+    });
+  }, []);
 
-  }, [pictogramasSeleccionados])
+  const filtrarPictogramas = (value: string) => {
+    console.log('voy a filtrar pictogramas - total: ', pictogramas.length);
+    let pictsFiltrados = pictogramas
+      .filter((p) => p.keywords.some((k) => k.keyword.includes(value)) === true)
+      .slice(0, 10);
+    setPictogramasFiltrados(pictsFiltrados);
+    console.log('pictogramas filtrados: ', pictogramasFiltrados);
+  };
 
   return (
     <div>
       <ResponsiveAppBar />
       <br />
-      <Seleccion                
+      <Seleccion
         pictogramas={pictogramasSeleccionados}
         setPictogramas={UpdatePictogramas}
       />
@@ -76,6 +98,7 @@ export default function Pictogramas(props: any) {
 
       <CircularProgress variant="determinate" value={downloadPercentage} />
       <br></br>
+      {/*  Dejo comentado la busqueda de pictogramas original de Arasaac
       <TextField
         id="input-tag-filter"
         label="Filtrar pictogramas por etiqueta o palabras clave"
@@ -101,7 +124,64 @@ export default function Pictogramas(props: any) {
           />
         )}
       />
-      <Pictogram pictoImageUrl={imageUrl} />
+      <Pictogram pictoImageUrl={imageUrl} /> 
+      */}
+      <br></br>
+      <TextField
+        id="input-tag-filter"
+        label="Filtrar pictogramas por palabra clave o categoria"
+        variant="standard"
+        onChange={(event) => {
+          if (event?.target?.value) filtrarPictogramas(event.target.value);
+        }}
+      />
+      <Container>
+        <Grid
+          container
+          spacing={{ xs: 2, md: 3 }}
+          columns={{ xs: 4, sm: 10, md: 12 }}
+        >
+          {pictogramasFiltrados.map((pictograma) => {
+            return (
+              //Como estan dentro de la categoria, se visualizan abajo, habria que extraerlo a otro lugar
+              <Grid key={pictograma.id} item xs={12} sm={4} md={2}>
+                <Container key={pictograma.id}>
+                  <Card
+                    sx={{ maxWidth: 245, minWidth: 150 }}
+                    style={{ marginTop: '10px' }}
+                    onClick={() => {}}
+                  >
+                    <CardActionArea
+                      onClick={() => {
+                        let pictogramasSel = pictogramasSeleccionados;
+                        if (pictogramasSel !== null) {
+                          pictogramasSel.push(pictograma);
+                          setPictogramasSeleccionados(pictogramasSel);
+                        }
+                      }}
+                    >
+                      <CardMedia
+                        component="img"
+                        height="140"
+                        //image={apiPictogramas+'/pictogramas/'+pictograma.id+'/obtener'}
+                        //image={pictograma.imagen}
+                        //TODO: Optimizar o ver alternativa para levantar los base64
+                        src={`data:image/png;base64, ${pictograma.imagen}`}
+                        alt={pictograma.keywords[0].keyword}
+                      ></CardMedia>
+                      <CardHeader
+                        title={pictograma.keywords[0].keyword}
+                      ></CardHeader>
+                      <CardContent></CardContent>
+                    </CardActionArea>
+                  </Card>
+                </Container>
+              </Grid>
+            );
+          })}
+        </Grid>
+      </Container>
+      <br></br>
       <hr />
       <FormDialog />
       {categoriaSeleccionada && (
@@ -113,7 +193,7 @@ export default function Pictogramas(props: any) {
           <PictogramasPorCategoria
             categoria={categoriaSeleccionada.id}
             setPictogramas={UpdatePictogramas}
-            pictogramas={pictogramas}
+            pictogramas={pictogramasSeleccionados}
           ></PictogramasPorCategoria>
         </div>
       )}
@@ -123,7 +203,6 @@ export default function Pictogramas(props: any) {
       <br />
       <Categorias
         setPictogramas={UpdatePictogramas}
-        pictogramas={pictogramas}
         setCategoriaSeleccionada={setCategoriaSeleccionada}
       />
     </div>

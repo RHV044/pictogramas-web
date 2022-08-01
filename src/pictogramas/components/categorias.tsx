@@ -62,13 +62,6 @@ export default function Categorias(props: any) {
                     <CardContent></CardContent>
                   </CardActionArea>
                 </Card>
-                {/* {categoria === categoriaSeleccionada && (
-                  <PictogramasPorCategoria
-                    categoria={categoriaSeleccionada.id}
-                    setPictogramas={props.setPictogramas}
-                    pictogramas={props.pictogramas}
-                  ></PictogramasPorCategoria>
-                )} */}
               </Container>
             </Grid>
           );

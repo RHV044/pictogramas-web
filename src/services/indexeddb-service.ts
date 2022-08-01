@@ -114,21 +114,10 @@ export class IndexedDbService {
   }
 
   public async getPictogramasPorIndice(valor: ICategoria){
-    const tx = this.db.transaction('pictogramas', "readonly");
-    const index = tx.store.index('categorias-index');
-
-    var query = index.openCursor(IDBKeyRange.only(valor));
-    var results = [] as IPictogram[];
-    query.onsuccess = function(event) {
-      var cursor = this.result;
-      if(!cursor) return;
-      results.push(cursor.value);
-      cursor.continue();
-    };
-
-    return results
-
-    const result = await index.getAll(valor);
+    const tx = this.db.transaction('pictograms', "readonly");
+    let objectStore = tx.objectStore("pictograms");
+    const index = objectStore.index('categorias-index');
+    const result = await index.getAll(valor.nombre);
     return result;
   }
 
