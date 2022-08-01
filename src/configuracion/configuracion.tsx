@@ -7,9 +7,11 @@ import { Autocomplete, Button, Checkbox, FormControl, FormHelperText, FormLabel,
 import { Container } from "@mui/system";
 import { IUsuario } from '../login/model/usuario';
 import { IndexedDbService } from '../services/indexeddb-service';
-import { useState } from "react";
-import { ActualizarUsuario, usuarioLogueado } from "../services/usuarios-services";
+import { useEffect, useState } from "react";
+import { ActualizarUsuario, getUsuarioLogueado, usuarioLogueado } from "../services/usuarios-services";
 import { useNavigate } from "react-router-dom";
+import { Console } from "console";
+
 
 export default function Configuracion() {
 
@@ -18,6 +20,15 @@ export default function Configuracion() {
   const [db, setDb] = useState(IndexedDbService.create())
 
   const niveles = ["inicial", "intermedio", "avanzado"]
+
+  const [userLogueado, setUserLogueado] = useState({nombreUsuario: "", violence: false, sex: false, skin: false, hair: false, aac: false, aacColor: false} as IUsuario);
+
+  useEffect(() => {
+    getUsuarioLogueado().then((usuario) => {
+      if (usuario != undefined)
+        setUserLogueado(usuario);
+    })
+  }, []);
 
   return (
     <div>
@@ -29,7 +40,7 @@ export default function Configuracion() {
           </FormLabel>
           <Paper style={{ width: '100%' }}>
             <Container style={{ padding: 10 }}>
-              Nombre <input type="text" defaultValue={usuarioLogueado?.nombreUsuario} /> <br />
+              Nombre <input type="text" defaultValue={userLogueado.nombreUsuario} /> <br />
               <FormControl sx={{ m: 1, minWidth: 120 }}>
                 <InputLabel id="nivel-label">Nivel</InputLabel>
                 <Select
@@ -38,54 +49,78 @@ export default function Configuracion() {
                   // value={nivel}
                   label="Nivel"
                 // onChange={handleChange}
-                >                  
+                >
                   <MenuItem>Inicial</MenuItem>
                   <MenuItem>Intermedio</MenuItem>
                   <MenuItem>Avanzado</MenuItem>
-                </Select>                
+                </Select>
               </FormControl>
 
             </Container>
             <FormGroup aria-label="center" style={{ paddingRight: 10 }}>
               <FormControlLabel
                 style={{ alignItems: 'left' }}
-                control={                  
-                  <Checkbox />
+                control={
+                  <Checkbox checked={userLogueado.violence} onChange={evt => {
+                    let userLogueadoCopy = userLogueado;
+                    userLogueadoCopy.violence = evt.target.checked;
+                    setUserLogueado(userLogueadoCopy);
+                  }}/>
                 }
                 label="Permitir Contenido violento"
                 labelPlacement="start"
               />
               <FormControlLabel
                 control={
-                  <Checkbox />
+                  <Checkbox checked={userLogueado.sex} onChange={ evt => {
+                    let userLogueadoCopy = userLogueado;
+                    userLogueadoCopy.sex = evt.target.checked;
+                    setUserLogueado(userLogueadoCopy);
+                  }}/>
                 }
                 label="Permitir Contenido sexual"
                 labelPlacement="start"
               />
               <FormControlLabel
                 control={
-                  <Checkbox />
+                  <Checkbox checked={userLogueado.skin} onChange={ evt => {
+                    let userLogueadoCopy = userLogueado;
+                    userLogueadoCopy.skin = evt.target.checked;
+                    setUserLogueado(userLogueadoCopy);
+                  }}/>
                 }
                 label="Tiene piel"
                 labelPlacement="start"
               />
               <FormControlLabel
                 control={
-                  <Checkbox />
+                  <Checkbox checked={userLogueado.hair} onChange={ evt => {
+                    let userLogueadoCopy = userLogueado;
+                    userLogueadoCopy.hair = evt.target.checked;
+                    setUserLogueado(userLogueadoCopy);
+                  }}/>
                 }
                 label="Tiene pelo"
                 labelPlacement="start"
               />
               <FormControlLabel
                 control={
-                  <Checkbox />
+                  <Checkbox checked={userLogueado.aac} onChange={ evt => {
+                    let userLogueadoCopy = userLogueado;
+                    userLogueadoCopy.aac = evt.target.checked;
+                    setUserLogueado(userLogueadoCopy);
+                  }}/>
                 }
                 label="Aac"
                 labelPlacement="start"
               />
               <FormControlLabel
                 control={
-                  <Checkbox />
+                  <Checkbox checked={userLogueado.aacColor} onChange={ evt => {
+                    let userLogueadoCopy = userLogueado;
+                    userLogueadoCopy.aacColor = evt.target.checked;
+                    setUserLogueado(userLogueadoCopy);
+                  }}/>
                 }
                 label="AacColor"
                 labelPlacement="start"
@@ -98,9 +133,9 @@ export default function Configuracion() {
           <Button
             variant="contained"
             style={{ alignItems: 'center', margin: '10px' }}
-            onClick = {async () => {
+            onClick={async () => {
               // await ActualizarUsuario(usuarioLogueado)
-              (await db).putOrPatchValue("usuarios", usuarioLogueado)              
+              (await db).putOrPatchValue("usuarios", userLogueado);
               window.location.reload()
             }}
           >Guardar</Button>

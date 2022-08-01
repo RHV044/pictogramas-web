@@ -25,9 +25,10 @@ export function setUsuarioLogueado(
         indexDb.putOrPatchValue("usuarios", usuarioLogueado);
       }                  
     }
-  
+
     export async function getUsuarioLogueado(){
-        let usuarios: IUsuario[] = await indexDb.getAllValues("usuarios");
+        let dbService = await IndexedDbService.create();
+        let usuarios: IUsuario[] = await dbService.getAllValues("usuarios");
         return usuarios.find(u => u.logueado)
     }
 
