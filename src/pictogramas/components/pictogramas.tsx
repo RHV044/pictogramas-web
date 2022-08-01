@@ -64,7 +64,7 @@ export default function Pictogramas(props: any) {
   const filtrarPictogramas = (value: string) => {
     console.log('voy a filtrar pictogramas - total: ', pictogramas.length);
     let pictsFiltrados = pictogramas
-      .filter((p) => p.keywords.some((k) => k.keyword.includes(value)) === true)
+      .filter((p) => (p.keywords.some((k) => k.keyword.includes(value)) === true || p.categorias.some((c) => c.nombre.includes(value)) === true))
       .slice(0, 10);
     setPictogramasFiltrados(pictsFiltrados);
     console.log('pictogramas filtrados: ', pictogramasFiltrados);
