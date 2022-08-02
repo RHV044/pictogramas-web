@@ -21,6 +21,8 @@
     "idb-query": "^1.3.0",
     "json-merge-patch": "^1.0.2",
     "react": "^18.1.0",
+    "react-dnd": "^16.0.1",
+    "react-dnd-html5-backend": "^16.0.1",
     "react-dom": "^18.1.0",
     "react-redux": "^8.0.2",
     "react-router-dom": "^6.3.0",

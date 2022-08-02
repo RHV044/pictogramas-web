@@ -3,10 +3,10 @@ export interface IUsuario {
   nombreUsuario: string;
   password: string;  
   logueado?: boolean;
-  hair?: boolean;
-  sex?: boolean;
-  aac?: boolean;
-  aacColor?: boolean;
-  skin?: boolean;
-  violence?: boolean;
+  hair: boolean;
+  sex: boolean;
+  aac: boolean;
+  aacColor: boolean;
+  skin: boolean;
+  violence: boolean;
 }

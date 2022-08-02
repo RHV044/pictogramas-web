@@ -10,28 +10,36 @@ import Configuracion from './configuracion/configuracion';
 import Pizarras from './pizarras/pizarras';
 import Estadisticas from './estadisticas/estadisticas';
 import Actividades from './actividades/actividades';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend'
 
 function App() {
 
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/cuenta/seleccionar" element={<SeleccionarCuenta props={undefined} />} />
-        <Route path="/cuenta/modificar" element={<ModificarCuenta props={undefined} />} />
-        <Route path="/cuenta/vincular" element={<VincularCuenta props={undefined} />} />
-        <Route path="/cuenta/crear" element={<CrearCuenta props={undefined} />} />
-        <Route path="/pictogramas" element={<Pictogramas/>} />
-        <Route path="/categorias" element={<Categorias/>} />
-        <Route path="/configuracion" element={<Configuracion/>} />
-        <Route path="/pizarras" element={<Pizarras/>} />
-        <Route path="/estadisticas" element={<Estadisticas/>} />
-        <Route path="/actividades" element={<Actividades/>} />
+    <div>
+    <DndProvider backend={HTML5Backend}>
+      <BrowserRouter>
+        <Routes>
 
-        <Route path="/" element={<Navigate to="/cuenta/seleccionar" />} />
-        <Route path="/pictogramas-web" element={<Navigate to="/cuenta/seleccionar" />} />
-        <Route path="/cambiarcuenta" element={<Navigate to="/cuenta/seleccionar" />} />
-      </Routes>
-    </BrowserRouter>
+            <Route path="/cuenta/seleccionar" element={<SeleccionarCuenta props={undefined} />} />
+            <Route path="/cuenta/modificar" element={<ModificarCuenta props={undefined} />} />
+            <Route path="/cuenta/vincular" element={<VincularCuenta props={undefined} />} />
+            <Route path="/cuenta/crear" element={<CrearCuenta props={undefined} />} />
+            <Route path="/pictogramas" element={<Pictogramas/>} />
+            <Route path="/categorias" element={<Categorias/>} />
+            <Route path="/configuracion" element={<Configuracion/>} />
+            <Route path="/pizarras" element={<Pizarras/>} />
+            <Route path="/estadisticas" element={<Estadisticas/>} />
+            <Route path="/actividades" element={<Actividades/>} />
+
+            <Route path="/" element={<Navigate to="/cuenta/seleccionar" />} />
+            <Route path="/pictogramas-web" element={<Navigate to="/cuenta/seleccionar" />} />
+            <Route path="/cambiarcuenta" element={<Navigate to="/cuenta/seleccionar" />} />
+
+        </Routes>
+      </BrowserRouter>
+    </DndProvider>
+    </div>
   );
 }
 
