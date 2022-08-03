@@ -1,5 +1,6 @@
 import type { CSSProperties, FC } from 'react'
 import { useDrop } from 'react-dnd'
+import { memo } from 'react'
 
 const style: CSSProperties = {
   height: '12rem',
@@ -14,7 +15,15 @@ const style: CSSProperties = {
   float: 'left',
 }
 
-export const CellDrop: FC = () => {
+export interface CellDropProps {
+  onDrop: (item: any) => void,
+  name: string
+}
+
+export const CellDrop: FC<CellDropProps> = memo(function CellDrop({
+  onDrop,
+  name
+}) {
   const [{ canDrop, isOver }, drop] = useDrop(() => ({
     accept: 'box',
     drop: () => ({ name: 'Dropeame cosas' }),
@@ -37,4 +46,4 @@ export const CellDrop: FC = () => {
       {isActive ? 'Release to drop' : 'Drag a box here'}
     </div>
   )
-}
+})

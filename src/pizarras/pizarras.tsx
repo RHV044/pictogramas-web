@@ -1,4 +1,5 @@
 import {
+  Button,
   Paper,
   Table,
   TableBody,
@@ -11,10 +12,26 @@ import { Box } from './draggableBox';
 import { useState } from 'react';
 import ResponsiveAppBar from '../commons/appBar';
 import { CellDrop } from './cellDrop';
+import { Trash } from './trash';
 
 export default function Pizarras(this: any) {
   const [filas, setFilas] = useState(0);
   const [columnas, setColumnas] = useState(0);
+  const [texto, setTexto] = useState('')
+  const [textos, setTextos] = useState([] as string[])
+
+  function agregarTexto() {
+    let textosCopy = textos;
+    textosCopy.push(texto);
+    setTextos(textosCopy);
+    setTexto('');
+  }
+
+  function eliminarTexto(texto: string) {
+    let textosCopy = textos;
+    textosCopy.filter(t => t != texto);
+    setTextos(textosCopy);
+  }
 
   return (
     <div>
@@ -47,9 +64,9 @@ export default function Pizarras(this: any) {
                 <TableRow key={f}>
                   {Array.from(Array(columnas), (d, c) => {
                     return (
-                      <TableCell key={c}>
+                      <TableCell key={f + '-' + c}>
                         <div style={{ overflow: 'hidden', clear: 'both' }}>
-                          <CellDrop />
+                          <CellDrop name='celda' onDrop={() => {}} />
                         </div>
                       </TableCell>
                     );
@@ -61,13 +78,40 @@ export default function Pizarras(this: any) {
         </Table>
       </Table>
       <br />
+      <TextField
+        style={{ marginLeft: 5 }}
+        label="Texto para agregar"
+        id="outlined-size-small"
+        value={texto}
+        onChange={(evt) => setTexto(evt?.target?.value)}
+        size="small" 
+        onKeyDown={(e) => {
+          if(e.keyCode == 13){
+            agregarTexto()
+          }
+        } 
+      }      
+      />
+      <Button variant="contained" component="label" onClick={() => {
+        agregarTexto(); 
+      }}>
+        Agregar Texto
+      </Button>
+      <Button variant="contained" component="label">
+        Agregar Pictograma
+      </Button>
       <div>
         <div style={{ overflow: 'hidden', clear: 'both' }}>
-          <Box name="Glass" />
-          <Box name="Banana" />
-          <Box name="Paper" />
+        {textos.map(texto =>{
+          return(<Box name={texto} key={texto} onDrop={() => { eliminarTexto(texto)}}/>)
+        })}
+
         </div>
       </div>
+      <Trash name='Tachito' onDrop={(evt) => {
+        console.log(evt)
+        eliminarTexto('gonza')
+      }}/>
     </div>
   );
 }
