@@ -9,4 +9,5 @@ export interface IUsuario {
   aacColor: boolean;
   skin: boolean;
   violence: boolean;
+  schematic: boolean;
 }

@@ -27,7 +27,7 @@ const CrearCuenta = (props: any) => {
           value={password} onChange={(evt) => {setPassword(evt.target.value)}}/>
         <Button type="button" color="primary" className="form__custom-button"
           onClick={async () => {
-            let usuario = await CrearUsuario({nombreUsuario: username, password: password, aac:false, aacColor: false, hair: false, sex: false, skin:false, violence: false})
+            let usuario = await CrearUsuario({nombreUsuario: username, password: password, aac:false, aacColor: false, hair: false, sex: false, skin:false, violence: false, schematic: false})
             await db.putOrPatchValue("usuarios", usuario)            
             navigate("/cuenta/seleccionar" + location.search);
           }}
