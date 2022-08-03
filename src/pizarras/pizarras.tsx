@@ -43,7 +43,10 @@ export default function Pizarras(this: any) {
         id="outlined-size-small"
         value={filas}
         inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
-        onChange={(evt) => setFilas(parseInt(evt?.target?.value))}
+        onChange={(evt) => {
+          let cantidad = parseInt(evt?.target?.value)          
+          setFilas(cantidad ? cantidad : 0)
+        }}
         size="small"
       />
       <TextField
@@ -52,7 +55,10 @@ export default function Pizarras(this: any) {
         id="outlined-size-small"
         value={columnas}
         inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
-        onChange={(evt) => setColumnas(parseInt(evt?.target?.value))}
+        onChange={(evt) => {
+          let cantidad = parseInt(evt?.target?.value) 
+          setColumnas(cantidad ? cantidad : 0)
+        }}
         size="small"
       />
       <br />

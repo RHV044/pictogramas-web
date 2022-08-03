@@ -7,6 +7,8 @@ import { Piece } from './piece'
 
 export interface TablaProps {
   game: Game
+  filas: number
+  columnas: number
 }
 
 /** Styling properties applied to the board element */
@@ -23,15 +25,15 @@ const squareStyle: CSSProperties = { width: '12.5%', height: '12.5%' }
  * The chessboard component
  * @param props The react props
  */
-export const Tabla: FC<TablaProps> = ({ game }) => {
+export const Tabla: FC<TablaProps> = ({ game, filas, columnas }) => {
   const [[knightX, knightY], setKnightPos] = useState<Position>(
     game.knightPosition,
   )
   useEffect(() => game.observe(setKnightPos))
 
   function renderSquare(i: number) {
-    const x = i % 8
-    const y = Math.floor(i / 8)
+    const x = i % filas
+    const y = Math.floor(i / columnas)
 
     return (
       <div key={i} style={squareStyle}>
@@ -43,7 +45,7 @@ export const Tabla: FC<TablaProps> = ({ game }) => {
   }
 
   const squares = [] as JSX.Element[]
-  for (let i = 0; i < 64; i += 1) {
+  for (let i = 0; i < (filas*columnas); i += 1) {
     squares.push(renderSquare(i))
   }
   return <div style={boardStyle}>{squares}</div>
