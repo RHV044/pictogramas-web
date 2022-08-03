@@ -14,6 +14,7 @@ import ResponsiveAppBar from '../commons/appBar';
 import { CellDrop } from './cellDrop';
 import { Trash } from './trash';
 import { Ejemplo } from './example/ejemplo';
+import { Pizarra } from './intento1/pizarra';
 
 export default function Pizarras(this: any) {
   const [filas, setFilas] = useState(0);
@@ -123,6 +124,12 @@ export default function Pizarras(this: any) {
       <br />
       <br />
       <Ejemplo></Ejemplo>
+      <br />
+      <br />
+      <br />
+      Ejemplo 2
+      <br />
+      <Pizarra></Pizarra>
     </div>
   );
 }
