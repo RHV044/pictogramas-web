@@ -27,7 +27,10 @@ export const Trash: FC<TrashDrops> = memo(function CellDrop({
 }) {
   const [{ canDrop, isOver }, drop] = useDrop(() => ({
     accept: 'box',
-    drop(_item: DragItem, monitor) {
+    drop(_item: DragItem, monitor) { 
+      console.log('trash - me dropearon: ', _item)     
+      console.log('trash - monitor: ', monitor)    
+      _item.dropped(_item.name) 
       onDrop(monitor.getItemType())
       return undefined
     },
@@ -36,6 +39,10 @@ export const Trash: FC<TrashDrops> = memo(function CellDrop({
       canDrop: monitor.canDrop(),
     }),
   }))
+
+  const dropped = (value: any) => {
+    console.log('DROPPED')
+  }
 
   const isActive = canDrop && isOver
   let backgroundColor = 'white'

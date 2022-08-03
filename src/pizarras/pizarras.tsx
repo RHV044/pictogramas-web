@@ -13,6 +13,7 @@ import { useState } from 'react';
 import ResponsiveAppBar from '../commons/appBar';
 import { CellDrop } from './cellDrop';
 import { Trash } from './trash';
+import { Ejemplo } from './example/ejemplo';
 
 export default function Pizarras(this: any) {
   const [filas, setFilas] = useState(0);
@@ -112,6 +113,10 @@ export default function Pizarras(this: any) {
         console.log(evt)
         eliminarTexto('gonza')
       }}/>
+      <br />
+      <br />
+      <br />
+      <Ejemplo></Ejemplo>
     </div>
   );
 }
