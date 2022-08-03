@@ -10,3 +10,7 @@ npm start
 ## Deploy to github pages
 
 npm run deploy
+
+## Material
+
+Pizarras drag and drop -> https://github.com/react-dnd/react-dnd - https://react-dnd.github.io/react-dnd/examples
