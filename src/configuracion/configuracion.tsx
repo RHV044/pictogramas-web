@@ -40,21 +40,39 @@ export default function Configuracion() {
 
   const [userLogueado, setUserLogueado] = useState(null as IUsuario | null);
   const [violence, setViolence] = useState(false as boolean)
+  const [sex, setSex] = useState(false as boolean)
+  const [aac, setAac] = useState(false as boolean)
+  const [aacColor, setAacColor] = useState(false as boolean)
+  const [skin, setSkin] = useState(false as boolean)
+  const [hair, setHair] = useState(false as boolean)
+  const [schematic, setSchematic] = useState(false as boolean)
+
 
   useEffect(() => {
     getUsuarioLogueado().then((usuario) => {
       if (usuario != undefined) {
         setUserLogueado(usuario);
-        setViolence(usuario.violence)
+        setViolence(usuario.violence);
+        setSex(usuario.sex);
+        setSkin(usuario.skin);
+        setHair(usuario.hair);
+        setAac(usuario.aac);
+        setAacColor(usuario.aacColor);
+        setSchematic(usuario.schematic);
       }
     });
   }, []);
 
   const actualizarUsuario = async () => {
-    if (userLogueado)
-    {
+    if (userLogueado) {
       let usuario = userLogueado
       usuario.violence = violence;
+      usuario.sex = sex;
+      usuario.skin = skin;
+      usuario.hair = hair;
+      usuario.aac = aac;
+      usuario.aacColor = aacColor;
+      usuario.schematic = schematic;
       (await db).putOrPatchValue('usuarios', usuario)
     };
   }
@@ -87,7 +105,7 @@ export default function Configuracion() {
                       id="nivel-select-helper"
                       // value={nivel}
                       label="Nivel"
-                      // onChange={handleChange}
+                    // onChange={handleChange}
                     >
                       <MenuItem>Inicial</MenuItem>
                       <MenuItem>Intermedio</MenuItem>
@@ -102,86 +120,75 @@ export default function Configuracion() {
                       <Checkbox
                         checked={violence}
                         onChange={(evt) => setViolence(evt?.target?.checked)}
-                        // checked={userLogueado.violence}
-                        // onChange={(evt) => {
-                        //   let userLogueadoCopy = userLogueado;
-                        //   userLogueadoCopy.violence = evt.target.checked;
-                        //   setUserLogueado(userLogueadoCopy);
-                        //   console.log('user: ', userLogueado);
-                        // }}
                       />
                     }
                     label="Permitir Contenido violento"
                     labelPlacement="start"
                   />
                   <FormControlLabel
+                    style={{ alignItems: 'left' }}
                     control={
                       <Checkbox
-                        checked={userLogueado.sex}
-                        onChange={(evt) => {
-                          let userLogueadoCopy = userLogueado;
-                          userLogueadoCopy.sex = evt.target.checked;
-                          setUserLogueado(userLogueadoCopy);
-                        }}
+                        checked={sex}
+                        onChange={(evt) => setSex(evt?.target?.checked)}
                       />
                     }
                     label="Permitir Contenido sexual"
                     labelPlacement="start"
                   />
                   <FormControlLabel
+                    style={{ alignItems: 'left' }}
                     control={
                       <Checkbox
-                        checked={userLogueado.skin}
-                        onChange={(evt) => {
-                          let userLogueadoCopy = userLogueado;
-                          userLogueadoCopy.skin = evt.target.checked;
-                          setUserLogueado(userLogueadoCopy);
-                        }}
+                        checked={skin}
+                        onChange={(evt) => setSkin(evt?.target?.checked)}
                       />
                     }
                     label="Tiene piel"
                     labelPlacement="start"
                   />
                   <FormControlLabel
+                    style={{ alignItems: 'left' }}
                     control={
                       <Checkbox
-                        checked={userLogueado.hair}
-                        onChange={(evt) => {
-                          let userLogueadoCopy = userLogueado;
-                          userLogueadoCopy.hair = evt.target.checked;
-                          setUserLogueado(userLogueadoCopy);
-                        }}
+                        checked={hair}
+                        onChange={(evt) => setHair(evt?.target?.checked)}
                       />
                     }
                     label="Tiene pelo"
                     labelPlacement="start"
                   />
                   <FormControlLabel
+                    style={{ alignItems: 'left' }}
                     control={
                       <Checkbox
-                        checked={userLogueado.aac}
-                        onChange={(evt) => {
-                          let userLogueadoCopy = userLogueado;
-                          userLogueadoCopy.aac = evt.target.checked;
-                          setUserLogueado(userLogueadoCopy);
-                        }}
+                        checked={aac}
+                        onChange={(evt) => setAac(evt?.target?.checked)}
                       />
                     }
                     label="Aac"
                     labelPlacement="start"
                   />
                   <FormControlLabel
+                    style={{ alignItems: 'left' }}
                     control={
                       <Checkbox
-                        checked={userLogueado.aacColor}
-                        onChange={(evt) => {
-                          let userLogueadoCopy = userLogueado;
-                          userLogueadoCopy.aacColor = evt.target.checked;
-                          setUserLogueado(userLogueadoCopy);
-                        }}
+                        checked={aacColor}
+                        onChange={(evt) => setAacColor(evt?.target?.checked)}
                       />
                     }
-                    label="AacColor"
+                    label="Aac Color"
+                    labelPlacement="start"
+                  />
+                  <FormControlLabel
+                    style={{ alignItems: 'left' }}
+                    control={
+                      <Checkbox
+                        checked={schematic}
+                        onChange={(evt) => setSchematic(evt?.target?.checked)}
+                      />
+                    }
+                    label="Esquematico"
                     labelPlacement="start"
                   />
                 </FormGroup>
@@ -193,8 +200,8 @@ export default function Configuracion() {
                 variant="contained"
                 style={{ alignItems: 'center', margin: '10px' }}
                 onClick={async () => {
-                  // await ActualizarUsuario(usuarioLogueado)
                   actualizarUsuario()
+                  await ActualizarUsuario(userLogueado);
                   window.location.reload();
                 }}
               >
