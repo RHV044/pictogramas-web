@@ -1,8 +1,14 @@
-export type Position = [number, number]
+export type Position = {
+  fila: number,
+  columna: number
+}
 export type PositionObserver = ((position: Position) => void) | null
-export type Grafico = [string, Position]
+export type Grafico = {
+  valor: string, 
+  posicion: Position
+}
 
-export class Reglas {
+export class Movimientos {
   private observers: PositionObserver[] = []
   private graficos: Grafico[] = []
 
@@ -14,7 +20,7 @@ export class Reglas {
       this.observers = this.observers.filter((t) => t !== o)
     }
   }
-  public move(toX: number, toY: number): void {
+  public moveElement(toFila: number, toColumna: number): void {
 
   }
 
@@ -22,4 +28,13 @@ export class Reglas {
 
     //this.observers.forEach((o) => o && o(pos))
   }
+
+  public addGrafico(valor: string){
+    let grafico = {valor: valor, posicion: {columna:0, fila:0}} as Grafico
+    this.graficos.push(grafico)
+  }
+
+  // public removeGrafico(valor: string){
+  //   this.graficos.fil(grafico)
+  // }
 }

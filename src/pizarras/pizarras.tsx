@@ -9,18 +9,20 @@ import {
   TextField,
 } from '@mui/material';
 import { Box } from './draggableBox';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import ResponsiveAppBar from '../commons/appBar';
 import { CellDrop } from './cellDrop';
 import { Trash } from './trash';
 import { Ejemplo } from './example/ejemplo';
-import { Pizarra } from './intento1/pizarra';
+import { Pizarra } from './intento2/pizarra';
+import { Movimientos } from './movimientos';
 
 export default function Pizarras(this: any) {
   const [filas, setFilas] = useState(0);
   const [columnas, setColumnas] = useState(0);
   const [texto, setTexto] = useState('')
   const [textos, setTextos] = useState([] as string[])
+  const movimientos = useMemo(() => new Movimientos(), []);
 
   function agregarTexto() {
     let textosCopy = textos;
@@ -74,7 +76,7 @@ export default function Pizarras(this: any) {
                     return (
                       <TableCell key={f + '-' + c}>
                         <div style={{ overflow: 'hidden', clear: 'both' }}>
-                          <CellDrop name='celda' onDrop={() => {}} />
+                          <CellDrop fila={f} columna={c} name='celda' onDrop={() => {}} movimientos={movimientos} />
                         </div>
                       </TableCell>
                     );
