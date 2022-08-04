@@ -83,7 +83,6 @@ export const Pizarra: FC = () => {
         {textos.map(texto =>{
           return(<Grafico texto={texto} key={texto} />)
         })}
-
         </div>
       </div>
     </div>
