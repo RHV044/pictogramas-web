@@ -1,6 +1,6 @@
 import type { CSSProperties, FC } from 'react'
 import { useDrag } from 'react-dnd'
-
+import { Movimientos } from './movimientos'
 
 const style: CSSProperties = {
   border: '1px dashed gray',
@@ -14,7 +14,10 @@ const style: CSSProperties = {
 
 export interface BoxProps {
   name: string,
-  onDrop: (item: any) => void
+  onDrop: (item: any) => void,
+  movimientos: Movimientos,
+  fila,
+  columna
 }
 
 interface DropResult {
@@ -23,14 +26,14 @@ interface DropResult {
 
 
 
-export const Box: FC<BoxProps> = function Box({ name, onDrop }) {
+export const Box: FC<BoxProps> = function Box({ name, onDrop, movimientos, fila, columna }) {
   const [{ isDragging }, drag] = useDrag(() => ({
     type: 'box',
     item: { name },
     end: (item, monitor) => {
       const dropResult = monitor.getDropResult<DropResult>()
       if (item && dropResult) {
-        //alert(`You dropped ${item.name} into ${dropResult.name}!`)
+        movimientos.addGrafico(item.name)
       }
     },
     collect: (monitor) => ({

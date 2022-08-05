@@ -113,7 +113,8 @@ export default function Pizarras(this: any) {
       <div>
         <div style={{ overflow: 'hidden', clear: 'both' }}>
         {textos.map(texto =>{
-          return(<Box name={texto} key={texto} onDrop={() => { eliminarTexto(texto)}}/>)
+          if (!movimientos.getGraficos().some(g => g.texto === texto))
+            return(<Box name={texto} key={texto} movimientos={movimientos} fila={-1} columna={-1} onDrop={() => { eliminarTexto(texto)}}/>)
         })}
 
         </div>

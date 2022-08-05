@@ -24,9 +24,6 @@ const boardStyle: CSSProperties = {
 export const Tabla: FC<TablaProps> = ({ filas, columnas }) => {
 
   function rendercelda(f: number, c: number) {
-    console.log('Fila: ', f)
-    console.log('Columna: ', c)
-    console.log('Porcentaje de ocupacion de celda: ', 100/(f*c))
     const width= '12.5%'
     const height= '12.5%'
     return (

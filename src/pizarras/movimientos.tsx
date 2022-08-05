@@ -4,13 +4,16 @@ export type Position = {
 }
 export type PositionObserver = ((position: Position) => void) | null
 export type Grafico = {
-  valor: string, 
-  posicion: Position
+  texto: string, 
+  posicion: Position,
+  esPictograma: boolean,
+  imagen: string
 }
 
 export class Movimientos {
   private observers: PositionObserver[] = []
   private graficos: Grafico[] = []
+  private ultimoElementoUtilizado: Grafico = {esPictograma: false, imagen: '', texto: '', posicion: {columna:-1, fila:-1}}
 
   public observe(o: PositionObserver): () => void {
     this.observers.push(o)
@@ -21,7 +24,12 @@ export class Movimientos {
     }
   }
   public moveElement(toFila: number, toColumna: number): void {
+    this.ultimoElementoUtilizado.posicion.columna = toColumna
+    this.ultimoElementoUtilizado.posicion.fila = toFila
+  }
 
+  public hayAlgo(fila: number, columna: number): boolean {
+    return this.graficos.some(g => g.posicion.columna === columna && g.posicion.fila === fila)
   }
 
   private emitChange() {
@@ -30,8 +38,16 @@ export class Movimientos {
   }
 
   public addGrafico(valor: string){
-    let grafico = {valor: valor, posicion: {columna:0, fila:0}} as Grafico
-    this.graficos.push(grafico)
+    this.ultimoElementoUtilizado.texto = valor
+    if(this.ultimoElementoUtilizado)
+    {
+      this.graficos.push(this.ultimoElementoUtilizado)
+    }
+    console.log('GRAFICOS: ', this.graficos)
+  }
+
+  public getGraficos(){
+    return this.graficos
   }
 
   // public removeGrafico(valor: string){

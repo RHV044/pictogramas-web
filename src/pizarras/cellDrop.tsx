@@ -14,6 +14,9 @@ const style: CSSProperties = {
   fontSize: '1rem',
   lineHeight: 'normal',
   float: 'left',
+  borderStyle: 'solid', 
+  borderWidth: 2.5,
+  borderColor: 'black'
 }
 
 export interface CellDropProps {
@@ -22,6 +25,10 @@ export interface CellDropProps {
   fila: number,
   columna: number,
   movimientos: Movimientos
+}
+
+interface DropResult {
+  name: string
 }
 
 export const CellDrop: FC<CellDropProps> = memo(function CellDrop({
@@ -33,8 +40,16 @@ export const CellDrop: FC<CellDropProps> = memo(function CellDrop({
 }) {
   const [{ canDrop, isOver }, drop] = useDrop(() => ({
     accept: 'box',
-    drop: () => movimientos.moveElement(fila, columna),
-    collect: (monitor) => ({
+    canDrop: (monitor) => {
+      //const dropResult = monitor.getDropResult<DropResult>()
+      return !movimientos.hayAlgo(fila, columna)
+    },
+    drop: (monitor) => {
+      //const dropResult = monitor.getDropResult<DropResult>()
+      console.log('CellDrop - Drop - Texto: ' + name + ' Fila: ' + fila + ' Columna:' + columna)
+      movimientos.moveElement(fila, columna)
+    },    
+    collect: (monitor) => ({      
       isOver: monitor.isOver(),
       canDrop: monitor.canDrop(),
     }),
@@ -49,8 +64,21 @@ export const CellDrop: FC<CellDropProps> = memo(function CellDrop({
   }
 
   return (
-    <div ref={drop} style={{ ...style, backgroundColor }} data-testid="dustbin">
-      {isActive ? 'Release to drop' : 'Drag a box here'}
+    <div>
+      { (movimientos.getGraficos().length === 0 ||  !movimientos.getGraficos().some(g => g.posicion.columna === columna && g.posicion.fila === fila)) && 
+        <div ref={drop} style={{ ...style, backgroundColor }} data-testid="dustbin">
+          {isActive ? 'Release to drop' : 'Drag a box here'}
+        </div>
+      }
+      { (movimientos.getGraficos().length > 0 && movimientos.getGraficos().some(g => g.posicion.columna === columna && g.posicion.fila === fila)) && 
+        movimientos.getGraficos().filter(g => g.posicion.columna === columna && g.posicion.fila === fila).map(grafico => {
+          return(
+            <div key={grafico.texto}>  {/*style={style}*/}
+               { grafico.texto } 
+            </div>
+          )
+        })
+      }     
     </div>
   )
 })
