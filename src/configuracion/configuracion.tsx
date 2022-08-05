@@ -15,6 +15,7 @@ import {
   MenuItem,
   Paper,
   Select,
+  SelectChangeEvent,
   Slider,
   Stack,
   TextField,
@@ -30,15 +31,27 @@ import {
 } from '../services/usuarios-services';
 import { useNavigate } from 'react-router-dom';
 import { Console } from 'console';
+import Filtros from '../pictogramas/components/filtros';
+import { ICategoria } from '../pictogramas/models/categoria';
+import { ObtenerCategorias } from '../pictogramas/services/pictogramas-services';
+import React from 'react';
 
 export default function Configuracion() {
   let navigate = useNavigate();
   const [usuarios, setUsuarios] = useState([] as IUsuario[]);
   const [db, setDb] = useState(IndexedDbService.create());
+  const [categorias, setCategorias] = useState([] as ICategoria[]);
+  const [categoriasFiltradas, setCategoriasFiltradas] = useState(
+    [] as ICategoria[]
+  );
 
-  const niveles = ['inicial', 'intermedio', 'avanzado'];
+  const handleChange = (event: SelectChangeEvent) => {
+    setNivel(event.target.value as string);
+  };
+
 
   const [userLogueado, setUserLogueado] = useState(null as IUsuario | null);
+  const [nivel, setNivel] = React.useState('');
   const [violence, setViolence] = useState(false as boolean)
   const [sex, setSex] = useState(false as boolean)
   const [aac, setAac] = useState(false as boolean)
@@ -61,6 +74,10 @@ export default function Configuracion() {
         setSchematic(usuario.schematic);
       }
     });
+  }, []);
+
+  useEffect(() => {
+    ObtenerCategorias(setCategorias);
   }, []);
 
   const actualizarUsuario = async () => {
@@ -97,19 +114,19 @@ export default function Configuracion() {
                     type="text"
                     defaultValue={userLogueado.nombreUsuario}
                   />{' '}
-                  <br />
+                  <br /> <br /> <br />
                   <FormControl sx={{ m: 1, minWidth: 120 }}>
                     <InputLabel id="nivel-label">Nivel</InputLabel>
                     <Select
                       labelId="nivel-label"
                       id="nivel-select-helper"
-                      // value={nivel}
+                      value={nivel}
                       label="Nivel"
-                    // onChange={handleChange}
+                      onChange={handleChange}
                     >
-                      <MenuItem>Inicial</MenuItem>
-                      <MenuItem>Intermedio</MenuItem>
-                      <MenuItem>Avanzado</MenuItem>
+                      <MenuItem value={1}>Inicial</MenuItem>
+                      <MenuItem value={2}>Intermedio</MenuItem>
+                      <MenuItem value={3}>Avanzado</MenuItem>
                     </Select>
                   </FormControl>
                 </Container>
@@ -123,7 +140,7 @@ export default function Configuracion() {
                       />
                     }
                     label="Permitir Contenido violento"
-                    labelPlacement="start"
+                    labelPlacement="end"
                   />
                   <FormControlLabel
                     style={{ alignItems: 'left' }}
@@ -134,7 +151,7 @@ export default function Configuracion() {
                       />
                     }
                     label="Permitir Contenido sexual"
-                    labelPlacement="start"
+                    labelPlacement="end"
                   />
                   <FormControlLabel
                     style={{ alignItems: 'left' }}
@@ -145,7 +162,7 @@ export default function Configuracion() {
                       />
                     }
                     label="Tiene piel"
-                    labelPlacement="start"
+                    labelPlacement="end"
                   />
                   <FormControlLabel
                     style={{ alignItems: 'left' }}
@@ -156,7 +173,7 @@ export default function Configuracion() {
                       />
                     }
                     label="Tiene pelo"
-                    labelPlacement="start"
+                    labelPlacement="end"
                   />
                   <FormControlLabel
                     style={{ alignItems: 'left' }}
@@ -167,7 +184,7 @@ export default function Configuracion() {
                       />
                     }
                     label="Aac"
-                    labelPlacement="start"
+                    labelPlacement="end"
                   />
                   <FormControlLabel
                     style={{ alignItems: 'left' }}
@@ -178,7 +195,7 @@ export default function Configuracion() {
                       />
                     }
                     label="Aac Color"
-                    labelPlacement="start"
+                    labelPlacement="end"
                   />
                   <FormControlLabel
                     style={{ alignItems: 'left' }}
@@ -189,11 +206,21 @@ export default function Configuracion() {
                       />
                     }
                     label="Esquematico"
-                    labelPlacement="start"
+                    labelPlacement="end"
                   />
                 </FormGroup>
               </Paper>
             </FormControl>
+
+            <br /><br />
+            Seleccione las categorías que desea visualizar
+            {categorias.length > 0 && (
+              <Filtros
+                filtros={categorias}
+                setFiltros={setCategoriasFiltradas}
+                filtro={'Categorias'}
+              />
+            )}
 
             <Stack spacing={2} direction="row">
               <Button
