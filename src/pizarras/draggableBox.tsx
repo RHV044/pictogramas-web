@@ -14,7 +14,7 @@ const style: CSSProperties = {
 
 export interface BoxProps {
   name: string,
-  onDrop: (item: any) => void,
+  onDrop: () => void,
   movimientos: Movimientos,
   fila,
   columna
@@ -34,6 +34,7 @@ export const Box: FC<BoxProps> = function Box({ name, onDrop, movimientos, fila,
       const dropResult = monitor.getDropResult<DropResult>()
       if (item && dropResult) {
         movimientos.moveGrafico(item.name)
+        onDrop()
       }
     },
     collect: (monitor) => ({

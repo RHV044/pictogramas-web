@@ -21,7 +21,7 @@ const style: CSSProperties = {
 }
 
 export interface CellDropProps {
-  onDrop: (item: any) => void,
+  onDrop: () => void,
   name: string,
   fila: number,
   columna: number,
@@ -49,6 +49,7 @@ export const CellDrop: FC<CellDropProps> = memo(function CellDrop({
       //const dropResult = monitor.getDropResult<DropResult>()
       console.log('CellDrop - Drop - Texto: ' + name + ' Fila: ' + fila + ' Columna:' + columna)
       movimientos.moveElement(fila, columna)
+      onDrop()
     },    
     collect: (monitor) => ({      
       isOver: monitor.isOver(),

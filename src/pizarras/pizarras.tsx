@@ -9,7 +9,7 @@ import {
   TextField,
 } from '@mui/material';
 import { Box } from './draggableBox';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import ResponsiveAppBar from '../commons/appBar';
 import { CellDrop } from './cellDrop';
 import { Trash } from './trash';
@@ -22,6 +22,7 @@ export default function Pizarras(this: any) {
   const [columnas, setColumnas] = useState(0);
   const [texto, setTexto] = useState('')
   const movimientos = useMemo(() => new Movimientos(), []);
+  const [refresco, setRefresco] = useState(false)
 
   function agregarTexto() {
     setTexto('');
@@ -29,7 +30,20 @@ export default function Pizarras(this: any) {
     movimientos.agregarGrafico(grafico)
   }
 
+  function agregarPictograma(){
+    let grafico = {esPictograma: true, imagen: '', posicion: {columna: -1, fila: -1}, texto: ''} as Grafico
+    //movimientos.agregarGrafico(grafico)
+  }
+
   function eliminarTexto(texto: string) {
+  }
+
+  function refrescar(){
+    //Esto es una falopeada pero necesito que se refresque, igual solo anda la primera vez
+    console.log('se debe refrescar: ', refresco)
+    let nuevoRefresco = refresco === true ? false : true
+    console.log('nuevo refresco: ', nuevoRefresco)
+    setRefresco(nuevoRefresco)
   }
 
   return (
@@ -71,7 +85,7 @@ export default function Pizarras(this: any) {
                     return (
                       <TableCell key={f + '-' + c}>
                         <div style={{ overflow: 'hidden', clear: 'both' }}>
-                          <CellDrop fila={f} columna={c} name='celda' onDrop={() => {}} movimientos={movimientos} />
+                          <CellDrop fila={f} columna={c} name='celda' onDrop={() => { refrescar()}} movimientos={movimientos} />
                         </div>
                       </TableCell>
                     );
@@ -97,26 +111,40 @@ export default function Pizarras(this: any) {
         } 
       }      
       />
-      <Button variant="contained" component="label" onClick={() => {
+      <Button style={{marginLeft: 5, marginRight: 5}} variant="contained" component="label" onClick={() => {
         agregarTexto(); 
       }}>
         Agregar Texto
       </Button>
-      <Button variant="contained" component="label">
+      <br/>
+      <TextField
+        style={{ marginLeft: 5, marginTop: 5, marginBottom: 5 }}
+        label="Buscar Pictograma"
+        id="outlined-size-small"
+        //value={}
+        //onChange={(evt) => }
+        size="small" 
+        onKeyDown={(e) => {
+          if(e.keyCode == 13){
+            agregarPictograma()
+          }
+        } 
+      }      
+      />
+      <Button style={{marginLeft: 5, marginRight: 5, marginTop: 5, marginBottom: 5}} variant="contained" component="label">
         Agregar Pictograma
       </Button>
       <div>
         <div style={{ overflow: 'hidden', clear: 'both' }}>
         {movimientos.getGraficos().map(grafico => {
           if (grafico.posicion.columna === -1 && grafico.posicion.fila === -1)
-            return(<Box name={grafico.texto} key={grafico.texto} movimientos={movimientos} fila={-1} columna={-1} onDrop={() => { eliminarTexto(texto)}}/>)
+            return(<Box name={grafico.texto} key={grafico.texto} movimientos={movimientos} fila={-1} columna={-1} onDrop={() => { refrescar()}}/>)
         })}
-
+        {refresco && <></>}
         </div>
       </div>
       <Trash movimientos={movimientos} name='Tachito' onDrop={(evt) => {
         console.log(evt)
-        eliminarTexto('gonza')
       }}/>
       {/* <br />
       <br />
