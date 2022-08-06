@@ -2,6 +2,7 @@ import Delete from '@mui/icons-material/Delete'
 import { CSSProperties, FC, memo } from 'react'
 import { useDrop } from 'react-dnd'
 import { DragItem } from './interfaces'
+import { Movimientos } from './movimientos'
 
 const style: CSSProperties = {
   height: '12rem',
@@ -18,20 +19,19 @@ const style: CSSProperties = {
 
 export interface TrashDrops {
   onDrop: (item: any) => void,
-  name: string
+  name: string,
+  movimientos: Movimientos
 }
 
 export const Trash: FC<TrashDrops> = memo(function CellDrop({
   onDrop,
-  name
+  name,
+  movimientos
 }) {
   const [{ canDrop, isOver }, drop] = useDrop(() => ({
     accept: 'box',
     drop(_item: DragItem, monitor) { 
-      console.log('trash - me dropearon: ', _item)     
-      console.log('trash - monitor: ', monitor)    
-      _item.dropped(_item.name) 
-      onDrop(monitor.getItemType())
+      movimientos.eliminarGrafico(_item.name)
       return undefined
     },
     collect: (monitor) => ({

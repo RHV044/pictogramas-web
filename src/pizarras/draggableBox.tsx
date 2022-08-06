@@ -33,7 +33,7 @@ export const Box: FC<BoxProps> = function Box({ name, onDrop, movimientos, fila,
     end: (item, monitor) => {
       const dropResult = monitor.getDropResult<DropResult>()
       if (item && dropResult) {
-        movimientos.addGrafico(item.name)
+        movimientos.moveGrafico(item.name)
       }
     },
     collect: (monitor) => ({

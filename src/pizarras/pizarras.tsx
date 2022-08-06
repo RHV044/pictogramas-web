@@ -15,26 +15,21 @@ import { CellDrop } from './cellDrop';
 import { Trash } from './trash';
 import { Ejemplo } from './example/ejemplo';
 import { Pizarra } from './intento2/pizarra';
-import { Movimientos } from './movimientos';
+import { Grafico, Movimientos } from './movimientos';
 
 export default function Pizarras(this: any) {
   const [filas, setFilas] = useState(0);
   const [columnas, setColumnas] = useState(0);
   const [texto, setTexto] = useState('')
-  const [textos, setTextos] = useState([] as string[])
   const movimientos = useMemo(() => new Movimientos(), []);
 
   function agregarTexto() {
-    let textosCopy = textos;
-    textosCopy.push(texto);
-    setTextos(textosCopy);
     setTexto('');
+    let grafico = {esPictograma: false, imagen: '', posicion: {columna: -1, fila: -1}, texto: texto} as Grafico
+    movimientos.agregarGrafico(grafico)
   }
 
   function eliminarTexto(texto: string) {
-    let textosCopy = textos;
-    textosCopy.filter(t => t != texto);
-    setTextos(textosCopy);
   }
 
   return (
@@ -112,18 +107,18 @@ export default function Pizarras(this: any) {
       </Button>
       <div>
         <div style={{ overflow: 'hidden', clear: 'both' }}>
-        {textos.map(texto =>{
-          if (!movimientos.getGraficos().some(g => g.texto === texto))
-            return(<Box name={texto} key={texto} movimientos={movimientos} fila={-1} columna={-1} onDrop={() => { eliminarTexto(texto)}}/>)
+        {movimientos.getGraficos().map(grafico => {
+          if (grafico.posicion.columna === -1 && grafico.posicion.fila === -1)
+            return(<Box name={grafico.texto} key={grafico.texto} movimientos={movimientos} fila={-1} columna={-1} onDrop={() => { eliminarTexto(texto)}}/>)
         })}
 
         </div>
       </div>
-      <Trash name='Tachito' onDrop={(evt) => {
+      <Trash movimientos={movimientos} name='Tachito' onDrop={(evt) => {
         console.log(evt)
         eliminarTexto('gonza')
       }}/>
-      <br />
+      {/* <br />
       <br />
       <br />
       <Ejemplo></Ejemplo>
@@ -132,7 +127,7 @@ export default function Pizarras(this: any) {
       <br />
       Ejemplo 2
       <br />
-      <Pizarra></Pizarra>
+      <Pizarra></Pizarra> */}
     </div>
   );
 }

@@ -37,20 +37,26 @@ export class Movimientos {
     //this.observers.forEach((o) => o && o(pos))
   }
 
-  public addGrafico(valor: string){
-    this.ultimoElementoUtilizado.texto = valor
-    if(this.ultimoElementoUtilizado)
-    {
-      this.graficos.push(this.ultimoElementoUtilizado)
-    }
+  public moveGrafico(valor: string){
+    this.graficos.map(g => {
+      if (g.texto === valor)
+      {
+        g.posicion.columna = this.ultimoElementoUtilizado.posicion.columna
+        g.posicion.fila = this.ultimoElementoUtilizado.posicion.fila
+      }
+    })
     console.log('GRAFICOS: ', this.graficos)
+  }
+
+  public agregarGrafico(grafico : Grafico){
+    this.graficos.push(grafico)
   }
 
   public getGraficos(){
     return this.graficos
   }
 
-  // public removeGrafico(valor: string){
-  //   this.graficos.fil(grafico)
-  // }
+  public eliminarGrafico(valor: string){
+    this.graficos = this.graficos.filter(g => g.texto !== valor)
+  }
 }

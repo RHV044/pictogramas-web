@@ -2,6 +2,7 @@ import type { CSSProperties, FC } from 'react'
 import { useDrop } from 'react-dnd'
 import { memo } from 'react'
 import { Movimientos } from './movimientos'
+import { Box } from './draggableBox'
 
 const style: CSSProperties = {
   height: '12rem',
@@ -73,9 +74,10 @@ export const CellDrop: FC<CellDropProps> = memo(function CellDrop({
       { (movimientos.getGraficos().length > 0 && movimientos.getGraficos().some(g => g.posicion.columna === columna && g.posicion.fila === fila)) && 
         movimientos.getGraficos().filter(g => g.posicion.columna === columna && g.posicion.fila === fila).map(grafico => {
           return(
-            <div key={grafico.texto}>  {/*style={style}*/}
-               { grafico.texto } 
-            </div>
+            // <div key={grafico.texto}>  {/*style={style}*/}
+            //    { grafico.texto } 
+            // </div>
+            <Box name={grafico.texto} key={grafico.texto} movimientos={movimientos} fila={fila} columna={columna} onDrop={() => { }}/>
           )
         })
       }     
