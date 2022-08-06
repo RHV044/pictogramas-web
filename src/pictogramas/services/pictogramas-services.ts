@@ -1,5 +1,6 @@
 import axios from "axios";
 import { stringify } from "querystring";
+import { IUsuario } from "../../login/model/usuario";
 import { IndexedDbService } from "../../services/indexeddb-service";
 import { getUsuarioLogueado, usuarioLogueado } from "../../services/usuarios-services";
 import { ICategoria } from "../models/categoria";
@@ -131,5 +132,3 @@ export async function ObtenerInformacionPictogramas() {
     return response.data;
   });
 }
-
-
