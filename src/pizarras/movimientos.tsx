@@ -57,11 +57,19 @@ export class Movimientos {
   }
 
   public getGraficos(){
-    let totalGraficos = this.graficos
+    let totalGraficos = [] as Grafico[]
+    totalGraficos = this.graficos
+    // TODO: Por alguna razon los graficos si son pictogramas y no filtro repetidos crecen infinitamente
+    let pictogramasSinRepetir = totalGraficos.filter(function(item, pos) {
+      return totalGraficos.indexOf(item) === pos;
+    })
+    totalGraficos = pictogramasSinRepetir 
+    console.log('TOTAL PICTOGRAMAS: ', this.pictogramas)
+    console.log('TOTAL GRAFICOS: ', this.graficos)
     this.pictogramas.forEach(pictograma => {
-      totalGraficos.push({esPictograma: true, imagen: pictograma.imagen, texto: pictograma.id.toString(), posicion: {columna: -1, fila: -1}})
+      totalGraficos.push({esPictograma: true, imagen: pictograma.imagen, texto: pictograma.keywords[0].keyword, posicion: {columna: -1, fila: -1}})
     });
-    return this.graficos
+    return totalGraficos
   }
 
   public eliminarGrafico(valor: string){
@@ -69,7 +77,12 @@ export class Movimientos {
   }
 
   public actualizarPictogramas(pics: IPictogram[]){
-    this.pictogramas = pics
+    this.pictogramas = []
+    let pictogramasSinRepetir = pics.filter(function(item, pos) {
+      return pics.indexOf(item) === pos;
+    })
+    this.pictogramas = pictogramasSinRepetir    
+
     console.log('se actualizan los pictogramas: ', this.pictogramas)
   }
 }

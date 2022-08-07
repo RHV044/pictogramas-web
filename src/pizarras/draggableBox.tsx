@@ -1,3 +1,4 @@
+import { Card, CardActionArea, CardContent, CardHeader, CardMedia } from '@mui/material'
 import type { CSSProperties, FC } from 'react'
 import { useDrag } from 'react-dnd'
 import { Movimientos } from './movimientos'
@@ -17,7 +18,9 @@ export interface BoxProps {
   onDrop: () => void,
   movimientos: Movimientos,
   fila,
-  columna
+  columna,
+  esPictograma, 
+  imagen
 }
 
 interface DropResult {
@@ -26,7 +29,7 @@ interface DropResult {
 
 
 
-export const Box: FC<BoxProps> = function Box({ name, onDrop, movimientos, fila, columna }) {
+export const Box: FC<BoxProps> = function Box({ name, onDrop, movimientos, fila, columna, esPictograma, imagen }) {
   const [{ isDragging }, drag] = useDrag(() => ({
     type: 'box',
     item: { name },
@@ -44,9 +47,39 @@ export const Box: FC<BoxProps> = function Box({ name, onDrop, movimientos, fila,
   }))
 
   const opacity = isDragging ? 0.4 : 1
+
   return (
-    <div ref={drag} style={{ ...style, opacity }} data-testid={`box`}>
-      {name}
+    <div>
+    { !esPictograma &&
+      <div ref={drag} style={{ ...style, opacity }} data-testid={`box`}>
+        {name}
+      </div>
+    }
+    { esPictograma &&
+      <div ref={drag} style={{ ...style, opacity }} data-testid={`box`}>
+        <Card
+          sx={{ maxWidth: 245, minWidth:150 }}
+          style={{ marginTop: '10px' }}
+          onClick={() => {}}
+        >
+          <CardActionArea
+            onClick={() => {
+            }}
+          >
+            <CardMedia
+              component="img"
+              height="140"
+              src={`data:image/png;base64, ${imagen}`}
+              alt={name}
+            ></CardMedia>
+            <CardHeader
+              title={name}
+            ></CardHeader>
+            <CardContent></CardContent>
+          </CardActionArea>
+        </Card>
+      </div>
+    }
     </div>
   )
 }

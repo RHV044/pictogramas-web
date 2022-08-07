@@ -44,9 +44,9 @@ export default function Pizarras(this: any) {
     });
   }, []);
 
-  const UpdatePictogramas = (pics: IPictogram[]) => {
+  const UpdatePictogramas = (pics: IPictogram[]) => {    
     setPictogramasSeleccionados(pics);
-    movimientos.actualizarPictogramas(pics)
+    movimientos.actualizarPictogramas(pictogramasSeleccionados)
   };
 
 
@@ -177,8 +177,18 @@ export default function Pizarras(this: any) {
       <div>
         <div style={{ overflow: 'hidden', clear: 'both' }}>
         {movimientos.getGraficos().map(grafico => {
+          console.log('Se renderizan esta cantidad de graficos: ', movimientos.getGraficos().length)  
+          console.log('Se renderizan estos graficos: ', movimientos.getGraficos())          
+          console.log('Se renderiza : ', grafico)
           if (grafico.posicion.columna === -1 && grafico.posicion.fila === -1)
-            return(<Box name={grafico.texto} key={grafico.texto} movimientos={movimientos} fila={-1} columna={-1} onDrop={() => { refrescar()}}/>)
+            {
+              if(grafico.esPictograma === false)
+                return(<Box name={grafico.texto} key={grafico.texto} movimientos={movimientos} 
+                  fila={-1} columna={-1} esPictograma={false} imagen={''} onDrop={() => { refrescar()}}/>)
+              else
+                return(<Box name={grafico.texto} key={grafico.texto} movimientos={movimientos} 
+                  fila={-1} columna={-1} esPictograma={true} imagen={grafico.imagen} onDrop={() => { refrescar()}}/>)
+            }
         })}
         {refresco && <></>}
         </div>
