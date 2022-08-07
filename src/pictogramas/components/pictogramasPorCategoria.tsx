@@ -48,13 +48,13 @@ export default function PictogramasPorCategoria(props: any) {
 
 
   function cumpleFiltros(pictograma: IPictogram, usuario: IUsuario | any): boolean {
-      return pictograma.aac === usuario.aac &&
-            pictograma.aacColor === usuario.aacColor &&
-            pictograma.hair === usuario.hair &&
-            pictograma.schematic === usuario.schematic &&
-            pictograma.sex === usuario.sex &&
-            pictograma.skin === usuario.skin &&
-            pictograma.violence === usuario.violence
+      return (pictograma.aac === usuario.aac || pictograma.aac === false) &&
+            (pictograma.aacColor === usuario.aacColor || pictograma.aacColor === false) &&
+            (pictograma.hair === usuario.hair || pictograma.hair === false) &&
+            (pictograma.schematic === usuario.schematic || pictograma.schematic === false) &&
+            (pictograma.sex === usuario.sex || pictograma.sex === false) &&
+            (pictograma.skin === usuario.skin || pictograma.skin === false) &&
+            (pictograma.violence === usuario.violence || pictograma.violence === false)
   }
 
   return (

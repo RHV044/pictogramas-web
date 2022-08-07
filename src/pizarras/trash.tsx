@@ -47,14 +47,14 @@ export const Trash: FC<TrashDrops> = memo(function CellDrop({
   const isActive = canDrop && isOver
   let backgroundColor = 'white'
   if (isActive) {
-    backgroundColor = 'white'
+    backgroundColor = 'grey'
   } else if (canDrop) {
-    backgroundColor = 'white'
+    backgroundColor = 'grey'
   }
 
   return (    
-    <div ref={drop} style={{ backgroundColor, width: 50, height: 50 }} data-testid="dustbin">
-      <Delete style={{width:50, height:50}}>
+    <div ref={drop} style={{ backgroundColor, width: 75, height: 75 }} data-testid="dustbin">
+      <Delete style={{width:60, height:60}}>
         {isActive ? 'Soltar para eliminar' : 'Arrastra un elemento aqui para eliminarlo'}
       </Delete>
     </div>

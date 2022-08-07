@@ -1,3 +1,6 @@
+import { IPictogram } from "../pictogramas/models/pictogram"
+import { Grafico } from "./intento2/grafico"
+
 export type Position = {
   fila: number,
   columna: number
@@ -13,6 +16,7 @@ export type Grafico = {
 export class Movimientos {
   private observers: PositionObserver[] = []
   private graficos: Grafico[] = []
+  private pictogramas: IPictogram[] = []
   private ultimoElementoUtilizado: Grafico = {esPictograma: false, imagen: '', texto: '', posicion: {columna:-1, fila:-1}}
 
   public observe(o: PositionObserver): () => void {
@@ -53,10 +57,19 @@ export class Movimientos {
   }
 
   public getGraficos(){
+    let totalGraficos = this.graficos
+    this.pictogramas.forEach(pictograma => {
+      totalGraficos.push({esPictograma: true, imagen: pictograma.imagen, texto: pictograma.id.toString(), posicion: {columna: -1, fila: -1}})
+    });
     return this.graficos
   }
 
   public eliminarGrafico(valor: string){
     this.graficos = this.graficos.filter(g => g.texto !== valor)
+  }
+
+  public actualizarPictogramas(pics: IPictogram[]){
+    this.pictogramas = pics
+    console.log('se actualizan los pictogramas: ', this.pictogramas)
   }
 }

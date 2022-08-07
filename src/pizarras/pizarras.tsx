@@ -1,6 +1,8 @@
 import {
   Button,
+  Checkbox,
   Paper,
+  Switch,
   Table,
   TableBody,
   TableCell,
@@ -16,6 +18,12 @@ import { Trash } from './trash';
 import { Ejemplo } from './example/ejemplo';
 import { Pizarra } from './intento2/pizarra';
 import { Grafico, Movimientos } from './movimientos';
+import { IPictogram } from '../pictogramas/models/pictogram';
+import { ObtenerPictogramas } from '../pictogramas/services/pictogramas-services';
+import { ICategoria } from '../pictogramas/models/categoria';
+import Categorias from '../pictogramas/components/categorias';
+import CategoriaSeleccionada from '../pictogramas/components/categoriaSeleccionada';
+import PictogramasPorCategoria from '../pictogramas/components/pictogramasPorCategoria';
 
 export default function Pizarras(this: any) {
   const [filas, setFilas] = useState(0);
@@ -23,6 +31,24 @@ export default function Pizarras(this: any) {
   const [texto, setTexto] = useState('')
   const movimientos = useMemo(() => new Movimientos(), []);
   const [refresco, setRefresco] = useState(false)
+  const [mostrarPictogramas, setMostrarPictogramas] = useState(false)
+  const [pictogramas, setPictogramas] = useState([] as IPictogram[]);
+  const [pictogramasSeleccionados, setPictogramasSeleccionados] = useState([] as IPictogram[]);
+  const [categoriaSeleccionada, setCategoriaSeleccionada] = useState(
+    null as ICategoria | null
+  );
+
+  useEffect(() => {
+    ObtenerPictogramas().then((pictogramas) => {
+      setPictogramas(pictogramas);
+    });
+  }, []);
+
+  const UpdatePictogramas = (pics: IPictogram[]) => {
+    setPictogramasSeleccionados(pics);
+    movimientos.actualizarPictogramas(pics)
+  };
+
 
   function agregarTexto() {
     setTexto('');
@@ -117,23 +143,37 @@ export default function Pizarras(this: any) {
         Agregar Texto
       </Button>
       <br/>
-      <TextField
-        style={{ marginLeft: 5, marginTop: 5, marginBottom: 5 }}
-        label="Buscar Pictograma"
-        id="outlined-size-small"
-        //value={}
-        //onChange={(evt) => }
-        size="small" 
-        onKeyDown={(e) => {
-          if(e.keyCode == 13){
-            agregarPictograma()
-          }
-        } 
-      }      
-      />
-      <Button style={{marginLeft: 5, marginRight: 5, marginTop: 5, marginBottom: 5}} variant="contained" component="label">
-        Agregar Pictograma
-      </Button>
+      { pictogramas.length > 0 &&
+        <div>
+          <Switch 
+            checked={mostrarPictogramas}
+            onChange={(evt) => setMostrarPictogramas(evt?.target?.checked)}
+          /> Mostrar Pictogramas
+        </div>
+      }
+      {mostrarPictogramas &&
+        <div>
+          <TextField
+            style={{ marginLeft: 5, marginTop: 5, marginBottom: 5 }}
+            label="Buscar Pictograma"
+            id="outlined-size-small"
+            //value={}
+            //onChange={(evt) => }
+            size="small" 
+            onKeyDown={(e) => {
+              if(e.keyCode == 13){
+                agregarPictograma()
+              }
+            } 
+          }      
+          />
+          <Button style={{marginLeft: 5, marginRight: 5, marginTop: 5, marginBottom: 5}} variant="contained" component="label">
+            Agregar Pictograma
+          </Button>
+          <br />
+
+        </div>
+      }
       <div>
         <div style={{ overflow: 'hidden', clear: 'both' }}>
         {movimientos.getGraficos().map(grafico => {
@@ -145,7 +185,32 @@ export default function Pizarras(this: any) {
       </div>
       <Trash movimientos={movimientos} name='Tachito' onDrop={(evt) => {
         console.log(evt)
-      }}/>
+      }}/>      
+      { mostrarPictogramas && categoriaSeleccionada && (
+        <div>
+          <CategoriaSeleccionada
+            categoriaSeleccionada={categoriaSeleccionada}
+            setCategoriaSeleccionada={setCategoriaSeleccionada}
+          />
+          <PictogramasPorCategoria
+            categoria={categoriaSeleccionada.id}
+            setPictogramas={UpdatePictogramas}
+            pictogramas={pictogramasSeleccionados}
+          ></PictogramasPorCategoria>
+        </div>
+      )}
+
+      {/* Si paso setPictogramas tampoco me actualiza */}
+      {/* <Categorias setPictogramas={setPictogramas} pictogramas={pictogramas}/> */}
+      { mostrarPictogramas &&
+        <div>
+          <br />
+          <Categorias
+            setPictogramas={UpdatePictogramas}
+            setCategoriaSeleccionada={setCategoriaSeleccionada}
+          />
+        </div>
+      }
       {/* <br />
       <br />
       <br />
