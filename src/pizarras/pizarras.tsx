@@ -1,6 +1,5 @@
 import {
   Button,
-  Checkbox,
   Paper,
   Switch,
   Table,
@@ -11,12 +10,10 @@ import {
   TextField,
 } from '@mui/material';
 import { Box } from './draggableBox';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import ResponsiveAppBar from '../commons/appBar';
 import { CellDrop } from './cellDrop';
 import { Trash } from './trash';
-import { Ejemplo } from './example/ejemplo';
-import { Pizarra } from './intento2/pizarra';
 import { Grafico, Movimientos } from './movimientos';
 import { IPictogram } from '../pictogramas/models/pictogram';
 import { ObtenerPictogramas } from '../pictogramas/services/pictogramas-services';
@@ -30,6 +27,7 @@ export default function Pizarras(this: any) {
   const [columnas, setColumnas] = useState(0);
   const [texto, setTexto] = useState('')
   const movimientos = useMemo(() => new Movimientos(), []);
+  //const movimientos = new Movimientos()
   const [refresco, setRefresco] = useState(false)
   const [mostrarPictogramas, setMostrarPictogramas] = useState(false)
   const [pictogramas, setPictogramas] = useState([] as IPictogram[]);
@@ -37,6 +35,7 @@ export default function Pizarras(this: any) {
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState(
     null as ICategoria | null
   );
+  const [graficos, setGraficos] = useState([] as Grafico[])
 
   useEffect(() => {
     ObtenerPictogramas().then((pictogramas) => {
@@ -44,32 +43,25 @@ export default function Pizarras(this: any) {
     });
   }, []);
 
-  const UpdatePictogramas = (pics: IPictogram[]) => {    
-    setPictogramasSeleccionados(pics);
-    movimientos.actualizarPictogramas(pictogramasSeleccionados)
-  };
+  useLayoutEffect(()=> {
+    handleChange()
+  },)
 
+  const handleChange = () => { 
+    let graf = movimientos.getGraficos()
+    setGraficos(graf);
+  }
+
+  const UpdatePictogramas = (pics: IPictogram[]) => {    
+    let pictogramaParaAgregar = pics[0]
+    movimientos.agregarPictograma(pictogramaParaAgregar)
+    setPictogramasSeleccionados([]);
+  };
 
   function agregarTexto() {
     setTexto('');
-    let grafico = {esPictograma: false, imagen: '', posicion: {columna: -1, fila: -1}, texto: texto} as Grafico
+    let grafico = {esPictograma: false, imagen: '', posicion: {columna: -1, fila: -1}, texto: texto, identificacion:Date.now().toString()} as Grafico
     movimientos.agregarGrafico(grafico)
-  }
-
-  function agregarPictograma(){
-    let grafico = {esPictograma: true, imagen: '', posicion: {columna: -1, fila: -1}, texto: ''} as Grafico
-    //movimientos.agregarGrafico(grafico)
-  }
-
-  function eliminarTexto(texto: string) {
-  }
-
-  function refrescar(){
-    //Esto es una falopeada pero necesito que se refresque, igual solo anda la primera vez
-    console.log('se debe refrescar: ', refresco)
-    let nuevoRefresco = refresco === true ? false : true
-    console.log('nuevo refresco: ', nuevoRefresco)
-    setRefresco(nuevoRefresco)
   }
 
   return (
@@ -111,7 +103,7 @@ export default function Pizarras(this: any) {
                     return (
                       <TableCell key={f + '-' + c}>
                         <div style={{ overflow: 'hidden', clear: 'both' }}>
-                          <CellDrop fila={f} columna={c} name='celda' onDrop={() => { refrescar()}} movimientos={movimientos} />
+                          <CellDrop fila={f} columna={c} name='celda' onDrop={() => {handleChange() }} movimientos={movimientos} />
                         </div>
                       </TableCell>
                     );
@@ -133,12 +125,14 @@ export default function Pizarras(this: any) {
         onKeyDown={(e) => {
           if(e.keyCode == 13){
             agregarTexto()
+            handleChange()
           }
         } 
       }      
       />
       <Button style={{marginLeft: 5, marginRight: 5}} variant="contained" component="label" onClick={() => {
         agregarTexto(); 
+        handleChange()
       }}>
         Agregar Texto
       </Button>
@@ -162,40 +156,34 @@ export default function Pizarras(this: any) {
             size="small" 
             onKeyDown={(e) => {
               if(e.keyCode == 13){
-                agregarPictograma()
               }
             } 
           }      
           />
-          <Button style={{marginLeft: 5, marginRight: 5, marginTop: 5, marginBottom: 5}} variant="contained" component="label">
-            Agregar Pictograma
-          </Button>
           <br />
-
         </div>
       }
       <div>
         <div style={{ overflow: 'hidden', clear: 'both' }}>
-        {movimientos.getGraficos().map(grafico => {
-          console.log('Se renderizan esta cantidad de graficos: ', movimientos.getGraficos().length)  
-          console.log('Se renderizan estos graficos: ', movimientos.getGraficos())          
-          console.log('Se renderiza : ', grafico)
+        {graficos.map(grafico => {
           if (grafico.posicion.columna === -1 && grafico.posicion.fila === -1)
             {
               if(grafico.esPictograma === false)
-                return(<Box name={grafico.texto} key={grafico.texto} movimientos={movimientos} 
-                  fila={-1} columna={-1} esPictograma={false} imagen={''} onDrop={() => { refrescar()}}/>)
+                return(<Box name={grafico.texto} key={grafico.identificacion} movimientos={movimientos} identificacion={grafico.identificacion} 
+                  fila={-1} columna={-1} esPictograma={false} imagen={''} onDrop={() => {handleChange() }}/>)
               else
-                return(<Box name={grafico.texto} key={grafico.texto} movimientos={movimientos} 
-                  fila={-1} columna={-1} esPictograma={true} imagen={grafico.imagen} onDrop={() => { refrescar()}}/>)
+                return(<Box name={grafico.texto} key={grafico.identificacion} movimientos={movimientos} identificacion={grafico.identificacion} 
+                  fila={-1} columna={-1} esPictograma={true} imagen={grafico.imagen} onDrop={() => { handleChange()}}/>)
             }
         })}
         {refresco && <></>}
         </div>
       </div>
       <Trash movimientos={movimientos} name='Tachito' onDrop={(evt) => {
+        handleChange()
         console.log(evt)
       }}/>      
+
       { mostrarPictogramas && categoriaSeleccionada && (
         <div>
           <CategoriaSeleccionada
@@ -210,8 +198,6 @@ export default function Pizarras(this: any) {
         </div>
       )}
 
-      {/* Si paso setPictogramas tampoco me actualiza */}
-      {/* <Categorias setPictogramas={setPictogramas} pictogramas={pictogramas}/> */}
       { mostrarPictogramas &&
         <div>
           <br />
@@ -221,16 +207,6 @@ export default function Pizarras(this: any) {
           />
         </div>
       }
-      {/* <br />
-      <br />
-      <br />
-      <Ejemplo></Ejemplo>
-      <br />
-      <br />
-      <br />
-      Ejemplo 2
-      <br />
-      <Pizarra></Pizarra> */}
     </div>
   );
 }

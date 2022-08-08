@@ -78,10 +78,10 @@ export const CellDrop: FC<CellDropProps> = memo(function CellDrop({
             //    { grafico.texto } 
             // </div>
           if(grafico.esPictograma === false)
-            return(<Box name={grafico.texto} key={grafico.texto} movimientos={movimientos} 
+            return(<Box name={grafico.texto} key={grafico.identificacion} movimientos={movimientos} identificacion={grafico.identificacion} 
               fila={fila} columna={columna} esPictograma={false} imagen={''} onDrop={() => { }}/>)
           else
-            return(<Box name={grafico.texto} key={grafico.texto} movimientos={movimientos} 
+            return(<Box name={grafico.texto} key={grafico.texto} movimientos={movimientos} identificacion={grafico.identificacion} 
               fila={fila} columna={columna} esPictograma={true} imagen={grafico.imagen} onDrop={() => { }}/>)
         })
       }     

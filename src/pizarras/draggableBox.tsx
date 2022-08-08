@@ -15,6 +15,7 @@ const style: CSSProperties = {
 
 export interface BoxProps {
   name: string,
+  identificacion: string,
   onDrop: () => void,
   movimientos: Movimientos,
   fila,
@@ -24,19 +25,20 @@ export interface BoxProps {
 }
 
 interface DropResult {
-  name: string
+  name: string,
+  identificacion: string
 }
 
 
 
-export const Box: FC<BoxProps> = function Box({ name, onDrop, movimientos, fila, columna, esPictograma, imagen }) {
+export const Box: FC<BoxProps> = function Box({ name, identificacion, onDrop, movimientos, fila, columna, esPictograma, imagen }) {
   const [{ isDragging }, drag] = useDrag(() => ({
     type: 'box',
-    item: { name },
+    item: { name, identificacion },
     end: (item, monitor) => {
       const dropResult = monitor.getDropResult<DropResult>()
       if (item && dropResult) {
-        movimientos.moveGrafico(item.name)
+        movimientos.moveGrafico(item.identificacion)
         onDrop()
       }
     },
