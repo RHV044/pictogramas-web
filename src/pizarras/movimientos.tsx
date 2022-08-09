@@ -31,6 +31,7 @@ export class Movimientos {
     this.graficos.map(g => {
       if (g.identificacion === valor)
       {
+        g.identificacion = Date.now().toString()
         g.posicion.columna = this.ultimoElementoUtilizado.posicion.columna
         g.posicion.fila = this.ultimoElementoUtilizado.posicion.fila
       }
@@ -46,7 +47,7 @@ export class Movimientos {
   }
 
   public eliminarGrafico(valor: string){
-    this.graficos = this.graficos.filter(g => g.identificacion !== valor)
+    this.graficos = [...this.graficos.filter(g => g.identificacion !== valor)]
   }
 
   public agregarPictograma(pic: IPictogram){

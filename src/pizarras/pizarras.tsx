@@ -10,7 +10,7 @@ import {
   TextField,
 } from '@mui/material';
 import { Box } from './draggableBox';
-import { useEffect, useLayoutEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useReducer, useState } from 'react';
 import ResponsiveAppBar from '../commons/appBar';
 import { CellDrop } from './cellDrop';
 import { Trash } from './trash';
@@ -35,7 +35,13 @@ export default function Pizarras(this: any) {
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState(
     null as ICategoria | null
   );
-  const [graficos, setGraficos] = useState([] as Grafico[])
+  const [graficos, setGraficos] = useState([] as Grafico[])  
+  const [render, setRender] = useState(true)
+  const [, updateState] = useState({});
+  const forceUpdate = useCallback(() => updateState({}), [])
+  const update = useReducer(() => ({}), {})[1] as () => void
+
+  const [graficosSinLugar, setGraficosSinLugar] = useState([] as Grafico[])
 
   useEffect(() => {
     ObtenerPictogramas().then((pictogramas) => {
@@ -43,14 +49,36 @@ export default function Pizarras(this: any) {
     });
   }, []);
 
+  useEffect(()=>{
+    let grafs = [...graficos]
+    setGraficosSinLugar(grafs)
+  },[graficos])
+
   useLayoutEffect(()=> {
     handleChange()
   },)
 
   const handleChange = () => { 
     let graf = movimientos.getGraficos()
-    setGraficos(graf);
+    setGraficos(graf);     
+    setRender(true) 
+    if(!compararListas(graficos, graficosSinLugar)){
+      let grafs = [...graficos]
+      setGraficosSinLugar(grafs)
+    }  
   }
+
+  const compararListas = (array1: Grafico[], array2: Grafico[]) => {
+    if (array1.length !== array2.length) return false;
+  
+    for (var i = 0; i < array2.length; i++) {
+      if (array1.some(g => g.identificacion === array2[i].identificacion && 
+        (g.posicion.columna !== array2[i].posicion.columna || g.posicion.fila !== array2[i].posicion.fila))){
+          return false
+        }
+    }
+    return true;
+  };
 
   const UpdatePictogramas = (pics: IPictogram[]) => {    
     let pictogramaParaAgregar = pics[0]
@@ -103,7 +131,8 @@ export default function Pizarras(this: any) {
                     return (
                       <TableCell key={f + '-' + c}>
                         <div style={{ overflow: 'hidden', clear: 'both' }}>
-                          <CellDrop fila={f} columna={c} name='celda' onDrop={() => {handleChange() }} movimientos={movimientos} />
+                          <CellDrop fila={f} columna={c} name='celda' onDrop={() => {}} movimientos={movimientos} />
+                          {/* <CellDrop fila={f} columna={c} name='celda' onDrop={() => {handleChange() }} movimientos={movimientos} /> */}
                         </div>
                       </TableCell>
                     );
@@ -125,7 +154,7 @@ export default function Pizarras(this: any) {
         onKeyDown={(e) => {
           if(e.keyCode == 13){
             agregarTexto()
-            handleChange()
+            //handleChange()
           }
         } 
       }      
@@ -165,22 +194,24 @@ export default function Pizarras(this: any) {
       }
       <div>
         <div style={{ overflow: 'hidden', clear: 'both' }}>
-        {graficos.map(grafico => {
+        { render && graficosSinLugar.map(grafico => {
           if (grafico.posicion.columna === -1 && grafico.posicion.fila === -1)
             {
               if(grafico.esPictograma === false)
                 return(<Box name={grafico.texto} key={grafico.identificacion} movimientos={movimientos} identificacion={grafico.identificacion} 
                   fila={-1} columna={-1} esPictograma={false} imagen={''} onDrop={() => {handleChange() }}/>)
+                  //fila={-1} columna={-1} esPictograma={false} imagen={''} onDrop={() => { }}/>)
               else
                 return(<Box name={grafico.texto} key={grafico.identificacion} movimientos={movimientos} identificacion={grafico.identificacion} 
                   fila={-1} columna={-1} esPictograma={true} imagen={grafico.imagen} onDrop={() => { handleChange()}}/>)
+                  //fila={-1} columna={-1} esPictograma={true} imagen={grafico.imagen} onDrop={() => { }}/>)
             }
         })}
         {refresco && <></>}
         </div>
       </div>
       <Trash movimientos={movimientos} name='Tachito' onDrop={(evt) => {
-        handleChange()
+        // handleChange()
         console.log(evt)
       }}/>      
 

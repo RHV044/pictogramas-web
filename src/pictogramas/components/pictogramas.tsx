@@ -48,10 +48,11 @@ export default function Pictogramas(props: any) {
   );
 
   const UpdatePictogramas = (pics: IPictogram[]) => {
-    setPictogramas(pics);
+    let nuevosPics = [...pics]
+    setPictogramas(nuevosPics);
     // Esto se hace pero en la 2da vez el componente seleccion no se renderiza nuevamente
     setPictogramasSeleccionados(null);
-    setPictogramasSeleccionados(pics);
+    setPictogramasSeleccionados(nuevosPics);
     console.log('PICTOGRAMAS:', pictogramasSeleccionados);
   };
 
