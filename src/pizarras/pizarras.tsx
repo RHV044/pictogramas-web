@@ -28,6 +28,7 @@ import { ICategoria } from '../pictogramas/models/categoria';
 import Categorias from '../pictogramas/components/categorias';
 import CategoriaSeleccionada from '../pictogramas/components/categoriaSeleccionada';
 import PictogramasPorCategoria from '../pictogramas/components/pictogramasPorCategoria';
+import { IndexedDbService } from '../services/indexeddb-service';
 
 export default function Pizarras(this: any) {
   const [filas, setFilas] = useState(0);
@@ -52,7 +53,11 @@ export default function Pizarras(this: any) {
   const [pictogramasFiltrados, setPictogramasFiltrados] = useState(
     [] as IPictogram[]
   );
+  const [picFiltrados, setPicFiltrados] = useState(
+    [] as IPictogram[]
+  );
   const [mostrarFiltrados, setMostrarFiltrados] = useState(false)
+  const [db, setDb] = useState(IndexedDbService.create());
 
   useEffect(() => {
     ObtenerPictogramas().then((pictogramas) => {
@@ -64,6 +69,11 @@ export default function Pizarras(this: any) {
     let grafs = [...graficos]
     setGraficosSinLugar(grafs)
   },[graficos])
+
+  useEffect(()=>{
+    let picFiltrados = [...pictogramasFiltrados]
+    setPicFiltrados(picFiltrados)
+  },[pictogramasFiltrados])
 
   useLayoutEffect(()=> {
     handleChange()
@@ -113,8 +123,13 @@ export default function Pizarras(this: any) {
     else{
       let pictsFiltrados = pictogramas
         .filter((p) => (p.keywords.some((k) => k.keyword.includes(value)) === true || p.categorias?.some((c) => c.nombre.includes(value)) === true))
-        .slice(0, 10);
+        .slice(0, 5);
+      pictsFiltrados.map( async (p) => {
+        let imagen = await db.then( x => x.getValue('imagenes',p.id))
+        p.imagen = imagen.imagen
+      })      
       setPictogramasFiltrados(pictsFiltrados);
+      setPicFiltrados(pictsFiltrados)
       setMostrarFiltrados(true)
     }
   };
@@ -243,7 +258,7 @@ export default function Pizarras(this: any) {
           spacing={{ xs: 2, md: 3 }}
           columns={{ xs: 4, sm: 10, md: 12 }}
         >    
-      {mostrarFiltrados && pictogramasFiltrados.map((pictograma) => {
+      { picFiltrados.map((pictograma) => {
         return (
               <Grid key={pictograma.id} item xs={12} sm={4} md={2}>
                 <Container key={pictograma.id}>

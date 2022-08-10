@@ -68,7 +68,7 @@ export default function Pictogramas(props: any) {
     else{
       let pictsFiltrados = pictogramas
         .filter((p) => (p.keywords.some((k) => k.keyword.includes(value)) === true || p.categorias?.some((c) => c.nombre.includes(value)) === true))
-        .slice(0, 10);
+        .slice(0, 5);
       setPictogramasFiltrados(pictsFiltrados);
     }
   };
