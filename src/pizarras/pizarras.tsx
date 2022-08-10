@@ -1,5 +1,12 @@
 import {
   Button,
+  Card,
+  CardActionArea,
+  CardContent,
+  CardHeader,
+  CardMedia,
+  Container,
+  Grid,
   Paper,
   Switch,
   Table,
@@ -42,6 +49,10 @@ export default function Pizarras(this: any) {
   const update = useReducer(() => ({}), {})[1] as () => void
 
   const [graficosSinLugar, setGraficosSinLugar] = useState([] as Grafico[])
+  const [pictogramasFiltrados, setPictogramasFiltrados] = useState(
+    [] as IPictogram[]
+  );
+  const [mostrarFiltrados, setMostrarFiltrados] = useState(false)
 
   useEffect(() => {
     ObtenerPictogramas().then((pictogramas) => {
@@ -91,6 +102,22 @@ export default function Pizarras(this: any) {
     let grafico = {esPictograma: false, imagen: '', posicion: {columna: -1, fila: -1}, texto: texto, identificacion:Date.now().toString()} as Grafico
     movimientos.agregarGrafico(grafico)
   }
+
+  const filtrarPictogramas = (value: string) => {
+    if (value === '' || value === null)
+    {
+      console.log('no hay mas pictogramas filtrados')
+      setPictogramasFiltrados([])
+      setMostrarFiltrados(false)
+    }
+    else{
+      let pictsFiltrados = pictogramas
+        .filter((p) => (p.keywords.some((k) => k.keyword.includes(value)) === true || p.categorias?.some((c) => c.nombre.includes(value)) === true))
+        .slice(0, 10);
+      setPictogramasFiltrados(pictsFiltrados);
+      setMostrarFiltrados(true)
+    }
+  };
 
   return (
     <div>
@@ -180,14 +207,10 @@ export default function Pizarras(this: any) {
             style={{ marginLeft: 5, marginTop: 5, marginBottom: 5 }}
             label="Buscar Pictograma"
             id="outlined-size-small"
-            //value={}
-            //onChange={(evt) => }
-            size="small" 
-            onKeyDown={(e) => {
-              if(e.keyCode == 13){
-              }
-            } 
-          }      
+            onChange={(evt) => {
+              filtrarPictogramas(evt.target.value);
+            }}
+            size="small"  
           />
           <br />
         </div>
@@ -213,8 +236,49 @@ export default function Pizarras(this: any) {
       <Trash movimientos={movimientos} name='Tachito' onDrop={(evt) => {
         // handleChange()
         console.log(evt)
-      }}/>      
-
+      }}/>  
+      <Container>
+        <Grid
+          container
+          spacing={{ xs: 2, md: 3 }}
+          columns={{ xs: 4, sm: 10, md: 12 }}
+        >    
+      {mostrarFiltrados && pictogramasFiltrados.map((pictograma) => {
+        return (
+              <Grid key={pictograma.id} item xs={12} sm={4} md={2}>
+                <Container key={pictograma.id}>
+                  <Card
+                    sx={{ maxWidth: 245, minWidth: 150 }}
+                    style={{ marginTop: '10px' }}
+                    onClick={() => {}}
+                  >
+                    <CardActionArea
+                      onClick={() => {
+                        let pictogramasSel = [...pictogramasSeleccionados];
+                        if (pictogramasSel !== null) {
+                          pictogramasSel.push(pictograma);
+                          UpdatePictogramas(pictogramasSel)
+                        }
+                      }}
+                    >
+                      <CardMedia
+                        component="img"
+                        height="140"
+                        src={`data:image/png;base64, ${pictograma.imagen}`}
+                        alt={pictograma.keywords[0].keyword}
+                      ></CardMedia>
+                      <CardHeader
+                        title={pictograma.keywords[0].keyword}
+                      ></CardHeader>
+                      <CardContent></CardContent>
+                    </CardActionArea>
+                  </Card>
+                </Container>
+              </Grid>
+            );
+          })}
+        </Grid>
+      </Container>
       { mostrarPictogramas && categoriaSeleccionada && (
         <div>
           <CategoriaSeleccionada

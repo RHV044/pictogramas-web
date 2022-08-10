@@ -63,12 +63,14 @@ export default function Pictogramas(props: any) {
   }, []);
 
   const filtrarPictogramas = (value: string) => {
-    console.log('voy a filtrar pictogramas - total: ', pictogramas.length);
-    let pictsFiltrados = pictogramas
-      .filter((p) => (p.keywords.some((k) => k.keyword.includes(value)) === true || p.categorias?.some((c) => c.nombre.includes(value)) === true))
-      .slice(0, 10);
-    setPictogramasFiltrados(pictsFiltrados);
-    console.log('pictogramas filtrados: ', pictogramasFiltrados);
+    if (value === '' || value === null)
+      setPictogramasFiltrados([])
+    else{
+      let pictsFiltrados = pictogramas
+        .filter((p) => (p.keywords.some((k) => k.keyword.includes(value)) === true || p.categorias?.some((c) => c.nombre.includes(value)) === true))
+        .slice(0, 10);
+      setPictogramasFiltrados(pictsFiltrados);
+    }
   };
 
   return (
@@ -133,7 +135,7 @@ export default function Pictogramas(props: any) {
         label="Filtrar pictogramas por palabra clave o categoria"
         variant="standard"
         onChange={(event) => {
-          if (event?.target?.value) filtrarPictogramas(event.target.value);
+          filtrarPictogramas(event.target.value);
         }}
       />
       <Container>
@@ -164,9 +166,6 @@ export default function Pictogramas(props: any) {
                       <CardMedia
                         component="img"
                         height="140"
-                        //image={apiPictogramas+'/pictogramas/'+pictograma.id+'/obtener'}
-                        //image={pictograma.imagen}
-                        //TODO: Optimizar o ver alternativa para levantar los base64
                         src={`data:image/png;base64, ${pictograma.imagen}`}
                         alt={pictograma.keywords[0].keyword}
                       ></CardMedia>
