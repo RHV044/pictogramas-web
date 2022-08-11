@@ -72,6 +72,10 @@ export default function Pizarras(this: any) {
 
   useEffect(()=>{
     let picFiltrados = [...pictogramasFiltrados]
+    // picFiltrados.map( async (p) => {
+    //   let imagen = await db.then( x => x.getValue('imagenes',p.id))
+    //   p.imagen = imagen.imagen
+    // })     
     setPicFiltrados(picFiltrados)
   },[pictogramasFiltrados])
 
@@ -113,7 +117,7 @@ export default function Pizarras(this: any) {
     movimientos.agregarGrafico(grafico)
   }
 
-  const filtrarPictogramas = (value: string) => {
+  const filtrarPictogramas = async (value: string) => {
     if (value === '' || value === null)
     {
       console.log('no hay mas pictogramas filtrados')
@@ -123,11 +127,11 @@ export default function Pizarras(this: any) {
     else{
       let pictsFiltrados = pictogramas
         .filter((p) => (p.keywords.some((k) => k.keyword.includes(value)) === true || p.categorias?.some((c) => c.nombre.includes(value)) === true))
-        .slice(0, 5);
-      pictsFiltrados.map( async (p) => {
+        .slice(0, 5)
+      await Promise.all(pictsFiltrados.map( async (p) => {
         let imagen = await db.then( x => x.getValue('imagenes',p.id))
         p.imagen = imagen.imagen
-      })      
+      }))      
       setPictogramasFiltrados(pictsFiltrados);
       setPicFiltrados(pictsFiltrados)
       setMostrarFiltrados(true)

@@ -46,6 +46,7 @@ export default function Pictogramas(props: any) {
   const [pictogramasFiltrados, setPictogramasFiltrados] = useState(
     [] as IPictogram[]
   );
+  const [db, setDb] = useState(IndexedDbService.create());
 
   const UpdatePictogramas = (pics: IPictogram[]) => {
     let nuevosPics = [...pics]
@@ -62,13 +63,17 @@ export default function Pictogramas(props: any) {
     });
   }, []);
 
-  const filtrarPictogramas = (value: string) => {
+  const filtrarPictogramas = async (value: string) => {
     if (value === '' || value === null)
       setPictogramasFiltrados([])
     else{
       let pictsFiltrados = pictogramas
         .filter((p) => (p.keywords.some((k) => k.keyword.includes(value)) === true || p.categorias?.some((c) => c.nombre.includes(value)) === true))
         .slice(0, 5);
+      await Promise.all(pictsFiltrados.map( async (p) => {
+          let imagen = await db.then( x => x.getValue('imagenes',p.id))
+          p.imagen = imagen.imagen
+        }))  
       setPictogramasFiltrados(pictsFiltrados);
     }
   };
