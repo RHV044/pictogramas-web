@@ -4,7 +4,7 @@ import { memo } from 'react'
 import { Grafico, Movimientos } from './movimientos'
 import { Box } from './draggableBox'
 
-const style: CSSProperties = {
+export const cellDropStyle: CSSProperties = {
   height: '12rem',
   width: '12rem',
   marginRight: '1.5rem',
@@ -100,7 +100,7 @@ export const CellDrop: FC<CellDropProps> = memo(function CellDrop({
   return (
     <div>
       { (graficosSinLugar.length === 0 ||  !graficosSinLugar.some(g => g.posicion.columna === columna && g.posicion.fila === fila)) && 
-        <div ref={drop} style={{ ...style, backgroundColor }} data-testid="dustbin">
+        <div ref={drop} style={{ ...cellDropStyle, backgroundColor }} data-testid="dustbin">
           {isActive ? 'Release to drop' : 'Drag a box here'}
         </div>
       }

@@ -19,7 +19,7 @@ import {
 import { Box } from './draggableBox';
 import { useCallback, useEffect, useLayoutEffect, useMemo, useReducer, useState } from 'react';
 import ResponsiveAppBar from '../commons/appBar';
-import { CellDrop } from './cellDrop';
+import { CellDrop, cellDropStyle } from './cellDrop';
 import { Trash } from './trash';
 import { Grafico, Movimientos } from './movimientos';
 import { IPictogram } from '../pictogramas/models/pictogram';
@@ -29,6 +29,13 @@ import Categorias from '../pictogramas/components/categorias';
 import CategoriaSeleccionada from '../pictogramas/components/categoriaSeleccionada';
 import PictogramasPorCategoria from '../pictogramas/components/pictogramasPorCategoria';
 import { IndexedDbService } from '../services/indexeddb-service';
+import EstilosFormDialog from './personalizacion';
+
+export type EstilosPizarras = {
+  fila: number,
+  columna: number,
+  color: string
+}
 
 export default function Pizarras(this: any) {
   const [filas, setFilas] = useState(0);
@@ -52,11 +59,12 @@ export default function Pizarras(this: any) {
     [] as IPictogram[]
   );
   const [db, setDb] = useState(IndexedDbService.create());
+  const [estilos, setEstilos] = useState([] as EstilosPizarras[])
 
   useEffect(() => {
     ObtenerPictogramas().then((pictogramas) => {
       setPictogramas(pictogramas);
-    });
+    });    
   }, []);
 
   useEffect(()=>{
@@ -125,6 +133,7 @@ export default function Pizarras(this: any) {
   return (
     <div>
       <ResponsiveAppBar />
+      <Container>
       <TextField
         style={{ marginLeft: 5 }}
         label="Filas"
@@ -149,6 +158,9 @@ export default function Pizarras(this: any) {
         }}
         size="small"
       />
+      <EstilosFormDialog 
+        filas={filas} columnas={columnas}/>
+      </Container>
       <br />
       <Table component={Paper}>
         <Table sx={{ width: '100%', height: '100%' }} aria-label="simple table">
@@ -160,7 +172,7 @@ export default function Pizarras(this: any) {
                   {Array.from(Array(columnas), (d, c) => {
                     return (
                       <TableCell key={f + '-' + c}>
-                        <div style={{ overflow: 'hidden', clear: 'both' }}>
+                        <div style={{ overflow: 'hidden', clear: 'both'  }}>   {/* backgroundColor: 'green', ...cellDropStyle */}
                           <CellDrop fila={f} columna={c} name='celda' onDrop={() => {}} movimientos={movimientos} />
                           {/* <CellDrop fila={f} columna={c} name='celda' onDrop={() => {handleChange() }} movimientos={movimientos} /> */}
                         </div>
