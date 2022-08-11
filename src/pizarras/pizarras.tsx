@@ -46,17 +46,11 @@ export default function Pizarras(this: any) {
   const [graficos, setGraficos] = useState([] as Grafico[])  
   const [render, setRender] = useState(true)
   const [, updateState] = useState({});
-  const forceUpdate = useCallback(() => updateState({}), [])
-  const update = useReducer(() => ({}), {})[1] as () => void
 
   const [graficosSinLugar, setGraficosSinLugar] = useState([] as Grafico[])
   const [pictogramasFiltrados, setPictogramasFiltrados] = useState(
     [] as IPictogram[]
   );
-  const [picFiltrados, setPicFiltrados] = useState(
-    [] as IPictogram[]
-  );
-  const [mostrarFiltrados, setMostrarFiltrados] = useState(false)
   const [db, setDb] = useState(IndexedDbService.create());
 
   useEffect(() => {
@@ -69,15 +63,6 @@ export default function Pizarras(this: any) {
     let grafs = [...graficos]
     setGraficosSinLugar(grafs)
   },[graficos])
-
-  useEffect(()=>{
-    let picFiltrados = [...pictogramasFiltrados]
-    // picFiltrados.map( async (p) => {
-    //   let imagen = await db.then( x => x.getValue('imagenes',p.id))
-    //   p.imagen = imagen.imagen
-    // })     
-    setPicFiltrados(picFiltrados)
-  },[pictogramasFiltrados])
 
   useLayoutEffect(()=> {
     handleChange()
@@ -122,7 +107,6 @@ export default function Pizarras(this: any) {
     {
       console.log('no hay mas pictogramas filtrados')
       setPictogramasFiltrados([])
-      setMostrarFiltrados(false)
     }
     else{
       let pictsFiltrados = pictogramas
@@ -133,8 +117,6 @@ export default function Pizarras(this: any) {
         p.imagen = imagen.imagen
       }))      
       setPictogramasFiltrados(pictsFiltrados);
-      setPicFiltrados(pictsFiltrados)
-      setMostrarFiltrados(true)
     }
   };
 
@@ -262,7 +244,7 @@ export default function Pizarras(this: any) {
           spacing={{ xs: 2, md: 3 }}
           columns={{ xs: 4, sm: 10, md: 12 }}
         >    
-      { picFiltrados.map((pictograma) => {
+      { pictogramasFiltrados.map((pictograma) => {
         return (
               <Grid key={pictograma.id} item xs={12} sm={4} md={2}>
                 <Container key={pictograma.id}>
