@@ -13,6 +13,7 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import { useLocation, useNavigate } from 'react-router-dom';
+import FormDialogValidarAcceso from '../configuracion/components/validarCambioConfiguracion';
 
 const pages = ['Pizarras', 'Actividades', 'Estadisticas'];
 const settings = ['Configuracion', 'Cambiar Cuenta'];
@@ -39,11 +40,11 @@ const ResponsiveAppBar = () => {
   };
 
   const handleChange = (page: string) => {
-    navigate(`/${page.toLocaleLowerCase().replace(/ /g,'')}` + location.search);
+    navigate(`/${page.toLocaleLowerCase().replace(/ /g, '')}` + location.search);
   }
 
   return (
-    <AppBar position="static" style={{marginBottom: 10}}>
+    <AppBar position="static" style={{ marginBottom: 10 }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
@@ -95,7 +96,9 @@ const ResponsiveAppBar = () => {
               }}
             >
               {pages.map((page) => (
-                <MenuItem key={page} onClick={() => handleChange(page)}>
+                <MenuItem key={page} onClick={() => {
+                  handleChange(page)
+                }}>
                   <Typography textAlign="center">{page}</Typography>
                 </MenuItem>
               ))}

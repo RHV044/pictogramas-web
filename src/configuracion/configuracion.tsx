@@ -34,6 +34,7 @@ import Filtros from '../pictogramas/components/filtros';
 import { ICategoria } from '../pictogramas/models/categoria';
 import { ObtenerCategorias } from '../pictogramas/services/pictogramas-services';
 import React from 'react';
+import FormDialogValidarAcceso from './components/validarCambioConfiguracion';
 
 export default function Configuracion() {
   let navigate = useNavigate();
@@ -95,6 +96,7 @@ export default function Configuracion() {
 
   return (
     <div>
+      <FormDialogValidarAcceso />
       {userLogueado && (
         <div>
           <ResponsiveAppBar />
