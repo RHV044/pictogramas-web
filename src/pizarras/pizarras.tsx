@@ -64,13 +64,14 @@ export default function Pizarras(this: any) {
     setGraficosSinLugar(grafs)
   },[graficos])
 
-  useLayoutEffect(()=> {
-    handleChange()
-  },)
+  // useLayoutEffect(()=> {
+  //   handleChange()
+  // },)
 
   const handleChange = () => { 
-    let graf = movimientos.getGraficos()
-    setGraficos(graf);     
+    let graf = [...movimientos.getGraficos()]
+    setGraficos(graf);   
+    setGraficosSinLugar(graf)  
     setRender(true) 
     if(!compararListas(graficos, graficosSinLugar)){
       let grafs = [...graficos]
@@ -94,6 +95,7 @@ export default function Pizarras(this: any) {
     let pictogramaParaAgregar = pics[0]
     movimientos.agregarPictograma(pictogramaParaAgregar)
     setPictogramasSeleccionados([]);
+    handleChange()
   };
 
   function agregarTexto() {
@@ -182,7 +184,7 @@ export default function Pizarras(this: any) {
         onKeyDown={(e) => {
           if(e.keyCode == 13){
             agregarTexto()
-            //handleChange()
+            handleChange()
           }
         } 
       }      

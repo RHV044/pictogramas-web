@@ -5,7 +5,6 @@ export type Position = {
   fila: number,
   columna: number
 }
-export type PositionObserver = ((position: Position) => void) | null
 export type Grafico = {
   texto: string, 
   posicion: Position,

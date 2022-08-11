@@ -48,7 +48,7 @@ export const CellDrop: FC<CellDropProps> = memo(function CellDrop({
     },
     drop: (monitor) => {
       movimientos.moveElement(fila, columna)
-      let grafs = movimientos.getGraficos()
+      let grafs = [...movimientos.getGraficos()]
       setGraficos([...grafs])
       onDrop()
     },    
@@ -58,9 +58,9 @@ export const CellDrop: FC<CellDropProps> = memo(function CellDrop({
     }),
   }))
 
-  useLayoutEffect(()=> {
-    handleChange()
-  },)
+  // useLayoutEffect(()=> {
+  //   handleChange()
+  // },)
 
   useEffect(()=>{
     let grafs = [...graficos]
@@ -68,7 +68,7 @@ export const CellDrop: FC<CellDropProps> = memo(function CellDrop({
   },[graficos])
 
   const handleChange = () => { 
-      let graf = movimientos.getGraficos()
+      let graf = [...movimientos.getGraficos()]
       setGraficos(graf);              
       if(!compararListas(graficos, graficosSinLugar)){
         let grafs = [...graficos]
