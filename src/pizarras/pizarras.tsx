@@ -240,6 +240,7 @@ export default function Pizarras(this: any) {
         // handleChange()
         console.log(evt)
       }}/>  
+      { pictogramasFiltrados.length > 0 && <div>Seleccione los pictogramas que desee agregar para utilizar en la pizarra</div>}
       <Container>
         <Grid
           container
