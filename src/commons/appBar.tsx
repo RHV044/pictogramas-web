@@ -40,6 +40,7 @@ const ResponsiveAppBar = () => {
   };
 
   const handleChange = (page: string) => {
+    <FormDialogValidarAcceso/>
     navigate(`/${page.toLocaleLowerCase().replace(/ /g, '')}` + location.search);
   }
 

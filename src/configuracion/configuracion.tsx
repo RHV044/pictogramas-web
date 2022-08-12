@@ -17,6 +17,7 @@ import {
   SelectChangeEvent,
   Slider,
   Stack,
+  Switch,
   TextField,
 } from '@mui/material';
 import { Container } from '@mui/system';
@@ -44,6 +45,8 @@ export default function Configuracion() {
   const [categoriasFiltradas, setCategoriasFiltradas] = useState(
     [] as ICategoria[]
   );
+
+  const [personalizarCategorias, setPersonalizarCategorias] = useState(false);
 
   const handleChange = (event: SelectChangeEvent) => {
     setNivel(event.target.value as string);
@@ -96,7 +99,7 @@ export default function Configuracion() {
 
   return (
     <div>
-      <FormDialogValidarAcceso />
+      {/* <FormDialogValidarAcceso /> */}
       {userLogueado && (
         <div>
           <ResponsiveAppBar />
@@ -120,7 +123,7 @@ export default function Configuracion() {
                     <InputLabel id="nivel-label">Nivel</InputLabel>
                     <Select
                       labelId="nivel-label"
-                      id="nivel-select-helper"
+                      id="nivel-select"
                       value={nivel}
                       label="Nivel"
                       onChange={handleChange}
@@ -214,14 +217,28 @@ export default function Configuracion() {
             </FormControl>
 
             <br /><br />
-            Seleccione las categorías que desea visualizar
-            {categorias.length > 0 && (
-              <Filtros
-                filtros={categorias}
-                setFiltros={setCategoriasFiltradas}
-                filtro={'Categorias'}
-              />
-            )}
+            {
+              <div>
+                <Switch
+                  checked={personalizarCategorias}
+                  onChange={(evt) => setPersonalizarCategorias(evt?.target?.checked)}
+                /> Personalizar Categorias
+              </div>
+            }
+            {
+              personalizarCategorias &&
+              <div>
+                Seleccione las categorías que desea visualizar
+                {categorias.length > 0 && (
+                  <Filtros
+                    filtros={categorias}
+                    setFiltros={setCategoriasFiltradas}
+                    filtro={'Categorias'}
+                  />
+                )}
+              </div>
+            }
+
 
             <Stack spacing={2} direction="row">
               <Button

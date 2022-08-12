@@ -23,8 +23,9 @@ export default function FormDialogValidarAcceso() {
                 <DialogTitle>Control de acceso</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        ¿Cual es el resultado de 2+2?
+                        ¿Cual es el resultado de 2+2?                        
                     </DialogContentText>
+                    <br />
                     <TextField 
                     id="resultado-input" 
                     label="Resultado" 
