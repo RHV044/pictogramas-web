@@ -99,7 +99,6 @@ export default function Configuracion() {
 
   return (
     <div>
-      {/* <FormDialogValidarAcceso /> */}
       {userLogueado && (
         <div>
           <ResponsiveAppBar />

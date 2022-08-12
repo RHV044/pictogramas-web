@@ -2,19 +2,14 @@ import { Button, Dialog, DialogContent, DialogContentText, DialogTitle, Input, T
 import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 
-export default function FormDialogValidarAcceso() {
-    const [open, setOpen] = useState(false);
+export default function FormDialogValidarAcceso(props: any) {
     const [resultado, setResultado] = useState("" as string);
     
     let navigate = useNavigate();
 
     const handleClose = () => {
-        setOpen(false);
+        props.cerrarValidarConfiguracion()
     }
-    
-    const handleClickOpen = () => {
-        setOpen(true);
-      };
     
 
     return (

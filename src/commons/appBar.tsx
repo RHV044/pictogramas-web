@@ -23,6 +23,8 @@ const ResponsiveAppBar = () => {
   let location = useLocation();
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+  const [configuracionOpen, setConfiguracionOpen] = React.useState(false);
+
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -39,15 +41,25 @@ const ResponsiveAppBar = () => {
     setAnchorElUser(null);
   };
 
+  const cerrarValidarConfiguracion = () => {
+    setConfiguracionOpen(false);
+  };
+
+
   const handleChange = (page: string) => {
-    <FormDialogValidarAcceso/>
-    navigate(`/${page.toLocaleLowerCase().replace(/ /g, '')}` + location.search);
+    if (page === 'Configuracion') {
+      setConfiguracionOpen(true)
+    }
+    else {
+      navigate(`/${page.toLocaleLowerCase().replace(/ /g, '')}` + location.search);
+    }
   }
 
   return (
     <AppBar position="static" style={{ marginBottom: 10 }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
+          {configuracionOpen && <FormDialogValidarAcceso cerrarValidarConfiguracion={cerrarValidarConfiguracion} />}
           <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
           <Typography
             variant="h6"
