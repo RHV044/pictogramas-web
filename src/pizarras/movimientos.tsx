@@ -1,5 +1,4 @@
 import { IPictogram } from "../pictogramas/models/pictogram"
-import { Grafico } from "./intento2/grafico"
 
 export type Position = {
   fila: number,

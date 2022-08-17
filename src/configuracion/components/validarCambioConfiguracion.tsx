@@ -2,19 +2,14 @@ import { Button, Dialog, DialogContent, DialogContentText, DialogTitle, Input, T
 import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 
-export default function FormDialogValidarAcceso() {
-    const [open, setOpen] = useState(false);
+export default function FormDialogValidarAcceso(props: any) {
     const [resultado, setResultado] = useState("" as string);
     
     let navigate = useNavigate();
 
     const handleClose = () => {
-        setOpen(false);
+        props.cerrarValidarConfiguracion()
     }
-    
-    const handleClickOpen = () => {
-        setOpen(true);
-      };
     
 
     return (
@@ -23,8 +18,9 @@ export default function FormDialogValidarAcceso() {
                 <DialogTitle>Control de acceso</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        ¿Cual es el resultado de 2+2?
+                        ¿Cual es el resultado de 2+2?                        
                     </DialogContentText>
+                    <br />
                     <TextField 
                     id="resultado-input" 
                     label="Resultado" 
