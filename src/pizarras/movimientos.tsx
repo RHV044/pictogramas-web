@@ -5,6 +5,7 @@ export type Position = {
   fila: number,
   columna: number
 }
+
 export type Grafico = {
   texto: string, 
   posicion: Position,
