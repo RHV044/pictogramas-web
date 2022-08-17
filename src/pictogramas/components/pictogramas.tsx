@@ -161,10 +161,12 @@ export default function Pictogramas(props: any) {
                   >
                     <CardActionArea
                       onClick={() => {
-                        let pictogramasSel = pictogramasSeleccionados;
-                        if (pictogramasSel !== null) {
-                          pictogramasSel.push(pictograma);
-                          setPictogramasSeleccionados(pictogramasSel);
+                        if(pictogramasSeleccionados){
+                          let pictogramasSel = [...pictogramasSeleccionados];
+                          if (pictogramasSel !== null) {
+                            pictogramasSel.push(pictograma);
+                            setPictogramasSeleccionados(pictogramasSel);
+                          }
                         }
                       }}
                     >

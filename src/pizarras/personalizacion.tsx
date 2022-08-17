@@ -14,7 +14,7 @@ import "react-color-palette/lib/css/styles.css";
 
 export default function EstilosFormDialog(props: any) {
   const [open, setOpen] = useState(false);
-  const { filas, columnas } = props  
+  const { filas, columnas, estilos } = props  
   const [fila, setFila] = useState(0)
   const [columna, setColumna] = useState(0)
   const [color, setColor] = useColor("hex", "#121212")
@@ -30,7 +30,35 @@ export default function EstilosFormDialog(props: any) {
     setOpen(false);
   };
 
-  const handleCrear = () => {
+  const handleAceptar = () => {
+    let nuevosEstilos = [...estilos]
+    nuevosEstilos.map(e => {
+      if(fila && columna)
+      {
+        if(e.fila === fila && e.columna === columna)
+          return {...e, color:color}
+      }
+      else
+      {
+        if(fila)
+        {
+          if(e.fila === fila)
+            return {...e, color:color}
+        }
+        if(columna){
+          if(e.columna === columna)
+            return {...e, color:color}
+        }
+      }
+    })
+    props.actualizarEstilos(nuevosEstilos)
+    setOpen(false);
+  };
+
+  const handleRestablecer = () => {
+    let nuevosEstilos = [...estilos]
+    nuevosEstilos.map(e => e.color = 'white')
+    props.actualizarEstilos(nuevosEstilos)
     setOpen(false);
   };
 
@@ -62,9 +90,9 @@ export default function EstilosFormDialog(props: any) {
                     label="fila"
                     onChange={handleFilaChange}
                   >
-                    <MenuItem value={0}>Ninguna</MenuItem>
+                    <MenuItem value={0} key={0}>Ninguna</MenuItem>
                     {Array.from(Array(filas), (e, f) => {
-                      return(<MenuItem value={f+1}>{f+1}</MenuItem>)
+                      return(<MenuItem value={f+1} key={f+1}>{f+1}</MenuItem>)
                     })}              
                   </Select>
                 </FormControl>
@@ -77,9 +105,9 @@ export default function EstilosFormDialog(props: any) {
                     label="columna"
                     onChange={handleColumnaChange}
                   >
-                    <MenuItem value={0}>Ninguna</MenuItem>
+                    <MenuItem value={0} key={0}>Ninguna</MenuItem>
                     {Array.from(Array(columnas), (e, c) => {
-                      return(<MenuItem value={c+1}>{c+1}</MenuItem>)
+                      return(<MenuItem value={c+1} key={c+1}>{c+1}</MenuItem>)
                     })}                 
                   </Select>
                 </FormControl>
@@ -97,8 +125,9 @@ export default function EstilosFormDialog(props: any) {
           <br />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCrear}>Aceptar</Button>
+          <Button onClick={handleAceptar}>Aceptar</Button>
           <Button onClick={handleClose}>Cancelar</Button>
+          <Button onClick={handleRestablecer}>Restablecer</Button>
         </DialogActions>
       </Dialog>
     </div>

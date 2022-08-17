@@ -60,7 +60,7 @@ export default function Pizarras(this: any) {
   );
   const [db, setDb] = useState(IndexedDbService.create());
   const [estilos, setEstilos] = useState([] as EstilosPizarras[])
-
+  
   useEffect(() => {
     ObtenerPictogramas().then((pictogramas) => {
       setPictogramas(pictogramas);
@@ -68,13 +68,16 @@ export default function Pizarras(this: any) {
   }, []);
 
   useEffect(()=>{
-    let grafs = [...graficos]
-    setGraficosSinLugar(grafs)
+    actualizarEstilos()
   },[graficos])
 
-  // useLayoutEffect(()=> {
-  //   handleChange()
-  // },)
+  useEffect(()=>{
+    actualizarEstilos()
+  },[columnas])
+
+  useEffect(()=>{
+
+  },[filas])
 
   const handleChange = () => { 
     let graf = [...movimientos.getGraficos()]
@@ -130,6 +133,29 @@ export default function Pizarras(this: any) {
     }
   };
 
+  const nuevosEstilos = (nuevosEstilos: EstilosPizarras[]) =>{
+    setEstilos(nuevosEstilos)
+    console.log('Hay nuevos estilos: ', nuevosEstilos)
+  }
+
+  const actualizarEstilos = () =>{
+    let est = [] as EstilosPizarras[] 
+    for (let f = 0; f < filas; f++) {
+      for (let c = 0; c < columnas; c++) {
+        if(estilos.some(e => e.columna === c && e.fila === f))
+        {
+          let nuevoEstilo = estilos.find(e => e.columna === c && e.fila === f)
+          if (nuevoEstilo)
+            est.push(nuevoEstilo)
+        }
+        else
+          est.push({color: 'white', columna: c, fila:f})
+      }      
+    }
+    setEstilos(est)
+    console.log('Se refrescan los estilos: ', est)
+  }
+
   return (
     <div>
       <ResponsiveAppBar />
@@ -142,7 +168,7 @@ export default function Pizarras(this: any) {
         inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
         onChange={(evt) => {
           let cantidad = parseInt(evt?.target?.value)          
-          setFilas(cantidad ? cantidad : 0)
+          setFilas(cantidad ? cantidad : 0)          
         }}
         size="small"
       />
@@ -159,7 +185,7 @@ export default function Pizarras(this: any) {
         size="small"
       />
       <EstilosFormDialog 
-        filas={filas} columnas={columnas}/>
+        filas={filas} columnas={columnas} estilos={estilos} actualizarEstilos={nuevosEstilos}/>
       </Container>
       <br />
       <Table component={Paper}>
@@ -172,7 +198,7 @@ export default function Pizarras(this: any) {
                   {Array.from(Array(columnas), (d, c) => {
                     return (
                       <TableCell key={f + '-' + c}>
-                        <div style={{ overflow: 'hidden', clear: 'both'  }}>   {/* backgroundColor: 'green', ...cellDropStyle */}
+                        <div style={{ overflow: 'hidden', clear: 'both', backgroundColor:estilos.find(e => e => e.columna === c && e.fila === f)?.color }}>   {/* backgroundColor: 'green', ...cellDropStyle */}
                           <CellDrop fila={f} columna={c} name='celda' onDrop={() => {}} movimientos={movimientos} />
                           {/* <CellDrop fila={f} columna={c} name='celda' onDrop={() => {handleChange() }} movimientos={movimientos} /> */}
                         </div>
