@@ -68,7 +68,7 @@ export default function Pizarras(this: any) {
   }, []);
 
   useEffect(()=>{
-    actualizarEstilos()
+    
   },[graficos])
 
   useEffect(()=>{
@@ -76,8 +76,11 @@ export default function Pizarras(this: any) {
   },[columnas])
 
   useEffect(()=>{
-
+    actualizarEstilos()
   },[filas])
+
+  useEffect(()=>{
+  },[estilos])
 
   const handleChange = () => { 
     let graf = [...movimientos.getGraficos()]
@@ -135,7 +138,6 @@ export default function Pizarras(this: any) {
 
   const nuevosEstilos = (nuevosEstilos: EstilosPizarras[]) =>{
     setEstilos(nuevosEstilos)
-    console.log('Hay nuevos estilos: ', nuevosEstilos)
   }
 
   const actualizarEstilos = () =>{
@@ -149,11 +151,16 @@ export default function Pizarras(this: any) {
             est.push(nuevoEstilo)
         }
         else
-          est.push({color: 'white', columna: c, fila:f})
+          est.push({color: '#1ed080', columna: c, fila:f}) //#fff -> blanco - #1ed080 -> verdecito
       }      
     }
     setEstilos(est)
-    console.log('Se refrescan los estilos: ', est)
+  }
+
+  const obtenerEstilo = (fila: number, columna: number) => {
+    let c = estilos.find(e => e.columna === columna && e.fila === fila)?.color
+    console.log('actualizacion - FILA: ' + fila + ' COLUMNA: ' + columna + ' COLOR: ' + c)
+    return c
   }
 
   return (
@@ -185,7 +192,7 @@ export default function Pizarras(this: any) {
         size="small"
       />
       <EstilosFormDialog 
-        filas={filas} columnas={columnas} estilos={estilos} actualizarEstilos={nuevosEstilos}/>
+        filas={filas} columnas={columnas} estilos={[...estilos]} actualizarEstilos={nuevosEstilos}/>
       </Container>
       <br />
       <Table component={Paper}>
@@ -198,7 +205,7 @@ export default function Pizarras(this: any) {
                   {Array.from(Array(columnas), (d, c) => {
                     return (
                       <TableCell key={f + '-' + c}>
-                        <div style={{ overflow: 'hidden', clear: 'both', backgroundColor:estilos.find(e => e => e.columna === c && e.fila === f)?.color }}>   {/* backgroundColor: 'green', ...cellDropStyle */}
+                        <div style={{ overflow: 'hidden', clear: 'both', backgroundColor:obtenerEstilo(f,c) }}>   {/* backgroundColor: 'green', ...cellDropStyle */}
                           <CellDrop fila={f} columna={c} name='celda' onDrop={() => {}} movimientos={movimientos} />
                           {/* <CellDrop fila={f} columna={c} name='celda' onDrop={() => {handleChange() }} movimientos={movimientos} /> */}
                         </div>

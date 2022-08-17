@@ -32,23 +32,27 @@ export default function EstilosFormDialog(props: any) {
 
   const handleAceptar = () => {
     let nuevosEstilos = [...estilos]
-    nuevosEstilos.map(e => {
+    nuevosEstilos = nuevosEstilos.map(e => {
       if(fila && columna)
       {
-        if(e.fila === fila && e.columna === columna)
-          return {...e, color:color}
+        if(e.fila === (fila-1) && e.columna === (columna-1))
+          return {...e, color:color.hex}
+
+        return e
       }
       else
       {
         if(fila)
         {
-          if(e.fila === fila)
-            return {...e, color:color}
+          if(e.fila === fila-1)
+            return {...e, color:color.hex}
         }
         if(columna){
-          if(e.columna === columna)
-            return {...e, color:color}
+          if(e.columna === columna-1)
+            return {...e, color:color.hex}
         }
+
+        return e
       }
     })
     props.actualizarEstilos(nuevosEstilos)
