@@ -31,7 +31,7 @@ export default function CategoriaPropios(props: any) {
                 props.categoriaSeleccionada !== -1
               ) {
                 let categoria = {id: -1, nombre: "Pictogramas Propios"} as ICategoria
-                props.setCategoriaSeleccionada(categoria);
+                props.setCategoriaSeleccionada(categoria );
               } else {
                 props.setCategoriaSeleccionada(null);
               }
