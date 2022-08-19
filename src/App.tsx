@@ -9,9 +9,10 @@ import Categorias from './pictogramas/components/categorias';
 import Configuracion from './configuracion/configuracion';
 import Pizarras from './pizarras/pizarras';
 import Estadisticas from './estadisticas/estadisticas';
-import Actividades from './actividades/actividades';
+import SeleccionDeNivel from './actividades/seleccionDeNivel';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend'
+import Actividad from './actividades/actividad';
 
 function App() {
 
@@ -30,7 +31,8 @@ function App() {
             <Route path="/configuracion" element={<Configuracion/>} />
             <Route path="/pizarras" element={<Pizarras/>} />
             <Route path="/estadisticas" element={<Estadisticas/>} />
-            <Route path="/actividades" element={<Actividades/>} />
+            <Route path="/actividades" element={<SeleccionDeNivel/>} />
+            <Route path="/actividad" element={<Actividad/>} />
 
             <Route path="/" element={<Navigate to="/cuenta/seleccionar" />} />
             <Route path="/pictogramas-web" element={<Navigate to="/cuenta/seleccionar" />} />

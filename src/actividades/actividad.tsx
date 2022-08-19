@@ -1,11 +1,11 @@
 import ResponsiveAppBar from "../commons/appBar";
 
-export default function Actividades(){
+export default function Actividad(){
 
   return(
     <div>
       <ResponsiveAppBar />
-      Actividades
+      Juego de Categorizar los Pictogramas
     </div>
   )
 }
