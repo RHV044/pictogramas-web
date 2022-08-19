@@ -25,9 +25,9 @@ import { Grafico, Movimientos } from './movimientos';
 import { IPictogram } from '../pictogramas/models/pictogram';
 import { ObtenerPictogramas } from '../pictogramas/services/pictogramas-services';
 import { ICategoria } from '../pictogramas/models/categoria';
-import Categorias from '../pictogramas/components/categorias';
-import CategoriaSeleccionada from '../pictogramas/components/categoriaSeleccionada';
-import PictogramasPorCategoria from '../pictogramas/components/pictogramasPorCategoria';
+import Categorias from '../pictogramas/components/categorias/categorias';
+import CategoriaSeleccionada from '../pictogramas/components/categorias/categoriaSeleccionada';
+import PictogramasPorCategoria from '../pictogramas/components/categorias/pictogramasPorCategoria';
 import { IndexedDbService } from '../services/indexeddb-service';
 import EstilosFormDialog from './personalizacion';
 

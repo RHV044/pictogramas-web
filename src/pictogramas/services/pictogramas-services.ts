@@ -58,6 +58,12 @@ export async function ObtenerPictogramasPorCategoria(
   //console.log('Pictogramas filtrados 2: ', pictogramas)
 
   let usuario = await getUsuarioLogueado();
+
+  if(categoria === -1)
+  {
+    return await setPictogramas(pictogramas.filter(p => p.IdUsuario === usuario?.id))
+  }
+
   if(usuario != null && usuario !== undefined && usuario.id != null)
     pictogramas = pictogramas.filter(p => (p.IdUsuario === null || p.IdUsuario === usuario?.id || p.idArasaac !== null))
   else

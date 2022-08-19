@@ -8,9 +8,9 @@ import {
 } from '@mui/material';
 import { Container } from '@mui/system';
 import { useEffect, useState } from 'react';
-import { ICategoria } from '../models/categoria';
-import { ObtenerCategorias } from '../services/pictogramas-services';
-import PictogramasPorCategoria from './pictogramasPorCategoria';
+import { ICategoria } from '../../models/categoria';
+import { ObtenerCategorias } from '../../services/pictogramas-services';
+import CategoriaPropios from './categoriaPropios';
 
 export default function Categorias(props: any) {
   const [categorias, setCategorias] = useState([] as ICategoria[]);
@@ -25,6 +25,8 @@ export default function Categorias(props: any) {
   return (
     <Container>
       <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 10, md: 12 }}>
+        {/* TODO: Agregar pictogramas propios y favoritos o recientes si fuera necesario */}
+        <CategoriaPropios setCategoriaSeleccionada={props.setCategoriaSeleccionada} categoriaSeleccionada={categoriaSeleccionada}/>
         {categorias.map((categoria) => {
           return (
             <Grid

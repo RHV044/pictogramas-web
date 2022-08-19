@@ -18,14 +18,14 @@ import { IndexedDbService } from '../../services/indexeddb-service';
 import { IPictogram } from '../models/pictogram';
 import Pictogram from './pictogram';
 import { useLocation, useNavigate } from 'react-router-dom';
-import Categorias from './categorias';
+import Categorias from './categorias/categorias';
 import Seleccion from './seleccion';
 import { UpdateService } from '../../services/update-service';
 import ResponsiveAppBar from '../../commons/appBar';
 import FormDialog from './crearPictograma';
 import { ICategoria } from '../models/categoria';
-import CategoriaSeleccionada from './categoriaSeleccionada';
-import PictogramasPorCategoria from './pictogramasPorCategoria';
+import CategoriaSeleccionada from './categorias/categoriaSeleccionada';
+import PictogramasPorCategoria from './categorias/pictogramasPorCategoria';
 import { ObtenerPictogramas } from '../services/pictogramas-services';
 const db = new IndexedDbService();
 

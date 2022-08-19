@@ -8,10 +8,10 @@ import {
   Grid,
 } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { IUsuario } from '../../login/model/usuario';
-import { getUsuarioLogueado, usuarioLogueado } from '../../services/usuarios-services';
-import { IPictogram } from '../models/pictogram';
-import { ObtenerPictogramasPorCategoria } from '../services/pictogramas-services';
+import { IUsuario } from '../../../login/model/usuario';
+import { getUsuarioLogueado, usuarioLogueado } from '../../../services/usuarios-services';
+import { IPictogram } from '../../models/pictogram';
+import { ObtenerPictogramasPorCategoria } from '../../services/pictogramas-services';
 
 const apiPictogramas = process.env.URL_PICTOGRAMAS ?? 'http://localhost:5000';
 

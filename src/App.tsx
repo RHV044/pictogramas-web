@@ -5,7 +5,7 @@ import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import VincularCuenta from './login/components/vincularCuenta';
 import ModificarCuenta from './login/components/modificarCuenta';
 import CrearCuenta from './login/components/crearCuenta';
-import Categorias from './pictogramas/components/categorias';
+import Categorias from './pictogramas/components/categorias/categorias';
 import Configuracion from './configuracion/configuracion';
 import Pizarras from './pizarras/pizarras';
 import Estadisticas from './estadisticas/estadisticas';
