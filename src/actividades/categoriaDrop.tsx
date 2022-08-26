@@ -61,7 +61,9 @@ export const CategoriaDrop: FC<CategoriaDrop> = memo(function CellDrop({
 
   return (
     <div>
-      
+      <div ref={drop} style={{ ...cellDropStyle, backgroundColor }} data-testid="dustbin">
+          {isActive ? 'Release to drop' : 'Drag a box here'}
+        </div>
     </div>
   )
 })

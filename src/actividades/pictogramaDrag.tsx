@@ -41,7 +41,9 @@ export const PictogramaDrag: FC<PictogramaDragProps> = function Box({ name, onDr
 
   return (
     <div>
-
+      <div ref={drag} style={{ ...style, opacity }} data-testid={`box`}>
+        {name}
+      </div>
     </div>
   )
 }

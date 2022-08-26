@@ -34,12 +34,18 @@ export async function ObtenerYGuardarCategorias(
 }
 
 export async function ObtenerPictogramas(
-
 ) {
   let db = await IndexedDbService.create();
   let pictogramas = await db.getAllValues('pictograms');
   return pictogramas
 }
+
+export async function ObtenerCategoriasIndexDB(
+  ) {
+    let db = await IndexedDbService.create();
+    let categorias = await db.getAllValues('categorias');
+    return categorias
+  }
 
 export async function ObtenerPictogramasPorCategoria(
   setPictogramas: any,
