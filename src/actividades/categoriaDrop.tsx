@@ -2,6 +2,8 @@ import { CSSProperties, FC, useEffect, useLayoutEffect, useState } from 'react'
 import { useDrop } from 'react-dnd'
 import { memo } from 'react'
 import { Reglas } from './reglas'
+import { IPictogram } from '../pictogramas/models/pictogram'
+import { ICategoria } from '../pictogramas/models/categoria'
 
 export const cellDropStyle: CSSProperties = {
   height: '12rem',
@@ -21,8 +23,9 @@ export const cellDropStyle: CSSProperties = {
 
 export interface CategoriaDrop {
   onDrop: () => void,
-  name: string,
-  reglas: Reglas
+  pictograma: IPictogram,
+  reglas: Reglas,
+  categoria: ICategoria
 }
 
 interface DropResult {
@@ -31,8 +34,9 @@ interface DropResult {
 
 export const CategoriaDrop: FC<CategoriaDrop> = memo(function CellDrop({
   onDrop,
-  name,
-  reglas
+  pictograma,
+  reglas,
+  categoria
 }) {
   const [{ canDrop, isOver }, drop] = useDrop(() => ({
     accept: 'box',
@@ -40,7 +44,7 @@ export const CategoriaDrop: FC<CategoriaDrop> = memo(function CellDrop({
       return true
     },
     drop: (monitor) => {
-
+      reglas.verigicarMovimiento(pictograma, categoria)
     },    
     collect: (monitor) => ({      
       isOver: monitor.isOver(),

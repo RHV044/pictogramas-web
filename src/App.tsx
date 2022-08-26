@@ -32,7 +32,7 @@ function App() {
             <Route path="/pizarras" element={<Pizarras/>} />
             <Route path="/estadisticas" element={<Estadisticas/>} />
             <Route path="/actividades" element={<SeleccionDeNivel/>} />
-            <Route path="/actividad" element={<Actividad/>} />
+            <Route path="/actividad/:nivel" element={<Actividad/>} />
 
             <Route path="/" element={<Navigate to="/cuenta/seleccionar" />} />
             <Route path="/pictogramas-web" element={<Navigate to="/cuenta/seleccionar" />} />

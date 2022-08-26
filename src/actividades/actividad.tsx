@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useLocation, useParams } from "react-router-dom";
 import ResponsiveAppBar from "../commons/appBar";
 import { ICategoria } from "../pictogramas/models/categoria";
 import { IPictogram } from "../pictogramas/models/pictogram";
@@ -8,6 +9,8 @@ import { PictogramaDrag } from "./pictogramaDrag";
 import { Reglas } from "./reglas";
 
 export default function Actividad(){
+  const location = useLocation();
+  const params = useParams();
   const [pictogramas, setPictogramas] = useState([] as IPictogram[]);
   const [categorias, setCategorias] = useState([] as ICategoria[])
   const reglas = useMemo(() => new Reglas(), []);
@@ -41,14 +44,14 @@ export default function Actividad(){
       {categoria1 && categoria2 && pictograma &&
         <div>
           <ResponsiveAppBar />
-          Juego de Categorizar los Pictogramas
+          Juego de Categorizar los Pictogramas - Nivel {params.nivel}
           <br/>
           {categoria1.nombre}:
-          <CategoriaDrop name={categoria1.nombre} onDrop={() => {}} reglas={reglas}/>
+          <CategoriaDrop pictograma={pictograma} categoria={categoria1} onDrop={() => {}} reglas={reglas}/>
           {categoria2.nombre}:
-          <CategoriaDrop name={categoria2.nombre} onDrop={() => {}} reglas={reglas}/>
+          <CategoriaDrop pictograma={pictograma} categoria={categoria2} onDrop={() => {}} reglas={reglas}/>
           <br />
-          <PictogramaDrag name={pictograma.keywords[0].keyword} onDrop={() => {}} reglas={reglas}/>
+          <PictogramaDrag pictograma={pictograma} onDrop={() => {}} reglas={reglas}/>
         </div>
       }
     </div>

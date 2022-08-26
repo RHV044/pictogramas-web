@@ -1,6 +1,7 @@
 import { Card, CardActionArea, CardContent, CardHeader, CardMedia } from '@mui/material'
 import type { CSSProperties, FC } from 'react'
 import { useDrag } from 'react-dnd'
+import { IPictogram } from '../pictogramas/models/pictogram'
 import { Reglas } from './reglas'
 
 const style: CSSProperties = {
@@ -14,7 +15,7 @@ const style: CSSProperties = {
 }
 
 export interface PictogramaDragProps {
-  name: string,
+  pictograma: IPictogram,
   onDrop: () => void,
   reglas: Reglas,
 }
@@ -24,10 +25,10 @@ interface DropResult {
   identificacion: string
 }
 
-export const PictogramaDrag: FC<PictogramaDragProps> = function Box({ name, onDrop, reglas }) {
+export const PictogramaDrag: FC<PictogramaDragProps> = function Box({ pictograma, onDrop, reglas }) {
   const [{ isDragging }, drag] = useDrag(() => ({
     type: 'box',
-    item: { name },
+    item: { pictograma },
     end: (item, monitor) => {
       const dropResult = monitor.getDropResult<DropResult>()
     },
@@ -42,7 +43,7 @@ export const PictogramaDrag: FC<PictogramaDragProps> = function Box({ name, onDr
   return (
     <div>
       <div ref={drag} style={{ ...style, opacity }} data-testid={`box`}>
-        {name}
+        {pictograma.keywords[0].keyword}
       </div>
     </div>
   )
