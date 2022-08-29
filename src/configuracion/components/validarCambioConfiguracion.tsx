@@ -28,7 +28,16 @@ export default function FormDialogValidarAcceso(props: any) {
                         label="Resultado"
                         inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }} //TODO revisar
                         value={resultado} //if si no hay valor en el parse int
-                        onChange={(evt) => setResultado(parseInt(evt.target.value))} /> 
+                        onChange={(evt) => {
+                            if(evt.target.value != null){
+                                setResultado(parseInt(evt.target.value));
+                            } else {
+                                console.log("input vacio");
+                            }
+                        }                            
+                        }
+                        type="number"
+                        /> 
                     <br /> <br />
                     <Button
                         variant="contained"
