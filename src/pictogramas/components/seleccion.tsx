@@ -19,6 +19,7 @@ const apiPictogramas = process.env.URL_PICTOGRAMAS ?? 'http://localhost:5000';
 export default function Seleccion(props: any) {
   const [pictogramas, setPictogramas] = useState([] as IPictogram[]);
   const [textoInterpretado, setTextoInterpretado] = useState("" as string)
+  const [textoAInterpretar, setTextoAInterpretar] = useState("" as string)
   var i = 0;
 
   useEffect(() => {
@@ -28,10 +29,17 @@ export default function Seleccion(props: any) {
 
   useEffect(() => {
     let texto = (props.pictogramas.map(p => p.keywords[0].keyword)).toString()
-    ObtenerInterpretacionNatural(texto).then(interpretacion => {
-      setTextoInterpretado(interpretacion)
-    })
+    // ObtenerInterpretacionNatural(texto).then(interpretacion => {
+    //   setTextoInterpretado(interpretacion)
+    // })
+    setTextoAInterpretar(texto)
   }, [props.pictogramas]);
+
+  const ObtenerInterpretacion= () => {
+    ObtenerInterpretacionNatural(textoAInterpretar).then(interpretacion => {
+      return interpretacion
+    })
+  };
 
   return (
     <Container style={{padding: 10}}>
@@ -91,12 +99,13 @@ export default function Seleccion(props: any) {
               displayText="Interpretacion Literal"
               text={(pictogramas.map(p => p.keywords[0].keyword)).toString()}
             />
-            { textoInterpretado.length > 0 && 
+            { textoAInterpretar.length > 0 && 
               <Speech 
                 // styles={"cursor: pointer; pointer-events: all; outline: none; background-color: gainsboro; border: 1px solid rgb(255, 255, 255); border-radius: 6px;"}
                 // styles={{style}}
                 textAsButton={true}
                 displayText="Interpretacion Natural"
+                // text={ObtenerInterpretacion()}
                 text={textoInterpretado}
               />
             }
