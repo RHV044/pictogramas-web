@@ -12,16 +12,25 @@ import { useEffect, useState } from 'react';
 import { IPictogram } from '../models/pictogram';
 import React from 'react';
 import Speech from 'react-speech';
+import { ObtenerInterpretacionNatural } from '../services/pictogramas-services';
 
 const apiPictogramas = process.env.URL_PICTOGRAMAS ?? 'http://localhost:5000';
 
 export default function Seleccion(props: any) {
   const [pictogramas, setPictogramas] = useState([] as IPictogram[]);
+  const [textoInterpretado, setTextoInterpretado] = useState("" as string)
   var i = 0;
 
   useEffect(() => {
     console.log('pictogramas Actualizados: ', props.pictogramas);
     setPictogramas(props.pictogramas);
+  }, [props.pictogramas]);
+
+  useEffect(() => {
+    let texto = (props.pictogramas.map(p => p.keywords[0].keyword)).toString()
+    ObtenerInterpretacionNatural(texto).then(interpretacion => {
+      setTextoInterpretado(interpretacion)
+    })
   }, [props.pictogramas]);
 
   return (
@@ -82,6 +91,15 @@ export default function Seleccion(props: any) {
               displayText="Interpretacion Literal"
               text={(pictogramas.map(p => p.keywords[0].keyword)).toString()}
             />
+            { textoInterpretado.length > 0 && 
+              <Speech 
+                // styles={"cursor: pointer; pointer-events: all; outline: none; background-color: gainsboro; border: 1px solid rgb(255, 255, 255); border-radius: 6px;"}
+                // styles={{style}}
+                textAsButton={true}
+                displayText="Interpretacion Natural"
+                text={textoInterpretado}
+              />
+            }
         </div>
         }
     </Container>

@@ -144,3 +144,12 @@ export async function ObtenerInformacionPictogramas() {
     return response.data;
   });
 }
+
+export async function ObtenerInterpretacionNatural(textoOriginal: string){
+  return await axios.post(apiPictogramas + '/interpretacion',
+    {"Texto": textoOriginal}
+  )
+  .then((resp) => {
+    return resp.data
+  })
+}
