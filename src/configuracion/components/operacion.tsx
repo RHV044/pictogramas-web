@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+
 function randomNumberGenerator(inferior, superior) {
     var numPosibilidades = superior - inferior;
     var aleatorio = Math.random() * (numPosibilidades + 1);
@@ -14,16 +16,37 @@ type SumaVerificadora = {
 
 export default function Operacion(props: any) {
 
-    let suma: SumaVerificadora = {
-        number1 : randomNumberGenerator(0, 10),
-        number2 : randomNumberGenerator(0, 10) 
-    }
+    const [suma, setSuma] = useState(null as SumaVerificadora | null);
 
-    suma.resultadoCorrecto = suma.number1 + suma.number2;
+    useEffect(() => {
+        let number1 = randomNumberGenerator(1, 10);
+        let number2 = randomNumberGenerator(1, 10);
+        let resultadoCorrecto = number1 + number2;
+
+        setSuma({
+            number1: number1,
+            number2: number2,
+            resultadoCorrecto: resultadoCorrecto,
+        })
+
+        props.setResultadoCorrecto(resultadoCorrecto);
+    }, [])
+
+    // const sumaa: SumaVerificadora = {
+    //     number1 : randomNumberGenerator(1, 10),
+    //     number2 : randomNumberGenerator(1, 10) 
+    // }
+
+    // suma.resultadoCorrecto = suma.number1 + suma.number2;
     
     return (
         <div>
-            Resultado de la operacion {suma.number1} + {suma.number2}:
+            { 
+            suma && 
+                <div>
+                    Resultado de la operacion {suma.number1} + {suma.number2}: 
+                </div>
+            }
         </div>
     )
 };

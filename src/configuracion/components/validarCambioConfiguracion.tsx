@@ -5,7 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import Operacion from './operacion';
 
 export default function FormDialogValidarAcceso(props: any) {
-    const [resultado, setResultado] = useState("" as string);
+    const [resultado, setResultado] = useState(null as number | null);
+    const [resultadoCorrecto, setResultadoCorrecto] = useState(null as number | null);
 
     let navigate = useNavigate();
 
@@ -13,29 +14,41 @@ export default function FormDialogValidarAcceso(props: any) {
         props.cerrarValidarConfiguracion()
     }
 
-
     return (
         <div>
             <Dialog open={true} onClose={handleClose}>
                 <DialogTitle>Control de acceso</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        <Operacion />
+                        <Operacion setResultadoCorrecto={setResultadoCorrecto} />
                     </DialogContentText>
                     <br />
                     <TextField
                         id="resultado-input"
                         label="Resultado"
-                        inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
-                        value={resultado}
-                        onChange={(evt) => setResultado(evt.target.value)} />
+                        inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }} //TODO revisar
+                        value={resultado} //if si no hay valor en el parse int
+                        onChange={(evt) => {
+                            if(evt.target.value != null){
+                                setResultado(parseInt(evt.target.value));
+                            } else {
+                                console.log("input vacio");
+                            }
+                        }                            
+                        }
+                        type="number"
+                        /> 
                     <br /> <br />
                     <Button
                         variant="contained"
                         style={{ alignItems: 'center', margin: '10px' }}
                         onClick={() => {
                             handleClose()
+                            if(resultado === resultadoCorrecto){
                             navigate('../configuracion');
+                            } else {
+                                alert("resultado incorrecto");
+                            }
                         }}>
                         Confirmar
                     </Button>
