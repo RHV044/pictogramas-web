@@ -35,6 +35,7 @@ export default function Seleccion(props: any) {
     setTextoAInterpretar(texto)
   }, [props.pictogramas]);
 
+  // TODO: IDEAL QUE ESTO OBTENGA CUANDO LE DEMOS AL BOTON Y AHI LE DE EL TEXTO
   const ObtenerInterpretacion= () => {
     ObtenerInterpretacionNatural(textoAInterpretar).then(interpretacion => {
       return interpretacion

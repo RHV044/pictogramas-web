@@ -1,0 +1,20 @@
+import axios from "axios";
+import { IPizarra } from "../models/pizarra";
+
+const apiPictogramas = process.env.URL_PICTOGRAMAS ?? "http://localhost:5000";
+
+export async function ObtenerPizarras(usuarioId: number){
+  return await axios.get(apiPictogramas + '/pizarras/' + usuarioId)
+  .then((resp) => {
+    return resp.data
+  })
+}
+
+export async function GuardarPizarra(pizarra: IPizarra){
+  return await axios.post(apiPictogramas + '/pizarras/',
+  pizarra
+  )
+  .then((resp) => {
+    return resp.data
+  })
+}

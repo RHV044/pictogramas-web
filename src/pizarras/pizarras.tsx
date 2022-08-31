@@ -30,6 +30,11 @@ import CategoriaSeleccionada from '../pictogramas/components/categorias/categori
 import PictogramasPorCategoria from '../pictogramas/components/categorias/pictogramasPorCategoria';
 import { IndexedDbService } from '../services/indexeddb-service';
 import EstilosFormDialog from './personalizacion';
+import GuardarPizarra from './guardarPizarra';
+import CargarPizarra from './cargarPizarra';
+import { ObtenerPizarras } from './services/pizarras-services';
+import { IPizarra } from './models/pizarra';
+import { usuarioLogueado } from '../services/usuarios-services';
 
 export type EstilosPizarras = {
   fila: number,
@@ -163,6 +168,16 @@ export default function Pizarras(this: any) {
     return c
   }
 
+  const obtenerPizarraActual = () => {
+    let pizarra = {filas: filas, columnas: columnas, usuarioId: usuarioLogueado?.id} as IPizarra
+    return pizarra
+  }
+
+  const setPizarraActual = (pizarra : IPizarra) => {
+    setFilas(pizarra.filas)
+    setColumnas(pizarra.columnas)
+  }
+
   return (
     <div>
       <ResponsiveAppBar />
@@ -193,6 +208,8 @@ export default function Pizarras(this: any) {
       />
       <EstilosFormDialog 
         filas={filas} columnas={columnas} estilos={[...estilos]} actualizarEstilos={nuevosEstilos}/>
+      <GuardarPizarra obtenerPizarra={obtenerPizarraActual}/>
+      <CargarPizarra setPizarra={setPizarraActual}/>
       </Container>
       <br />
       <Table component={Paper}>
