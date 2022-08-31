@@ -34,7 +34,8 @@ export default function CargarPizarra(props: any) {
   };
 
   const handleCrear = () => {
-
+    let pizarra = pizarras.find(p => p.nombre === nombre)
+    props.setPizarra(pizarra)
     setOpen(false);
   };
 

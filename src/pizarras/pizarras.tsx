@@ -21,7 +21,7 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useReducer, useState 
 import ResponsiveAppBar from '../commons/appBar';
 import { CellDrop, cellDropStyle } from './cellDrop';
 import { Trash } from './trash';
-import { Grafico, Movimientos } from './movimientos';
+import { Grafico, Movimientos, Position } from './movimientos';
 import { IPictogram } from '../pictogramas/models/pictogram';
 import { ObtenerPictogramas } from '../pictogramas/services/pictogramas-services';
 import { ICategoria } from '../pictogramas/models/categoria';
@@ -33,7 +33,7 @@ import EstilosFormDialog from './personalizacion';
 import GuardarPizarra from './guardarPizarra';
 import CargarPizarra from './cargarPizarra';
 import { ObtenerPizarras } from './services/pizarras-services';
-import { IPizarra } from './models/pizarra';
+import { ICeldaPizarra, IPizarra } from './models/pizarra';
 import { usuarioLogueado } from '../services/usuarios-services';
 
 export type EstilosPizarras = {
@@ -156,7 +156,7 @@ export default function Pizarras(this: any) {
             est.push(nuevoEstilo)
         }
         else
-          est.push({color: '#1ed080', columna: c, fila:f}) //#fff -> blanco - #1ed080 -> verdecito
+          est.push({color: '#fff', columna: c, fila:f}) //#fff -> blanco - #1ed080 -> verdecito
       }      
     }
     setEstilos(est)
@@ -169,13 +169,42 @@ export default function Pizarras(this: any) {
   }
 
   const obtenerPizarraActual = () => {
-    let pizarra = {filas: filas, columnas: columnas, usuarioId: usuarioLogueado?.id} as IPizarra
+    let graficosActuales = movimientos.getGraficos()
+    let estilosActuales = estilos
+    let celdas = [] as ICeldaPizarra[]
+    graficosActuales.forEach(e => {
+      let celda = {
+        fila: e.posicion.fila,
+        columna: e.posicion.columna,
+        tipoContenido: e.esPictograma === true ? "pictograma" : "texto",
+        //TODO: No deberia guardar la imagen sino el id de pictograma
+        contenido: e.esPictograma === true ? e.imagen : e.texto,
+        color: estilosActuales.find(est => est.columna === e.posicion.columna && est.fila === e.posicion.fila)?.color
+      } as ICeldaPizarra
+      celdas.push(celda)
+    });
+    let pizarra = {filas: filas, columnas: columnas, usuarioId: usuarioLogueado?.id, celdas: celdas} as IPizarra
     return pizarra
   }
 
   const setPizarraActual = (pizarra : IPizarra) => {
     setFilas(pizarra.filas)
     setColumnas(pizarra.columnas)
+    let nuevosEstilos = [] as EstilosPizarras[]
+    pizarra.celdas.forEach(celda => {
+      let grafico = {
+        esPictograma: celda.tipoContenido === "pictograma" ? true : false,
+        imagen: celda.tipoContenido === "pictograma" ? celda.contenido : "",
+        texto: celda.tipoContenido === "texto" ? celda.contenido : "",
+        posicion: {columna: celda.columna, fila: celda.fila} as Position,
+        //TODO: Seguro haya que revisar esto de identificacion
+        identificacion: celda.id.toString()
+      } as Grafico
+      movimientos.agregarGrafico(grafico)
+      let estilo = {color: celda.color, columna: celda.columna, fila: celda.fila} as EstilosPizarras
+      nuevosEstilos.push(estilo)
+    });
+    setEstilos(nuevosEstilos)
   }
 
   return (

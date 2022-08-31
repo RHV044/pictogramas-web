@@ -30,6 +30,7 @@ export default function GuardarPizarra(props:any) {
   const handleCrear = () => {
     let pizarraActual = props.obtenerPizarra() as IPizarra
     pizarraActual.nombre = nombre
+    console.log("pizarra a guardar: ", pizarraActual)
     SavePizarra(pizarraActual)
     setOpen(false);
   };

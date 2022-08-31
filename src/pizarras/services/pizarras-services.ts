@@ -11,6 +11,7 @@ export async function ObtenerPizarras(usuarioId: number){
 }
 
 export async function GuardarPizarra(pizarra: IPizarra){
+  console.log("pizarra a guardar: ", pizarra)
   return await axios.post(apiPictogramas + '/pizarras/',
   pizarra
   )
