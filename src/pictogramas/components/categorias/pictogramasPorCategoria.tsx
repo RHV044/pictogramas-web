@@ -6,7 +6,10 @@ import {
   CardMedia,
   Container,
   Grid,
+  IconButton
 } from '@mui/material';
+import StarBorderIcon from '@mui/icons-material/StarBorder';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import { useEffect, useState } from 'react';
 import { IUsuario } from '../../../login/model/usuario';
 import { getUsuarioLogueado, usuarioLogueado } from '../../../services/usuarios-services';
@@ -96,6 +99,12 @@ export default function PictogramasPorCategoria(props: any) {
                     ></CardHeader>
                     <CardContent></CardContent>
                   </CardActionArea>
+                  <IconButton aria-label='favorito'>
+                    <StarBorderIcon/>
+                  </IconButton>
+                  <IconButton aria-label='eliminar' disabled={true}>
+                    <HighlightOffIcon />
+                  </IconButton>
                 </Card>
               </Container>
             </Grid>
