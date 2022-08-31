@@ -14,5 +14,6 @@ export interface ICeldaPizarra{
   columna: number,
   contenido: string,
   tipoContenido: string,
-  color: string
+  color: string,
+  identificacion: string
 }

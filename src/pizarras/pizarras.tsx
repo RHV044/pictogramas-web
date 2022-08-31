@@ -181,7 +181,8 @@ export default function Pizarras(this: any) {
             columna: c,
             tipoContenido: grafico.esPictograma === true ? "pictograma" : "texto",
             contenido: grafico.esPictograma === true ? grafico.idPictograma.toString() : grafico.texto,
-            color: estilosActuales.find(est => est.columna === c && est.fila === f)?.color
+            color: estilosActuales.find(est => est.columna === c && est.fila === f)?.color,
+            identificacion: grafico.identificacion
           } as ICeldaPizarra
           celdas.push(celda)
         }
@@ -203,25 +204,24 @@ export default function Pizarras(this: any) {
 
   const setPizarraActual = (pizarra : IPizarra) => {
     db.then(async (base) =>{
-      setFilas(pizarra.filas)
-      setColumnas(pizarra.columnas)
       let nuevosEstilos = [] as EstilosPizarras[]
       pizarra.celdas.forEach(async (celda) => {
-        let imagenPictograma = ""
+        let imagenPictograma
         if (celda.tipoContenido === "pictograma")
         {        
-          imagenPictograma = await base.getValue("imagenes", celda.id)
+          imagenPictograma = await base.getValue("imagenes", parseInt(celda.contenido))
+          
         }
 
         if(celda.tipoContenido === "texto" || celda.tipoContenido === "pictograma")
         {
           let grafico = {
             esPictograma: celda.tipoContenido === "pictograma" ? true : false,
-            imagen: celda.tipoContenido === "pictograma" ? imagenPictograma : "",
+            imagen: celda.tipoContenido === "pictograma" ? imagenPictograma.imagen : "",
             texto: celda.tipoContenido === "texto" ? celda.contenido : "",
             posicion: {columna: celda.columna, fila: celda.fila} as Position,
-            //TODO: Seguro haya que revisar esto de identificacion
-            identificacion: celda.id.toString()
+            //TODO: Queda pendiente mapear en la api esta identificacion y guardarla en la base
+            identificacion: celda.identificacion
           } as Grafico
           movimientos.agregarGrafico(grafico)
         }
@@ -229,6 +229,8 @@ export default function Pizarras(this: any) {
         let estilo = {color: celda.color, columna: celda.columna, fila: celda.fila} as EstilosPizarras
         nuevosEstilos.push(estilo)
       });
+      setFilas(pizarra.filas)
+      setColumnas(pizarra.columnas)
       setEstilos(nuevosEstilos)
     })
   }
