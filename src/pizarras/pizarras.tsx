@@ -172,39 +172,65 @@ export default function Pizarras(this: any) {
     let graficosActuales = movimientos.getGraficos()
     let estilosActuales = estilos
     let celdas = [] as ICeldaPizarra[]
-    graficosActuales.forEach(e => {
-      let celda = {
-        fila: e.posicion.fila,
-        columna: e.posicion.columna,
-        tipoContenido: e.esPictograma === true ? "pictograma" : "texto",
-        //TODO: No deberia guardar la imagen sino el id de pictograma
-        contenido: e.esPictograma === true ? e.imagen : e.texto,
-        color: estilosActuales.find(est => est.columna === e.posicion.columna && est.fila === e.posicion.fila)?.color
-      } as ICeldaPizarra
-      celdas.push(celda)
-    });
+    for (let f = 0; f < filas; f++) {
+      for (let c = 0; c < columnas; c++) {
+        let grafico = graficosActuales.find(g => g.posicion.columna === c && g.posicion.fila === f)
+        if(grafico !== undefined && grafico !== null){
+          let celda = {
+            fila: f,
+            columna: c,
+            tipoContenido: grafico.esPictograma === true ? "pictograma" : "texto",
+            contenido: grafico.esPictograma === true ? grafico.idPictograma.toString() : grafico.texto,
+            color: estilosActuales.find(est => est.columna === c && est.fila === f)?.color
+          } as ICeldaPizarra
+          celdas.push(celda)
+        }
+        else{
+          let celda = {
+            fila: f,
+            columna: c,
+            tipoContenido: "vacio",
+            contenido: "",
+            color: estilosActuales.find(est => est.columna === c && est.fila === f)?.color
+          } as ICeldaPizarra
+          celdas.push(celda)
+        }
+      }      
+    }
     let pizarra = {filas: filas, columnas: columnas, usuarioId: usuarioLogueado?.id, celdas: celdas} as IPizarra
     return pizarra
   }
 
   const setPizarraActual = (pizarra : IPizarra) => {
-    setFilas(pizarra.filas)
-    setColumnas(pizarra.columnas)
-    let nuevosEstilos = [] as EstilosPizarras[]
-    pizarra.celdas.forEach(celda => {
-      let grafico = {
-        esPictograma: celda.tipoContenido === "pictograma" ? true : false,
-        imagen: celda.tipoContenido === "pictograma" ? celda.contenido : "",
-        texto: celda.tipoContenido === "texto" ? celda.contenido : "",
-        posicion: {columna: celda.columna, fila: celda.fila} as Position,
-        //TODO: Seguro haya que revisar esto de identificacion
-        identificacion: celda.id.toString()
-      } as Grafico
-      movimientos.agregarGrafico(grafico)
-      let estilo = {color: celda.color, columna: celda.columna, fila: celda.fila} as EstilosPizarras
-      nuevosEstilos.push(estilo)
-    });
-    setEstilos(nuevosEstilos)
+    db.then(async (base) =>{
+      setFilas(pizarra.filas)
+      setColumnas(pizarra.columnas)
+      let nuevosEstilos = [] as EstilosPizarras[]
+      pizarra.celdas.forEach(async (celda) => {
+        let imagenPictograma = ""
+        if (celda.tipoContenido === "pictograma")
+        {        
+          imagenPictograma = await base.getValue("imagenes", celda.id)
+        }
+
+        if(celda.tipoContenido === "texto" || celda.tipoContenido === "pictograma")
+        {
+          let grafico = {
+            esPictograma: celda.tipoContenido === "pictograma" ? true : false,
+            imagen: celda.tipoContenido === "pictograma" ? imagenPictograma : "",
+            texto: celda.tipoContenido === "texto" ? celda.contenido : "",
+            posicion: {columna: celda.columna, fila: celda.fila} as Position,
+            //TODO: Seguro haya que revisar esto de identificacion
+            identificacion: celda.id.toString()
+          } as Grafico
+          movimientos.agregarGrafico(grafico)
+        }
+
+        let estilo = {color: celda.color, columna: celda.columna, fila: celda.fila} as EstilosPizarras
+        nuevosEstilos.push(estilo)
+      });
+      setEstilos(nuevosEstilos)
+    })
   }
 
   return (

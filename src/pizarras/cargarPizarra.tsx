@@ -15,7 +15,7 @@ import { usuarioLogueado } from '../services/usuarios-services';
 
 export default function CargarPizarra(props: any) {
   const [open, setOpen] = useState(false);
-  const [nombre, setNombre] = useState("" as string)
+  const [idPizarra, setIdPizarra] = useState(0 as number)
   const [pizarras, setPizarras] = useState([] as IPizarra[])
 
   useEffect(() => {
@@ -34,7 +34,7 @@ export default function CargarPizarra(props: any) {
   };
 
   const handleCrear = () => {
-    let pizarra = pizarras.find(p => p.nombre === nombre)
+    let pizarra = pizarras.find(p => p.id === idPizarra)
     props.setPizarra(pizarra)
     setOpen(false);
   };
@@ -53,12 +53,15 @@ export default function CargarPizarra(props: any) {
           <br />
           { pizarras.length > 0 &&
             <Select
-              value={nombre}
+              value={idPizarra}
               label="fila"
-              onChange={(evt) => setNombre(evt.target.value)}
+              onChange={(evt) => {
+                let id = evt.target.value as number
+                setIdPizarra(id)
+              }}
             >
               {Array.from(Array(pizarras), (e, f) => {
-                return(<MenuItem value={e[f].nombre} key={e[f].id}>{e[f].nombre}</MenuItem>)
+                return(<MenuItem value={e[f].id} key={e[f].id}>{e[f].nombre}</MenuItem>)
               })}              
             </Select>
           }

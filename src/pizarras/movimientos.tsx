@@ -10,12 +10,20 @@ export type Grafico = {
   posicion: Position,
   esPictograma: boolean,
   imagen: string,
-  identificacion: string
+  identificacion: string, 
+  idPictograma: number
 }
 
 export class Movimientos {
   private graficos: Grafico[] = []
-  private ultimoElementoUtilizado: Grafico = {esPictograma: false, imagen: '', texto: '', posicion: {columna:-1, fila:-1}, identificacion:Date.now().toString()}
+  private ultimoElementoUtilizado: Grafico = {
+    esPictograma: false, 
+    imagen: '', 
+    texto: '', 
+    posicion: {columna:-1, fila:-1}, 
+    identificacion:Date.now().toString(),
+    idPictograma: 0
+  }
 
   public moveElement(toFila: number, toColumna: number): void {
     this.ultimoElementoUtilizado.posicion.columna = toColumna
@@ -50,6 +58,13 @@ export class Movimientos {
   }
 
   public agregarPictograma(pic: IPictogram){
-    this.graficos.push({esPictograma: true, imagen: pic.imagen, texto: pic.keywords[0].keyword, posicion: {columna: -1, fila: -1}, identificacion:Date.now().toString()})
+    this.graficos.push({
+      esPictograma: true,
+      imagen: pic.imagen, 
+      texto: pic.keywords[0].keyword, 
+      posicion: {columna: -1, fila: -1}, 
+      identificacion:Date.now().toString(),
+      idPictograma: pic.id
+    })
   }
 }
