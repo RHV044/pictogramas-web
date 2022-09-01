@@ -65,6 +65,7 @@ export default function Pizarras(this: any) {
   );
   const [db, setDb] = useState(IndexedDbService.create());
   const [estilos, setEstilos] = useState([] as EstilosPizarras[])
+  const [cargando, setCargando] = useState(false)
   
   useEffect(() => {
     ObtenerPictogramas().then((pictogramas) => {
@@ -99,8 +100,7 @@ export default function Pizarras(this: any) {
   }
 
   const compararListas = (array1: Grafico[], array2: Grafico[]) => {
-    if (array1.length !== array2.length) return false;
-  
+    if (array1.length !== array2.length) return false;  
     for (var i = 0; i < array2.length; i++) {
       if (array1.some(g => g.identificacion === array2[i].identificacion && 
         (g.posicion.columna !== array2[i].posicion.columna || g.posicion.fila !== array2[i].posicion.fila))){
@@ -164,11 +164,10 @@ export default function Pizarras(this: any) {
 
   const obtenerEstilo = (fila: number, columna: number) => {
     let c = estilos.find(e => e.columna === columna && e.fila === fila)?.color
-    console.log('actualizacion - FILA: ' + fila + ' COLUMNA: ' + columna + ' COLOR: ' + c)
     return c
   }
 
-  const obtenerPizarraActual = () => {
+  const obtenerPizarraActual = () => {    
     let graficosActuales = movimientos.getGraficos()
     let estilosActuales = estilos
     let celdas = [] as ICeldaPizarra[]
@@ -198,21 +197,36 @@ export default function Pizarras(this: any) {
         }
       }      
     }
+    graficosSinLugar.forEach(grafico => {
+      if (grafico.posicion.columna === -1 && grafico.posicion.fila === -1){
+        let celda = {
+          fila: -1,
+          columna: -1,
+          tipoContenido: grafico.esPictograma === true ? "pictograma" : "texto",
+          contenido: grafico.esPictograma === true ? grafico.idPictograma.toString() : grafico.texto,
+          color: "",
+          identificacion: grafico.identificacion
+        } as ICeldaPizarra
+        celdas.push(celda)
+      }
+    });
     let pizarra = {filas: filas, columnas: columnas, usuarioId: usuarioLogueado?.id, celdas: celdas} as IPizarra
     return pizarra
   }
 
   const setPizarraActual = (pizarra : IPizarra) => {
+    setCargando(true)
+    setFilas(pizarra.filas)
+    setColumnas(pizarra.columnas)   
+    movimientos.eliminarGraficos()
     db.then(async (base) =>{
       let nuevosEstilos = [] as EstilosPizarras[]
       pizarra.celdas.forEach(async (celda) => {
         let imagenPictograma
         if (celda.tipoContenido === "pictograma")
         {        
-          imagenPictograma = await base.getValue("imagenes", parseInt(celda.contenido))
-          
+          imagenPictograma = await base.getValue("imagenes", parseInt(celda.contenido))          
         }
-
         if(celda.tipoContenido === "texto" || celda.tipoContenido === "pictograma")
         {
           let grafico = {
@@ -220,19 +234,17 @@ export default function Pizarras(this: any) {
             imagen: celda.tipoContenido === "pictograma" ? imagenPictograma.imagen : "",
             texto: celda.tipoContenido === "texto" ? celda.contenido : "",
             posicion: {columna: celda.columna, fila: celda.fila} as Position,
-            //TODO: Queda pendiente mapear en la api esta identificacion y guardarla en la base
             identificacion: celda.identificacion
           } as Grafico
           movimientos.agregarGrafico(grafico)
         }
-
         let estilo = {color: celda.color, columna: celda.columna, fila: celda.fila} as EstilosPizarras
         nuevosEstilos.push(estilo)
-      });
-      setFilas(pizarra.filas)
-      setColumnas(pizarra.columnas)
-      setEstilos(nuevosEstilos)
+      }); 
+      setEstilos(nuevosEstilos)  
     })
+    handleChange()
+    setCargando(false)
   }
 
   return (
@@ -269,29 +281,31 @@ export default function Pizarras(this: any) {
       <CargarPizarra setPizarra={setPizarraActual}/>
       </Container>
       <br />
-      <Table component={Paper}>
-        <Table sx={{ width: '100%', height: '100%' }} aria-label="simple table">
-          <TableHead></TableHead>
-          <TableBody>
-            {Array.from(Array(filas), (e, f) => {
-              return (
-                <TableRow key={f}>
-                  {Array.from(Array(columnas), (d, c) => {
-                    return (
-                      <TableCell key={f + '-' + c}>
-                        <div style={{ overflow: 'hidden', clear: 'both', backgroundColor:obtenerEstilo(f,c) }}>   {/* backgroundColor: 'green', ...cellDropStyle */}
-                          <CellDrop fila={f} columna={c} name='celda' onDrop={() => {}} movimientos={movimientos} />
-                          {/* <CellDrop fila={f} columna={c} name='celda' onDrop={() => {handleChange() }} movimientos={movimientos} /> */}
-                        </div>
-                      </TableCell>
-                    );
-                  })}
-                </TableRow>
-              );
-            })}
-          </TableBody>
+      {!cargando &&
+        <Table component={Paper}>
+          <Table sx={{ width: '100%', height: '100%' }} aria-label="simple table">
+            <TableHead></TableHead>
+            <TableBody>
+              {Array.from(Array(filas), (e, f) => {
+                return (
+                  <TableRow key={f}>
+                    {Array.from(Array(columnas), (d, c) => {
+                      return (
+                        <TableCell key={f + '-' + c}>
+                          <div style={{ overflow: 'hidden', clear: 'both', backgroundColor:obtenerEstilo(f,c) }}>   {/* backgroundColor: 'green', ...cellDropStyle */}
+                            <CellDrop fila={f} columna={c} name='celda' onDrop={() => {}} movimientos={movimientos} />
+                            {/* <CellDrop fila={f} columna={c} name='celda' onDrop={() => {handleChange() }} movimientos={movimientos} /> */}
+                          </div>
+                        </TableCell>
+                      );
+                    })}
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
         </Table>
-      </Table>
+      }
       <br />
       <TextField
         style={{ marginLeft: 5 }}

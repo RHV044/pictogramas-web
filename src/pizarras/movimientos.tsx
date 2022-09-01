@@ -57,6 +57,10 @@ export class Movimientos {
     this.graficos = [...this.graficos.filter(g => g.identificacion !== valor)]
   }
 
+  public eliminarGraficos(){
+    this.graficos = []
+  }
+
   public agregarPictograma(pic: IPictogram){
     this.graficos.push({
       esPictograma: true,

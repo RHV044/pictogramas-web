@@ -36,7 +36,6 @@ export class IndexedDbService {
   }
   public async initializeSchema() {
     try {
-      console.log('inicializa base')
       this.db = await openDB(this.database, 3, {
         upgrade(
           db: IDBPDatabase,
