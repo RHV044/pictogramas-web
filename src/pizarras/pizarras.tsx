@@ -219,6 +219,7 @@ export default function Pizarras(this: any) {
     setFilas(pizarra.filas)
     setColumnas(pizarra.columnas)   
     movimientos.eliminarGraficos()
+    let nuevosGraficosSinLugar = [] as Grafico[]
     db.then(async (base) =>{
       let nuevosEstilos = [] as EstilosPizarras[]
       pizarra.celdas.forEach(async (celda) => {
@@ -237,10 +238,13 @@ export default function Pizarras(this: any) {
             identificacion: celda.identificacion
           } as Grafico
           movimientos.agregarGrafico(grafico)
+          nuevosGraficosSinLugar.push(grafico)
         }
         let estilo = {color: celda.color, columna: celda.columna, fila: celda.fila} as EstilosPizarras
         nuevosEstilos.push(estilo)
       }); 
+      // TODO: Los pictogramas no se muestran al instante, ver como corregir
+      setGraficosSinLugar(nuevosGraficosSinLugar)
       setEstilos(nuevosEstilos)  
     })
     handleChange()
@@ -353,7 +357,7 @@ export default function Pizarras(this: any) {
       }
       <div>
         <div style={{ overflow: 'hidden', clear: 'both' }}>
-        { render && graficosSinLugar.map(grafico => {
+        { !cargando && render && graficosSinLugar.map(grafico => {
           if (grafico.posicion.columna === -1 && grafico.posicion.fila === -1)
             {
               if(grafico.esPictograma === false)

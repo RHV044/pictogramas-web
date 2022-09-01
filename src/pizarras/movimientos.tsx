@@ -16,6 +16,7 @@ export type Grafico = {
 
 export class Movimientos {
   private graficos: Grafico[] = []
+  private observers: any[] = []
   private ultimoElementoUtilizado: Grafico = {
     esPictograma: false, 
     imagen: '', 
@@ -23,6 +24,10 @@ export class Movimientos {
     posicion: {columna:-1, fila:-1}, 
     identificacion:Date.now().toString(),
     idPictograma: 0
+  }
+
+  public addObserver(observer: any){
+    this.observers.push(observer)
   }
 
   public moveElement(toFila: number, toColumna: number): void {
@@ -47,6 +52,13 @@ export class Movimientos {
 
   public agregarGrafico(grafico : Grafico){
     this.graficos.push(grafico)
+    for (let i = 0; i < this.observers.length; i++) {
+      // get the current function getting looped
+      const func = this.observers[i];
+    
+      // call the function
+      func();
+    }
   }
 
   public getGraficos(){

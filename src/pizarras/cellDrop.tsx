@@ -67,14 +67,17 @@ export const CellDrop: FC<CellDropProps> = memo(function CellDrop({
     setGraficosSinLugar(grafs)
   },[graficos])
 
-  const handleChange = () => { 
-      let graf = [...movimientos.getGraficos()]
-      setGraficos(graf);              
-      if(!compararListas(graficos, graficosSinLugar)){
-        let grafs = [...graficos]
-        setGraficosSinLugar(grafs)
-        console.log('Graficos actualizados: ', graficosSinLugar)  
-      }  
+  useEffect(() => {
+    movimientos.addObserver(handleChange)
+  },[])
+
+  const handleChange = () => {     
+    let graf = [...movimientos.getGraficos()]
+    setGraficos(graf);              
+    if(!compararListas(graficos, graficosSinLugar)){
+      let grafs = [...graficos]
+      setGraficosSinLugar(grafs) 
+    }  
   }
 
   const compararListas = (array1: Grafico[], array2: Grafico[]) => {

@@ -41,6 +41,7 @@ export default function CargarPizarra(props: any) {
 
   return (
     <div>
+      {/* TODO: Actualmente solo muestra la 1ra opcion, hay que ver como corregir */}
       <Button variant="outlined" onClick={handleClickOpen}>
         Cargar Pizarra
       </Button>
@@ -68,7 +69,7 @@ export default function CargarPizarra(props: any) {
           <br />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCrear}>Crear</Button>
+          <Button onClick={handleCrear}>Cargar</Button>
           <Button onClick={handleClose}>Cancelar</Button>
         </DialogActions>
       </Dialog>

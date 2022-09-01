@@ -1,5 +1,5 @@
 import { Card, CardActionArea, CardContent, CardHeader, CardMedia } from '@mui/material'
-import type { CSSProperties, FC } from 'react'
+import { CSSProperties, FC, useEffect, useState } from 'react'
 import { useDrag } from 'react-dnd'
 import { Movimientos } from './movimientos'
 
@@ -48,6 +48,7 @@ export const Box: FC<BoxProps> = function Box({ name, identificacion, onDrop, mo
     }),
   }))
 
+  const [actualizar, setActualizar] = useState(true)
   const opacity = isDragging ? 0.4 : 1
 
   return (
