@@ -36,6 +36,7 @@ export default function PictogramasPorCategoria(props: any) {
 
   useEffect(() => {
     ObtenerPictogramasPorCategoria(setPictogramas, props.categoria);
+    //TODO: Obtener categorias Hijas
   }, []);
 
   useEffect(() => {
@@ -116,10 +117,10 @@ export default function PictogramasPorCategoria(props: any) {
                     </CardActionArea>
 
                     <FavoritoButton />
-
+                    
                     <IconButton
                       aria-label='eliminar'
-                      disabled={true}
+                      disabled={usuarioLogueado?.id === pictograma.idUsuario}
                       onClick={() => {
                         eliminarPictograma(pictograma.id);
                         db1.deleteValue("pictogramas", pictograma.id);

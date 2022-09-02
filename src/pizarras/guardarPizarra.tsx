@@ -32,6 +32,9 @@ export default function GuardarPizarra(props:any) {
     let pizarraActual = props.obtenerPizarra() as IPizarra
     pizarraActual.nombre = nombre
     console.log("pizarra a guardar: ", pizarraActual)
+    //TODO: El guardado en la api tiene que realizarse despues del guardado en el indexdb
+    // y debe realizarse cuando se pueda, cuando se tenga conexion
+    // utilizar update-service
     //TODO: Chequear si responde con el id de pizarra
     let pizarra = SavePizarra(pizarraActual)
     //TODO: Revisar guardado en el index db y si es posible mejorar
