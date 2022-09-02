@@ -118,5 +118,7 @@ export async function SubirPictograma(
 
 export async function ElmiminarPictogramaDeUsuario(idPictogramaUsuario: number) {
 
-  return await axios.delete(apiPictogramas + `/pictogramas/pictogramasDeUsuario/${idPictogramaUsuario}`);
+  return await axios.delete(apiPictogramas + `/pictogramas/pictogramasDeUsuario/${idPictogramaUsuario}`).then(() => {
+    console.log('pictograma eliminado')
+  });
 }
