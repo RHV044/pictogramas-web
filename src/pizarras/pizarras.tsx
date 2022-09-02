@@ -226,6 +226,8 @@ export default function Pizarras(this: any) {
         let imagenPictograma
         if (celda.tipoContenido === "pictograma")
         {        
+          //TODO: Se deberia obtener la imagen de la db y si no estuviese de la api 
+          // Extraer en algun metodo
           imagenPictograma = await base.getValue("imagenes", parseInt(celda.contenido))          
         }
         if(celda.tipoContenido === "texto" || celda.tipoContenido === "pictograma")

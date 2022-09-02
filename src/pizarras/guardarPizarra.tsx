@@ -10,6 +10,7 @@ import { Checkbox } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { IPizarra } from './models/pizarra';
 import { GuardarPizarra as SavePizarra } from './services/pizarras-services';
+import { IndexedDbService } from '../services/indexeddb-service';
 
 
 export default function GuardarPizarra(props:any) {
@@ -31,7 +32,12 @@ export default function GuardarPizarra(props:any) {
     let pizarraActual = props.obtenerPizarra() as IPizarra
     pizarraActual.nombre = nombre
     console.log("pizarra a guardar: ", pizarraActual)
-    SavePizarra(pizarraActual)
+    //TODO: Chequear si responde con el id de pizarra
+    let pizarra = SavePizarra(pizarraActual)
+    //TODO: Revisar guardado en el index db y si es posible mejorar
+    // IndexedDbService.create().then((db) => {
+    //   db.putOrPatchValue("pizarras", pizarra)
+    // });
     setOpen(false);
   };
 

@@ -11,6 +11,7 @@ import { useEffect, useState } from 'react';
 import { ObtenerPizarras } from './services/pizarras-services';
 import { IPizarra } from './models/pizarra';
 import { usuarioLogueado } from '../services/usuarios-services';
+import { IndexedDbService } from '../services/indexeddb-service';
 
 
 export default function CargarPizarra(props: any) {
@@ -22,7 +23,18 @@ export default function CargarPizarra(props: any) {
     let usuarioId = usuarioLogueado?.id !== undefined ? usuarioLogueado?.id : 0;
     ObtenerPizarras(usuarioId).then((piz : IPizarra[]) => {
       setPizarras(piz)
-    })
+
+      //TODO: Verificar busqueda del indexDb
+      // Se podria extraer en un metodo
+      // IndexedDbService.create().then((db) => {
+      //   db.getAllValues("pizarras").then((pizarras : IPizarra[]) =>{
+      //     let pizarrasParaAgregar = pizarras.filter((p: IPizarra) =>
+      //      !piz.some((p2: IPizarra) => p2.id === p.id)) 
+      //     let nuevasPizarras = pizarrasParaAgregar.concat([...pizarras])
+      //     setPizarras(nuevasPizarras)
+      //   })
+      // });
+    })    
   }, []);
 
   const handleClickOpen = () => {
