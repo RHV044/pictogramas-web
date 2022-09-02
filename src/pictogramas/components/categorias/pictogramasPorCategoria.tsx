@@ -15,6 +15,7 @@ import { IUsuario } from '../../../login/model/usuario';
 import { getUsuarioLogueado, usuarioLogueado } from '../../../services/usuarios-services';
 import { IPictogram } from '../../models/pictogram';
 import { ObtenerPictogramasPorCategoria } from '../../services/pictogramas-services';
+import { IndexedDbService } from '../../../services/indexeddb-service';
 
 const apiPictogramas = process.env.URL_PICTOGRAMAS ?? 'http://localhost:5000';
 
@@ -29,6 +30,8 @@ export default function PictogramasPorCategoria(props: any) {
   const [skin, setSkin] = useState(false as boolean)
   const [hair, setHair] = useState(false as boolean)
   const [schematic, setSchematic] = useState(false as boolean)
+
+  const [db1, setDb1] = useState(new IndexedDbService())
 
   useEffect(() => {
     ObtenerPictogramasPorCategoria(setPictogramas, props.categoria);
@@ -58,6 +61,11 @@ export default function PictogramasPorCategoria(props: any) {
             (pictograma.sex === usuario.sex || pictograma.sex === false) &&
             (pictograma.skin === usuario.skin || pictograma.skin === false) &&
             (pictograma.violence === usuario.violence || pictograma.violence === false)
+  }
+
+
+  function eliminarPictograma(idPictograma: number) {    
+      db1.deleteValue("pictogramas", idPictograma) //!= null ? idPictograma : 0 //Preguntar: le saque el await, esta bien?
   }
 
   return (
@@ -102,7 +110,17 @@ export default function PictogramasPorCategoria(props: any) {
                   <IconButton aria-label='favorito'>
                     <StarBorderIcon/>
                   </IconButton>
-                  <IconButton aria-label='eliminar' disabled={true}>
+                  <IconButton 
+                    aria-label='eliminar' 
+                    disabled={true}
+                    onClick = {() => {
+                      eliminarPictograma(pictograma.id);
+                      db1.deleteValue("pictogramas", pictograma.id);
+                      //PREGUNTAR/buscar cómo eliminar en las tablas relacionadas (pictogramasPorCategorias y FavoritosPorCategorias)
+                      //agregarborrar del storage
+
+                    }}                      
+                    >
                     <HighlightOffIcon />
                   </IconButton>
                 </Card>
