@@ -153,3 +153,15 @@ export async function ObtenerInterpretacionNatural(textoOriginal: string){
     return resp.data
   })
 }
+
+export async function GuardarPictogramaFavorito(idUsuario: number, idPictograma: number) {
+  return await axios.post(apiPictogramas + '/pictogramas/favoritos/' + idUsuario + '/' + idPictograma).then((resp) => {
+    return resp.data
+  });
+}
+
+export async function EliminarPictogramaFavorito(idUsuario: number, idPictograma: number) {
+  return await axios.delete(apiPictogramas + '/pictogramas/favoritos/' + idUsuario + '/' + idPictograma).then((resp) => {
+    return resp.data
+  });
+}

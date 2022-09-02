@@ -16,13 +16,14 @@ import { getUsuarioLogueado, usuarioLogueado } from '../../../services/usuarios-
 import { IPictogram } from '../../models/pictogram';
 import { ObtenerPictogramasPorCategoria } from '../../services/pictogramas-services';
 import { IndexedDbService } from '../../../services/indexeddb-service';
+import FavoritoButton from '../FavoritoButton';
 
 const apiPictogramas = process.env.URL_PICTOGRAMAS ?? 'http://localhost:5000';
 
 export default function PictogramasPorCategoria(props: any) {
   const [pictogramas, setPictogramas] = useState([] as IPictogram[]);
   const [userLogueado, setUserLogueado] = useState(null as IUsuario | null);
-  
+
   const [violence, setViolence] = useState(false as boolean)
   const [sex, setSex] = useState(false as boolean)
   const [aac, setAac] = useState(false as boolean)
@@ -36,7 +37,7 @@ export default function PictogramasPorCategoria(props: any) {
   useEffect(() => {
     ObtenerPictogramasPorCategoria(setPictogramas, props.categoria);
   }, []);
-  
+
   useEffect(() => {
     getUsuarioLogueado().then((usuario) => {
       if (usuario != undefined) {
@@ -54,18 +55,19 @@ export default function PictogramasPorCategoria(props: any) {
 
 
   function cumpleFiltros(pictograma: IPictogram, usuario: IUsuario | any): boolean {
-      return (pictograma.aac === usuario.aac || pictograma.aac === false) &&
-            (pictograma.aacColor === usuario.aacColor || pictograma.aacColor === false) &&
-            (pictograma.hair === usuario.hair || pictograma.hair === false) &&
-            (pictograma.schematic === usuario.schematic || pictograma.schematic === false) &&
-            (pictograma.sex === usuario.sex || pictograma.sex === false) &&
-            (pictograma.skin === usuario.skin || pictograma.skin === false) &&
-            (pictograma.violence === usuario.violence || pictograma.violence === false)
+    return (pictograma.aac === usuario.aac || pictograma.aac === false) &&
+      (pictograma.aacColor === usuario.aacColor || pictograma.aacColor === false) &&
+      (pictograma.hair === usuario.hair || pictograma.hair === false) &&
+      (pictograma.schematic === usuario.schematic || pictograma.schematic === false) &&
+      (pictograma.sex === usuario.sex || pictograma.sex === false) &&
+      (pictograma.skin === usuario.skin || pictograma.skin === false) &&
+      (pictograma.violence === usuario.violence || pictograma.violence === false)
   }
 
 
-  function eliminarPictograma(idPictograma: number) {    
-      db1.deleteValue("pictogramas", idPictograma) //!= null ? idPictograma : 0 //Preguntar: le saque el await, esta bien?
+  function eliminarPictograma(idPictograma: number) {
+    db1.deleteValue("pictogramas", idPictograma) //!= null ? idPictograma : 0 //Preguntar: le saque el await, esta bien? 
+    //TODO primero, ver si hay que borrarlo de mas tablas. segundo, falta llamar a la api ¿esos seria aca o en otro lado?
   }
 
   return (
@@ -77,61 +79,60 @@ export default function PictogramasPorCategoria(props: any) {
           muestre categorias hijas y pictogramas que solo dependan de esa categoria
         */}
         {pictogramas.map((pictograma) => {
-          if(cumpleFiltros(pictograma, userLogueado))
-          return (
-            //Como estan dentro de la categoria, se visualizan abajo, habria que extraerlo a otro lugar
-            <Grid key={pictograma.id} item xs={12} sm={4} md={2}>
-              <Container key={pictograma.id}>
-                <Card
-                  sx={{ maxWidth: 245, minWidth:150 }}
-                  style={{ marginTop: '10px' }}
-                  onClick={() => {}}
-                >
-                  <CardActionArea
-                    onClick={() => {
-                      let pictogramasSeleccionados = props.pictogramas;
-                      pictogramasSeleccionados.push(pictograma);
-                      props.setPictogramas(pictogramasSeleccionados);
-                      console.log(
-                        'se agrego un pictograma: ',
-                        props.pictogramas
-                      );
-                    }}
+          if (cumpleFiltros(pictograma, userLogueado))
+            return (
+              //Como estan dentro de la categoria, se visualizan abajo, habria que extraerlo a otro lugar
+              <Grid key={pictograma.id} item xs={12} sm={4} md={2}>
+                <Container key={pictograma.id}>
+                  <Card
+                    sx={{ maxWidth: 245, minWidth: 150 }}
+                    style={{ marginTop: '10px' }}
+                    onClick={() => { }}
                   >
-                    <CardMedia
-                      component="img"
-                      height="140"
-                      //image={apiPictogramas+'/pictogramas/'+pictograma.id+'/obtener'}
-                      //image={pictograma.imagen}
-                      //TODO: Optimizar o ver alternativa para levantar los base64
-                      src={`data:image/png;base64, ${pictograma.imagen}`}
-                      alt={pictograma.keywords[0].keyword}
-                    ></CardMedia>
-                    <CardHeader
-                      title={pictograma.keywords[0].keyword}
-                    ></CardHeader>
-                    <CardContent></CardContent>
-                  </CardActionArea>
-                  <IconButton aria-label='favorito'>
-                    <StarBorderIcon/>
-                  </IconButton>
-                  <IconButton 
-                    aria-label='eliminar' 
-                    disabled={true}
-                    onClick = {() => {
-                      eliminarPictograma(pictograma.id);
-                      db1.deleteValue("pictogramas", pictograma.id);
-                      //PREGUNTAR/buscar cómo eliminar en las tablas relacionadas (pictogramasPorCategorias y FavoritosPorCategorias)
-                      //agregarborrar del storage
-
-                    }}                      
+                    <CardActionArea
+                      onClick={() => {
+                        let pictogramasSeleccionados = props.pictogramas;
+                        pictogramasSeleccionados.push(pictograma);
+                        props.setPictogramas(pictogramasSeleccionados);
+                        console.log(
+                          'se agrego un pictograma: ',
+                          props.pictogramas
+                        );
+                      }}
                     >
-                    <HighlightOffIcon />
-                  </IconButton>
-                </Card>
-              </Container>
-            </Grid>
-          );
+                      <CardMedia
+                        component="img"
+                        height="140"
+                        //image={apiPictogramas+'/pictogramas/'+pictograma.id+'/obtener'}
+                        //image={pictograma.imagen}
+                        //TODO: Optimizar o ver alternativa para levantar los base64
+                        src={`data:image/png;base64, ${pictograma.imagen}`}
+                        alt={pictograma.keywords[0].keyword}
+                      ></CardMedia>
+                      <CardHeader
+                        title={pictograma.keywords[0].keyword}
+                      ></CardHeader>
+                      <CardContent></CardContent>
+                    </CardActionArea>
+
+                    <FavoritoButton />
+
+                    <IconButton
+                      aria-label='eliminar'
+                      disabled={true}
+                      onClick={() => {
+                        eliminarPictograma(pictograma.id);
+                        db1.deleteValue("pictogramas", pictograma.id);
+                        //PREGUNTAR/buscar cómo eliminar en las tablas relacionadas (pictogramasPorCategorias y FavoritosPorCategorias)
+                        //agregarborrar del storage
+                      }}
+                    >
+                      <HighlightOffIcon />
+                    </IconButton>
+                  </Card>
+                </Container>
+              </Grid>
+            );
         })}
       </Grid>
     </Container>
