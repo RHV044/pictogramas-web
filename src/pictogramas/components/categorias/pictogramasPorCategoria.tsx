@@ -71,6 +71,11 @@ export default function PictogramasPorCategoria(props: any) {
   return (
     <Container>
       <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 10, md: 12 }}>
+        {/* 
+        TODO: Hay que tener en cuenta que ahora una categoria puede ser hija de otra 
+          Esto implica que seguro haya que refactorizar para que cuando se seleccione una categoria,
+          muestre categorias hijas y pictogramas que solo dependan de esa categoria
+        */}
         {pictogramas.map((pictograma) => {
           if(cumpleFiltros(pictograma, userLogueado))
           return (

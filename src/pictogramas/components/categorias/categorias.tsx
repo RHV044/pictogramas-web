@@ -25,8 +25,12 @@ export default function Categorias(props: any) {
   return (
     <Container>
       <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 10, md: 12 }}>
-        {/* TODO: Agregar pictogramas propios y favoritos o recientes si fuera necesario */}
+        {/* TODO: Agregar pictogramas favoritos o recientes si fuera necesario */}
         <CategoriaPropios setCategoriaSeleccionada={props.setCategoriaSeleccionada} categoriaSeleccionada={categoriaSeleccionada}/>
+        {/* 
+        TODO: Se debe devolver solo las categorias que no tengan categoria padre 
+          En caso de que tengan padre, se renderizaran dentro de la categoria seleccionada 
+        */}
         {categorias.map((categoria) => {
           return (
             <Grid
