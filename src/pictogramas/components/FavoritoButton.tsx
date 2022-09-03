@@ -1,42 +1,44 @@
 import { IconButton } from '@mui/material'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { FavoriteBorder } from '@mui/icons-material'
 import FavoriteIcon from '@mui/icons-material/Favorite'
 import { getUsuarioLogueado, usuarioLogueado } from '../../services/usuarios-services';
+import { EliminarPictogramaFavorito, GuardarPictogramaFavorito } from '../services/pictogramas-services';
 
-interface IFavoritoPorUsuario {
-    idUsuario: number,
-    idPictograma: number
-  }
+
 const FavoritoButton = () => {
   const [fav, setFav] = useState(false);
 
-  function handleFavorito(idPictograma: number) { //TODO Completar
-    if (false) {
 
-    } else {
-      const picFav = {
-        idUsuario: usuarioLogueado?.id,
-        idPictograma: idPictograma
+
+  async function handleFavorito(idPictograma: number) { //TODO Completar
+    setFav(!fav);
+    let userLogueado = await getUsuarioLogueado();
+    if (userLogueado !== undefined){
+      if (fav) {
+        await GuardarPictogramaFavorito(idPictograma);
+        //agregar a indexedDb y llamar a la api para que guarden
+      } else {
+        await EliminarPictogramaFavorito(idPictograma);
+        //agregar a indexedDb y llamar a la api para que eliminen
       }
-      //agregar a indexedDb y llamar a la api para que guarde
-
     }
+    
   }
 
   return (
-      <div>
-          {fav &&
-              <IconButton onClick={() => { setFav(!fav) }} aria-label="delete" color="primary">
-                  <FavoriteBorder />
-              </IconButton>
-          }
-          {!fav &&
-              <IconButton onClick={() => { setFav(!fav) }} aria-label="delete" color="primary">
-                  <FavoriteIcon />
-              </IconButton>
-          }
-      </div>
+    <div>
+      {fav &&
+        <IconButton onClick={() => { setFav(!fav) }} aria-label="delete" color="error">
+          <FavoriteIcon />
+        </IconButton>
+      }
+      {!fav &&
+        <IconButton onClick={() => { setFav(!fav) }} aria-label="delete" color="error">
+          <FavoriteBorder />
+        </IconButton>
+      }
+    </div>
   )
 }
 

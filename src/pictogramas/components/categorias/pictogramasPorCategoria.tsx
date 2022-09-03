@@ -120,12 +120,12 @@ export default function PictogramasPorCategoria(props: any) {
                     
                     <IconButton
                       aria-label='eliminar'
-                      disabled={usuarioLogueado?.id === pictograma.idUsuario}
+                      disabled={usuarioLogueado?.id !== pictograma.idUsuario}
                       onClick={() => {
                         eliminarPictograma(pictograma.id);
                         db1.deleteValue("pictogramas", pictograma.id);
-                        //PREGUNTAR/buscar cómo eliminar en las tablas relacionadas (pictogramasPorCategorias y FavoritosPorCategorias)
-                        //agregarborrar del storage
+                        //PREGUNTAR/TODO cómo eliminar en las tablas relacionadas (pictogramasPorCategorias y FavoritosPorCategorias)
+                        //TODO agregarborrar del storage
                       }}
                     >
                       <HighlightOffIcon />
