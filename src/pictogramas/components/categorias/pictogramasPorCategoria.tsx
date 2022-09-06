@@ -12,7 +12,7 @@ import StarBorderIcon from '@mui/icons-material/StarBorder';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import { useEffect, useState } from 'react';
 import { IUsuario } from '../../../login/model/usuario';
-import { getUsuarioLogueado, usuarioLogueado } from '../../../services/usuarios-services';
+import { ElmiminarPictogramaDeUsuario, getUsuarioLogueado, usuarioLogueado } from '../../../services/usuarios-services';
 import { IPictogram } from '../../models/pictogram';
 import { ObtenerPictogramasPorCategoria } from '../../services/pictogramas-services';
 import { IndexedDbService } from '../../../services/indexeddb-service';
@@ -66,9 +66,13 @@ export default function PictogramasPorCategoria(props: any) {
   }
 
 
-  function eliminarPictograma(idPictograma: number) {
+  async function eliminarPictograma(idPictograma: number) {
     db1.deleteValue("pictogramas", idPictograma) //!= null ? idPictograma : 0 //Preguntar: le saque el await, esta bien? 
     //TODO primero, ver si hay que borrarlo de mas tablas. segundo, falta llamar a la api ¿esos seria aca o en otro lado?
+    db1.deleteValue("pictogramasPorCategorias", idPictograma);
+    db1.deleteValue("favoritosPorCategorias", idPictograma);
+
+    await ElmiminarPictogramaDeUsuario(idPictograma);
   }
 
   return (
@@ -116,20 +120,23 @@ export default function PictogramasPorCategoria(props: any) {
                       <CardContent></CardContent>
                     </CardActionArea>
 
-                    <FavoritoButton />
-                    
-                    <IconButton
-                      aria-label='eliminar'
-                      disabled={usuarioLogueado?.id !== pictograma.idUsuario}
-                      onClick={() => {
-                        eliminarPictograma(pictograma.id);
-                        db1.deleteValue("pictogramas", pictograma.id);
-                        //PREGUNTAR/TODO cómo eliminar en las tablas relacionadas (pictogramasPorCategorias y FavoritosPorCategorias)
-                        //TODO agregarborrar del storage
-                      }}
-                    >
-                      <HighlightOffIcon />
-                    </IconButton>
+                    <FavoritoButton pictograma={pictograma} />
+
+                    {
+                      usuarioLogueado?.id === pictograma.idUsuario
+                      &&
+                      <IconButton
+                        aria-label='eliminar'
+                        onClick={() => {
+                          eliminarPictograma(pictograma.id);
+
+                          //PREGUNTAR/TODO cómo eliminar en las tablas relacionadas (pictogramasPorCategorias y favoritosPorCategorias)
+                          //TODO agregarborrar del storage
+                        }}
+                      >
+                        <HighlightOffIcon />
+                      </IconButton>
+                    }
                   </Card>
                 </Container>
               </Grid>
