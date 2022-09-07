@@ -43,7 +43,16 @@ export class UpdateService {
     );
     if (totalCategoriasLocales !== totalCategorias){
       await ObtenerYGuardarCategorias(
-        async (cats: ICategoria[]) => (await db.putBulkValue('categorias', cats))
+        async (cats: ICategoria[]) => {
+          cats.forEach(cat => {
+            // TODO: Revisar seteo de categoria final o no
+            if(cat.categoriaPadre > 0 && !cats.some(c => c.categoriaPadre === cat.id))
+              cat.esCategoriaFinal = true
+            else
+              cat.esCategoriaFinal = false
+          });
+          await db.putBulkValue('categorias', cats)
+        }
       );
     }
 
