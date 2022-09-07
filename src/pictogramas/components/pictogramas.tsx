@@ -193,7 +193,7 @@ export default function Pictogramas(props: any) {
       <br></br>
       <hr />
       <FormDialog />
-      {categoriaSeleccionada && (
+      { categoriaSeleccionada && (
         <div>
           <CategoriaSeleccionada
             categoriaSeleccionada={categoriaSeleccionada}

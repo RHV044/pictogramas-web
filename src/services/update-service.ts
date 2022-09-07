@@ -147,9 +147,9 @@ export class UpdateService {
                   }
                   // Eliminacion de pizarra en la api
                   if(pizarra.pendienteEliminacion){
-                    EliminarPizarra(pizarra)
-                    pizarra.pendienteEliminacion = false
-                    db.putOrPatchValue("pizarras",pizarra)
+                    EliminarPizarra(pizarra).then(() => {
+                      db.deleteValue("pizarras",pizarra.id)
+                    })
                   }
                 })
               })

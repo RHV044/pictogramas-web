@@ -10,6 +10,7 @@ import { Container } from '@mui/system';
 import { useEffect, useState } from 'react';
 import { ICategoria } from '../../models/categoria';
 import { ObtenerCategorias } from '../../services/pictogramas-services';
+import Categoria from './categoria';
 import CategoriaPropios from './categoriaPropios';
 
 export default function Categorias(props: any) {
@@ -38,36 +39,12 @@ export default function Categorias(props: any) {
               item xs={12} sm={4} md={2}
             >
               <Container key={categoria.id + '-' + categoria.nombre}>
-                <Card
-                  sx={{ maxWidth: 245, minWidth:150 }}
-                  style={{ marginTop: '10px' }}
-                  onClick={() => {}}
-                >
-                  <CardActionArea
-                    onClick={() => {
-                      console.log('Clickearon una categoria: ', categoria.id);
-                      if (
-                        categoriaSeleccionada == null ||
-                        categoriaSeleccionada !== categoria
-                      ) {
-                        setCategoriaSeleccionada(categoria);
-                        props.setCategoriaSeleccionada(categoria);
-                      } else {
-                        setCategoriaSeleccionada(null);
-                        props.setCategoriaSeleccionada(null);
-                      }
-                    }}
-                  >
-                    <CardMedia
-                      component="img"
-                      height="140"
-                      image="https://www.lavanguardia.com/files/content_image_mobile_filter/uploads/2017/04/24/5fa3cfbde979b.jpeg"
-                      alt="MESSI"
-                    ></CardMedia>
-                    <CardHeader title={categoria.nombre}></CardHeader>
-                    <CardContent></CardContent>
-                  </CardActionArea>
-                </Card>
+                <Categoria 
+                  setCategoriaSeleccionada={props.setCategoriaSeleccionada} 
+                  categoria={categoria}
+                  categoriaSeleccionada={categoriaSeleccionada}
+                  categorias={categorias}
+                />
               </Container>
             </Grid>
           );
