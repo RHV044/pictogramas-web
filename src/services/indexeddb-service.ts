@@ -82,6 +82,15 @@ export class IndexedDbService {
             objectStore = transaction.objectStore("pictograms");
           }
 
+          if (!db.objectStoreNames.contains("favoritosPorUsuario")) {
+            objectStore = db.createObjectStore("favoritosPorUsuario", {
+              autoIncrement: false,
+              keyPath: "id",
+            });
+          } else {
+            objectStore = transaction.objectStore("favoritosPorUsuario");
+          }
+
           objectStore.createIndex("categorias-index", "categorias", {
             unique: false,
             multiEntry: true,
