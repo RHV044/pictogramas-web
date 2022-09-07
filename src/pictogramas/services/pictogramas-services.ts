@@ -162,8 +162,7 @@ export async function GuardarPictogramaFavorito(idPictograma: number) {
     });
   } else {
       console.log("Error usuario en gruardar favorito");
-  }
-  
+  }  
 }
 
 export async function EliminarPictogramaFavorito(idPictograma: number) {
@@ -174,6 +173,5 @@ export async function EliminarPictogramaFavorito(idPictograma: number) {
     });
   } else {
     console.log("Error usuario en eliminar favorito");
-  }
-  
+  }  
 }

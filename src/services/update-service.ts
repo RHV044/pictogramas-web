@@ -11,7 +11,10 @@ import {
 import { IndexedDbService } from './indexeddb-service';
 import axios from "axios";
 import { IPictogramaImagen } from '../pictogramas/models/pictogramaImagen';
-import { getUsuarioLogueado } from './usuarios-services';
+import { getUsuarioLogueado, usuarioLogueado } from './usuarios-services';
+import { IPizarra } from '../pizarras/models/pizarra';
+import { ActualizarPizarra, EliminarPizarra, ObtenerPizarras } from '../pizarras/services/pizarras-services';
+import { GuardarPizarra } from '../pizarras/services/pizarras-services';
 
 const apiPictogramas = process.env.URL_PICTOGRAMAS ?? "http://localhost:5000";
 
@@ -27,6 +30,7 @@ export class UpdateService {
   constructor() {
     console.log('Inicializando UPDATE SERVICE');
     this.initialize();
+    //this.actualizarPizarras()
   }
 
   async initialize() {
@@ -106,4 +110,57 @@ export class UpdateService {
       });
     }
   }
+
+  async actualizarPizarras(){
+
+    while(true)
+    {      
+      var millisecondsToWait = 5000000;
+      setTimeout(function() {
+          // Whatever you want to do after the wait
+        try{
+          let usuarioId = usuarioLogueado?.id !== undefined ? usuarioLogueado?.id : 0;
+          ObtenerPizarras(usuarioId).then((pizarrasApi : IPizarra[]) => {        
+            IndexedDbService.create().then((db) => {
+              db.getAllValues("pizarras").then((pizarras : IPizarra[]) =>{
+      
+                // Carga de pizarras de la api que no esten en el indexDb
+                pizarrasApi.map(pizarra => {
+                  if(!pizarras.some(p => p.id === pizarra.id && !p.pendienteCreacion)){
+                    db.putOrPatchValue("pizarras",pizarra)
+                  }
+                })
+
+                pizarras.map(pizarra => {
+                  // Creacion de pizarra en la api
+                  if (pizarra.pendienteCreacion){
+                    GuardarPizarra(pizarra)
+                    pizarra.pendienteCreacion = false
+                    db.putOrPatchValue("pizarras",pizarra)
+                  }
+                  // Actualizacion de pizarra en la api
+                  if(pizarra.pendienteActualizacion)
+                  {
+                    ActualizarPizarra(pizarra)
+                    pizarra.pendienteActualizacion = false
+                    db.putOrPatchValue("pizarras",pizarra)
+                  }
+                  // Eliminacion de pizarra en la api
+                  if(pizarra.pendienteEliminacion){
+                    EliminarPizarra(pizarra)
+                    pizarra.pendienteEliminacion = false
+                    db.putOrPatchValue("pizarras",pizarra)
+                  }
+                })
+              })
+            });
+          })   
+        }
+        catch(ex){
+          
+        }   
+      }, millisecondsToWait);
+    }
+  }
 }
+

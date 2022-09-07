@@ -19,3 +19,22 @@ export async function GuardarPizarra(pizarra: IPizarra){
     return resp.data
   })
 }
+
+export async function ActualizarPizarra(pizarra: IPizarra){
+  console.log("pizarra a guardar: ", pizarra)
+  return await axios.put(apiPictogramas + '/pizarras/',
+  pizarra
+  )
+  .then((resp) => {
+    return resp.data
+  })
+}
+
+export async function EliminarPizarra(pizarra: IPizarra){
+  console.log("pizarra a guardar: ", pizarra)
+  return await axios.delete(apiPictogramas + '/pizarras/' + pizarra.id
+  )
+  .then((resp) => {
+    return resp.data
+  })
+}

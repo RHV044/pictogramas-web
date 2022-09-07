@@ -66,6 +66,7 @@ export default function Pizarras(this: any) {
   const [db, setDb] = useState(IndexedDbService.create());
   const [estilos, setEstilos] = useState([] as EstilosPizarras[])
   const [cargando, setCargando] = useState(false)
+  const [nombrePizarra, setNombrePizarra] = useState("" as string)
   
   useEffect(() => {
     ObtenerPictogramas().then((pictogramas) => {
@@ -210,14 +211,15 @@ export default function Pizarras(this: any) {
         celdas.push(celda)
       }
     });
-    let pizarra = {filas: filas, columnas: columnas, usuarioId: usuarioLogueado?.id, celdas: celdas} as IPizarra
+    let pizarra = {filas: filas, columnas: columnas, usuarioId: usuarioLogueado?.id, celdas: celdas, nombre: nombrePizarra} as IPizarra
     return pizarra
   }
 
   const setPizarraActual = (pizarra : IPizarra) => {
     setCargando(true)
     setFilas(pizarra.filas)
-    setColumnas(pizarra.columnas)   
+    setColumnas(pizarra.columnas) 
+    setNombrePizarra(pizarra.nombre)  
     movimientos.eliminarGraficos()
     let nuevosGraficosSinLugar = [] as Grafico[]
     db.then(async (base) =>{

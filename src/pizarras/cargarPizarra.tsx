@@ -18,23 +18,26 @@ export default function CargarPizarra(props: any) {
   const [open, setOpen] = useState(false);
   const [idPizarra, setIdPizarra] = useState(0 as number)
   const [pizarras, setPizarras] = useState([] as IPizarra[])
+  const [cargando, setCargando] = useState(true)
 
   useEffect(() => {
     let usuarioId = usuarioLogueado?.id !== undefined ? usuarioLogueado?.id : 0;
-    ObtenerPizarras(usuarioId).then((piz : IPizarra[]) => {
-      setPizarras(piz)
 
+    //TODO: Las pizarras solo las deberia obtener del indexdb, 
+    // pero deberia actualizarlas con la api mediante update-service
+    // ObtenerPizarras(usuarioId).then((piz : IPizarra[]) => {
+    //   setPizarras(piz)
       //TODO: Verificar busqueda del indexDb
       // Se podria extraer en un metodo
-      // IndexedDbService.create().then((db) => {
-      //   db.getAllValues("pizarras").then((pizarras : IPizarra[]) =>{
-      //     let pizarrasParaAgregar = pizarras.filter((p: IPizarra) =>
-      //      !piz.some((p2: IPizarra) => p2.id === p.id)) 
-      //     let nuevasPizarras = pizarrasParaAgregar.concat([...pizarras])
-      //     setPizarras(nuevasPizarras)
-      //   })
-      // });
-    })    
+      IndexedDbService.create().then((db) => {
+        db.getAllValues("pizarras").then((pizarras : IPizarra[]) =>{
+          let pizarrasParaAgregar = pizarras.filter((p: IPizarra) => p.usuarioId === usuarioId &&
+           p.pendienteEliminacion !== true) 
+          setPizarras(pizarrasParaAgregar)
+          setCargando(false)
+        })
+      });
+    // })    
   }, []);
 
   const handleClickOpen = () => {
@@ -48,6 +51,20 @@ export default function CargarPizarra(props: any) {
   const handleCrear = () => {
     let pizarra = pizarras.find(p => p.id === idPizarra)
     props.setPizarra(pizarra)
+    setOpen(false);
+  };
+
+  const handleEliminar = () => {
+    let pizarra = pizarras.find(p => p.id === idPizarra)
+    if (pizarra)
+    {
+      pizarra.pendienteEliminacion = true
+      IndexedDbService.create().then((db) => {
+        db.putOrPatchValue("pizarras", pizarra)
+      });
+
+      //TODO: eliminar esta pizarra de las opciones actuales
+    }
     setOpen(false);
   };
 
@@ -73,15 +90,16 @@ export default function CargarPizarra(props: any) {
                 setIdPizarra(id)
               }}
             >
-              {Array.from(Array(pizarras), (e, f) => {
-                return(<MenuItem value={e[f].id} key={e[f].id}>{e[f].nombre}</MenuItem>)
-              })}              
+              {Array.from(Array(pizarras), (e, f) => 
+                (<MenuItem value={e[f].id} key={e[f].id}>{e[f].nombre}</MenuItem>)
+              )}              
             </Select>
           }
           <br />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCrear}>Cargar</Button>
+          { idPizarra > 0 &&<Button onClick={handleEliminar}>Eliminar Pizarra</Button>}
           <Button onClick={handleClose}>Cancelar</Button>
         </DialogActions>
       </Dialog>
