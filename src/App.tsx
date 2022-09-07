@@ -5,7 +5,7 @@ import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import VincularCuenta from './login/components/vincularCuenta';
 import ModificarCuenta from './login/components/modificarCuenta';
 import CrearCuenta from './login/components/crearCuenta';
-import Categorias from './pictogramas/components/categorias/categorias';
+import CategoriasRaices from './pictogramas/components/categorias/categoriasRaices';
 import Configuracion from './configuracion/configuracion';
 import Pizarras from './pizarras/pizarras';
 import Estadisticas from './estadisticas/estadisticas';
@@ -27,7 +27,7 @@ function App() {
             <Route path="/cuenta/vincular" element={<VincularCuenta props={undefined} />} />
             <Route path="/cuenta/crear" element={<CrearCuenta props={undefined} />} />
             <Route path="/pictogramas" element={<Pictogramas/>} />
-            <Route path="/categorias" element={<Categorias/>} />
+            <Route path="/categorias" element={<CategoriasRaices/>} />
             <Route path="/configuracion" element={<Configuracion/>} />
             <Route path="/pizarras" element={<Pizarras/>} />
             <Route path="/estadisticas" element={<Estadisticas/>} />

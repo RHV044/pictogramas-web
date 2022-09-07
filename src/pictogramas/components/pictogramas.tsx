@@ -18,7 +18,7 @@ import { IndexedDbService } from '../../services/indexeddb-service';
 import { IPictogram } from '../models/pictogram';
 import Pictogram from './pictogram';
 import { useLocation, useNavigate } from 'react-router-dom';
-import Categorias from './categorias/categorias';
+import CategoriasRaices from './categorias/categoriasRaices';
 import Seleccion from './seleccion';
 import { UpdateService } from '../../services/update-service';
 import ResponsiveAppBar from '../../commons/appBar';
@@ -193,6 +193,9 @@ export default function Pictogramas(props: any) {
       <br></br>
       <hr />
       <FormDialog />
+      {/* TODO: Debe poder concatenar categorias hasta llegar a categoria final */}
+      {/* TODO: categoriaSeleccionada debe pasar a ser un array de categorias, siendo la primera de la lista la raiz */}
+      {/* TODO: Se debe renderizar las categorias hijas o los pictogramas si es categoria final */}
       { categoriaSeleccionada && (
         <div>
           <CategoriaSeleccionada
@@ -210,7 +213,8 @@ export default function Pictogramas(props: any) {
       {/* Si paso setPictogramas tampoco me actualiza */}
       {/* <Categorias setPictogramas={setPictogramas} pictogramas={pictogramas}/> */}
       <br />
-      <Categorias
+      {/* TODO: Si se selecciona, el listado de categorias seleccionadas se debe reiniciar */}
+      <CategoriasRaices
         setPictogramas={UpdatePictogramas}
         setCategoriaSeleccionada={setCategoriaSeleccionada}
       />

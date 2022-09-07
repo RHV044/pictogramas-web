@@ -13,7 +13,7 @@ import { ObtenerCategorias } from '../../services/pictogramas-services';
 import Categoria from './categoria';
 import CategoriaPropios from './categoriaPropios';
 
-export default function Categorias(props: any) {
+export default function CategoriasRaices(props: any) {
   const [categorias, setCategorias] = useState([] as ICategoria[]);
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState(
     {} as ICategoria | null
@@ -32,6 +32,7 @@ export default function Categorias(props: any) {
         TODO: Se debe devolver solo las categorias que no tengan categoria padre 
           En caso de que tengan padre, se renderizaran dentro de la categoria seleccionada 
         */}
+        {/* TODO: Solo debo mostrar categorias que son raiz */}
         {categorias.map((categoria) => {
           return (
             <Grid

@@ -25,7 +25,7 @@ import { Grafico, Movimientos, Position } from './movimientos';
 import { IPictogram } from '../pictogramas/models/pictogram';
 import { ObtenerPictogramas } from '../pictogramas/services/pictogramas-services';
 import { ICategoria } from '../pictogramas/models/categoria';
-import Categorias from '../pictogramas/components/categorias/categorias';
+import CategoriasRaices from '../pictogramas/components/categorias/categoriasRaices';
 import CategoriaSeleccionada from '../pictogramas/components/categorias/categoriaSeleccionada';
 import PictogramasPorCategoria from '../pictogramas/components/categorias/pictogramasPorCategoria';
 import { IndexedDbService } from '../services/indexeddb-service';
@@ -441,7 +441,7 @@ export default function Pizarras(this: any) {
       { mostrarPictogramas &&
         <div>
           <br />
-          <Categorias
+          <CategoriasRaices
             setPictogramas={UpdatePictogramas}
             setCategoriaSeleccionada={setCategoriaSeleccionada}
           />
