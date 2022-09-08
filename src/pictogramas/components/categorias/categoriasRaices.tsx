@@ -34,21 +34,24 @@ export default function CategoriasRaices(props: any) {
         */}
         {/* TODO: Solo debo mostrar categorias que son raiz */}
         {categorias.map((categoria) => {
-          return (
-            <Grid
-              key={categoria.id + '-' + categoria.nombre}
-              item xs={12} sm={4} md={2}
-            >
-              <Container key={categoria.id + '-' + categoria.nombre}>
-                <Categoria 
-                  setCategoriaSeleccionada={props.setCategoriaSeleccionada} 
-                  categoria={categoria}
-                  categoriaSeleccionada={categoriaSeleccionada}
-                  categorias={categorias}
-                />
-              </Container>
-            </Grid>
-          );
+          if (categoria.categoriaPadre === null || categoria.categoriaPadre === undefined || categoria.categoriaPadre < 1)
+          {
+            return (
+                <Grid
+                  key={categoria.id + '-' + categoria.nombre}
+                  item xs={12} sm={4} md={2}
+                >
+                  <Container key={categoria.id + '-' + categoria.nombre}>
+                    <Categoria 
+                      setCategoriaSeleccionada={props.setCategoriaSeleccionada} 
+                      categoria={categoria}
+                      categoriaSeleccionada={categoriaSeleccionada}
+                      categorias={categorias}
+                    />
+                  </Container>
+                </Grid>
+              );
+            }
         })}
       </Grid>
     </Container>

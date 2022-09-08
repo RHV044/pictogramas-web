@@ -16,7 +16,7 @@ export default function CategoriaSeleccionada(props: any) {
       >
         <CardActionArea
           onClick={() => {
-            props.setCategoriaSeleccionada(null);
+            props.setCategoriaSeleccionada(props.categoriaSeleccionada);
           }}
         >
           <CardMedia

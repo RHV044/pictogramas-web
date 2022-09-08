@@ -26,7 +26,8 @@ import FormDialog from './crearPictograma';
 import { ICategoria } from '../models/categoria';
 import CategoriaSeleccionada from './categorias/categoriaSeleccionada';
 import PictogramasPorCategoria from './categorias/pictogramasPorCategoria';
-import { ObtenerPictogramas } from '../services/pictogramas-services';
+import { ObtenerCategorias, ObtenerPictogramas } from '../services/pictogramas-services';
+import Categoria from './categorias/categoria';
 const db = new IndexedDbService();
 
 export default function Pictogramas(props: any) {
@@ -47,6 +48,7 @@ export default function Pictogramas(props: any) {
     [] as IPictogram[]
   );
   const [db, setDb] = useState(IndexedDbService.create());
+  const [categorias, setCategorias] = useState([] as ICategoria[]) 
 
   const UpdatePictogramas = (pics: IPictogram[]) => {
     let nuevosPics = [...pics]
@@ -54,13 +56,13 @@ export default function Pictogramas(props: any) {
     // Esto se hace pero en la 2da vez el componente seleccion no se renderiza nuevamente
     setPictogramasSeleccionados(null);
     setPictogramasSeleccionados(nuevosPics);
-    console.log('PICTOGRAMAS:', pictogramasSeleccionados);
   };
 
   useEffect(() => {
     ObtenerPictogramas().then((pictogramas) => {
       setPictogramas(pictogramas);
     });
+    ObtenerCategorias(setCategorias);
   }, []);
 
   const filtrarPictogramas = async (value: string) => {
@@ -79,6 +81,82 @@ export default function Pictogramas(props: any) {
       setPictogramasFiltrados(pictsFiltrados);
     }
   };
+
+  const ObtenerCategoriaPadre = (categoria: ICategoria) => {
+    if (categoria.categoriaPadre === null || categoria.categoriaPadre < 1 || categoria.categoriaPadre === undefined)
+    {
+      // Es categoria raiz
+      return (<>
+      {          
+        <CategoriaSeleccionada
+          categoriaSeleccionada={categoria}
+          setCategoriaSeleccionada={setCategoriaSeleccionada}
+        />
+      }
+      </>)
+    }
+    else
+    {
+      let categoriaPadre = categorias.find(c => c.id === categoria.categoriaPadre)
+      return(
+        <>{ categoriaPadre && ObtenerCategoriaPadre(categoriaPadre)}
+        /
+        {
+          <CategoriaSeleccionada
+            categoriaSeleccionada={categoria}
+            setCategoriaSeleccionada={setCategoriaSeleccionada}
+          />
+        }
+        </>
+      )
+    }
+  }
+
+  const ListaCategorias = (categoria: ICategoria) => {
+    return (<>{ObtenerCategoriaPadre(categoria)}</>)
+  }
+
+  const OpcionesDeCategoria = (categoria: ICategoria) => {
+    if (categoria.esCategoriaFinal === true)
+    {
+      // Es categoria final, debo mostrar pictogramas
+      return (<>
+          <PictogramasPorCategoria
+            categoria={categoria.id}
+            setPictogramas={UpdatePictogramas}
+            pictogramas={pictogramasSeleccionados}
+          ></PictogramasPorCategoria>
+      </>)
+    }
+    else
+    {
+      // Es categoria padre, debo mostrar categorias
+      let categoriasHijas = categorias.filter(c => c.categoriaPadre === categoria.id)
+      return(
+        <Container>
+          <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 10, md: 12 }}>
+          { categoriasHijas.map((categoria) => {
+            return (
+                <Grid
+                  key={categoria.id + '-' + categoria.nombre}
+                  item xs={12} sm={4} md={2}
+                >
+                  <Container key={categoria.id + '-' + categoria.nombre}>
+                    <Categoria 
+                      setCategoriaSeleccionada={setCategoriaSeleccionada} 
+                      categoria={categoria}
+                      categoriaSeleccionada={categoriaSeleccionada}
+                      categorias={categorias}
+                    />
+                  </Container>
+                </Grid>
+              );
+          })}
+          </Grid>
+        </Container>
+      )
+    }
+  }
 
   return (
     <div>
@@ -200,7 +278,9 @@ export default function Pictogramas(props: any) {
           si categoriaPadre === null, es raiz por lo que seria la primera
       */}
       {/* TODO: Se debe renderizar las categorias hijas o los pictogramas si es categoria final */}
-      { categoriaSeleccionada && (
+      { categoriaSeleccionada && ListaCategorias(categoriaSeleccionada) }
+      { categoriaSeleccionada && OpcionesDeCategoria(categoriaSeleccionada) }
+      {/* { categoriaSeleccionada && (
         <div>
           <CategoriaSeleccionada
             categoriaSeleccionada={categoriaSeleccionada}
@@ -212,12 +292,14 @@ export default function Pictogramas(props: any) {
             pictogramas={pictogramasSeleccionados}
           ></PictogramasPorCategoria>
         </div>
-      )}
+      )} */}
 
       {/* Si paso setPictogramas tampoco me actualiza */}
       {/* <Categorias setPictogramas={setPictogramas} pictogramas={pictogramas}/> */}
       <br />
       {/* TODO: Si se selecciona, el listado de categorias seleccionadas se debe reiniciar */}
+      Aca empiezan las categorias raices
+      <br />
       <CategoriasRaices
         setPictogramas={UpdatePictogramas}
         setCategoriaSeleccionada={setCategoriaSeleccionada}
