@@ -194,7 +194,11 @@ export default function Pictogramas(props: any) {
       <hr />
       <FormDialog />
       {/* TODO: Debe poder concatenar categorias hasta llegar a categoria final */}
-      {/* TODO: categoriaSeleccionada debe pasar a ser un array de categorias, siendo la primera de la lista la raiz */}
+      {/* 
+        TODO: categoriaSeleccionada no necesariamente debe pasar a ser un array de categorias para manejar las hijas
+          se puede preguntar si categoria padre es !== null y si esCategoriaFinal es true para saber si se finaliza
+          si categoriaPadre === null, es raiz por lo que seria la primera
+      */}
       {/* TODO: Se debe renderizar las categorias hijas o los pictogramas si es categoria final */}
       { categoriaSeleccionada && (
         <div>
