@@ -91,9 +91,12 @@ export default function CargarPizarra(props: any) {
                 setIdPizarra(id)
               }}
             >
-              {Array.from(Array(pizarras), (e, f) => 
-                (<MenuItem value={e[f].id} key={e[f].id}>{e[f].nombre}</MenuItem>)
-              )}              
+              { pizarras.map(p => {
+                return(
+                  <MenuItem value={p.id} key={p.id}>{p.nombre}</MenuItem>
+                )
+              })
+              }              
             </Select>
           }
           <br />

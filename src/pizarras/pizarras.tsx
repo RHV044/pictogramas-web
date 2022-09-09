@@ -69,6 +69,7 @@ export default function Pizarras(this: any) {
   const [cargando, setCargando] = useState(false)
   const [nombrePizarra, setNombrePizarra] = useState("" as string)
   const [categorias, setCategorias] = useState([] as ICategoria[]) 
+  const [pizarra, setPizarra] = useState({} as IPizarra)
   
   useEffect(() => {
     ObtenerPictogramas().then((pictogramas) => {
@@ -214,8 +215,8 @@ export default function Pizarras(this: any) {
         celdas.push(celda)
       }
     });
-    let pizarra = {filas: filas, columnas: columnas, usuarioId: usuarioLogueado?.id, celdas: celdas, nombre: nombrePizarra} as IPizarra
-    return pizarra
+    let pizarraActual = {id: pizarra.id, filas: filas, columnas: columnas, usuarioId: usuarioLogueado?.id, celdas: celdas, nombre: nombrePizarra} as IPizarra
+    return pizarraActual
   }
 
   const setPizarraActual = (pizarra : IPizarra) => {
@@ -223,7 +224,8 @@ export default function Pizarras(this: any) {
     setCargando(true)
     setFilas(pizarra.filas)
     setColumnas(pizarra.columnas) 
-    setNombrePizarra(pizarra.nombre)  
+    setNombrePizarra(pizarra.nombre) 
+    setPizarra(pizarra) 
     movimientos.eliminarGraficos()
     let nuevosGraficosSinLugar = [] as Grafico[]
     db.then(async (base) =>{

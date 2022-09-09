@@ -64,7 +64,9 @@ export default function GuardarPizarra(props:any) {
       // TODO: El id es nulo y falla al guardar
       if (pizarraActual)
       {
-        pizarraActual.id = 1 //Date.now().toString()
+        let newId = parseInt(Date.now().toString().substring(5,13))
+        console.log(newId)
+        pizarraActual.id = newId
         db.putOrPatchValue("pizarras", pizarraActual)
       }
     });
