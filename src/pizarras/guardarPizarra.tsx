@@ -31,6 +31,17 @@ export default function GuardarPizarra(props:any) {
     }
   }, []);
 
+  useEffect(() => {
+    let pizarraActual = props.obtenerPizarra() as IPizarra
+    setPizarra(pizarraActual)
+    if(pizarraActual.nombre !== "")
+    {      
+      setNombre(pizarraActual.nombre)   
+      setActualizacion(true) 
+      setNombreOriginal(pizarraActual.nombre)
+    }
+  }, [props.nombrePizarra]);
+
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -50,7 +61,12 @@ export default function GuardarPizarra(props:any) {
     // let pizarra = SavePizarra(pizarraActual)
     //TODO: Revisar guardado en el index db y si es posible mejorar
     IndexedDbService.create().then((db) => {
-      db.putOrPatchValue("pizarras", pizarra)
+      // TODO: El id es nulo y falla al guardar
+      if (pizarraActual)
+      {
+        pizarraActual.id = 1
+        db.putOrPatchValue("pizarras", pizarraActual)
+      }
     });
     setOpen(false);
   };
@@ -66,7 +82,8 @@ export default function GuardarPizarra(props:any) {
     // let pizarra = SavePizarra(pizarraActual)
     //TODO: Revisar guardado en el index db y si es posible mejorar
     IndexedDbService.create().then((db) => {
-      db.putOrPatchValue("pizarras", pizarra)
+      if (pizarraActual)
+        db.putOrPatchValue("pizarras", pizarraActual)
     });
     setOpen(false);
   };
@@ -77,7 +94,7 @@ export default function GuardarPizarra(props:any) {
         Guardar Pizarra
       </Button>
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Creacion de Pictograma</DialogTitle>
+        <DialogTitle>Creacion de Pizarra</DialogTitle>
         <DialogContent>
           <DialogContentText>
             Nombre para su pizarra

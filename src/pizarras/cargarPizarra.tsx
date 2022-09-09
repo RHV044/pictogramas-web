@@ -33,6 +33,7 @@ export default function CargarPizarra(props: any) {
         db.getAllValues("pizarras").then((pizarras : IPizarra[]) =>{
           let pizarrasParaAgregar = pizarras.filter((p: IPizarra) => p.usuarioId === usuarioId &&
            p.pendienteEliminacion !== true) 
+          console.log("Pizarras: ", pizarrasParaAgregar)
           setPizarras(pizarrasParaAgregar)
           setCargando(false)
         })

@@ -23,7 +23,7 @@ import { CellDrop, cellDropStyle } from './cellDrop';
 import { Trash } from './trash';
 import { Grafico, Movimientos, Position } from './movimientos';
 import { IPictogram } from '../pictogramas/models/pictogram';
-import { ObtenerPictogramas } from '../pictogramas/services/pictogramas-services';
+import { ObtenerCategorias, ObtenerPictogramas } from '../pictogramas/services/pictogramas-services';
 import { ICategoria } from '../pictogramas/models/categoria';
 import CategoriasRaices from '../pictogramas/components/categorias/categoriasRaices';
 import CategoriaSeleccionada from '../pictogramas/components/categorias/categoriaSeleccionada';
@@ -35,6 +35,7 @@ import CargarPizarra from './cargarPizarra';
 import { ObtenerPizarras } from './services/pizarras-services';
 import { ICeldaPizarra, IPizarra } from './models/pizarra';
 import { usuarioLogueado } from '../services/usuarios-services';
+import Categoria from '../pictogramas/components/categorias/categoria';
 
 export type EstilosPizarras = {
   fila: number,
@@ -67,11 +68,13 @@ export default function Pizarras(this: any) {
   const [estilos, setEstilos] = useState([] as EstilosPizarras[])
   const [cargando, setCargando] = useState(false)
   const [nombrePizarra, setNombrePizarra] = useState("" as string)
+  const [categorias, setCategorias] = useState([] as ICategoria[]) 
   
   useEffect(() => {
     ObtenerPictogramas().then((pictogramas) => {
       setPictogramas(pictogramas);
     });    
+    ObtenerCategorias(setCategorias);
   }, []);
 
   useEffect(()=>{
@@ -216,6 +219,7 @@ export default function Pizarras(this: any) {
   }
 
   const setPizarraActual = (pizarra : IPizarra) => {
+    console.log("pizarra cargada: ", pizarra)
     setCargando(true)
     setFilas(pizarra.filas)
     setColumnas(pizarra.columnas) 
@@ -255,6 +259,82 @@ export default function Pizarras(this: any) {
     setCargando(false)
   }
 
+  const ObtenerCategoriaPadre = (categoria: ICategoria) => {
+    if (categoria.categoriaPadre === null || categoria.categoriaPadre < 1 || categoria.categoriaPadre === undefined)
+    {
+      // Es categoria raiz
+      return (<>
+      {          
+        <CategoriaSeleccionada
+          categoriaSeleccionada={categoria}
+          setCategoriaSeleccionada={setCategoriaSeleccionada}
+        />
+      }
+      </>)
+    }
+    else
+    {
+      let categoriaPadre = categorias.find(c => c.id === categoria.categoriaPadre)
+      return(
+        <>{ categoriaPadre && ObtenerCategoriaPadre(categoriaPadre)}
+        /
+        {
+          <CategoriaSeleccionada
+            categoriaSeleccionada={categoria}
+            setCategoriaSeleccionada={setCategoriaSeleccionada}
+          />
+        }
+        </>
+      )
+    }
+  }
+
+  const ListaCategorias = (categoria: ICategoria) => {
+    return (<>{ObtenerCategoriaPadre(categoria)}</>)
+  }
+
+  const OpcionesDeCategoria = (categoria: ICategoria) => {
+    if (categoria.esCategoriaFinal === true)
+    {
+      // Es categoria final, debo mostrar pictogramas
+      return (<>
+          <PictogramasPorCategoria
+            categoria={categoria.id}
+            setPictogramas={UpdatePictogramas}
+            pictogramas={pictogramasSeleccionados}
+          ></PictogramasPorCategoria>
+      </>)
+    }
+    else
+    {
+      // Es categoria padre, debo mostrar categorias
+      let categoriasHijas = categorias.filter(c => c.categoriaPadre === categoria.id)
+      return(
+        <Container>
+          <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 10, md: 12 }}>
+          { categoriasHijas.map((categoria) => {
+            return (
+                <Grid
+                  key={categoria.id + '-' + categoria.nombre}
+                  item xs={12} sm={4} md={2}
+                >
+                  <Container key={categoria.id + '-' + categoria.nombre}>
+                    <Categoria 
+                      setCategoriaSeleccionada={setCategoriaSeleccionada} 
+                      categoria={categoria}
+                      categoriaSeleccionada={categoriaSeleccionada}
+                      categorias={categorias}
+                    />
+                  </Container>
+                </Grid>
+              );
+          })}
+          </Grid>
+        </Container>
+      )
+    }
+  }
+
   return (
     <div>
       <ResponsiveAppBar />
@@ -285,7 +365,7 @@ export default function Pizarras(this: any) {
       />
       <EstilosFormDialog 
         filas={filas} columnas={columnas} estilos={[...estilos]} actualizarEstilos={nuevosEstilos}/>
-      <GuardarPizarra obtenerPizarra={obtenerPizarraActual}/>
+      <GuardarPizarra obtenerPizarra={obtenerPizarraActual} nombrePizarra={nombrePizarra}/>
       <CargarPizarra setPizarra={setPizarraActual}/>
       </Container>
       <br />
@@ -424,22 +504,11 @@ export default function Pizarras(this: any) {
           })}
         </Grid>
       </Container>
-      { mostrarPictogramas && categoriaSeleccionada && (
-        <div>
-          <CategoriaSeleccionada
-            categoriaSeleccionada={categoriaSeleccionada}
-            setCategoriaSeleccionada={setCategoriaSeleccionada}
-          />
-          <PictogramasPorCategoria
-            categoria={categoriaSeleccionada.id}
-            setPictogramas={UpdatePictogramas}
-            pictogramas={pictogramasSeleccionados}
-          ></PictogramasPorCategoria>
-        </div>
-      )}
-
+      { mostrarPictogramas && categoriaSeleccionada && ListaCategorias(categoriaSeleccionada) }
+      { mostrarPictogramas && categoriaSeleccionada && OpcionesDeCategoria(categoriaSeleccionada) }
       { mostrarPictogramas &&
         <div>
+      Aca empiezan las categorias raices
           <br />
           <CategoriasRaices
             setPictogramas={UpdatePictogramas}
