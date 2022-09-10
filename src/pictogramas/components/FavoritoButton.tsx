@@ -18,17 +18,29 @@ const FavoritoButton = (props: any) => {
     let userLogueado = await getUsuarioLogueado();
     if (userLogueado !== undefined){
       if (!fav) {        
+        
+        let newId = parseInt(Date.now().toString().substring(5,13));
+        
+        console.log(newId);        
         const favPorUser: IFavoritoPorUsuario = {
+          id: newId,
           idUsuario: (userLogueado.id === undefined || userLogueado.id === null) ? 0 : userLogueado.id,
           idPictograma: props.pictograma.id
         };
-
-        await GuardarPictogramaFavorito(props.pictograma.id); //llamado a la api
-        await (await db).putOrPatchValue('favoritosPorUsuario', favPorUser); //guardar en indexedDB
+        
+        if(favPorUser){
+          
+          await GuardarPictogramaFavorito(props.pictograma.id); //llamado a la api
+          await (await db).putOrPatchValue('favoritosPorUsuario', favPorUser); //guardar en indexedDB
+        }
+        else{
+          console.log('ingresaste al else');
+        }     
 
       } else {
         await EliminarPictogramaFavorito(props.pictograma.id); //llamado a la api
-        (await db).deleteValue('favoritosPorUsuario', props.pictograma.id); //delete en la indexedDb
+        //TODO corregir delete en la indexedDb porque busca en la columna id por el id del pictograma y no esta bien
+        (await db).deleteValue('favoritosPorUsuario', props.idPictograma); //delete en la indexedDb
       }
     }    
   }
