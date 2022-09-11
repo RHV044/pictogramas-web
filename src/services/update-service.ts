@@ -31,7 +31,8 @@ export class UpdateService {
   constructor() {
     console.log('Inicializando UPDATE SERVICE');
     this.initialize();
-    this.sincronizar()
+    this.addEventsListener()
+    this.sincronizar
   }
 
   async initialize() {
@@ -121,19 +122,25 @@ export class UpdateService {
     }
   }
 
-  async sincronizar(){
+  async addEventsListener(){
     window.addEventListener('online', () => {
       console.log("Hay conexion")
-      this.actualizarPizarras()
+      this.sincronizar()
     });
     window.addEventListener('sincronizar', () => {
       console.log("EVENTO SINCRONIZAR")
-      if(window.navigator.onLine)
-        this.actualizarPizarras()
+      this.sincronizar()
     });
     window.addEventListener('offline', () => {
       console.log("Se perdio la conexion")
     });
+  }
+
+  async sincronizar(){
+    if(window.navigator.onLine)
+    {
+      this.actualizarPizarras();
+    }
   }
 
   async actualizarPizarras(){
