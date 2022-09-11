@@ -7,6 +7,7 @@ import {
   ObtenerTotalCategorias,
   ObtenerTotalPictogramas,
   ObtenerYGuardarCategorias,
+  VerificarConexion,
 } from '../pictogramas/services/pictogramas-services';
 import { IndexedDbService } from './indexeddb-service';
 import axios from "axios";
@@ -30,7 +31,7 @@ export class UpdateService {
   constructor() {
     console.log('Inicializando UPDATE SERVICE');
     this.initialize();
-    //this.actualizarPizarras()
+    this.sincronizar()
   }
 
   async initialize() {
@@ -120,56 +121,65 @@ export class UpdateService {
     }
   }
 
+  async sincronizar(){
+    window.addEventListener('online', () => {
+      console.log("Hay conexion")
+      this.actualizarPizarras()
+    });
+    window.addEventListener('sincronizar', () => {
+      console.log("EVENTO SINCRONIZAR")
+      if(window.navigator.onLine)
+        this.actualizarPizarras()
+    });
+    window.addEventListener('offline', () => {
+      console.log("Se perdio la conexion")
+    });
+  }
+
   async actualizarPizarras(){
+    try{      
+      console.log("ACTUALIZACION PIZARRAS")
+      //await VerificarConexion()
+      let usuarioId = usuarioLogueado?.id !== undefined ? usuarioLogueado?.id : 0;
+      ObtenerPizarras(usuarioId).then((pizarrasApi : IPizarra[]) => {        
+        IndexedDbService.create().then((db) => {
+          db.getAllValues("pizarras").then(async (pizarras : IPizarra[]) =>{
+  
+            // Carga de pizarras de la api que no esten en el indexDb
+            pizarrasApi.map(pizarra => {
+              if(!pizarras.some(p => p.id === pizarra.id && !p.pendienteCreacion)){
+                db.putOrPatchValue("pizarras",pizarra)
+              }
+            })
 
-    while(true)
-    {      
-      var millisecondsToWait = 5000000;
-      setTimeout(function() {
-          // Whatever you want to do after the wait
-        try{
-          let usuarioId = usuarioLogueado?.id !== undefined ? usuarioLogueado?.id : 0;
-          ObtenerPizarras(usuarioId).then((pizarrasApi : IPizarra[]) => {        
-            IndexedDbService.create().then((db) => {
-              db.getAllValues("pizarras").then((pizarras : IPizarra[]) =>{
-      
-                // Carga de pizarras de la api que no esten en el indexDb
-                pizarrasApi.map(pizarra => {
-                  if(!pizarras.some(p => p.id === pizarra.id && !p.pendienteCreacion)){
-                    db.putOrPatchValue("pizarras",pizarra)
-                  }
+            pizarras.map(async (pizarra) => {
+              // Creacion de pizarra en la api
+              if (pizarra.pendienteCreacion){
+                await GuardarPizarra(pizarra)
+                pizarra.pendienteCreacion = false
+                db.putOrPatchValue("pizarras",pizarra)
+              }
+              // Actualizacion de pizarra en la api
+              if(pizarra.pendienteActualizacion)
+              {
+                await ActualizarPizarra(pizarra)
+                pizarra.pendienteActualizacion = false
+                db.putOrPatchValue("pizarras",pizarra)
+              }
+              // Eliminacion de pizarra en la api
+              if(pizarra.pendienteEliminacion){
+                EliminarPizarra(pizarra).then(() => {
+                  db.deleteValue("pizarras",pizarra.id)
                 })
-
-                pizarras.map(pizarra => {
-                  // Creacion de pizarra en la api
-                  if (pizarra.pendienteCreacion){
-                    GuardarPizarra(pizarra)
-                    pizarra.pendienteCreacion = false
-                    db.putOrPatchValue("pizarras",pizarra)
-                  }
-                  // Actualizacion de pizarra en la api
-                  if(pizarra.pendienteActualizacion)
-                  {
-                    ActualizarPizarra(pizarra)
-                    pizarra.pendienteActualizacion = false
-                    db.putOrPatchValue("pizarras",pizarra)
-                  }
-                  // Eliminacion de pizarra en la api
-                  if(pizarra.pendienteEliminacion){
-                    EliminarPizarra(pizarra).then(() => {
-                      db.deleteValue("pizarras",pizarra.id)
-                    })
-                  }
-                })
-              })
-            });
-          })   
-        }
-        catch(ex){
-          
-        }   
-      }, millisecondsToWait);
+              }
+            })
+          })
+        });
+      })   
     }
+    catch(ex){
+      console.log(ex)
+    }   
   }
 }
 

@@ -13,8 +13,14 @@ import SeleccionDeNivel from './actividades/seleccionDeNivel';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import Actividad from './actividades/actividad';
+import { useState, useEffect } from 'react';
+import { UpdateService } from './services/update-service';
 
 function App() {
+
+  useEffect(() => {
+    let updateService = new UpdateService()
+  },[])
 
   return (
     <div>

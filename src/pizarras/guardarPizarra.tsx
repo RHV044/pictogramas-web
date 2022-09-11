@@ -70,6 +70,7 @@ export default function GuardarPizarra(props:any) {
         db.putOrPatchValue("pizarras", pizarraActual)
       }
     });
+    dispatchEvent(new CustomEvent('sincronizar'));
     setOpen(false);
   };
 
@@ -87,6 +88,7 @@ export default function GuardarPizarra(props:any) {
       if (pizarraActual)
         db.putOrPatchValue("pizarras", pizarraActual)
     });
+    dispatchEvent(new CustomEvent('sincronizar'));
     setOpen(false);
   };
 
@@ -108,10 +110,10 @@ export default function GuardarPizarra(props:any) {
         </DialogContent>
         <DialogActions>
           { (nombreOriginal === "" || nombreOriginal !== nombre) &&
-            <Button onClick={handleCrear}>Crear Nueva Pizarra</Button>
+            <Button className="sincronizar" onClick={handleCrear}>Crear Nueva Pizarra</Button>
           }
           { actualizacion && 
-            <Button onClick={handleActualizar}>Actualizar</Button> 
+            <Button className="sincronizar" onClick={handleActualizar}>Actualizar</Button> 
           }
           <Button onClick={handleClose}>Cancelar</Button>
         </DialogActions>
