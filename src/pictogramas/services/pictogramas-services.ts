@@ -175,3 +175,11 @@ export async function EliminarPictogramaFavorito(idPictograma: number) {
     console.log("Error usuario en eliminar favorito");
   }  
 }
+
+export async function VerificarConexion(){
+  let response = await axios.get(apiPictogramas + '/categorias/total')
+  if (response.status === 200)
+    return
+  else
+    throw "No hay conexion"
+}

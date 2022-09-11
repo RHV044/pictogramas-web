@@ -167,7 +167,7 @@ export default function Pictogramas(props: any) {
         setPictogramas={UpdatePictogramas}
       />
       <hr />
-      <Button
+      {/* <Button
         variant="contained"
         onClick={() =>
           LoadPictogramsFromArasaac(setPictosIds, setDownloadPercentage)
@@ -182,7 +182,7 @@ export default function Pictogramas(props: any) {
         }}
       >
         Descargar Pictogramas Nuestros
-      </Button>
+      </Button> */}
 
       <CircularProgress variant="determinate" value={downloadPercentage} />
       <br></br>
