@@ -2,6 +2,7 @@ import { IDBPDatabase, openDB } from "idb";
 import { apply } from "json-merge-patch";
 import { IUsuario } from "../login/model/usuario";
 import { ICategoria } from "../pictogramas/models/categoria";
+import { IFavoritoPorUsuario } from "../pictogramas/models/favoritoPorUsuario";
 import { IPictogram } from "../pictogramas/models/pictogram";
 import { getUsuarioLogueado, usuarioLogueado } from "./usuarios-services";
 
@@ -34,6 +35,17 @@ export class IndexedDbService {
 
     return await index.getAll(lowerCaseTag);
   }
+
+  public async searchFavoritoByUser(idUsuario: number): Promise<IFavoritoPorUsuario[]> {
+    
+    let transaction = this.db.transaction("favoritosPorUsuario", "readonly");
+    let objectStore = transaction.objectStore("favoritosPorUsuario");
+
+    var index = objectStore.index("favoritosPorUsuario-index");
+
+    return await index.getAll(idUsuario);
+  }
+  
   public async initializeSchema() {
     try {
       this.db = await openDB(this.database, 3, {
@@ -58,6 +70,13 @@ export class IndexedDbService {
               keyPath: "id",
             });
           }
+
+          objectStore.createIndex("categorias-index", "categorias", {
+            unique: false,
+            multiEntry: true,
+          });
+
+          
 
           if (!db.objectStoreNames.contains("imagenes")) {
             objectStore = db.createObjectStore("imagenes", {
@@ -87,14 +106,13 @@ export class IndexedDbService {
               autoIncrement: false,
               keyPath: "id",
             });
+            objectStore.createIndex("favoritosPorUsuario-index", "idUsuario", {
+              unique: false,
+              multiEntry: false,
+            });
           } else {
-            objectStore = transaction.objectStore("favoritosPorUsuario");
+            objectStore = transaction.objectStore("favoritosPorUsuario");            
           }
-
-          objectStore.createIndex("categorias-index", "categorias", {
-            unique: false,
-            multiEntry: true,
-          });
         },
       });
       console.log("database opened");
@@ -107,6 +125,7 @@ export class IndexedDbService {
   public async getPictogram(id: number): Promise<IPictogram> {
     return this.getValue("pictograms", id) as Promise<IPictogram>;
   }
+  
   public async getValue(tableName: string, id: number) {
     try{
       const tx = this.db.transaction(tableName, "readonly");
@@ -197,4 +216,17 @@ export class IndexedDbService {
     total = pictogramasFiltrados.length;
     return total
   }
+
+  // public async getFavoritoPorUsuario(tableName: string, id: string) {
+  //   try{
+  //     const tx = this.db.transaction(tableName, "readonly");
+  //     const store = tx.objectStore(tableName);
+  //     const result = await store.get(id);
+  //     //console.log("Get Data ", JSON.stringify(result));
+  //     return result;      
+  //   }
+  //   catch (e){
+  //     return null
+  //   }
+  // }
 }

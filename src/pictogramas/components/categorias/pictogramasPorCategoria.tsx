@@ -56,6 +56,9 @@ export default function PictogramasPorCategoria(props: any) {
 
 
   function cumpleFiltros(pictograma: IPictogram, usuario: IUsuario | any): boolean {
+    if(!pictograma || !usuario) return false;
+    
+
     return (pictograma.aac === usuario.aac || pictograma.aac === false) &&
       (pictograma.aacColor === usuario.aacColor || pictograma.aacColor === false) &&
       (pictograma.hair === usuario.hair || pictograma.hair === false) &&
@@ -75,6 +78,8 @@ export default function PictogramasPorCategoria(props: any) {
     await ElmiminarPictogramaDeUsuario(idPictograma);
   }
 
+  const favoritos = (userLogueado && userLogueado.id) ? db1.searchFavoritoByUser(userLogueado.id) : [];
+
   return (
     <Container>
       <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 10, md: 12 }}>
@@ -82,7 +87,7 @@ export default function PictogramasPorCategoria(props: any) {
         TODO: Hay que tener en cuenta que ahora una categoria puede ser hija de otra 
           Esto implica que seguro haya que refactorizar para que cuando se seleccione una categoria,
           muestre categorias hijas y pictogramas que solo dependan de esa categoria
-        */}
+        */}        
         {pictogramas.map((pictograma) => {
           if (cumpleFiltros(pictograma, userLogueado))
             return (
@@ -120,7 +125,7 @@ export default function PictogramasPorCategoria(props: any) {
                       <CardContent></CardContent>
                     </CardActionArea>
 
-                    <FavoritoButton pictograma={pictograma} />
+                    <FavoritoButton pictograma={pictograma} favoritos={favoritos} />
 
                     {
                       usuarioLogueado?.id === pictograma.idUsuario
