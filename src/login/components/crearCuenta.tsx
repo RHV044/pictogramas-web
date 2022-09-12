@@ -7,7 +7,7 @@ import {
 } from "react-router-dom";
 import { CrearUsuario } from '../../services/usuarios-services';
 import { IndexedDbService } from '../../services/indexeddb-service';
-const db = new IndexedDbService();
+import { IUsuario } from '../model/usuario';
 
 const CrearCuenta = (props: any) => {
 
@@ -16,6 +16,29 @@ const CrearCuenta = (props: any) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false)
+
+  async function crearUsuario(){
+    let usuario = {
+      identificador: username + '_' + parseInt(Date.now().toString().substring(8,13)),
+      nombreUsuario: username, 
+      password: password, 
+      aac:false, 
+      aacColor: false, 
+      hair: false, 
+      sex: false, 
+      skin:false, 
+      violence: false, 
+      schematic: false,
+      nivel: 0,
+      pendienteCreacion: true,
+      pendienteActualizacion: false      
+    } as IUsuario
+    IndexedDbService.create().then(async (db) => {
+      await db.putOrPatchValueWithoutId("usuarios", usuario) 
+      dispatchEvent(new CustomEvent('sincronizar'));           
+      navigate("/cuenta/seleccionar" + location.search);
+    })
+  }
 
   return (
     <div className="App">
@@ -27,9 +50,7 @@ const CrearCuenta = (props: any) => {
           value={password} onChange={(evt) => {setPassword(evt.target.value)}}/>
         <Button type="button" color="primary" className="form__custom-button"
           onClick={async () => {
-            let usuario = await CrearUsuario({nombreUsuario: username, password: password, aac:false, aacColor: false, hair: false, sex: false, skin:false, violence: false, schematic: false})
-            await db.putOrPatchValue("usuarios", usuario)            
-            navigate("/cuenta/seleccionar" + location.search);
+            await crearUsuario()
           }}
         >
           Crear Cuenta

@@ -48,7 +48,7 @@ export class IndexedDbService {
   
   public async initializeSchema() {
     try {
-      this.db = await openDB(this.database, 3, {
+      this.db = await openDB(this.database, 4, {
         upgrade(
           db: IDBPDatabase,
           oldVersion: number,
@@ -59,7 +59,7 @@ export class IndexedDbService {
           if (!db.objectStoreNames.contains("usuarios")) {
             objectStore = db.createObjectStore("usuarios", {
               autoIncrement: false,
-              keyPath: "id",
+              keyPath: "identificador",
             });
           }
 
@@ -168,6 +168,19 @@ export class IndexedDbService {
     return result;
   }
 
+  public async putOrPatchValueWithoutId(tableName: string, value: any) {
+    const tx = this.db.transaction(tableName, "readwrite");
+    const store = tx.objectStore(tableName);
+
+    let source = await store.get(value.identificador);
+    let newValue = value;
+    if (source) newValue = apply(source, value);
+
+    const result = await store.put(newValue);
+    console.log("Put Data ", JSON.stringify(result));
+    return result;
+  }
+
   public async putBulkValue(tableName: string, values: object[]) {
     const tx = this.db.transaction(tableName, "readwrite");
     const store = tx.objectStore(tableName);
@@ -189,7 +202,7 @@ export class IndexedDbService {
     await store.delete(id);
     console.log("Deleted Data", id);
     return id;
-  }
+  }  
 
   public async countValues(tableName: string){
     const tx = this.db.transaction(tableName, "readonly");
@@ -216,17 +229,4 @@ export class IndexedDbService {
     total = pictogramasFiltrados.length;
     return total
   }
-
-  // public async getFavoritoPorUsuario(tableName: string, id: string) {
-  //   try{
-  //     const tx = this.db.transaction(tableName, "readonly");
-  //     const store = tx.objectStore(tableName);
-  //     const result = await store.get(id);
-  //     //console.log("Get Data ", JSON.stringify(result));
-  //     return result;      
-  //   }
-  //   catch (e){
-  //     return null
-  //   }
-  // }
 }

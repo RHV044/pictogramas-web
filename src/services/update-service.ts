@@ -12,10 +12,11 @@ import {
 import { IndexedDbService } from './indexeddb-service';
 import axios from "axios";
 import { IPictogramaImagen } from '../pictogramas/models/pictogramaImagen';
-import { getUsuarioLogueado, usuarioLogueado } from './usuarios-services';
+import { ActualizarUsuario, CrearUsuario, getUsuarioLogueado, usuarioLogueado } from './usuarios-services';
 import { IPizarra } from '../pizarras/models/pizarra';
 import { ActualizarPizarra, EliminarPizarra, ObtenerPizarras } from '../pizarras/services/pizarras-services';
 import { GuardarPizarra } from '../pizarras/services/pizarras-services';
+import { IUsuario } from '../login/model/usuario';
 
 const apiPictogramas = process.env.URL_PICTOGRAMAS ?? "http://localhost:5000";
 
@@ -32,7 +33,7 @@ export class UpdateService {
     console.log('Inicializando UPDATE SERVICE');
     this.initialize();
     this.addEventsListener()
-    this.sincronizar
+    this.sincronizar()
   }
 
   async initialize() {
@@ -140,6 +141,34 @@ export class UpdateService {
     if(window.navigator.onLine)
     {
       this.actualizarPizarras();
+      this.actualizarUsuarios();
+    }
+  }
+
+  async actualizarUsuarios(){
+    try{
+      IndexedDbService.create().then((db) => {
+        db.getAllValues("usuarios").then(async(usuarios : IUsuario[]) => {
+          usuarios.map(async (usuario) => {
+
+            if (usuario.pendienteCreacion){
+              await CrearUsuario(usuario)
+              usuario.pendienteCreacion = false
+              db.putOrPatchValueWithoutId("usuarios",usuario)
+            }
+            // Actualizacion de usuario en la api
+            if(usuario.pendienteActualizacion)
+            {
+              await ActualizarUsuario(usuario)
+              usuario.pendienteActualizacion = false
+              db.putOrPatchValueWithoutId("usuarios",usuario)
+            }
+          })
+        })
+      })
+    }
+    catch(ex){
+
     }
   }
 

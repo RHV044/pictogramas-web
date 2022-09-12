@@ -10,7 +10,6 @@ import {
 import { IUsuario } from '../model/usuario';
 import { cerrarSesionUsuario, getUsuarioLogueado, ObtenerUsuarios, setUsuarioLogueado, usuarioLogueado } from '../../services/usuarios-services';
 import { IndexedDbService } from '../../services/indexeddb-service';
-//const db = new IndexedDbService();
 
 const SeleccionarCuenta = (props: any) => {
   
@@ -31,8 +30,6 @@ const SeleccionarCuenta = (props: any) => {
 
   useEffect(() => {
     console.log('vamos a obtener los usuarios')
-    // TODO: Los usuarios hay que traerlos de indexddb
-    //ObtenerUsuarios(setUsuarios)
     db.then(d => {
       setDb1(d)
       d.getAllValues("usuarios")

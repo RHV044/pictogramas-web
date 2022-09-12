@@ -25,10 +25,11 @@ const VincularCuenta = (props: any) => {
           value={password} onChange={(evt) => {setPassword(evt.target.value)}}/>
         <Button type="button" color="primary" className="form__custom-button"
           onClick={async () => {
-            // Se debe registrar nada mas en el indexdbb
+            // Se requiere conexion obligatoria para la vinculacion
+            // Se debe registrar nada mas en el indexdbb            
             let usuario = await ObtenerUsuario(username, password)
             console.log('usuario a vincular: ', usuario)
-            await db.putOrPatchValue("usuarios", usuario)
+            await db.putOrPatchValueWithoutId("usuarios", usuario)
             navigate("/cuenta/seleccionar" + location.search);
           }}
         >
