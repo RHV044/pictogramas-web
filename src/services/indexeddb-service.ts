@@ -85,6 +85,13 @@ export class IndexedDbService {
             });
           }
 
+          if (!db.objectStoreNames.contains("imagenesPropias")) {
+            objectStore = db.createObjectStore("imagenesPropias", {
+              autoIncrement: false,
+              keyPath: "identificador",
+            });
+          }
+
           if (!db.objectStoreNames.contains("pizarras")) {
             objectStore = db.createObjectStore("pizarras", {
               autoIncrement: false,

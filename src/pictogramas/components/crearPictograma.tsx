@@ -12,6 +12,7 @@ import { ICategoria } from '../models/categoria';
 import { ObtenerCategorias } from '../services/pictogramas-services';
 import { useEffect, useState } from 'react';
 import { SubirPictograma, usuarioLogueado } from '../../services/usuarios-services';
+import { IndexedDbService } from '../../services/indexeddb-service';
 
 export default function FormDialog() {
   const [open, setOpen] = useState(false);
@@ -54,9 +55,25 @@ export default function FormDialog() {
     filtros.aacColor = aacColor
     filtros.skin = skin
     filtros.hair = hair
+    const imagen = {
+      Schematic: filtros.esquematico,
+      Sex: filtros.sexual,
+      Violence: filtros.violento,
+      Aac: filtros.aac,
+      AacColor: filtros.aacColor,
+      Skin: filtros.skin,
+      Hair: filtros.hair,
+      CategoriasFiltradas: categoriasFiltradas, 
+      FileName: fileName,
+      File: fileBase64,
+      Keyword: keyword,
+      Identificador: usuarioLogueado?.id + '_' + keyword
+    }
     //TODO: Solo se debe subir al indexdb, y luego update service crearlo en la api
     // Problemas con identificador, podriamos separar los pictogramas propios de los de arasaac
-    SubirPictograma(usuarioLogueado?.id, keyword, file, fileName, fileBase64, categoriasFiltradas, filtros)
+    IndexedDbService.create().then(db => db.putOrPatchValue("imagenesPropias", imagen))
+    
+    //SubirPictograma(usuarioLogueado?.id, keyword, file, fileName, fileBase64, categoriasFiltradas, filtros)
     setOpen(false);
   };
 

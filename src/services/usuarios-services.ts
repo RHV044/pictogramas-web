@@ -90,28 +90,10 @@ export async function ActualizarUsuario(
 
 export async function SubirPictograma(
   usuario: any,
-  keyword: string,
-  file: any,
-  fileName: string,
-  fileBase64: any,
-  categoriasFiltradas: ICategoria[],
-  filtros: any
+  imagen: any
 ){
-  const body = {
-    Schematic: filtros.esquematico,
-    Sex: filtros.sexual,
-    Violence: filtros.violento,
-    Aac: filtros.aac,
-    AacColor: filtros.aacColor,
-    Skin: filtros.skin,
-    Hair: filtros.hair,
-    CategoriasFiltradas: categoriasFiltradas, 
-    FileName: fileName,
-    File: fileBase64,
-    Keyword: keyword
-  }
   return await axios.post(apiPictogramas + `/usuarios/${usuario}/pictogramas`,
-    body,
+    imagen,
     {
       headers: {
           'content-type': 'application/json'
