@@ -54,6 +54,8 @@ export default function FormDialog() {
     filtros.aacColor = aacColor
     filtros.skin = skin
     filtros.hair = hair
+    //TODO: Solo se debe subir al indexdb, y luego update service crearlo en la api
+    // Problemas con identificador, podriamos separar los pictogramas propios de los de arasaac
     SubirPictograma(usuarioLogueado?.id, keyword, file, fileName, fileBase64, categoriasFiltradas, filtros)
     setOpen(false);
   };

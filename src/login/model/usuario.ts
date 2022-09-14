@@ -16,5 +16,6 @@ export interface IUsuario {
   nivel: number;
   pendienteCreacion: boolean;
   pendienteActualizacion: boolean;
+  ultimaActualizacion: Date;
   // EL USUARIO NO SE ELIMINA DE LA DB
 }

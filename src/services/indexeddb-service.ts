@@ -101,6 +101,15 @@ export class IndexedDbService {
             objectStore = transaction.objectStore("pictograms");
           }
 
+          if (!db.objectStoreNames.contains("pictogramasPropios")) {
+            objectStore = db.createObjectStore("pictogramasPropios", {
+              autoIncrement: false,
+              keyPath: "identificador",
+            });
+          } else {
+            objectStore = transaction.objectStore("pictogramasPropios");
+          }
+
           if (!db.objectStoreNames.contains("favoritosPorUsuario")) {
             objectStore = db.createObjectStore("favoritosPorUsuario", {
               autoIncrement: false,

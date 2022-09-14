@@ -41,6 +41,13 @@ export async function ObtenerUsuarios(
     })
 }
 
+export async function ObtenerUsuarioInfo(identificador: string){
+  return axios.get(apiPictogramas + '/usuarios/identificador' + identificador)
+    .then(response => {
+      return response.data
+    })
+}
+
 export async function ObtenerUsuario(
   username: string,
   password: string

@@ -8,7 +8,8 @@ export interface IPizarra {
   celdas: ICeldaPizarra[],
   pendienteCreacion: boolean,
   pendienteActualizacion: boolean,
-  pendienteEliminacion: boolean
+  pendienteEliminacion: boolean,
+  ultimaActualizacion: Date
 }
 
 export interface ICeldaPizarra{

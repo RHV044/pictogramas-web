@@ -12,7 +12,7 @@ import {
 import { IndexedDbService } from './indexeddb-service';
 import axios from "axios";
 import { IPictogramaImagen } from '../pictogramas/models/pictogramaImagen';
-import { ActualizarUsuario, CrearUsuario, getUsuarioLogueado, usuarioLogueado } from './usuarios-services';
+import { ActualizarUsuario, CrearUsuario, getUsuarioLogueado, ObtenerUsuarioInfo, ObtenerUsuarios, usuarioLogueado } from './usuarios-services';
 import { IPizarra } from '../pizarras/models/pizarra';
 import { ActualizarPizarra, EliminarPizarra, ObtenerPizarras } from '../pizarras/services/pizarras-services';
 import { GuardarPizarra } from '../pizarras/services/pizarras-services';
@@ -70,7 +70,7 @@ export class UpdateService {
     console.log(
       `Total pictogramas: ${totalPictogramas} vs total pictogramas locales: ${totalPictogramasLocales}`
     );
-    // TODO: traer pictogramas en general independientemente de la categoria ya que algunos no tienen categoria
+    // TODO: revisar, traer pictogramas propios por un lado, y pictogramas de arasaac por otro
     if (totalPictogramasLocales !== totalPictogramas) {
       let informacion = await ObtenerInformacionPictogramas();
       db.putBulkValue('pictograms', informacion);
@@ -142,19 +142,31 @@ export class UpdateService {
     {
       this.actualizarPizarras();
       this.actualizarUsuarios();
+      this.actualizarPictogramas();
     }
   }
 
   async actualizarUsuarios(){
     try{
+      //Obtener usuarios del indexDB
       IndexedDbService.create().then((db) => {
         db.getAllValues("usuarios").then(async(usuarios : IUsuario[]) => {
           usuarios.map(async (usuario) => {
-
+            //Creacion de usuario pendiente
             if (usuario.pendienteCreacion){
               await CrearUsuario(usuario)
               usuario.pendienteCreacion = false
               db.putOrPatchValueWithoutId("usuarios",usuario)
+            }
+            //Chequeo de usuario actualizado en la api
+            else{
+              ObtenerUsuarioInfo(usuario.identificador).then((usuarioApi: IUsuario) => {
+                if (usuarioApi.ultimaActualizacion > usuario.ultimaActualizacion)
+                {
+                  usuario.pendienteActualizacion = false
+                  db.putOrPatchValueWithoutId("usuarios",usuarioApi)
+                }
+              })
             }
             // Actualizacion de usuario en la api
             if(usuario.pendienteActualizacion)
@@ -172,10 +184,29 @@ export class UpdateService {
     }
   }
 
+  async actualizarPictogramas(){
+    try{      
+      //await VerificarConexion()
+      let usuarioId = usuarioLogueado?.id !== undefined ? usuarioLogueado?.id : 0;
+      ObtenerInformacionPictogramas().then(pictogramas => {
+        let pictogramasFiltrados = pictogramas.filter((p : IPictogram) => p.idUsuario === usuarioId)
+        
+        IndexedDbService.create().then((db) => {
+          db.getAllValues("pictogramas")
+            .then(async (pictogramasLocales : IPictogram[]) =>
+            {
+
+            })
+        })
+      })                
+    }
+    catch(ex){
+      console.log(ex)
+    }
+  }
+
   async actualizarPizarras(){
     try{      
-      console.log("ACTUALIZACION PIZARRAS")
-      //await VerificarConexion()
       let usuarioId = usuarioLogueado?.id !== undefined ? usuarioLogueado?.id : 0;
       ObtenerPizarras(usuarioId).then((pizarrasApi : IPizarra[]) => {        
         IndexedDbService.create().then((db) => {
@@ -195,12 +226,23 @@ export class UpdateService {
                 pizarra.pendienteCreacion = false
                 db.putOrPatchValue("pizarras",pizarra)
               }
-              // Actualizacion de pizarra en la api
+              // Actualizacion de pizarra
               if(pizarra.pendienteActualizacion)
               {
-                await ActualizarPizarra(pizarra)
-                pizarra.pendienteActualizacion = false
-                db.putOrPatchValue("pizarras",pizarra)
+                if (pizarras.some(p => p.id === pizarra.id && p.ultimaActualizacion > pizarra.ultimaActualizacion) )
+                {
+                  // Debo actualizar la pizarra en el IndexDb
+                  let p = pizarras.find(p => p.id === pizarra.id)
+                  pizarra =  p ? p : pizarra;
+                  db.putOrPatchValue("pizarras",pizarra)
+                }
+                else
+                {
+                  // Debo actualizar la pizarra en la api
+                  await ActualizarPizarra(pizarra)
+                  pizarra.pendienteActualizacion = false
+                  db.putOrPatchValue("pizarras",pizarra)
+                }
               }
               // Eliminacion de pizarra en la api
               if(pizarra.pendienteEliminacion){
