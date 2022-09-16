@@ -220,6 +220,19 @@ export class IndexedDbService {
     return id;
   }  
 
+  public async deleteValueWithIdentificador(tableName: string, id: string) {
+    const tx = this.db.transaction(tableName, "readwrite");
+    const store = tx.objectStore(tableName);
+    const result = await store.get(id);
+    if (!result) {
+      console.log("Id not found", id);
+      return result;
+    }
+    await store.delete(id);
+    console.log("Deleted Data", id);
+    return id;
+  } 
+
   public async countValues(tableName: string){
     const tx = this.db.transaction(tableName, "readonly");
     const store = tx.objectStore(tableName);

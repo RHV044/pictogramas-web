@@ -70,16 +70,15 @@ export default function FormDialog() {
       FileName: fileName,
       File: fileBase64,
       Keyword: keyword,
-      Identificador: usuarioLogueado?.id + '_' + keyword,
-      PendienteCreacion: true
+      identificador: usuarioLogueado?.id + '_' + keyword,
+      pendienteCreacion: true
     }
 
-    const imagen = {id: usuarioLogueado?.id + '_' + keyword, imagen: fileBase64} as IPictogramaPropioImagen 
+    const imagen = {identificador: usuarioLogueado?.id + '_' + keyword, imagen: fileBase64} as IPictogramaPropioImagen 
     //TODO: Solo se debe subir al indexdb, y luego update service crearlo en la api
     // Problemas con identificador, podriamos separar los pictogramas propios de los de arasaac
     IndexedDbService.create().then(db => db.putOrPatchValue("pictogramasPropios", pictograma))
     IndexedDbService.create().then(db => db.putOrPatchValue("imagenesPropias", imagen))
-    //SubirPictograma(usuarioLogueado?.id, keyword, file, fileName, fileBase64, categoriasFiltradas, filtros)
     setOpen(false);
   };
 

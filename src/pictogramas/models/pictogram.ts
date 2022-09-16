@@ -20,7 +20,7 @@ export interface IPictogram {
   idUsuario: number;
   categorias: ICategoria[];
   imagen: string;
-  Identificador: string;
-  PendienteCreacion: boolean;
-  PendienteEliminacion: boolean;
+  identificador: string;
+  pendienteCreacion: boolean;
+  pendienteEliminacion: boolean;
 }

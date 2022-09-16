@@ -169,6 +169,17 @@ export async function GuardarPictogramaFavorito(idPictograma: number) {
   }  
 }
 
+export async function EliminarPictogramaPropio(identificador: string) {
+  let usuario = await getUsuarioLogueado();
+  if (usuario != null && usuario.id != null && usuario != undefined){
+    return await axios.delete(apiPictogramas + '/pictogramas/propios/' + usuario.id + '/' + identificador).then((resp) => {
+      return resp.data
+    });
+  } else {
+    console.log("Error en eliminar pictograma propio");
+  }  
+}
+
 export async function EliminarPictogramaFavorito(idPictograma: number) {
   let usuario = await getUsuarioLogueado();
   if (usuario != null && usuario.id != null && usuario != undefined){

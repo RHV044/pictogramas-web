@@ -4,6 +4,6 @@ export interface IPictogramaImagen{
 }
 
 export interface IPictogramaPropioImagen{
-  id: string;
+  identificador: string;
   imagen: string;
 }

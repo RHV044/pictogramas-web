@@ -1,6 +1,7 @@
 import { ICategoria } from '../pictogramas/models/categoria';
 import { IPictogram } from '../pictogramas/models/pictogram';
 import {
+  EliminarPictogramaPropio,
   ObtenerCategorias,
   ObtenerImagenAsBlob,
   ObtenerInformacionPictogramas,
@@ -11,8 +12,8 @@ import {
 } from '../pictogramas/services/pictogramas-services';
 import { IndexedDbService } from './indexeddb-service';
 import axios from "axios";
-import { IPictogramaImagen } from '../pictogramas/models/pictogramaImagen';
-import { ActualizarUsuario, CrearUsuario, getUsuarioLogueado, ObtenerUsuarioInfo, ObtenerUsuarios, usuarioLogueado } from './usuarios-services';
+import { IPictogramaImagen, IPictogramaPropioImagen } from '../pictogramas/models/pictogramaImagen';
+import { ActualizarUsuario, CrearUsuario, getUsuarioLogueado, ObtenerUsuarioInfo, ObtenerUsuarios, SubirPictograma, usuarioLogueado } from './usuarios-services';
 import { IPizarra } from '../pizarras/models/pizarra';
 import { ActualizarPizarra, EliminarPizarra, ObtenerPizarras } from '../pizarras/services/pizarras-services';
 import { GuardarPizarra } from '../pizarras/services/pizarras-services';
@@ -229,10 +230,39 @@ export class UpdateService {
         let pictogramasFiltrados = pictogramas.filter((p : IPictogram) => p.idUsuario === usuarioId)
         
         IndexedDbService.create().then((db) => {
-          db.getAllValues("pictogramas")
+          db.getAllValues("pictogramasPropios")
             .then(async (pictogramasLocales : IPictogram[]) =>
             {
-              
+              // Carga de pictogramas propios de la api que no esten en el indexDb
+              pictogramasFiltrados.map(pictograma => {
+                if(!pictograma.some(p => p.identificador === pictograma.identificador && !p.pendienteCreacion)){
+                  pictograma.imagen = ''
+                  db.putOrPatchValue("pictogramasPropios",pictograma)
+                  axios.get(`${apiPictogramas}/pictogramas/${pictograma.id}/obtener/base64`)
+                  .then(async (response) => {    
+                    let pictogramaImagen = {identificador: pictograma.identificador, imagen:response.data} as IPictogramaPropioImagen
+                    await db.putOrPatchValue("imagenesPropias", pictogramaImagen);
+                  })
+                }
+              })
+
+              pictogramasLocales.map(pictograma => {
+
+              if (pictograma.pendienteCreacion){
+                // TODO: Completar guardado de pictograma propio
+                // Son dos endpoints, uno crea en base, y al otro pasarle stream para subir a Azure
+                //await SubirPictograma(pictograma)
+                pictograma.pendienteCreacion = false
+                db.putOrPatchValue("pictogramasPropios",pictograma)
+              }
+                              // Eliminacion de pizarra en la api
+              if(pictograma.pendienteEliminacion){
+                EliminarPictogramaPropio(pictograma.identificador).then(() => {
+                  db.deleteValueWithIdentificador("pictogramasPropios",pictograma.identificador)
+                  db.deleteValueWithIdentificador("imagenesPropias",pictograma.identificador)
+                })
+              }
+              })
             })
         })
       })                
