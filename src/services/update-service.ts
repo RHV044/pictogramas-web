@@ -224,7 +224,6 @@ export class UpdateService {
 
   async actualizarPictogramas(){
     try{      
-      //await VerificarConexion()
       let usuarioId = usuarioLogueado?.id !== undefined ? usuarioLogueado?.id : 0;
       ObtenerInformacionPictogramas().then(pictogramas => {
         let pictogramasFiltrados = pictogramas.filter((p : IPictogram) => p.idUsuario === usuarioId)
@@ -233,7 +232,7 @@ export class UpdateService {
           db.getAllValues("pictogramas")
             .then(async (pictogramasLocales : IPictogram[]) =>
             {
-
+              
             })
         })
       })                
