@@ -11,7 +11,7 @@ import Filtros from './filtros';
 import { ICategoria } from '../models/categoria';
 import { ObtenerCategorias } from '../services/pictogramas-services';
 import { useEffect, useState } from 'react';
-import { SubirPictograma, usuarioLogueado } from '../../services/usuarios-services';
+import { usuarioLogueado } from '../../services/usuarios-services';
 import { IndexedDbService } from '../../services/indexeddb-service';
 import { IPictogram } from '../models/pictogram';
 import { IPictogramaImagen, IPictogramaPropioImagen } from '../models/pictogramaImagen';
@@ -59,17 +59,20 @@ export default function FormDialog() {
     filtros.hair = hair
     const pictograma = {
       id: 0,
-      Schematic: filtros.esquematico,
-      Sex: filtros.sexual,
-      Violence: filtros.violento,
-      Aac: filtros.aac,
-      AacColor: filtros.aacColor,
-      Skin: filtros.skin,
-      Hair: filtros.hair,
-      CategoriasFiltradas: categoriasFiltradas, 
-      FileName: fileName,
-      File: fileBase64,
-      Keyword: keyword,
+      idArasaac: 0,
+      schematic: filtros.esquematico,
+      sex: filtros.sexual,
+      violence: filtros.violento,
+      aac: filtros.aac,
+      aacColor: filtros.aacColor,
+      skin: filtros.skin,
+      hair: filtros.hair,
+      imagen: "",
+      categorias: categoriasFiltradas, 
+      fileName: fileName,
+      file: fileBase64,
+      keyword: keyword,
+      idUsuario: usuarioLogueado?.id,
       identificador: usuarioLogueado?.id + '_' + keyword,
       pendienteCreacion: true
     }

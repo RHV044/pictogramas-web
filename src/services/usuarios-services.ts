@@ -88,12 +88,27 @@ export async function ActualizarUsuario(
     })
 }
 
-export async function SubirPictograma(
-  usuario: any,
-  imagen: any
+export async function SubirInformacionPictogramaPropio(
+  body: any
 ){
-  return await axios.post(apiPictogramas + `/usuarios/${usuario}/pictogramas`,
-    imagen,
+  return await axios.post(apiPictogramas + `/pictogramas`,
+  body,
+    {
+      headers: {
+          'content-type': 'application/json'
+      }
+    }
+    )
+    .then(response => {
+      return response.data
+    })
+}
+
+export async function SubirImagenPropia(
+  body: any
+){
+  return await axios.post(apiPictogramas + `/pictogramas/imagen`,
+  body,
     {
       headers: {
           'content-type': 'application/json'
