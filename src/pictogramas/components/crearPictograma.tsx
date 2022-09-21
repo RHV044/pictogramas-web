@@ -72,19 +72,19 @@ export default function FormDialog() {
       fileName: fileName,
       file: fileBase64,
       keyword: keyword,
-      idUsuario: usuarioLogueado?.id,
-      identificador: usuarioLogueado?.id + '_' + keyword,
+      idUsuario: usuarioLogueado?.id, // TODO: Si no tenemos el id?
+      identificador: usuarioLogueado?.identificador + '_' + keyword,
       pendienteCreacion: true
     }
 
-    const imagen = {identificador: usuarioLogueado?.id + '_' + keyword, imagen: fileBase64} as IPictogramaPropioImagen 
+    const imagen = {identificador: usuarioLogueado?.identificador + '_' + keyword, imagen: fileBase64} as IPictogramaPropioImagen 
     //TODO: Revisar - ASINCRONISMO
     IndexedDbService.create().then(db => {
-      db.putOrPatchValue("pictogramasPropios", pictograma)
+      db.putOrPatchValueWithoutId("pictogramasPropios", pictograma)
       dispatchEvent(new CustomEvent('sincronizar'));
     })
     IndexedDbService.create().then(db => { 
-      db.putOrPatchValue("imagenesPropias", imagen)
+      db.putOrPatchValueWithoutId("imagenesPropias", imagen)
       dispatchEvent(new CustomEvent('sincronizar'));
     })
     setOpen(false);

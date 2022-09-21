@@ -40,6 +40,7 @@ const FavoritoButton = (props: any) => {
     
     if (userLogueado !== undefined){
       
+      // TODO: Si usuarioLogueado no tiene id?
       let newId = generateId((userLogueado.id === undefined || userLogueado.id === null) ? 0 : userLogueado.id, props.pictograma.id);
       
       if (!fav) {        

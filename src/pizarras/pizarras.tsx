@@ -234,7 +234,9 @@ export default function Pizarras(this: any) {
         let imagenPictograma
         if (celda.tipoContenido === "pictograma")
         {        
-          imagenPictograma = await base.getValue("imagenes", parseInt(celda.contenido))          
+          imagenPictograma = await base.getValue("imagenes", parseInt(celda.contenido))
+          if (imagenPictograma === null || imagenPictograma === undefined)        
+            imagenPictograma = await base.getValue("imagenesPropias", parseInt(celda.contenido))  
         }
         if(celda.tipoContenido === "texto" || celda.tipoContenido === "pictograma")
         {

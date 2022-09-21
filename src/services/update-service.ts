@@ -92,8 +92,8 @@ export class UpdateService {
       db.putBulkValue('pictograms', informacionArasaac);
       db.putBulkValue('pictogramasPropios', informacionPropios);
 
-      let totalImagenesLocales = await db.countValues('imagenes');
-      totalImagenesLocales += await db.countValues('imagenesPropias');
+      let totalImagenesLocales = await db.countValues('imagenes');      
+      totalImagenesLocales = totalImagenesLocales + await db.countValues('imagenesPropias');
       if (totalImagenesLocales !== totalPictogramas) {
         // Obtencion imagenes de pictogramas arasaac
         db.getAllValues('pictograms').then(
