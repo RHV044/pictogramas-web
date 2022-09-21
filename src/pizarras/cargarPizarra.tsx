@@ -23,12 +23,7 @@ export default function CargarPizarra(props: any) {
   useEffect(() => {
     let usuarioId = usuarioLogueado?.id !== undefined ? usuarioLogueado?.id : 0;
 
-    //TODO: Las pizarras solo las deberia obtener del indexdb, 
-    // pero deberia actualizarlas con la api mediante update-service
-    // ObtenerPizarras(usuarioId).then((piz : IPizarra[]) => {
-    //   setPizarras(piz)
-      //TODO: Verificar busqueda del indexDb
-      // Se podria extraer en un metodo
+    // TODO: Verificar creacion con asincronismo
       IndexedDbService.create().then((db) => {
         db.getAllValues("pizarras").then((pizarras : IPizarra[]) =>{
           let pizarrasParaAgregar = pizarras.filter((p: IPizarra) => p.usuarioId === usuarioId &&
@@ -63,15 +58,12 @@ export default function CargarPizarra(props: any) {
       IndexedDbService.create().then((db) => {
         db.putOrPatchValue("pizarras", pizarra)
       });
-
-      //TODO: eliminar esta pizarra de las opciones actuales
     }
     setOpen(false);
   };
 
   return (
     <div>
-      {/* TODO: Actualmente solo muestra la 1ra opcion, hay que ver como corregir */}
       <Button variant="outlined" onClick={handleClickOpen}>
         Cargar Pizarra
       </Button>

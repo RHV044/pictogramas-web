@@ -36,7 +36,6 @@ export default function PictogramasPorCategoria(props: any) {
 
   useEffect(() => {
     ObtenerPictogramasPorCategoria(setPictogramas, props.categoria);
-    //TODO: Obtener categorias Hijas
   }, []);
 
   useEffect(() => {
@@ -70,8 +69,9 @@ export default function PictogramasPorCategoria(props: any) {
 
 
   async function eliminarPictograma(idPictograma: number) {
-    db1.deleteValue("pictogramas", idPictograma) //!= null ? idPictograma : 0 //Preguntar: le saque el await, esta bien? 
-    //TODO primero, ver si hay que borrarlo de mas tablas. segundo, falta llamar a la api ¿esos seria aca o en otro lado?
+  //TODO: Se debe actualizar a pendiente de eliminacion = true, y el update service la eliminara asincronicamente
+
+    db1.deleteValue("pictogramas", idPictograma) 
     db1.deleteValue("pictogramasPorCategorias", idPictograma);
     db1.deleteValue("favoritosPorCategorias", idPictograma);
 
@@ -82,12 +82,7 @@ export default function PictogramasPorCategoria(props: any) {
 
   return (
     <Container>
-      <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 10, md: 12 }}>
-        {/* 
-        TODO: Hay que tener en cuenta que ahora una categoria puede ser hija de otra 
-          Esto implica que seguro haya que refactorizar para que cuando se seleccione una categoria,
-          muestre categorias hijas y pictogramas que solo dependan de esa categoria
-        */}        
+      <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 10, md: 12 }}>     
         {pictogramas.map((pictograma) => {
           if (cumpleFiltros(pictograma, userLogueado))
             return (
@@ -134,9 +129,6 @@ export default function PictogramasPorCategoria(props: any) {
                         aria-label='eliminar'
                         onClick={() => {
                           eliminarPictograma(pictograma.id);
-
-                          //PREGUNTAR/TODO cómo eliminar en las tablas relacionadas (pictogramasPorCategorias y favoritosPorCategorias)
-                          //TODO agregarborrar del storage
                         }}
                       >
                         <HighlightOffIcon />

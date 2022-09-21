@@ -78,8 +78,7 @@ export default function FormDialog() {
     }
 
     const imagen = {identificador: usuarioLogueado?.id + '_' + keyword, imagen: fileBase64} as IPictogramaPropioImagen 
-    //TODO: Solo se debe subir al indexdb, y luego update service crearlo en la api
-    // Problemas con identificador, podriamos separar los pictogramas propios de los de arasaac
+    //TODO: Revisar - ASINCRONISMO
     IndexedDbService.create().then(db => {
       db.putOrPatchValue("pictogramasPropios", pictograma)
       dispatchEvent(new CustomEvent('sincronizar'));

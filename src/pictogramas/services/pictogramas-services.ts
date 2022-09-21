@@ -55,17 +55,10 @@ export async function ObtenerPictogramasPorCategoria(
 ) {
   let db = await IndexedDbService.create();
 
-  // Alternativa - Buscar por indice con la categoria
-  // TODO: categorias es un array de objetos id, nombre
-  // Como hago para buscar con este indice?
-  //let categ = await db.getValue('categorias', categoria)
-  //let pictogramas = await db.getPictogramasPorIndice(categ)
-  //console.log('Pictogramas filtrados 1: ', pictogramas)
-  // Actual 
   let pictogramas = await db.getAllValues('pictograms');
   let pictogramasPropios = await db.getAllValues('pictogramasPropios');
-  pictogramas.concat(pictogramasPropios)
-  //console.log('Pictogramas filtrados 2: ', pictogramas)
+  if (pictogramasPropios !== null && pictogramasPropios !== undefined && pictogramasPropios.length > 0)
+    pictogramas.concat(pictogramasPropios)
 
   let usuario = await getUsuarioLogueado();
 
@@ -80,10 +73,7 @@ export async function ObtenerPictogramasPorCategoria(
     pictogramas = pictogramas.filter(p => (p.IdUsuario === null || p.idArasaac !== null))
   if (pictogramas){
     let pictogramasFiltrados = pictogramas.filter((p: IPictogram) => p.categorias && p.categorias.some((c: ICategoria) => c.id === categoria))
-    // pictogramasFiltrados.forEach(async (p: IPictogram) => {
-    //   let imagen = (await db.getValue('imagenes', p.id)).imagen
-    //   p.imagen = imagen
-    // })
+
     for(var i=0; i<pictogramasFiltrados.length; ++i)
       pictogramasFiltrados[i].imagen = (await db.getValue('imagenes', pictogramasFiltrados[i].id)).imagen
 

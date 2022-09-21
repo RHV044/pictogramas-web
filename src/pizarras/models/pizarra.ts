@@ -1,6 +1,5 @@
 export interface IPizarra { 
-  //TODO: A nivel base, es pk compuesta de id e usuarioId
-  id: number, //TODO: Como primero voy a guardar en el storage, no tengo id de la api
+  id: number, 
   nombre: string,
   filas: number,
   columnas: number,

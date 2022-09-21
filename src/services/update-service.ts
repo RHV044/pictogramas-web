@@ -64,7 +64,6 @@ export class UpdateService {
     if (totalCategoriasLocales !== totalCategorias) {
       await ObtenerYGuardarCategorias(async (cats: ICategoria[]) => {
         cats.forEach((cat) => {
-          // TODO: Revisar seteo de categoria final o no
           if (!cats.some((c) => c.categoriaPadre === cat.id))
             cat.esCategoriaFinal = true;
           else cat.esCategoriaFinal = false;
@@ -77,8 +76,7 @@ export class UpdateService {
     let totalPictogramasLocales = 1;
     if (usuario != null && usuario !== undefined && usuario.id != null)
       totalPictogramasLocales = await db.countPictogramasPorUsuario(usuario.id);
-    else
-      totalPictogramasLocales = await db.countPictogramasPorUsuario(null);
+    else totalPictogramasLocales = await db.countPictogramasPorUsuario(null);
 
     let totalPictogramas = await ObtenerTotalPictogramas();
     console.log(
@@ -152,66 +150,69 @@ export class UpdateService {
               await Promise.all(groupRequestPromises);
             }
           }
-        );     
+        );
 
-      // Obtencion imagenes de pictogramas pictogramas propios
-      db.getAllValues('pictogramasPropios').then(
-        async (pictogramas: IPictogram[]) => {
-          if (usuario != null && usuario !== undefined && usuario.id != null)
-            pictogramas = pictogramas.filter(
-              (p) =>
-                p.idUsuario === null ||
-                p.idUsuario === usuario?.id ||
-                p.idArasaac !== null
-            );
-          else
-            pictogramas = pictogramas.filter(
-              (p) => p.idUsuario === null || p.idArasaac !== null
-            );
-          const maxParallelRequests = 500;
-          let count = 0;
-          let start = 0;
-          let end = 1;
-          while (count < pictogramas.length) {
-            end =
-              pictogramas.length - count <= maxParallelRequests
-                ? start + (pictogramas.length - count)
-                : start + maxParallelRequests;
-
-            let aGroupOfInfoPictograms = pictogramas.slice(start, end);
-            count += end - start;
-            start = end;
-
-            let groupRequestPromises: Promise<any>[] =
-              aGroupOfInfoPictograms.map(
-                // eslint-disable-next-line no-loop-func
-                async (pictoInfo: IPictogram) => {
-                  // Get the pictogram's image
-                  return axios
-                    .get(
-                      `${apiPictogramas}/pictogramas/${pictoInfo.id}/obtener/base64`
-                    )
-                    .then(async (response) => {
-                      let pictogramaImagen = {
-                        id: pictoInfo.id,
-                        imagen: response.data,
-                      } as IPictogramaImagen;
-                      // pictoInfo.imagen = response.data
-                      pictoInfo.imagen = '';
-                      await db.putOrPatchValue('pictogramasPropios', pictoInfo);
-                      // console.log('se obtuvo la imagen: ', pictoInfo.imagen)
-                      await db.putOrPatchValue(
-                        'imagenesPropias',
-                        pictogramaImagen
-                      );
-                    });
-                }
+        // Obtencion imagenes de pictogramas pictogramas propios
+        db.getAllValues('pictogramasPropios').then(
+          async (pictogramas: IPictogram[]) => {
+            if (usuario != null && usuario !== undefined && usuario.id != null)
+              pictogramas = pictogramas.filter(
+                (p) =>
+                  p.idUsuario === null ||
+                  p.idUsuario === usuario?.id ||
+                  p.idArasaac !== null
               );
+            else
+              pictogramas = pictogramas.filter(
+                (p) => p.idUsuario === null || p.idArasaac !== null
+              );
+            const maxParallelRequests = 500;
+            let count = 0;
+            let start = 0;
+            let end = 1;
+            while (count < pictogramas.length) {
+              end =
+                pictogramas.length - count <= maxParallelRequests
+                  ? start + (pictogramas.length - count)
+                  : start + maxParallelRequests;
 
-            await Promise.all(groupRequestPromises);
+              let aGroupOfInfoPictograms = pictogramas.slice(start, end);
+              count += end - start;
+              start = end;
+
+              let groupRequestPromises: Promise<any>[] =
+                aGroupOfInfoPictograms.map(
+                  // eslint-disable-next-line no-loop-func
+                  async (pictoInfo: IPictogram) => {
+                    // Get the pictogram's image
+                    return axios
+                      .get(
+                        `${apiPictogramas}/pictogramas/${pictoInfo.id}/obtener/base64`
+                      )
+                      .then(async (response) => {
+                        let pictogramaImagen = {
+                          id: pictoInfo.id,
+                          imagen: response.data,
+                        } as IPictogramaImagen;
+                        // pictoInfo.imagen = response.data
+                        pictoInfo.imagen = '';
+                        await db.putOrPatchValue(
+                          'pictogramasPropios',
+                          pictoInfo
+                        );
+                        // console.log('se obtuvo la imagen: ', pictoInfo.imagen)
+                        await db.putOrPatchValue(
+                          'imagenesPropias',
+                          pictogramaImagen
+                        );
+                      });
+                  }
+                );
+
+              await Promise.all(groupRequestPromises);
+            }
           }
-        }
-      );
+        );
       }
     }
   }
@@ -319,8 +320,7 @@ export class UpdateService {
 
                   pictogramasLocales.map(async (pictograma) => {
                     if (pictograma.pendienteCreacion) {
-                      // TODO: Completar guardado de pictograma propio
-                      // Son dos endpoints, uno crea en base, y al otro pasarle stream para subir a Azure
+                      // TODO: Verificar creacion con asincronismo
                       SubirInformacionPictogramaPropio(pictograma).then(
                         async (resp) => {
                           let imagen = imagenesLocales.find(

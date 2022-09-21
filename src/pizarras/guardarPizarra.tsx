@@ -54,14 +54,8 @@ export default function GuardarPizarra(props:any) {
     let pizarraActual = props.obtenerPizarra() as IPizarra
     pizarraActual.nombre = nombre
     pizarraActual.pendienteCreacion = true
-    //TODO: El guardado en la api tiene que realizarse despues del guardado en el indexdb
-    // y debe realizarse cuando se pueda, cuando se tenga conexion
-    // utilizar update-service
-    //TODO: Chequear si responde con el id de pizarra
-    // let pizarra = SavePizarra(pizarraActual)
-    //TODO: Revisar guardado en el index db y si es posible mejorar
+    //TODO: Revisar funcionamiento con asincronismo
     IndexedDbService.create().then((db) => {
-      // TODO: El id es nulo y falla al guardar
       if (pizarraActual)
       {
         let newId = parseInt(Date.now().toString().substring(5,13))
@@ -78,12 +72,7 @@ export default function GuardarPizarra(props:any) {
     let pizarraActual = props.obtenerPizarra() as IPizarra
     pizarraActual.nombre = nombre
     pizarraActual.pendienteActualizacion = true
-    //TODO: El guardado en la api tiene que realizarse despues del guardado en el indexdb
-    // y debe realizarse cuando se pueda, cuando se tenga conexion
-    // utilizar update-service
-    //TODO: Chequear si responde con el id de pizarra
-    // let pizarra = SavePizarra(pizarraActual)
-    //TODO: Revisar guardado en el index db y si es posible mejorar
+    //TODO: Revisar funcionamiento con asincronismo
     IndexedDbService.create().then((db) => {
       if (pizarraActual)
         db.putOrPatchValue("pizarras", pizarraActual)

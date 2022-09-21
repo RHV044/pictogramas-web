@@ -167,53 +167,8 @@ export default function Pictogramas(props: any) {
         setPictogramas={UpdatePictogramas}
       />
       <hr />
-      {/* <Button
-        variant="contained"
-        onClick={() =>
-          LoadPictogramsFromArasaac(setPictosIds, setDownloadPercentage)
-        }
-      >
-        Descargar todo Arasaac
-      </Button>
-      <Button
-        variant="contained"
-        onClick={() => {
-          let updateService = new UpdateService();
-        }}
-      >
-        Descargar Pictogramas Nuestros
-      </Button> */}
-
       <CircularProgress variant="determinate" value={downloadPercentage} />
       <br></br>
-      {/*  Dejo comentado la busqueda de pictogramas original de Arasaac
-      <TextField
-        id="input-tag-filter"
-        label="Filtrar pictogramas por etiqueta o palabras clave"
-        variant="standard"
-        onChange={(event) => {
-          if (event?.target?.value)
-            inputTagFilterChanged(event.target.value, setPictosIds);
-        }}
-      />
-      <br></br>
-      <Autocomplete
-        id="select-pictogramid"
-        options={pictosIds}
-        getOptionLabel={(option) => option}
-        sx={{ width: 300 }}
-        onChange={(event, value) => {
-          if (value) selectPictogramIdChanged(value, setImageUrl);
-        }}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            label="Elija el pictograma que desea visualizar"
-          />
-        )}
-      />
-      <Pictogram pictoImageUrl={imageUrl} /> 
-      */}
       <br></br>
       <TextField
         id="input-tag-filter"
@@ -271,34 +226,10 @@ export default function Pictogramas(props: any) {
       <br></br>
       <hr />
       <FormDialog />
-      {/* TODO: Debe poder concatenar categorias hasta llegar a categoria final */}
-      {/* 
-        TODO: categoriaSeleccionada no necesariamente debe pasar a ser un array de categorias para manejar las hijas
-          se puede preguntar si categoria padre es !== null y si esCategoriaFinal es true para saber si se finaliza
-          si categoriaPadre === null, es raiz por lo que seria la primera
-      */}
-      {/* TODO: Se debe renderizar las categorias hijas o los pictogramas si es categoria final */}
       { categoriaSeleccionada && ListaCategorias(categoriaSeleccionada) }
       { categoriaSeleccionada && OpcionesDeCategoria(categoriaSeleccionada) }
-      {/* { categoriaSeleccionada && (
-        <div>
-          <CategoriaSeleccionada
-            categoriaSeleccionada={categoriaSeleccionada}
-            setCategoriaSeleccionada={setCategoriaSeleccionada}
-          />
-          <PictogramasPorCategoria
-            categoria={categoriaSeleccionada.id}
-            setPictogramas={UpdatePictogramas}
-            pictogramas={pictogramasSeleccionados}
-          ></PictogramasPorCategoria>
-        </div>
-      )} */}
-
-      {/* Si paso setPictogramas tampoco me actualiza */}
-      {/* <Categorias setPictogramas={setPictogramas} pictogramas={pictogramas}/> */}
       <br />
-      {/* TODO: Si se selecciona, el listado de categorias seleccionadas se debe reiniciar */}
-      Aca empiezan las categorias raices
+      {/* TODO: Agregar algun separador para separar las raices */}
       <br />
       <CategoriasRaices
         setPictogramas={UpdatePictogramas}
