@@ -36,9 +36,6 @@ export default function PictogramasPorCategoria(props: any) {
 
   useEffect(() => {
     ObtenerPictogramasPorCategoria(setPictogramas, props.categoria);
-  }, []);
-
-  useEffect(() => {
     getUsuarioLogueado().then((usuario) => {
       if (usuario != undefined) {
         setUserLogueado(usuario);
@@ -53,9 +50,8 @@ export default function PictogramasPorCategoria(props: any) {
     });
   }, []);
 
-
   function cumpleFiltros(pictograma: IPictogram, usuario: IUsuario | any): boolean {
-    if(!pictograma || !usuario) return false;
+    if(!pictograma || !usuario) return true;
     
 
     return (pictograma.aac === usuario.aac || pictograma.aac === false) &&
@@ -83,7 +79,7 @@ export default function PictogramasPorCategoria(props: any) {
   return (
     <Container>
       <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 10, md: 12 }}>     
-        {pictogramas.map((pictograma) => {
+        {pictogramas.map((pictograma) => {       
           if (cumpleFiltros(pictograma, userLogueado))
             return (
               //Como estan dentro de la categoria, se visualizan abajo, habria que extraerlo a otro lugar
