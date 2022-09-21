@@ -76,16 +76,10 @@ export class UpdateService {
     let usuario = await getUsuarioLogueado();
     let totalPictogramasLocales = 1;
     if (usuario != null && usuario !== undefined && usuario.id != null)
-      totalPictogramasLocales = await db.countPictogramasPorUsuario(
-        'pictograms',
-        usuario.id
-      );
+      totalPictogramasLocales = await db.countPictogramasPorUsuario(usuario.id);
     else
-      totalPictogramasLocales = await db.countPictogramasPorUsuario(
-        'pictograms',
-        null
-      );
-    console.log('Pictogramas locales totales: ', totalPictogramasLocales);
+      totalPictogramasLocales = await db.countPictogramasPorUsuario(null);
+
     let totalPictogramas = await ObtenerTotalPictogramas();
     console.log(
       `Total pictogramas: ${totalPictogramas} vs total pictogramas locales: ${totalPictogramasLocales}`
@@ -100,59 +94,65 @@ export class UpdateService {
       db.putBulkValue('pictograms', informacionArasaac);
       db.putBulkValue('pictogramasPropios', informacionPropios);
 
-      // Obtencion imagenes de pictogramas arasaac
-      db.getAllValues('pictograms').then(async (pictogramas: IPictogram[]) => {
-        if (usuario != null && usuario !== undefined && usuario.id != null)
-          pictogramas = pictogramas.filter(
-            (p) =>
-              p.idUsuario === null ||
-              p.idUsuario === usuario?.id ||
-              p.idArasaac !== null
-          );
-        else
-          pictogramas = pictogramas.filter(
-            (p) => p.idUsuario === null || p.idArasaac !== null
-          );
-        const maxParallelRequests = 500;
-        let count = 0;
-        let start = 0;
-        let end = 1;
-        while (count < pictogramas.length) {
-          end =
-            pictogramas.length - count <= maxParallelRequests
-              ? start + (pictogramas.length - count)
-              : start + maxParallelRequests;
+      let totalImagenesLocales = await db.countValues('imagenes');
+      totalImagenesLocales += await db.countValues('imagenesPropias');
+      if (totalImagenesLocales !== totalPictogramas) {
+        // Obtencion imagenes de pictogramas arasaac
+        db.getAllValues('pictograms').then(
+          async (pictogramas: IPictogram[]) => {
+            if (usuario != null && usuario !== undefined && usuario.id != null)
+              pictogramas = pictogramas.filter(
+                (p) =>
+                  p.idUsuario === null ||
+                  p.idUsuario === usuario?.id ||
+                  p.idArasaac !== null
+              );
+            else
+              pictogramas = pictogramas.filter(
+                (p) => p.idUsuario === null || p.idArasaac !== null
+              );
+            const maxParallelRequests = 500;
+            let count = 0;
+            let start = 0;
+            let end = 1;
+            while (count < pictogramas.length) {
+              end =
+                pictogramas.length - count <= maxParallelRequests
+                  ? start + (pictogramas.length - count)
+                  : start + maxParallelRequests;
 
-          let aGroupOfInfoPictograms = pictogramas.slice(start, end);
+              let aGroupOfInfoPictograms = pictogramas.slice(start, end);
 
-          count += end - start;
-          start = end;
+              count += end - start;
+              start = end;
 
-          let groupRequestPromises: Promise<any>[] = aGroupOfInfoPictograms.map(
-            // eslint-disable-next-line no-loop-func
-            async (pictoInfo: IPictogram) => {
-              // Get the pictogram's image
-              return axios
-                .get(
-                  `${apiPictogramas}/pictogramas/${pictoInfo.id}/obtener/base64`
-                )
-                .then(async (response) => {
-                  let pictogramaImagen = {
-                    id: pictoInfo.id,
-                    imagen: response.data,
-                  } as IPictogramaImagen;
-                  // pictoInfo.imagen = response.data
-                  pictoInfo.imagen = '';
-                  await db.putOrPatchValue('pictograms', pictoInfo);
-                  // console.log('se obtuvo la imagen: ', pictoInfo.imagen)
-                  await db.putOrPatchValue('imagenes', pictogramaImagen);
-                });
+              let groupRequestPromises: Promise<any>[] =
+                aGroupOfInfoPictograms.map(
+                  // eslint-disable-next-line no-loop-func
+                  async (pictoInfo: IPictogram) => {
+                    // Get the pictogram's image
+                    return axios
+                      .get(
+                        `${apiPictogramas}/pictogramas/${pictoInfo.id}/obtener/base64`
+                      )
+                      .then(async (response) => {
+                        let pictogramaImagen = {
+                          id: pictoInfo.id,
+                          imagen: response.data,
+                        } as IPictogramaImagen;
+                        // pictoInfo.imagen = response.data
+                        pictoInfo.imagen = '';
+                        await db.putOrPatchValue('pictograms', pictoInfo);
+                        // console.log('se obtuvo la imagen: ', pictoInfo.imagen)
+                        await db.putOrPatchValue('imagenes', pictogramaImagen);
+                      });
+                  }
+                );
+
+              await Promise.all(groupRequestPromises);
             }
-          );
-
-          await Promise.all(groupRequestPromises);
-        }
-      });
+          }
+        );     
 
       // Obtencion imagenes de pictogramas pictogramas propios
       db.getAllValues('pictogramasPropios').then(
@@ -212,6 +212,7 @@ export class UpdateService {
           }
         }
       );
+      }
     }
   }
 
@@ -322,10 +323,18 @@ export class UpdateService {
                       // Son dos endpoints, uno crea en base, y al otro pasarle stream para subir a Azure
                       SubirInformacionPictogramaPropio(pictograma).then(
                         async (resp) => {
-                          let imagen = imagenesLocales.find(i => i.identificador === pictograma.identificador)
-                          if (imagen !== null){
-                            const imagenBase64 = {id: resp.id, imagen: (imagen !== null && imagen !== undefined) ? imagen.imagen : ""}  
-                            await SubirImagenPropia(imagenBase64)
+                          let imagen = imagenesLocales.find(
+                            (i) => i.identificador === pictograma.identificador
+                          );
+                          if (imagen !== null) {
+                            const imagenBase64 = {
+                              id: resp.id,
+                              imagen:
+                                imagen !== null && imagen !== undefined
+                                  ? imagen.imagen
+                                  : '',
+                            };
+                            await SubirImagenPropia(imagenBase64);
                           }
                         }
                       );

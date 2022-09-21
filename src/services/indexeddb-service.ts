@@ -242,20 +242,33 @@ export class IndexedDbService {
     return total;
   }
 
-  public async countPictogramasPorUsuario(tableName: string, userid: number | null){
-    const tx = this.db.transaction(tableName, "readonly");
-    const store = tx.objectStore(tableName);
+  public async countPictogramasPorUsuario(userid: number | null){
+    // Obtencion pictogramas de arasaac
+    const tx = this.db.transaction("pictogramas", "readonly");
+    const store = tx.objectStore("pictogramas");
     const result = await store.getAll();
     let total : number
-    let pictogramasFiltrados = result
-    console.log('Pictogramas totales a ser filtrados: ', pictogramasFiltrados)
+    let pictogramasFiltrados = result   
+
     if(userid !== null)
       pictogramasFiltrados = result.filter((p: IPictogram) => (p.idUsuario === null || p.idUsuario === userid || p.idArasaac !== null))
     else
       pictogramasFiltrados = result.filter((p: IPictogram) => (p.idUsuario === null || p.idArasaac !== null))
 
-    console.log('Pictogramas totales ya filtrados: ', pictogramasFiltrados)
     total = pictogramasFiltrados.length;
+
+    // Obtencion pictogramas propios
+    const tx2 = this.db.transaction("pictogramasPropios", "readonly");
+    const store2 = tx2.objectStore("pictogramasPropios");
+    const result2 = await store.getAll();
+    pictogramasFiltrados = result2  
+    if(userid !== null)
+      pictogramasFiltrados = store2.filter((p: IPictogram) => (p.idUsuario === null || p.idUsuario === userid || p.idArasaac !== null))
+    else
+      pictogramasFiltrados = store2.filter((p: IPictogram) => (p.idUsuario === null || p.idArasaac !== null))
+
+    total += pictogramasFiltrados.length;
+
     return total
   }
 }
