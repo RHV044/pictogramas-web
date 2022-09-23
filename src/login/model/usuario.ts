@@ -2,7 +2,6 @@ import internal from "stream";
 
 export interface IUsuario {
   id?: number;
-  identificador: string;
   nombreUsuario: string;
   password: string;  
   logueado?: boolean;
@@ -14,8 +13,6 @@ export interface IUsuario {
   violence: boolean;
   schematic: boolean;
   nivel: number;
-  pendienteCreacion: boolean;
-  pendienteActualizacion: boolean;
-  ultimaActualizacion: Date;
+  ultimaActualizacion: string;
   // EL USUARIO NO SE ELIMINA DE LA DB
 }

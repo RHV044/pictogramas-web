@@ -2,6 +2,7 @@ import axios from "axios";
 import { stringify } from "querystring";
 import { IUsuario } from "../login/model/usuario";
 import { ICategoria } from "../pictogramas/models/categoria";
+import { IPictogram } from "../pictogramas/models/pictogram";
 import { IndexedDbService } from "./indexeddb-service";
 
 var CryptoJS = require("crypto-js");
@@ -41,8 +42,8 @@ export async function ObtenerUsuarios(
     })
 }
 
-export async function ObtenerUsuarioInfo(identificador: string){
-  return axios.get(apiPictogramas + '/usuarios/identificador' + identificador)
+export async function ObtenerUsuarioInfo(id: number){
+  return axios.get(apiPictogramas + '/usuarios/' + id)
     .then(response => {
       return response.data
     })
@@ -89,9 +90,9 @@ export async function ActualizarUsuario(
 }
 
 export async function SubirInformacionPictogramaPropio(
-  body: any
+  body: IPictogram
 ){
-  return await axios.post(apiPictogramas + `/pictogramas`,
+  return await axios.post(apiPictogramas + `/usuarios/` +body.idUsuario + '/pictogramas',
   body,
     {
       headers: {

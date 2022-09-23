@@ -19,7 +19,6 @@ const CrearCuenta = (props: any) => {
 
   async function crearUsuario(){
     let usuario = {
-      identificador: username + '_' + parseInt(Date.now().toString().substring(8,13)),
       nombreUsuario: username, 
       password: password, 
       aac:false, 
@@ -29,14 +28,15 @@ const CrearCuenta = (props: any) => {
       skin:false, 
       violence: false, 
       schematic: false,
-      nivel: 0,
-      pendienteCreacion: true,
-      pendienteActualizacion: false      
-    } as IUsuario
-    IndexedDbService.create().then(async (db) => {
-      await db.putOrPatchValueWithoutId("usuarios", usuario) 
-      dispatchEvent(new CustomEvent('sincronizar'));           
-      navigate("/cuenta/seleccionar" + location.search);
+      nivel: 0, 
+    } as IUsuario    
+    // La creacion del usuario es online, de esta manera se obtiene id desde la api
+    await CrearUsuario(usuario).then(user => {
+      IndexedDbService.create().then(async (db) => {
+        console.log("user creado: ", user)
+        await db.putOrPatchValue("usuarios", user)        
+        navigate("/cuenta/seleccionar" + location.search);
+      })
     })
   }
 

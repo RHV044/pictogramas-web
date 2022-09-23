@@ -234,47 +234,50 @@ export class UpdateService {
   async sincronizar() {
     if (window.navigator.onLine) {
       this.actualizarPizarras();
-      this.actualizarUsuarios();
+      //this.actualizarUsuarios();
       this.actualizarPictogramas();
     }
   }
 
-  async actualizarUsuarios() {
-    try {
-      //Obtener usuarios del indexDB
-      IndexedDbService.create().then((db) => {
-        db.getAllValues('usuarios').then(async (usuarios: IUsuario[]) => {
-          usuarios.map(async (usuario) => {
-            //Creacion de usuario pendiente
-            if (usuario.pendienteCreacion) {
-              await CrearUsuario(usuario);
-              usuario.pendienteCreacion = false;
-              db.putOrPatchValueWithoutId('usuarios', usuario);
-            }
-            //Chequeo de usuario actualizado en la api
-            else {
-              ObtenerUsuarioInfo(usuario.identificador).then(
-                (usuarioApi: IUsuario) => {
-                  if (
-                    usuarioApi.ultimaActualizacion > usuario.ultimaActualizacion
-                  ) {
-                    usuario.pendienteActualizacion = false;
-                    db.putOrPatchValueWithoutId('usuarios', usuarioApi);
-                  }
-                }
-              );
-            }
-            // Actualizacion de usuario en la api
-            if (usuario.pendienteActualizacion) {
-              await ActualizarUsuario(usuario);
-              usuario.pendienteActualizacion = false;
-              db.putOrPatchValueWithoutId('usuarios', usuario);
-            }
-          });
-        });
-      });
-    } catch (ex) {}
-  }
+  //
+  // La creacion de Usuario requiere obligatoriamente de conectividad por cuestiones practicas
+  //
+  // async actualizarUsuarios() {
+  //   try {
+  //     //Obtener usuarios del indexDB
+  //     IndexedDbService.create().then((db) => {
+  //       db.getAllValues('usuarios').then(async (usuarios: IUsuario[]) => {
+  //         usuarios.map(async (usuario) => {
+  //           //Creacion de usuario pendiente
+  //           if (usuario.pendienteCreacion) {
+  //             await CrearUsuario(usuario);
+  //             usuario.pendienteCreacion = false;
+  //             db.putOrPatchValueWithoutId('usuarios', usuario);
+  //           }
+  //           //Chequeo de usuario actualizado en la api
+  //           else {
+  //             ObtenerUsuarioInfo(usuario.identificador).then(
+  //               (usuarioApi: IUsuario) => {
+  //                 if (
+  //                   usuarioApi.ultimaActualizacion > usuario.ultimaActualizacion
+  //                 ) {
+  //                   usuario.pendienteActualizacion = false;
+  //                   db.putOrPatchValueWithoutId('usuarios', usuarioApi);
+  //                 }
+  //               }
+  //             );
+  //           }
+  //           // Actualizacion de usuario en la api
+  //           if (usuario.pendienteActualizacion) {
+  //             await ActualizarUsuario(usuario);
+  //             usuario.pendienteActualizacion = false;
+  //             db.putOrPatchValueWithoutId('usuarios', usuario);
+  //           }
+  //         });
+  //       });
+  //     });
+  //   } catch (ex) {}
+  // }
 
   async actualizarPictogramas() {
     try {
@@ -323,19 +326,19 @@ export class UpdateService {
                       // TODO: Verificar creacion con asincronismo
                       SubirInformacionPictogramaPropio(pictograma).then(
                         async (resp) => {
-                          let imagen = imagenesLocales.find(
-                            (i) => i.identificador === pictograma.identificador
-                          );
-                          if (imagen !== null) {
-                            const imagenBase64 = {
-                              id: resp.id,
-                              imagen:
-                                imagen !== null && imagen !== undefined
-                                  ? imagen.imagen
-                                  : '',
-                            };
-                            await SubirImagenPropia(imagenBase64);
-                          }
+                          // let imagen = imagenesLocales.find(
+                          //   (i) => i.identificador === pictograma.identificador
+                          // );
+                          // if (imagen !== null) {
+                          //   const imagenBase64 = {
+                          //     id: resp.id,
+                          //     imagen:
+                          //       imagen !== null && imagen !== undefined
+                          //         ? imagen.imagen
+                          //         : '',
+                          //   };
+                          //   await SubirImagenPropia(imagenBase64);
+                          // }
                         }
                       );
 

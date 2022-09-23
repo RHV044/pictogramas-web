@@ -27,8 +27,8 @@ const ModificarCuenta = (props: any) => {
             }}/>
         <Button type="button" color="primary" className="form__custom-button"
           onClick={async () => {
-            await db.putOrPatchValueWithoutId("usuarios", usuario)
-            dispatchEvent(new CustomEvent('sincronizar'));
+            await ActualizarUsuario(usuario)
+            await db.putOrPatchValue("usuarios", usuario)
             navigate("/cuenta/seleccionar" + location.search);
           }}
         >

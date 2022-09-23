@@ -71,13 +71,13 @@ export default function FormDialog() {
       categorias: categoriasFiltradas, 
       fileName: fileName,
       file: fileBase64,
-      keyword: keyword,
+      keywords: [{keyword: keyword}],
       idUsuario: usuarioLogueado?.id, // TODO: Si no tenemos el id?
-      identificador: usuarioLogueado?.identificador + '_' + keyword,
+      identificador: usuarioLogueado?.id + '_' + keyword,
       pendienteCreacion: true
     }
 
-    const imagen = {identificador: usuarioLogueado?.identificador + '_' + keyword, imagen: fileBase64} as IPictogramaPropioImagen 
+    const imagen = {identificador: usuarioLogueado?.id + '_' + keyword, imagen: fileBase64} as IPictogramaPropioImagen 
     //TODO: Revisar - ASINCRONISMO
     IndexedDbService.create().then(db => {
       db.putOrPatchValueWithoutId("pictogramasPropios", pictograma)

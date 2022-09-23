@@ -22,7 +22,6 @@ export default function CategoriaPropios(props: any) {
         <Card
           sx={{ maxWidth: 245, minWidth: 150 }}
           style={{ marginTop: '10px' }}
-          onClick={() => {}}
         >
           <CardActionArea
             onClick={() => {
@@ -30,8 +29,8 @@ export default function CategoriaPropios(props: any) {
                 props.categoriaSeleccionada == null ||
                 props.categoriaSeleccionada !== -1
               ) {
-                let categoria = {id: -1, nombre: "Pictogramas Propios"} as ICategoria
-                props.setCategoriaSeleccionada(categoria );
+                let categoria = {id: -1, nombre: "Pictogramas Propios", esCategoriaFinal: true } as ICategoria
+                props.setCategoriaSeleccionada(categoria);
               } else {
                 props.setCategoriaSeleccionada(null);
               }

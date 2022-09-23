@@ -54,18 +54,23 @@ export async function ObtenerPictogramasPorCategoria(
   categoria: number
 ) {
   let db = await IndexedDbService.create();
-
   let pictogramas = await db.getAllValues('pictograms');
-  let pictogramasPropios = await db.getAllValues('pictogramasPropios');
-  if (pictogramasPropios !== null && pictogramasPropios !== undefined && pictogramasPropios.length > 0)
-    pictogramas.concat(pictogramasPropios)
 
   let usuario = await getUsuarioLogueado();
-
   if(categoria === -1)
   {
-    return await setPictogramas(pictogramas.filter(p => p.IdUsuario === usuario?.id))
+    let pictogramasPropios = await db.getAllValues('pictogramasPropios');
+    if (pictogramasPropios !== null && pictogramasPropios !== undefined && pictogramasPropios.length > 0)
+    {
+      const pp = pictogramas.concat(pictogramasPropios)
+      console.log("pp: ", pp)
+      let propios = pp.filter((p: IPictogram) => p.idUsuario === usuario?.id)
+      for(var i=0; i<propios.length; ++i)
+        propios[i].imagen = propios[i].file
+      return await setPictogramas(propios)
+    }
   }
+
 
   if(usuario != null && usuario !== undefined && usuario.id != null)
     pictogramas = pictogramas.filter(p => (p.IdUsuario === null || p.IdUsuario === usuario?.id || p.idArasaac !== null))

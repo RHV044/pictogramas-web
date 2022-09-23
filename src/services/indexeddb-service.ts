@@ -60,7 +60,7 @@ export class IndexedDbService {
           if (!db.objectStoreNames.contains('usuarios')) {
             objectStore = db.createObjectStore('usuarios', {
               autoIncrement: false,
-              keyPath: 'identificador',
+              keyPath: 'id',
             });
           }
 
@@ -157,7 +157,6 @@ export class IndexedDbService {
     const tx = this.db.transaction(tableName, 'readonly');
     const store = tx.objectStore(tableName);
     const result = await store.getAll();
-    console.log('Get All Data', JSON.stringify(result));
     return result;
   }
 
@@ -266,7 +265,7 @@ export class IndexedDbService {
     const result2 = await store.getAll();
     if (result2 !== null && result2 !== undefined && result2.length > 0) {
       pictogramasFiltrados = result2;
-      if (userid !== null)
+      if (userid !== null && store2.length > 0 )
         pictogramasFiltrados = store2.filter(
           (p: IPictogram) =>
             p.idUsuario === null ||

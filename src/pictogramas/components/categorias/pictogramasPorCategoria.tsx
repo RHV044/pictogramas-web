@@ -17,6 +17,7 @@ import { IPictogram } from '../../models/pictogram';
 import { ObtenerPictogramasPorCategoria } from '../../services/pictogramas-services';
 import { IndexedDbService } from '../../../services/indexeddb-service';
 import FavoritoButton from '../FavoritoButton';
+import Categoria from './categoria';
 
 const apiPictogramas = process.env.URL_PICTOGRAMAS ?? 'http://localhost:5000';
 
@@ -79,12 +80,13 @@ export default function PictogramasPorCategoria(props: any) {
   return (
     <Container>
       <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 10, md: 12 }}>     
-        {pictogramas.map((pictograma) => {       
+        {pictogramas.map((pictograma) => {     
+          console.log("se mapea pictograma: ", pictograma)            
           if (cumpleFiltros(pictograma, userLogueado))
             return (
               //Como estan dentro de la categoria, se visualizan abajo, habria que extraerlo a otro lugar
-              <Grid key={pictograma.id} item xs={12} sm={4} md={2}>
-                <Container key={pictograma.id}>
+              <Grid key={pictograma.id ? pictograma.id : pictograma.identificador} item xs={12} sm={4} md={2}>
+                <Container key={pictograma.id ? pictograma.id : pictograma.identificador}>
                   <Card
                     sx={{ maxWidth: 245, minWidth: 150 }}
                     style={{ marginTop: '10px' }}
@@ -107,7 +109,7 @@ export default function PictogramasPorCategoria(props: any) {
                         //image={apiPictogramas+'/pictogramas/'+pictograma.id+'/obtener'}
                         //image={pictograma.imagen}
                         //TODO: Optimizar o ver alternativa para levantar los base64
-                        src={`data:image/png;base64, ${pictograma.imagen}`}
+                        src={pictograma.idUsuario > 0 ? pictograma.imagen : `data:image/png;base64, ${pictograma.imagen}`}
                         alt={pictograma.keywords[0].keyword}
                       ></CardMedia>
                       <CardHeader
