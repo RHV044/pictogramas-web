@@ -73,9 +73,9 @@ export async function ObtenerPictogramasPorCategoria(
 
 
   if(usuario != null && usuario !== undefined && usuario.id != null)
-    pictogramas = pictogramas.filter(p => (p.IdUsuario === null || p.IdUsuario === usuario?.id || p.idArasaac !== null))
+    pictogramas = pictogramas.filter(p => (p.idUsuario === null || p.idUsuario === usuario?.id || p.idArasaac !== null))
   else
-    pictogramas = pictogramas.filter(p => (p.IdUsuario === null || p.idArasaac !== null))
+    pictogramas = pictogramas.filter(p => (p.idUsuario === null || p.idArasaac !== null))
   if (pictogramas){
     let pictogramasFiltrados = pictogramas.filter((p: IPictogram) => p.categorias && p.categorias.some((c: ICategoria) => c.id === categoria))
 

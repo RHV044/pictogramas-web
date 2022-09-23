@@ -138,6 +138,7 @@ export default function Pizarras(this: any) {
       let pictsFiltrados = pictogramas
         .filter((p) => (p.keywords.some((k) => k.keyword.includes(value)) === true || p.categorias?.some((c) => c.nombre.includes(value)) === true))
         .slice(0, 5)
+      //TODO: Revisar obtencion de pictogramas propios
       await Promise.all(pictsFiltrados.map( async (p) => {
         let imagen = await db.then( x => x.getValue('imagenes',p.id))
         p.imagen = imagen.imagen
@@ -184,7 +185,7 @@ export default function Pizarras(this: any) {
             fila: f,
             columna: c,
             tipoContenido: grafico.esPictograma === true ? "pictograma" : "texto",
-            contenido: grafico.esPictograma === true ? grafico.idPictograma.toString() : grafico.texto,
+            contenido: grafico.esPictograma === true ? (grafico.idPictograma !== 0 ? grafico.idPictograma.toString() :  grafico.identificadorPictograma): grafico.texto,
             color: estilosActuales.find(est => est.columna === c && est.fila === f)?.color,
             identificacion: grafico.identificacion
           } as ICeldaPizarra
@@ -434,6 +435,7 @@ export default function Pizarras(this: any) {
             label="Buscar Pictograma"
             id="outlined-size-small"
             onChange={(evt) => {
+              //TODO: No esta obteniendo pictogramas propios
               filtrarPictogramas(evt.target.value);
             }}
             size="small"  

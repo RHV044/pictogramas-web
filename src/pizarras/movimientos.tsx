@@ -11,7 +11,8 @@ export type Grafico = {
   esPictograma: boolean,
   imagen: string,
   identificacion: string, 
-  idPictograma: number
+  idPictograma: number,
+  identificadorPictograma: string
 }
 
 export class Movimientos {
@@ -23,7 +24,8 @@ export class Movimientos {
     texto: '', 
     posicion: {columna:-1, fila:-1}, 
     identificacion:Date.now().toString(),
-    idPictograma: 0
+    idPictograma: 0,
+    identificadorPictograma: ''
   }
 
   public addObserver(observer: any){
@@ -80,7 +82,8 @@ export class Movimientos {
       texto: pic.keywords[0].keyword, 
       posicion: {columna: -1, fila: -1}, 
       identificacion:Date.now().toString(),
-      idPictograma: pic.id
+      idPictograma: pic.id,
+      identificadorPictograma: pic.identificador
     })
   }
 }

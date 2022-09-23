@@ -22,18 +22,14 @@ export default function CargarPizarra(props: any) {
 
   useEffect(() => {
     let usuarioId = usuarioLogueado?.id !== undefined ? usuarioLogueado?.id : 0;
-
-    // TODO: Verificar creacion con asincronismo
-      IndexedDbService.create().then((db) => {
-        db.getAllValues("pizarras").then((pizarras : IPizarra[]) =>{
-          let pizarrasParaAgregar = pizarras.filter((p: IPizarra) => p.usuarioId === usuarioId &&
-           p.pendienteEliminacion !== true) 
-          console.log("Pizarras: ", pizarrasParaAgregar)
-          setPizarras(pizarrasParaAgregar)
-          setCargando(false)
-        })
-      });
-    // })    
+    IndexedDbService.create().then((db) => {
+      db.getAllValues("pizarras").then((pizarras : IPizarra[]) =>{
+        let pizarrasParaAgregar = pizarras.filter((p: IPizarra) => p.usuarioId === usuarioId &&
+          p.pendienteEliminacion !== true) 
+        setPizarras(pizarrasParaAgregar)
+        setCargando(false)
+      })
+    });   
   }, []);
 
   const handleClickOpen = () => {
