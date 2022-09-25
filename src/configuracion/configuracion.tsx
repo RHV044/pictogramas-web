@@ -25,7 +25,7 @@ import { IUsuario } from '../login/model/usuario';
 import { IndexedDbService } from '../services/indexeddb-service';
 import { useEffect, useState } from 'react';
 import {
-  ActualizarUsuario,
+  ActualizarUsuarioPassword,
   getUsuarioLogueado,
   usuarioLogueado,
 } from '../services/usuarios-services';
@@ -33,7 +33,7 @@ import { useNavigate } from 'react-router-dom';
 import { Console } from 'console';
 import Filtros from '../pictogramas/components/filtros';
 import { ICategoria } from '../pictogramas/models/categoria';
-import { ObtenerCategorias } from '../pictogramas/services/pictogramas-services';
+import { formatDate, ObtenerCategorias } from '../pictogramas/services/pictogramas-services';
 import React from 'react';
 import FormDialogValidarAcceso from './components/validarCambioConfiguracion';
 
@@ -93,7 +93,9 @@ export default function Configuracion() {
       usuario.aac = aac;
       usuario.aacColor = aacColor;
       usuario.schematic = schematic;
+      usuario.ultimaActualizacion = formatDate(new Date());
       (await db).putOrPatchValue('usuarios', usuario)
+      dispatchEvent(new CustomEvent('sincronizar'));
     };
   }
 
@@ -245,7 +247,6 @@ export default function Configuracion() {
                 style={{ alignItems: 'center', margin: '10px' }}
                 onClick={async () => {
                   actualizarUsuario()
-                  await ActualizarUsuario(userLogueado);
                   window.location.reload();
                 }}
               >

@@ -17,7 +17,7 @@ import {
   IPictogramaPropioImagen,
 } from '../pictogramas/models/pictogramaImagen';
 import {
-  ActualizarUsuario,
+  ActualizarUsuarioPassword,
   CrearUsuario,
   getUsuarioLogueado,
   ObtenerUsuarioInfo,
@@ -234,7 +234,7 @@ export class UpdateService {
   async sincronizar() {
     if (window.navigator.onLine) {
       this.actualizarPizarras();
-      //this.actualizarUsuarios();
+      this.actualizarUsuarios();
       this.actualizarPictogramas();
     }
   }
@@ -242,42 +242,33 @@ export class UpdateService {
   //
   // La creacion de Usuario requiere obligatoriamente de conectividad por cuestiones practicas
   //
-  // async actualizarUsuarios() {
-  //   try {
-  //     //Obtener usuarios del indexDB
-  //     IndexedDbService.create().then((db) => {
-  //       db.getAllValues('usuarios').then(async (usuarios: IUsuario[]) => {
-  //         usuarios.map(async (usuario) => {
-  //           //Creacion de usuario pendiente
-  //           if (usuario.pendienteCreacion) {
-  //             await CrearUsuario(usuario);
-  //             usuario.pendienteCreacion = false;
-  //             db.putOrPatchValueWithoutId('usuarios', usuario);
-  //           }
-  //           //Chequeo de usuario actualizado en la api
-  //           else {
-  //             ObtenerUsuarioInfo(usuario.identificador).then(
-  //               (usuarioApi: IUsuario) => {
-  //                 if (
-  //                   usuarioApi.ultimaActualizacion > usuario.ultimaActualizacion
-  //                 ) {
-  //                   usuario.pendienteActualizacion = false;
-  //                   db.putOrPatchValueWithoutId('usuarios', usuarioApi);
-  //                 }
-  //               }
-  //             );
-  //           }
-  //           // Actualizacion de usuario en la api
-  //           if (usuario.pendienteActualizacion) {
-  //             await ActualizarUsuario(usuario);
-  //             usuario.pendienteActualizacion = false;
-  //             db.putOrPatchValueWithoutId('usuarios', usuario);
-  //           }
-  //         });
-  //       });
-  //     });
-  //   } catch (ex) {}
-  // }
+  async actualizarUsuarios() {
+    try {
+      //Obtener usuarios del indexDB
+      IndexedDbService.create().then((db) => {
+        db.getAllValues('usuarios').then(async (usuarios: IUsuario[]) => {
+          usuarios.map(async (usuario) => {
+            //Chequeo de usuario actualizado en la api
+            ObtenerUsuarioInfo(usuario.id).then(
+              async (usuarioApi: IUsuario) => {
+                // Actualizo usuario en el IndexedDb
+                if (usuarioApi.ultimaActualizacion > usuario.ultimaActualizacion) 
+                {
+                  db.putOrPatchValue('usuarios', usuarioApi);
+                }
+
+                // Actualizo usuario en la api
+                if (usuarioApi.ultimaActualizacion < usuario.ultimaActualizacion)
+                {
+                  await ActualizarUsuarioPassword(usuario);
+                }
+              }
+            );               
+          });
+        });
+      });
+    } catch (ex) {}
+  }
 
   async actualizarPictogramas() {
     try {
@@ -296,7 +287,7 @@ export class UpdateService {
                   // Carga de pictogramas propios de la api que no esten en el indexDb
                   pictogramasFiltrados.map((pictograma) => {
                     if (
-                      !pictograma.some(
+                      !pictogramasLocales.some(
                         (p) =>
                           p.identificador === pictograma.identificador &&
                           !p.pendienteCreacion
@@ -326,19 +317,6 @@ export class UpdateService {
                       // TODO: Verificar creacion con asincronismo
                       SubirInformacionPictogramaPropio(pictograma).then(
                         async (resp) => {
-                          // let imagen = imagenesLocales.find(
-                          //   (i) => i.identificador === pictograma.identificador
-                          // );
-                          // if (imagen !== null) {
-                          //   const imagenBase64 = {
-                          //     id: resp.id,
-                          //     imagen:
-                          //       imagen !== null && imagen !== undefined
-                          //         ? imagen.imagen
-                          //         : '',
-                          //   };
-                          //   await SubirImagenPropia(imagenBase64);
-                          // }
                         }
                       );
 
@@ -397,26 +375,31 @@ export class UpdateService {
                 pizarra.pendienteCreacion = false;
                 db.putOrPatchValue('pizarras', pizarra);
               }
+
+              //TODO: Verificar funcionamiento
               // Actualizacion de pizarra
-              if (pizarra.pendienteActualizacion) {
-                if (
-                  pizarras.some(
+              if (
+                pizarras.some(
+                  (p) =>
+                    p.id === pizarra.id &&
+                    p.ultimaActualizacion < pizarra.ultimaActualizacion
+                )
+              ) {
+                // Debo actualizar la pizarra en el IndexDb
+                let p = pizarras.find((p) => p.id === pizarra.id);
+                pizarra = p ? p : pizarra;
+                db.putOrPatchValue('pizarras', pizarra);
+              } else {
+                if(pizarras.some(
                     (p) =>
                       p.id === pizarra.id &&
-                      p.ultimaActualizacion > pizarra.ultimaActualizacion
-                  )
-                ) {
-                  // Debo actualizar la pizarra en el IndexDb
-                  let p = pizarras.find((p) => p.id === pizarra.id);
-                  pizarra = p ? p : pizarra;
-                  db.putOrPatchValue('pizarras', pizarra);
-                } else {
+                      p.ultimaActualizacion > pizarra.ultimaActualizacion))
+                {
                   // Debo actualizar la pizarra en la api
                   await ActualizarPizarra(pizarra);
-                  pizarra.pendienteActualizacion = false;
-                  db.putOrPatchValue('pizarras', pizarra);
                 }
               }
+              
               // Eliminacion de pizarra en la api
               if (pizarra.pendienteEliminacion) {
                 EliminarPizarra(pizarra).then(() => {

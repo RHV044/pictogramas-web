@@ -6,9 +6,8 @@ export interface IPizarra {
   usuarioId: number,
   celdas: ICeldaPizarra[],
   pendienteCreacion: boolean,
-  pendienteActualizacion: boolean,
   pendienteEliminacion: boolean,
-  ultimaActualizacion: Date
+  ultimaActualizacion: string
 }
 
 export interface ICeldaPizarra{

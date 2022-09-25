@@ -175,6 +175,7 @@ export default function Pictogramas(props: any) {
         label="Filtrar pictogramas por palabra clave o categoria"
         variant="standard"
         onChange={(event) => {
+          //TODO: Revisar obtencion de pictogramas propios
           filtrarPictogramas(event.target.value);
         }}
       />

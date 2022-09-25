@@ -185,7 +185,13 @@ export default function Pizarras(this: any) {
             fila: f,
             columna: c,
             tipoContenido: grafico.esPictograma === true ? "pictograma" : "texto",
-            contenido: grafico.esPictograma === true ? (grafico.idPictograma !== 0 ? grafico.idPictograma.toString() :  grafico.identificadorPictograma): grafico.texto,
+            contenido: grafico.esPictograma === true 
+            ? 
+              ((grafico.idPictograma !== null && grafico.idPictograma !== 0 && grafico.idPictograma !== undefined)
+              ? 
+                grafico.idPictograma.toString() 
+                :  grafico.identificadorPictograma)
+                  : grafico.texto,
             color: estilosActuales.find(est => est.columna === c && est.fila === f)?.color,
             identificacion: grafico.identificacion
           } as ICeldaPizarra
@@ -209,7 +215,13 @@ export default function Pizarras(this: any) {
           fila: -1,
           columna: -1,
           tipoContenido: grafico.esPictograma === true ? "pictograma" : "texto",
-          contenido: grafico.esPictograma === true ? grafico.idPictograma.toString() : grafico.texto,
+          contenido: grafico.esPictograma === true 
+          ? 
+            ((grafico.idPictograma !== null && grafico.idPictograma !== 0 && grafico.idPictograma !== undefined)
+            ? 
+              grafico.idPictograma.toString() 
+              :  grafico.identificadorPictograma)
+                : grafico.texto,
           color: "",
           identificacion: grafico.identificacion
         } as ICeldaPizarra
@@ -241,6 +253,7 @@ export default function Pizarras(this: any) {
         }
         if(celda.tipoContenido === "texto" || celda.tipoContenido === "pictograma")
         {
+          // TODO: Los pictogramas propios no se muestran al cargar
           let grafico = {
             esPictograma: celda.tipoContenido === "pictograma" ? true : false,
             imagen: celda.tipoContenido === "pictograma" ? imagenPictograma.imagen : "",
@@ -254,7 +267,7 @@ export default function Pizarras(this: any) {
         let estilo = {color: celda.color, columna: celda.columna, fila: celda.fila} as EstilosPizarras
         nuevosEstilos.push(estilo)
       }); 
-      // TODO: Los pictogramas no se muestran al instante, ver como corregir
+      // TODO: Los pictogramas que no estan siendo utilizados no se muestran al instante, ver como corregir
       setGraficosSinLugar(nuevosGraficosSinLugar)
       setEstilos(nuevosEstilos)  
     })
@@ -508,6 +521,7 @@ export default function Pizarras(this: any) {
           })}
         </Grid>
       </Container>
+      {/* TODO: Los pictogramas propios fallan al seleccionarse */}
       { mostrarPictogramas && categoriaSeleccionada && ListaCategorias(categoriaSeleccionada) }
       { mostrarPictogramas && categoriaSeleccionada && OpcionesDeCategoria(categoriaSeleccionada) }
       { mostrarPictogramas &&

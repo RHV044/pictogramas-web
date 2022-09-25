@@ -42,7 +42,7 @@ export async function ObtenerUsuarios(
     })
 }
 
-export async function ObtenerUsuarioInfo(id: number){
+export async function ObtenerUsuarioInfo(id: number | undefined){
   return axios.get(apiPictogramas + '/usuarios/' + id)
     .then(response => {
       return response.data
@@ -78,11 +78,24 @@ export async function CrearUsuario(
     })
 }
 
+export async function ActualizarUsuarioPassword(
+  usuario:IUsuario
+  ) {
+    // TODO: Revisar porque a la api no le llega el body
+    await axios.patch(apiPictogramas + '/usuarios',
+      usuario
+    )
+    .then(() => {
+      console.log('creamos un usuario')
+    })
+}
+
 export async function ActualizarUsuario(
   usuario:IUsuario
   ) {
-    await axios.patch(apiPictogramas + '/usuarios',
-    usuario
+    // TODO: Revisar porque a la api no le llega el body
+    await axios.put(apiPictogramas + '/usuarios',
+      usuario
     )
     .then(() => {
       console.log('creamos un usuario')
@@ -93,7 +106,7 @@ export async function SubirInformacionPictogramaPropio(
   body: IPictogram
 ){
   return await axios.post(apiPictogramas + `/usuarios/` +body.idUsuario + '/pictogramas',
-  body,
+    body,
     {
       headers: {
           'content-type': 'application/json'

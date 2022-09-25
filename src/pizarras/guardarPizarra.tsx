@@ -11,6 +11,7 @@ import { useEffect, useState } from 'react';
 import { IPizarra } from './models/pizarra';
 import { GuardarPizarra as SavePizarra } from './services/pizarras-services';
 import { IndexedDbService } from '../services/indexeddb-service';
+import { formatDate } from '../pictogramas/services/pictogramas-services';
 
 
 export default function GuardarPizarra(props:any) {
@@ -71,7 +72,7 @@ export default function GuardarPizarra(props:any) {
   const handleActualizar = () => {
     let pizarraActual = props.obtenerPizarra() as IPizarra
     pizarraActual.nombre = nombre
-    pizarraActual.pendienteActualizacion = true
+    pizarraActual.ultimaActualizacion = formatDate(new Date())
     //TODO: Revisar funcionamiento con asincronismo
     IndexedDbService.create().then((db) => {
       if (pizarraActual)

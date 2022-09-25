@@ -7,7 +7,7 @@ import {
 } from "react-router-dom";
 import { IndexedDbService } from '../../services/indexeddb-service';
 import { IUsuario } from '../model/usuario';
-import { ActualizarUsuario, usuarioLogueado } from '../../services/usuarios-services';
+import { ActualizarUsuarioPassword, usuarioLogueado } from '../../services/usuarios-services';
 const db = new IndexedDbService();
 
 const ModificarCuenta = (props: any) => {
@@ -27,7 +27,7 @@ const ModificarCuenta = (props: any) => {
             }}/>
         <Button type="button" color="primary" className="form__custom-button"
           onClick={async () => {
-            await ActualizarUsuario(usuario)
+            await ActualizarUsuarioPassword(usuario)
             await db.putOrPatchValue("usuarios", usuario)
             navigate("/cuenta/seleccionar" + location.search);
           }}
