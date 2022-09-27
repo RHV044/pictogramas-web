@@ -140,3 +140,10 @@ export async function ElmiminarPictogramaDeUsuario(idPictogramaUsuario: number) 
     console.log('pictograma eliminado');
   });
 }
+
+export async function ObtenerFavoritosDeUsuario(idUsuario: number){
+  return await axios.get(apiPictogramas + `/favoritos/${idUsuario}`).then((resp) => {
+    console.log('favoritos obteneidos');
+    return resp.data;
+  })
+}

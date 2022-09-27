@@ -1,7 +1,9 @@
 import { ICategoria } from '../pictogramas/models/categoria';
 import { IPictogram } from '../pictogramas/models/pictogram';
 import {
+  EliminarPictogramaFavorito,
   EliminarPictogramaPropio,
+  GuardarPictogramaFavorito,
   ObtenerCategorias,
   ObtenerImagenAsBlob,
   ObtenerInformacionPictogramas,
@@ -20,6 +22,7 @@ import {
   ActualizarUsuarioPassword,
   CrearUsuario,
   getUsuarioLogueado,
+  ObtenerFavoritosDeUsuario,
   ObtenerUsuarioInfo,
   ObtenerUsuarios,
   SubirImagenPropia,
@@ -34,6 +37,7 @@ import {
 } from '../pizarras/services/pizarras-services';
 import { GuardarPizarra } from '../pizarras/services/pizarras-services';
 import { IUsuario } from '../login/model/usuario';
+import { IFavoritoPorUsuario } from '../pictogramas/models/favoritoPorUsuario';
 
 const apiPictogramas = process.env.URL_PICTOGRAMAS ?? 'http://localhost:5000';
 
@@ -412,6 +416,49 @@ export class UpdateService {
       });
     } catch (ex) {
       console.log(ex);
+    }
+  }
+
+  async actualizarFavoritos(){
+    try{
+      let usuarioId =
+        usuarioLogueado?.id !== undefined ? usuarioLogueado?.id : 0;
+        ObtenerFavoritosDeUsuario(usuarioId).then((favoritosApi: IFavoritoPorUsuario[]) => {
+        IndexedDbService.create().then((db) => {
+          db.getAllValues('pizarras').then(async (favoritos: IFavoritoPorUsuario[]) => {
+            // Carga de pizarras de la api que no esten en el indexDb
+            favoritosApi.map((favorito) => {
+              if (
+                !favoritos.some(
+                  (f) => f.id === favorito.id && !f.pendienteAgregar
+                )
+              ) {
+                db.putOrPatchValue('favoritosPorUsuario', favorito);
+              }
+            });
+
+            favoritos.map(async (favorito) => {
+              // Creacion del favorito en la api
+              if (favorito.pendienteAgregar) {
+                await GuardarPictogramaFavorito(favorito.idPictograma);
+                favorito.pendienteAgregar = false;
+                db.putOrPatchValue('favoritosPorUsuario', favorito);
+              }
+
+              //TODO: Verificar funcionamiento
+              
+              // Eliminacion de pizarra en la api
+              if (favorito.pendienteEliminar) {
+                EliminarPictogramaFavorito(favorito.idPictograma).then(() => {
+                  db.deleteValue('favoritosPorUsuario', favorito.id);
+                });
+              }
+            });
+          });
+        });
+      });
+    }catch (ex){
+        console.log(ex);
     }
   }
 }
