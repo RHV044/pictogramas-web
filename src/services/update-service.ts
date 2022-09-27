@@ -240,6 +240,7 @@ export class UpdateService {
       this.actualizarPizarras();
       this.actualizarUsuarios();
       this.actualizarPictogramas();
+      this.actualizarFavoritos();
     }
   }
 
@@ -447,7 +448,7 @@ export class UpdateService {
 
               //TODO: Verificar funcionamiento
               
-              // Eliminacion de pizarra en la api
+              // Eliminacion de favorito en la api
               if (favorito.pendienteEliminar) {
                 EliminarPictogramaFavorito(favorito.idPictograma).then(() => {
                   db.deleteValue('favoritosPorUsuario', favorito.id);
