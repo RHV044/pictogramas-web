@@ -63,9 +63,9 @@ export default function GuardarPizarra(props:any) {
         console.log(newId)
         pizarraActual.id = newId
         db.putOrPatchValue("pizarras", pizarraActual)
+        dispatchEvent(new CustomEvent('sincronizar'));
       }
     });
-    dispatchEvent(new CustomEvent('sincronizar'));
     setOpen(false);
   };
 
@@ -76,9 +76,11 @@ export default function GuardarPizarra(props:any) {
     //TODO: Revisar funcionamiento con asincronismo
     IndexedDbService.create().then((db) => {
       if (pizarraActual)
+      {
         db.putOrPatchValue("pizarras", pizarraActual)
+        dispatchEvent(new CustomEvent('sincronizar'));
+      }
     });
-    dispatchEvent(new CustomEvent('sincronizar'));
     setOpen(false);
   };
 

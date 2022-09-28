@@ -83,7 +83,24 @@ export async function ActualizarUsuarioPassword(
   ) {
     // TODO: Revisar porque a la api no le llega el body
     await axios.patch(apiPictogramas + '/usuarios',
-      usuario
+      {
+        Id: usuario.id, 
+        NombreUsuario: usuario.nombreUsuario, 
+        Password: usuario.password, 
+        Schematic: usuario.schematic, 
+        Sex: usuario.sex,
+        Violence: usuario.violence,
+        Aac: usuario.aac,
+        AacColor: usuario.aacColor,
+        Skin: usuario.skin,
+        Hair: usuario.hair,
+        Nivel: usuario.nivel
+      },
+      {
+        headers: {
+          'content-type': 'application/json',
+        },
+      }
     )
     .then(() => {
       console.log('creamos un usuario')
@@ -95,7 +112,24 @@ export async function ActualizarUsuario(
   ) {
     // TODO: Revisar porque a la api no le llega el body
     await axios.put(apiPictogramas + '/usuarios',
-      usuario
+      {
+        Id: usuario.id, 
+        NombreUsuario: usuario.nombreUsuario, 
+        Password: usuario.password, 
+        Schematic: usuario.schematic, 
+        Sex: usuario.sex,
+        Violence: usuario.violence,
+        Aac: usuario.aac,
+        AacColor: usuario.aacColor,
+        Skin: usuario.skin,
+        Hair: usuario.hair,
+        Nivel: usuario.nivel
+      },
+      {
+        headers: {
+          'content-type': 'application/json',
+        },
+      }
     )
     .then(() => {
       console.log('creamos un usuario')
