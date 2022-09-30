@@ -319,7 +319,6 @@ export class UpdateService {
 
                   pictogramasLocales.map(async (pictograma) => {
                     if (pictograma.pendienteCreacion) {
-                      // TODO: Verificar creacion con asincronismo
                       SubirInformacionPictogramaPropio(pictograma).then(
                         async (resp) => {
                           pictograma.pendienteCreacion = false;
