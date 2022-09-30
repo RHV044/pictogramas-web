@@ -44,6 +44,30 @@ export async function ObtenerCategorias(
   }
 }
 
+export async function ObtenerCategoriasPadre(setCategoriasPadre: any){
+  let db = await IndexedDbService.create();
+  let categorias = await db.getAllValues('categorias');
+  if(categorias){
+    let categoriasPadre = categorias.filter(c => c.categoriaPadre === null);
+    return await setCategoriasPadre(categoriasPadre);
+  } else {
+        console.log('no se pueden obtener categorias padre');
+  }
+
+  // if (categoriasPadre){
+  // }
+  // else{
+  //   return await axios.get(apiPictogramas + '/categorias')
+  //   .then(response => {
+  //     setCategorias(response.data)
+  //   })
+  // }
+}
+
+export async function ObtenerCategoriasHijas(setCategorias: any, idCategoriaPadre: number){
+
+}
+
 export async function ObtenerYGuardarCategorias(
   setCategorias: any
 ) {
@@ -174,15 +198,10 @@ export async function ObtenerInterpretacionNatural(textoOriginal: string){
   })
 }
 
-export async function GuardarPictogramaFavorito(idPictograma: number) {
-  let usuario = await getUsuarioLogueado();
-  if (usuario != null && usuario.id != null && usuario != undefined){
-    return await axios.post(apiPictogramas + '/pictogramas/favoritos/' + usuario.id + '/' + idPictograma).then((resp) => {
+export async function GuardarPictogramaFavorito(idPictograma: number, idUsuario: number) {
+    return await axios.post(apiPictogramas + '/pictogramas/favoritos/' + idUsuario + '/' + idPictograma).then((resp) => {
       return resp.data
     });
-  } else {
-      console.log("Error usuario en gruardar favorito");
-  }  
 }
 
 export async function EliminarPictogramaPropio(identificador: string) {
@@ -196,15 +215,10 @@ export async function EliminarPictogramaPropio(identificador: string) {
   }  
 }
 
-export async function EliminarPictogramaFavorito(idPictograma: number) {
-  let usuario = await getUsuarioLogueado();
-  if (usuario != null && usuario.id != null && usuario != undefined){
-    return await axios.delete(apiPictogramas + '/pictogramas/favoritos/' + usuario.id + '/' + idPictograma).then((resp) => {
+export async function EliminarPictogramaFavorito(idPictograma: number, idUsuario: number) {
+    return await axios.delete(apiPictogramas + '/pictogramas/favoritos/' + idUsuario + '/' + idPictograma).then((resp) => {
       return resp.data
     });
-  } else {
-    console.log("Error usuario en eliminar favorito");
-  }  
 }
 
 export async function VerificarConexion(){

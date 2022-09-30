@@ -426,7 +426,7 @@ export class UpdateService {
         usuarioLogueado?.id !== undefined ? usuarioLogueado?.id : 0;
         ObtenerFavoritosDeUsuario(usuarioId).then((favoritosApi: IFavoritoPorUsuario[]) => {
         IndexedDbService.create().then((db) => {
-          db.getAllValues('pizarras').then(async (favoritos: IFavoritoPorUsuario[]) => {
+          db.getAllValues('favoritosPorUsuario').then(async (favoritos: IFavoritoPorUsuario[]) => {
             // Carga de pizarras de la api que no esten en el indexDb
             favoritosApi.map((favorito) => {
               if (
@@ -434,14 +434,21 @@ export class UpdateService {
                   (f) => f.id === favorito.id && !f.pendienteAgregar
                 )
               ) {
-                db.putOrPatchValue('favoritosPorUsuario', favorito);
+                const favCompleto: IFavoritoPorUsuario = {
+                  id: favorito.id,
+                  idUsuario: favorito.idUsuario,
+                  idPictograma: favorito.idPictograma,
+                  pendienteAgregar: false,
+                  pendienteEliminar: false
+                };
+                db.putOrPatchValue('favoritosPorUsuario', favCompleto);
               }
             });
 
             favoritos.map(async (favorito) => {
               // Creacion del favorito en la api
               if (favorito.pendienteAgregar) {
-                await GuardarPictogramaFavorito(favorito.idPictograma);
+                await GuardarPictogramaFavorito(favorito.idPictograma, usuarioId);
                 favorito.pendienteAgregar = false;
                 db.putOrPatchValue('favoritosPorUsuario', favorito);
               }
@@ -450,7 +457,8 @@ export class UpdateService {
               
               // Eliminacion de favorito en la api
               if (favorito.pendienteEliminar) {
-                EliminarPictogramaFavorito(favorito.idPictograma).then(() => {
+                EliminarPictogramaFavorito(favorito.idPictograma, usuarioId).then(() => {
+                  // let idFavorito = usuarioId.toString() + "_" + favorito.idPictograma.toString();
                   db.deleteValue('favoritosPorUsuario', favorito.id);
                 });
               }

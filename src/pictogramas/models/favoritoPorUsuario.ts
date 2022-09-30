@@ -1,5 +1,5 @@
 export interface IFavoritoPorUsuario {
-    id: number,
+    id: string,
     idUsuario: number,
     idPictograma: number,
     pendienteEliminar: boolean,

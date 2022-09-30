@@ -204,7 +204,7 @@ export class IndexedDbService {
     return this.getAllValues(tableName);
   }
 
-  public async deleteValue(tableName: string, id: number) {
+  public async deleteValue(tableName: string, id: number|string) {
     const tx = this.db.transaction(tableName, 'readwrite');
     const store = tx.objectStore(tableName);
     const result = await store.get(id);

@@ -15,8 +15,8 @@ import { IFavoritoPorUsuario } from '../models/favoritoPorUsuario';
 // };
 
 const generateId = (idUsuario: number, idPictograma: number) => {
-  // return idUsuario.toString() + "_" + idPictograma.toString();
-  return parseInt(Date.now().toString().substring(5,13));
+  return idUsuario.toString() + "_" + idPictograma.toString();
+  // return parseInt(Date.now().toString().substring(5,13));
 }
 
 
@@ -51,26 +51,23 @@ const FavoritoButton = (props: any) => {
           id: newId,
           idUsuario: (userLogueado.id === undefined || userLogueado.id === null) ? 0 : userLogueado.id,
           idPictograma: props.pictograma.id,
-          pendienteAgregar: false,
+          pendienteAgregar: true,
           pendienteEliminar: false
         };
         
-        if(favPorUser){
-          
-          await GuardarPictogramaFavorito(props.pictograma.id); //llamado a la api --conviene enviarlo por body para mantener el id
           await (await db).putOrPatchValue('favoritosPorUsuario', favPorUser); //guardar en indexedDB
-        }
-        else{
-          console.log('ingresaste al else');
-        }     
+          dispatchEvent(new CustomEvent('sincronizar'));
+
 
       } else {        
-        await EliminarPictogramaFavorito(props.pictograma.id); //llamado a la api
-        //TODO corregir delete en la indexedDb porque busca en la columna id por el id del pictograma y no esta bien        
+                
         let favoritos = (await db).searchFavoritoByUser((userLogueado && userLogueado.id) ? userLogueado.id : 0);
         let favorito = (await favoritos).find(f => f.idPictograma === props.pictograma.id);
         if (favorito){
-          (await db).deleteValue('favoritosPorUsuario', (await favorito).id); //delete en la indexedDb
+          
+          favorito.pendienteEliminar = true;
+          await (await db).putOrPatchValue('favoritosPorUsuario', favorito); //guardar en indexedDB
+          dispatchEvent(new CustomEvent('sincronizar'));          
         } else {
           console.log(`No se pudo eliminar el pictograma ${props.pictograma.id} de favoritos.`)
         }
@@ -81,7 +78,7 @@ const FavoritoButton = (props: any) => {
 
   return (
     <div>
-      {fav && //TODO: falta asociar el fav con el valor de verdad para que cargue bien
+      {fav &&
         <IconButton 
         onClick={() => { 
           handleFavorito();
