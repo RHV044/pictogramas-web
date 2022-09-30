@@ -65,14 +65,12 @@ export default function PictogramasPorCategoria(props: any) {
   }
 
 
-  async function eliminarPictograma(idPictograma: number) {
-  //TODO: Se debe actualizar a pendiente de eliminacion = true, y el update service la eliminara asincronicamente
-
-    db1.deleteValue("pictogramas", idPictograma) 
-    db1.deleteValue("pictogramasPorCategorias", idPictograma);
-    db1.deleteValue("favoritosPorCategorias", idPictograma);
-
-    await ElmiminarPictogramaDeUsuario(idPictograma);
+  async function eliminarPictograma(pictograma: IPictogram) {
+    //TODO: Se debe actualizar a pendiente de eliminacion = true, y el update service la eliminara asincronicamente
+    // El pictograma siempre es propio, no hace falta chequear si es de arasaac
+    pictograma.pendienteEliminacion = true
+    await db1.putOrPatchValue("pictogramasPropios", pictograma)
+    dispatchEvent(new CustomEvent('sincronizar'));
   }
 
   const favoritos = (userLogueado && userLogueado.id) ? db1.searchFavoritoByUser(userLogueado.id) : [];
@@ -81,7 +79,8 @@ export default function PictogramasPorCategoria(props: any) {
     <Container>
       <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 10, md: 12 }}>     
         {pictogramas.map((pictograma) => {     
-          console.log("se mapea pictograma: ", pictograma)            
+          console.log("se mapea pictograma: ", pictograma)
+          console.log("imagen a mostrar: ", pictograma.idUsuario > 0 ? pictograma.imagen : `data:image/png;base64, ${pictograma.imagen}`)            
           if (cumpleFiltros(pictograma, userLogueado))
             return (
               //Como estan dentro de la categoria, se visualizan abajo, habria que extraerlo a otro lugar
@@ -109,7 +108,7 @@ export default function PictogramasPorCategoria(props: any) {
                         //image={apiPictogramas+'/pictogramas/'+pictograma.id+'/obtener'}
                         //image={pictograma.imagen}
                         //TODO: Optimizar o ver alternativa para levantar los base64
-                        src={pictograma.idUsuario > 0 ? pictograma.imagen : `data:image/png;base64, ${pictograma.imagen}`}
+                        src={pictograma.idUsuario > 0 ? pictograma.imagen : `data:image/png;base64,${pictograma.imagen}`}
                         alt={pictograma.keywords[0].keyword}
                       ></CardMedia>
                       <CardHeader
@@ -126,7 +125,7 @@ export default function PictogramasPorCategoria(props: any) {
                       <IconButton
                         aria-label='eliminar'
                         onClick={() => {
-                          eliminarPictograma(pictograma.id);
+                          eliminarPictograma(pictograma);
                         }}
                       >
                         <HighlightOffIcon />

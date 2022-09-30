@@ -322,11 +322,11 @@ export class UpdateService {
                       // TODO: Verificar creacion con asincronismo
                       SubirInformacionPictogramaPropio(pictograma).then(
                         async (resp) => {
+                          pictograma.pendienteCreacion = false;
+                          db.putOrPatchValue('pictogramasPropios', pictograma);
                         }
                       );
 
-                      pictograma.pendienteCreacion = false;
-                      db.putOrPatchValue('pictogramasPropios', pictograma);
                     }
                     // Eliminacion de pizarra en la api
                     if (pictograma.pendienteEliminacion) {
