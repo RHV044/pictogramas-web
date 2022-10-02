@@ -67,7 +67,7 @@ export default function FormDialog() {
       aacColor: filtros.aacColor,
       skin: filtros.skin,
       hair: filtros.hair,
-      imagen: "",
+      imagen: fileBase64,
       categorias: categoriasFiltradas, 
       fileName: fileName,
       file: fileBase64,

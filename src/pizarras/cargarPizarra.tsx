@@ -51,8 +51,9 @@ export default function CargarPizarra(props: any) {
     if (pizarra)
     {
       pizarra.pendienteEliminacion = true
-      IndexedDbService.create().then((db) => {
-        db.putOrPatchValue("pizarras", pizarra)
+      IndexedDbService.create().then(async (db) => {
+        await db.putOrPatchValue("pizarras", pizarra)
+        dispatchEvent(new CustomEvent('sincronizar'));
       });
     }
     setOpen(false);

@@ -45,6 +45,11 @@ type MyState = {
   categorias: ICategoria[];
 };
 
+let actualizacionPizarras = false
+let actualizacionUsuarios = false
+let actualizacionPictogramas = false
+let actualizacionFavoritos = false
+
 export class UpdateService {
   state: MyState = {
     categorias: [],
@@ -235,8 +240,12 @@ export class UpdateService {
     });
   }
 
-  async sincronizar() {
-    if (window.navigator.onLine) {
+  async sincronizar() {    
+    if (window.navigator.onLine && !actualizacionPictogramas && !actualizacionFavoritos && !actualizacionPizarras && !actualizacionUsuarios) {
+      actualizacionPictogramas = true
+      actualizacionFavoritos = true
+      actualizacionPizarras = true
+      actualizacionUsuarios = true
       this.actualizarPizarras();
       this.actualizarUsuarios();
       this.actualizarPictogramas();
@@ -270,9 +279,12 @@ export class UpdateService {
               }
             );               
           });
+          actualizacionUsuarios = false
         });
       });
-    } catch (ex) {}
+    } catch (ex) {
+      actualizacionUsuarios = false
+    }
   }
 
   async actualizarPictogramas() {
@@ -347,9 +359,11 @@ export class UpdateService {
               );
             }
           );
+          actualizacionPictogramas = false
         });
       });
     } catch (ex) {
+      actualizacionPictogramas = false
       console.log(ex);
     }
   }
@@ -416,9 +430,11 @@ export class UpdateService {
               }
             });
           });
+          actualizacionPizarras = false
         });
-      });
+      });      
     } catch (ex) {
+      actualizacionPizarras = false
       console.log(ex);
     }
   }
@@ -467,10 +483,12 @@ export class UpdateService {
               }
             });
           });
+          actualizacionFavoritos = false
         });
       });
     }catch (ex){
-        console.log(ex);
+      actualizacionFavoritos = false
+      console.log(ex);
     }
   }
 }

@@ -21,7 +21,7 @@ export interface BoxProps {
   fila,
   columna,
   esPictograma, 
-  imagen
+  imagen: string
 }
 
 interface DropResult {
@@ -72,7 +72,7 @@ export const Box: FC<BoxProps> = function Box({ name, identificacion, onDrop, mo
             <CardMedia
               component="img"
               height="140"
-              src={`data:image/png;base64, ${imagen}`}
+              src={imagen.includes('data:image') ? imagen : `data:image/png;base64,${imagen}`}
               alt={name}
             ></CardMedia>
             <CardHeader
