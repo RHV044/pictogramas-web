@@ -29,7 +29,7 @@ import {
   getUsuarioLogueado,
   usuarioLogueado,
 } from '../services/usuarios-services';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Console } from 'console';
 import Filtros from '../pictogramas/components/filtros';
 import { ICategoria } from '../pictogramas/models/categoria';
@@ -44,6 +44,7 @@ function agruparElementos(datos, predicado) : ICategoria[] { //agrupar categoria
 
 export default function Configuracion() {
   let navigate = useNavigate();
+  let location = useLocation();
   const [usuarios, setUsuarios] = useState([] as IUsuario[]);
   const [db, setDb] = useState(IndexedDbService.create());
   const [categorias, setCategorias] = useState([] as ICategoria[]);
@@ -80,6 +81,9 @@ export default function Configuracion() {
         setAac(usuario.aac);
         setAacColor(usuario.aacColor);
         setSchematic(usuario.schematic);
+      }
+      else{
+        navigate('/cuenta/seleccionar' + location.search);
       }
     });
   }, []);

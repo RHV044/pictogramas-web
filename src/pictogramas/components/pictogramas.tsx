@@ -28,6 +28,7 @@ import CategoriaSeleccionada from './categorias/categoriaSeleccionada';
 import PictogramasPorCategoria from './categorias/pictogramasPorCategoria';
 import { ObtenerCategorias, ObtenerPictogramas } from '../services/pictogramas-services';
 import Categoria from './categorias/categoria';
+import { getUsuarioLogueado, setUsuarioLogueado, setUsuarioLogueadoVariable, usuarioLogueado } from '../../services/usuarios-services';
 const db = new IndexedDbService();
 
 export default function Pictogramas(props: any) {
@@ -59,6 +60,16 @@ export default function Pictogramas(props: any) {
   };
 
   useEffect(() => {
+    getUsuarioLogueado().then(usuario => {
+      if(usuario === null || usuario === undefined){
+        // Redirijo a seleccionar cuenta
+        navigate('/cuenta/seleccionar' + location.search);
+      }
+      else{
+        setUsuarioLogueadoVariable(usuario)
+      }
+    })
+    
     ObtenerPictogramas().then((pictogramas) => {
       setPictogramas(pictogramas);
     });

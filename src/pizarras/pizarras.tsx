@@ -34,8 +34,9 @@ import GuardarPizarra from './guardarPizarra';
 import CargarPizarra from './cargarPizarra';
 import { ObtenerPizarras } from './services/pizarras-services';
 import { ICeldaPizarra, IPizarra } from './models/pizarra';
-import { usuarioLogueado } from '../services/usuarios-services';
+import { getUsuarioLogueado, setUsuarioLogueadoVariable, usuarioLogueado } from '../services/usuarios-services';
 import Categoria from '../pictogramas/components/categorias/categoria';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 export type EstilosPizarras = {
   fila: number,
@@ -44,6 +45,8 @@ export type EstilosPizarras = {
 }
 
 export default function Pizarras(this: any) {
+  let navigate = useNavigate();
+  let location = useLocation();
   const [filas, setFilas] = useState(0);
   const [columnas, setColumnas] = useState(0);
   const [texto, setTexto] = useState('')
@@ -72,6 +75,16 @@ export default function Pizarras(this: any) {
   const [pizarra, setPizarra] = useState({} as IPizarra)
   
   useEffect(() => {
+    getUsuarioLogueado().then(usuario => {
+      if(usuario === null || usuario === undefined){
+        // Redirijo a seleccionar cuenta
+        navigate('/cuenta/seleccionar' + location.search);
+      }
+      else{
+        setUsuarioLogueadoVariable(usuario)
+      }
+    })
+
     ObtenerPictogramas().then((pictogramas) => {
       setPictogramas(pictogramas);
     });    

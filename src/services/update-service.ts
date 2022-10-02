@@ -256,7 +256,8 @@ export class UpdateService {
   //
   // La creacion de Usuario requiere obligatoriamente de conectividad por cuestiones practicas
   //
-  async actualizarUsuarios() {
+  async 
+  actualizarUsuarios() {
     try {
       //Obtener usuarios del indexDB
       IndexedDbService.create().then((db) => {
@@ -446,7 +447,7 @@ export class UpdateService {
         ObtenerFavoritosDeUsuario(usuarioId).then((favoritosApi: IFavoritoPorUsuario[]) => {
         IndexedDbService.create().then((db) => {
           db.getAllValues('favoritosPorUsuario').then(async (favoritos: IFavoritoPorUsuario[]) => {
-            // Carga de pizarras de la api que no esten en el indexDb
+            // Carga de favoritos de la api que no esten en el indexDb
             favoritosApi.map((favorito) => {
               if (
                 !favoritos.some(

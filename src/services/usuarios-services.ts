@@ -11,6 +11,12 @@ const encryptKey = process.env.ENCRYPT_KEY ?? "8080808080808080";
 var indexDb = new IndexedDbService();
 export let usuarioLogueado: IUsuario|null = null 
 
+export function setUsuarioLogueadoVariable(
+  usuario:IUsuario
+  ) {
+    usuarioLogueado = usuario
+  }
+
 export function setUsuarioLogueado(
   usuario:IUsuario
   ) {
