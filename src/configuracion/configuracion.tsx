@@ -37,6 +37,11 @@ import { formatDate, ObtenerCategorias } from '../pictogramas/services/pictogram
 import React from 'react';
 import FormDialogValidarAcceso from './components/validarCambioConfiguracion';
 
+function agruparElementos(datos, predicado) : ICategoria[] { //agrupar categorias por algun campo en particular
+
+  return datos.reduce((a, v, i) => (a[predicado(v, i) ? 0 : 1].push(v), a), [[], []]);
+}
+
 export default function Configuracion() {
   let navigate = useNavigate();
   const [usuarios, setUsuarios] = useState([] as IUsuario[]);
@@ -232,7 +237,8 @@ export default function Configuracion() {
                 Seleccione las categorías que desea visualizar
                 {categorias.length > 0 && (
                   <Filtros
-                    filtros={categorias}
+                    // filtros={categorias.sort((a,b) => a.categoriaPadre - b.categoriaPadre)} //TODO ver si este ordenamiento se puede usar como corte
+                    filtros = {agruparElementos(categorias, (c => c.categoriaPadre === 0))[0]} 
                     setFiltros={setCategoriasFiltradas}
                     filtro={'Categorias'}
                   />
