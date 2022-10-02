@@ -23,7 +23,19 @@ export async function GuardarPizarra(pizarra: IPizarra){
 export async function ActualizarPizarra(pizarra: IPizarra){
   console.log("pizarra a guardar: ", pizarra)
   return await axios.put(apiPictogramas + '/pizarras/',
-  pizarra
+  {
+    Id: pizarra.id,
+    Filas: pizarra.filas,
+    Columnas: pizarra.columnas,
+    UsuarioId: pizarra.usuarioId,
+    Nombre: pizarra.nombre,
+    Celdas: pizarra.celdas
+  },
+  {
+    headers: {
+      'content-type': 'application/json',
+    },
+  }
   )
   .then((resp) => {
     return resp.data

@@ -372,6 +372,8 @@ export class UpdateService {
               }
             });
 
+            console.log("Pizarras api: ", pizarrasApi)
+            console.log("Pizarras locales: ", pizarras)
             pizarras.map(async (pizarra) => {
               // Creacion de pizarra en la api
               if (pizarra.pendienteCreacion) {
@@ -380,26 +382,28 @@ export class UpdateService {
                 db.putOrPatchValue('pizarras', pizarra);
               }
 
-              //TODO: Verificar funcionamiento
+              //TODO: Verificar funcionamiento de actualizacion
               // Actualizacion de pizarra
               if (
-                pizarras.some(
+                pizarrasApi.some(
                   (p) =>
                     p.id === pizarra.id &&
                     p.ultimaActualizacion < pizarra.ultimaActualizacion
                 )
               ) {
                 // Debo actualizar la pizarra en el IndexDb
+                console.log("Se actualiza pizarra en indexDb")
                 let p = pizarras.find((p) => p.id === pizarra.id);
                 pizarra = p ? p : pizarra;
                 db.putOrPatchValue('pizarras', pizarra);
               } else {
-                if(pizarras.some(
+                if(pizarrasApi.some(
                     (p) =>
                       p.id === pizarra.id &&
                       p.ultimaActualizacion > pizarra.ultimaActualizacion))
                 {
                   // Debo actualizar la pizarra en la api
+                  console.log("Se actualiza pizarra en la api")
                   await ActualizarPizarra(pizarra);
                 }
               }
