@@ -17,7 +17,9 @@ export const cellDropStyle: CSSProperties = {
   float: 'left',
   borderStyle: 'solid', 
   borderWidth: 2.5,
-  borderColor: 'black'
+  borderColor: 'black',
+  position: 'static',
+  transform:'none'
 }
 
 export interface CellDropProps {

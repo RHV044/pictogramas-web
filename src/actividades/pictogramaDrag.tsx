@@ -43,7 +43,27 @@ export const PictogramaDrag: FC<PictogramaDragProps> = function Box({ pictograma
   return (
     <div>
       <div ref={drag} style={{ ...style, opacity }} data-testid={`box`}>
-        {pictograma.keywords[0].keyword}
+        <Card
+          sx={{ maxWidth: 245, minWidth:150 }}
+          style={{ marginTop: '10px' }}
+          onClick={() => {}}
+        >
+          <CardActionArea
+            onClick={() => {
+            }}
+          >
+            <CardMedia
+              component="img"
+              height="140"
+              src={pictograma.imagen.includes('data:image') ? pictograma.imagen : `data:image/png;base64,${pictograma.imagen}`}
+              alt={pictograma.keywords[0].keyword}
+            ></CardMedia>
+            <CardHeader
+              title={pictograma.keywords[0].keyword}
+            ></CardHeader>
+            <CardContent></CardContent>
+          </CardActionArea>
+        </Card>
       </div>
     </div>
   )

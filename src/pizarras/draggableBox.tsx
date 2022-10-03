@@ -10,7 +10,7 @@ const style: CSSProperties = {
   marginRight: '1.5rem',
   marginBottom: '1.5rem',
   cursor: 'move',
-  float: 'left',
+  float: 'left'
 }
 
 export interface BoxProps {
@@ -54,12 +54,12 @@ export const Box: FC<BoxProps> = function Box({ name, identificacion, onDrop, mo
   return (
     <div>
     { !esPictograma &&
-      <div ref={drag} style={{ ...style, opacity }} data-testid={`box`}>
+      <div ref={drag} style={{ ...style, opacity, transform: `translate(${10}px, ${10}px)`, WebkitTransform: 'translate(${10}px, ${10}px)' }} data-testid={`box`}>
         {name}
       </div>
     }
     { esPictograma &&
-      <div ref={drag} style={{ ...style, opacity }} data-testid={`box`}>
+      <div ref={drag} style={{ ...style, opacity, transform: `translate(${10}px, ${10}px)`, WebkitTransform: 'translate(${10}px, ${10}px)' }} data-testid={`box`}>
         <Card
           sx={{ maxWidth: 245, minWidth:150 }}
           style={{ marginTop: '10px' }}
