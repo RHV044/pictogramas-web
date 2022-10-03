@@ -15,16 +15,24 @@ import { HTML5Backend } from 'react-dnd-html5-backend'
 import Actividad from './actividades/actividad';
 import { useState, useEffect } from 'react';
 import { UpdateService } from './services/update-service';
+import { TouchBackend } from "react-dnd-touch-backend"
 
 function App() {
 
+  const isMobile = window.innerWidth < 600
+
   useEffect(() => {
     let updateService = new UpdateService()
+    console.log("es mobile? : ", isMobile)
   },[])
+
+  useEffect(() => {
+    console.log("es mobile? : ", isMobile)
+  },[isMobile])
 
   return (
     <div>
-    <DndProvider backend={HTML5Backend}>
+    <DndProvider backend={isMobile ? TouchBackend : HTML5Backend} options={{ enableMouseEvents: true }}>
       <BrowserRouter>
         <Routes>
 
