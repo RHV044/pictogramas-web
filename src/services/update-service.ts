@@ -292,18 +292,17 @@ export class UpdateService {
     try {
       //Obtener usuarios del indexDB
       IndexedDbService.create().then((db) => {
-        db.getAllValues('usuarios').then(async (usuarios: IUsuario[]) => {
+        db.getAllValues('usuarios').then(async (usuarios: IUsuario[]) => {          
           usuarios.map(async (usuario) => {
             //Chequeo de usuario actualizado en la api
             ObtenerUsuarioInfo(usuario.id).then(
               async (usuarioApi: IUsuario) => {
                 // Actualizo usuario en el IndexedDb
                 if (
-                  usuarioApi.ultimaActualizacion > usuario.ultimaActualizacion
+                  usuario.ultimaActualizacion < usuarioApi.ultimaActualizacion 
                 ) {
                   db.putOrPatchValue('usuarios', usuarioApi);
                 }
-
                 // Actualizo usuario en la api
                 if (
                   usuarioApi.ultimaActualizacion < usuario.ultimaActualizacion

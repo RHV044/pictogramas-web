@@ -87,8 +87,8 @@ export async function CrearUsuario(
 export async function ActualizarUsuario(
   usuario:IUsuario
   ) {
-    // TODO: Revisar porque a la api no le llega el body
-    await axios.patch(apiPictogramas + '/usuarios',
+    console.log("Se actualiza el usuario en la api")
+    await axios.put(apiPictogramas + '/usuarios',
       {
         Id: usuario.id, 
         NombreUsuario: usuario.nombreUsuario, 
@@ -118,7 +118,7 @@ export async function ActualizarUsuarioPassword(
   usuario:IUsuario
   ) {
     // TODO: Revisar porque a la api no le llega el body
-    await axios.put(apiPictogramas + '/usuarios',
+    await axios.patch(apiPictogramas + '/usuarios',
       {
         Id: usuario.id, 
         NombreUsuario: usuario.nombreUsuario, 

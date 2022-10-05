@@ -50,6 +50,7 @@ function agruparElementos(datos, predicado) : ICategoria[] { //agrupar categoria
 export default function Configuracion() {
   let navigate = useNavigate();
   let location = useLocation();
+  const usuarioImagen = require('../commons/imagen-usuario.jpg')
   const [usuarios, setUsuarios] = useState([] as IUsuario[]);
   const [db, setDb] = useState(IndexedDbService.create());
   const [categorias, setCategorias] = useState([] as ICategoria[]);
@@ -107,7 +108,7 @@ export default function Configuracion() {
       usuario.aac = aac;
       usuario.aacColor = aacColor;
       usuario.schematic = schematic;
-      usuario.ultimaActualizacion = formatDate(new Date());
+      usuario.ultimaActualizacion = new Date().toISOString();
       (await db).putOrPatchValue('usuarios', usuario)
       dispatchEvent(new CustomEvent('sincronizar'));
     };
@@ -117,18 +118,19 @@ export default function Configuracion() {
     var reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = function () {
-      console.log(reader.result);
-      if(reader.result && userLogueado)
+      if(reader.result && userLogueado){
+        var fechaActualizacion = new Date().toISOString()
+        userLogueado.ultimaActualizacion = fechaActualizacion;
         userLogueado.imagen = reader.result.toString()
+        IndexedDbService.create().then(async (db) => {      
+          await db.putOrPatchValue("usuarios", userLogueado)
+          dispatchEvent(new CustomEvent('sincronizar'));
+        })
+      }
     };
     reader.onerror = function (error) {
       console.log('Error: ', error);
     };
-
-    IndexedDbService.create().then(db => {      
-      db.putOrPatchValue("usuarios", userLogueado)
-      dispatchEvent(new CustomEvent('sincronizar'));
-    })
  }
 
   return (
@@ -162,7 +164,7 @@ export default function Configuracion() {
                       <CardMedia
                         component="img"
                         height="140"
-                        src={userLogueado && userLogueado.imagen !== "" ? userLogueado.imagen : "../../../../public/imagen-usuario.jpg"}
+                        src={userLogueado && userLogueado.imagen !== "" ? userLogueado.imagen : usuarioImagen}
                         alt={userLogueado.nombreUsuario}
                       >
                       </CardMedia>
@@ -175,7 +177,7 @@ export default function Configuracion() {
                     <input type="file" hidden 
                     onChange={(evt) => { 
                       if (evt.target.files){
-                        guardarImagenBase64(evt.target.files) 
+                        guardarImagenBase64(evt.target.files[0]) 
                       }          
                       console.log(file)
                     }}/>

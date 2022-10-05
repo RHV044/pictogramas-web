@@ -72,7 +72,7 @@ export default function GuardarPizarra(props:any) {
   const handleActualizar = () => {
     let pizarraActual = props.obtenerPizarra() as IPizarra
     pizarraActual.nombre = nombre
-    pizarraActual.ultimaActualizacion = formatDate(new Date())
+    pizarraActual.ultimaActualizacion = new Date().toISOString()
     //TODO: Revisar funcionamiento con asincronismo
     IndexedDbService.create().then((db) => {
       if (pizarraActual)

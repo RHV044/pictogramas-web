@@ -190,7 +190,6 @@ export class IndexedDbService {
     if (source) newValue = apply(source, value);
 
     const result = await store.put(newValue);
-    console.log('Put Data ', JSON.stringify(result));
     return result;
   }
 

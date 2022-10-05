@@ -29,7 +29,7 @@ const VincularCuenta = (props: any) => {
             // Se debe registrar nada mas en el indexdbb            
             let usuario = await ObtenerUsuario(username, password)
             console.log('usuario a vincular: ', usuario)
-            await db.putOrPatchValueWithoutId("usuarios", usuario)
+            await db.putOrPatchValue("usuarios", usuario)
             navigate("/cuenta/seleccionar" + location.search);
           }}
         >
