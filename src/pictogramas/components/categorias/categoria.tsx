@@ -33,7 +33,7 @@ export default function Categoria(props: any) {
         <CardMedia
           component="img"
           height="140"
-          image="https://www.lavanguardia.com/files/content_image_mobile_filter/uploads/2017/04/24/5fa3cfbde979b.jpeg"
+          src={`data:image/png;base64,${categoria.imagen}`}
           alt="MESSI"
         ></CardMedia>
         <CardHeader title={categoria.nombre}></CardHeader>

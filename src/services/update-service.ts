@@ -45,10 +45,10 @@ type MyState = {
   categorias: ICategoria[];
 };
 
-let actualizacionPizarras = false
-let actualizacionUsuarios = false
-let actualizacionPictogramas = false
-let actualizacionFavoritos = false
+let actualizacionPizarras = false;
+let actualizacionUsuarios = false;
+let actualizacionPictogramas = false;
+let actualizacionFavoritos = false;
 
 export class UpdateService {
   state: MyState = {
@@ -78,6 +78,35 @@ export class UpdateService {
           else cat.esCategoriaFinal = false;
         });
         await db.putBulkValue('categorias', cats);
+        // Obtencion imagenes de categorias
+
+        const maxParallelRequests = 500;
+        let count = 0;
+        let start = 0;
+        let end = 1;
+        while (count < cats.length) {
+          end =
+            cats.length - count <= maxParallelRequests
+              ? start + (cats.length - count)
+              : start + maxParallelRequests;
+
+          let aGroupOfInfoCats = cats.slice(start, end);
+          count += end - start;
+          start = end;
+
+          let groupRequestPromises: Promise<any>[] = aGroupOfInfoCats.map(
+            // eslint-disable-next-line no-loop-func
+            async (cat: ICategoria) => {
+              // Get the pictogram's image
+              return axios
+                .get(`${apiPictogramas}/categorias/${cat.id}/obtener/base64`)
+                .then(async (response) => {
+                  cat.imagen = response.data;
+                  await db.putOrPatchValue('categorias', cat);
+                });
+            }
+          );
+        }
       });
     }
 
@@ -101,8 +130,9 @@ export class UpdateService {
       db.putBulkValue('pictograms', informacionArasaac);
       db.putBulkValue('pictogramasPropios', informacionPropios);
 
-      let totalImagenesLocales = await db.countValues('imagenes');      
-      totalImagenesLocales = totalImagenesLocales + await db.countValues('imagenesPropias');
+      let totalImagenesLocales = await db.countValues('imagenes');
+      totalImagenesLocales =
+        totalImagenesLocales + (await db.countValues('imagenesPropias'));
       if (totalImagenesLocales !== totalPictogramas) {
         // Obtencion imagenes de pictogramas arasaac
         db.getAllValues('pictograms').then(
@@ -240,12 +270,18 @@ export class UpdateService {
     });
   }
 
-  async sincronizar() {    
-    if (window.navigator.onLine && !actualizacionPictogramas && !actualizacionFavoritos && !actualizacionPizarras && !actualizacionUsuarios) {
-      actualizacionPictogramas = true
-      actualizacionFavoritos = true
-      actualizacionPizarras = true
-      actualizacionUsuarios = true
+  async sincronizar() {
+    if (
+      window.navigator.onLine &&
+      !actualizacionPictogramas &&
+      !actualizacionFavoritos &&
+      !actualizacionPizarras &&
+      !actualizacionUsuarios
+    ) {
+      actualizacionPictogramas = true;
+      actualizacionFavoritos = true;
+      actualizacionPizarras = true;
+      actualizacionUsuarios = true;
       this.actualizarPizarras();
       this.actualizarUsuarios();
       this.actualizarPictogramas();
@@ -256,7 +292,7 @@ export class UpdateService {
   //
   // La creacion de Usuario requiere obligatoriamente de conectividad por cuestiones practicas
   //
-  async 
+  async;
   actualizarUsuarios() {
     try {
       //Obtener usuarios del indexDB
@@ -267,24 +303,26 @@ export class UpdateService {
             ObtenerUsuarioInfo(usuario.id).then(
               async (usuarioApi: IUsuario) => {
                 // Actualizo usuario en el IndexedDb
-                if (usuarioApi.ultimaActualizacion > usuario.ultimaActualizacion) 
-                {
+                if (
+                  usuarioApi.ultimaActualizacion > usuario.ultimaActualizacion
+                ) {
                   db.putOrPatchValue('usuarios', usuarioApi);
                 }
 
                 // Actualizo usuario en la api
-                if (usuarioApi.ultimaActualizacion < usuario.ultimaActualizacion)
-                {
+                if (
+                  usuarioApi.ultimaActualizacion < usuario.ultimaActualizacion
+                ) {
                   await ActualizarUsuarioPassword(usuario);
                 }
               }
-            );               
+            );
           });
-          actualizacionUsuarios = false
+          actualizacionUsuarios = false;
         });
       });
     } catch (ex) {
-      actualizacionUsuarios = false
+      actualizacionUsuarios = false;
     }
   }
 
@@ -338,7 +376,6 @@ export class UpdateService {
                           db.putOrPatchValue('pictogramasPropios', pictograma);
                         }
                       );
-
                     }
                     // Eliminacion de pizarra en la api
                     if (pictograma.pendienteEliminacion) {
@@ -360,11 +397,11 @@ export class UpdateService {
               );
             }
           );
-          actualizacionPictogramas = false
+          actualizacionPictogramas = false;
         });
       });
     } catch (ex) {
-      actualizacionPictogramas = false
+      actualizacionPictogramas = false;
       console.log(ex);
     }
   }
@@ -387,8 +424,8 @@ export class UpdateService {
               }
             });
 
-            console.log("Pizarras api: ", pizarrasApi)
-            console.log("Pizarras locales: ", pizarras)
+            console.log('Pizarras api: ', pizarrasApi);
+            console.log('Pizarras locales: ', pizarras);
             pizarras.map(async (pizarra) => {
               // Creacion de pizarra en la api
               if (pizarra.pendienteCreacion) {
@@ -407,22 +444,24 @@ export class UpdateService {
                 )
               ) {
                 // Debo actualizar la pizarra en el IndexDb
-                console.log("Se actualiza pizarra en indexDb")
+                console.log('Se actualiza pizarra en indexDb');
                 let p = pizarras.find((p) => p.id === pizarra.id);
                 pizarra = p ? p : pizarra;
                 db.putOrPatchValue('pizarras', pizarra);
               } else {
-                if(pizarrasApi.some(
+                if (
+                  pizarrasApi.some(
                     (p) =>
                       p.id === pizarra.id &&
-                      p.ultimaActualizacion > pizarra.ultimaActualizacion))
-                {
+                      p.ultimaActualizacion > pizarra.ultimaActualizacion
+                  )
+                ) {
                   // Debo actualizar la pizarra en la api
-                  console.log("Se actualiza pizarra en la api")
+                  console.log('Se actualiza pizarra en la api');
                   await ActualizarPizarra(pizarra);
                 }
               }
-              
+
               // Eliminacion de pizarra en la api
               if (pizarra.pendienteEliminacion) {
                 EliminarPizarra(pizarra).then(() => {
@@ -431,64 +470,74 @@ export class UpdateService {
               }
             });
           });
-          actualizacionPizarras = false
+          actualizacionPizarras = false;
         });
-      });      
+      });
     } catch (ex) {
-      actualizacionPizarras = false
+      actualizacionPizarras = false;
       console.log(ex);
     }
   }
 
-  async actualizarFavoritos(){
-    try{
+  async actualizarFavoritos() {
+    try {
       let usuarioId =
         usuarioLogueado?.id !== undefined ? usuarioLogueado?.id : 0;
-        ObtenerFavoritosDeUsuario(usuarioId).then((favoritosApi: IFavoritoPorUsuario[]) => {
-        IndexedDbService.create().then((db) => {
-          db.getAllValues('favoritosPorUsuario').then(async (favoritos: IFavoritoPorUsuario[]) => {
-            // Carga de favoritos de la api que no esten en el indexDb
-            favoritosApi.map((favorito) => {
-              if (
-                !favoritos.some(
-                  (f) => f.id === favorito.id && !f.pendienteAgregar
-                )
-              ) {
-                const favCompleto: IFavoritoPorUsuario = {
-                  id: favorito.id,
-                  idUsuario: favorito.idUsuario,
-                  idPictograma: favorito.idPictograma,
-                  pendienteAgregar: false,
-                  pendienteEliminar: false
-                };
-                db.putOrPatchValue('favoritosPorUsuario', favCompleto);
-              }
-            });
+      ObtenerFavoritosDeUsuario(usuarioId).then(
+        (favoritosApi: IFavoritoPorUsuario[]) => {
+          IndexedDbService.create().then((db) => {
+            db.getAllValues('favoritosPorUsuario').then(
+              async (favoritos: IFavoritoPorUsuario[]) => {
+                // Carga de favoritos de la api que no esten en el indexDb
+                favoritosApi.map((favorito) => {
+                  if (
+                    !favoritos.some(
+                      (f) => f.id === favorito.id && !f.pendienteAgregar
+                    )
+                  ) {
+                    const favCompleto: IFavoritoPorUsuario = {
+                      id: favorito.id,
+                      idUsuario: favorito.idUsuario,
+                      idPictograma: favorito.idPictograma,
+                      pendienteAgregar: false,
+                      pendienteEliminar: false,
+                    };
+                    db.putOrPatchValue('favoritosPorUsuario', favCompleto);
+                  }
+                });
 
-            favoritos.map(async (favorito) => {
-              // Creacion del favorito en la api
-              if (favorito.pendienteAgregar) {
-                await GuardarPictogramaFavorito(favorito.idPictograma, usuarioId);
-                favorito.pendienteAgregar = false;
-                db.putOrPatchValue('favoritosPorUsuario', favorito);
-              }
+                favoritos.map(async (favorito) => {
+                  // Creacion del favorito en la api
+                  if (favorito.pendienteAgregar) {
+                    await GuardarPictogramaFavorito(
+                      favorito.idPictograma,
+                      usuarioId
+                    );
+                    favorito.pendienteAgregar = false;
+                    db.putOrPatchValue('favoritosPorUsuario', favorito);
+                  }
 
-              //TODO: Verificar funcionamiento
-              
-              // Eliminacion de favorito en la api
-              if (favorito.pendienteEliminar) {
-                EliminarPictogramaFavorito(favorito.idPictograma, usuarioId).then(() => {
-                  // let idFavorito = usuarioId.toString() + "_" + favorito.idPictograma.toString();
-                  db.deleteValue('favoritosPorUsuario', favorito.id);
+                  //TODO: Verificar funcionamiento
+
+                  // Eliminacion de favorito en la api
+                  if (favorito.pendienteEliminar) {
+                    EliminarPictogramaFavorito(
+                      favorito.idPictograma,
+                      usuarioId
+                    ).then(() => {
+                      // let idFavorito = usuarioId.toString() + "_" + favorito.idPictograma.toString();
+                      db.deleteValue('favoritosPorUsuario', favorito.id);
+                    });
+                  }
                 });
               }
-            });
+            );
+            actualizacionFavoritos = false;
           });
-          actualizacionFavoritos = false
-        });
-      });
-    }catch (ex){
-      actualizacionFavoritos = false
+        }
+      );
+    } catch (ex) {
+      actualizacionFavoritos = false;
       console.log(ex);
     }
   }
