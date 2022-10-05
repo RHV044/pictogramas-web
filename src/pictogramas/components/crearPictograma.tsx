@@ -136,7 +136,7 @@ export default function FormDialog() {
           {/* TODO: Habria que ver tambien de agregar los Tags */}
           {categorias.length > 0 && (
             <Filtros
-              filtros={categorias}
+              filtros={categorias.filter(c => c.esCategoriaFinal === true).sort((c1, c2) => c1.nombre.localeCompare(c2.nombre))}
               setFiltros={setCategoriasFiltradas}
               filtro={'Categorias'}
             />
