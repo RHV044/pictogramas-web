@@ -10,7 +10,7 @@ export default function CategoriaSeleccionada(props: any) {
   return (
     <div>
       <Card
-        sx={{ maxWidth: 245 }}
+        sx={{ maxWidth: 100 }}
         style={{ marginTop: '10px' }}
         onClick={() => {}}
       >

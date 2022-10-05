@@ -33,6 +33,7 @@ function App() {
   return (
     <div>
     <DndProvider backend={isMobile ? TouchBackend : HTML5Backend} options={{ enableMouseEvents: true }}>
+    {/* <DndProvider backend={ TouchBackend } options={{ enableMouseEvents: true }}> */}
       <BrowserRouter>
         <Routes>
 

@@ -54,7 +54,7 @@ export default function Seleccion(props: any) {
             <Grid key={i++} item xs={12} sm={4} md={2}>
               <Container key={i++}>
                 <Card
-                  sx={{ maxWidth: 345 }}
+                  sx={{ maxWidth: 245 }}
                   style={{ marginTop: '10px' }}
                   onClick={() => {
                     let nuevaLista = pictogramas.filter(

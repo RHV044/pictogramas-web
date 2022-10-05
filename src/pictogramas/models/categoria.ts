@@ -6,5 +6,6 @@ export interface ICategoria {
   pictogramas: IPictogram[]
   nivel: number,
   categoriaPadre: number,
-  esCategoriaFinal: boolean
+  esCategoriaFinal: boolean,
+  imagen: string
 }
