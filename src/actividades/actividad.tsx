@@ -40,12 +40,14 @@ export default function Actividad(){
     setCategoria1(categorias[0])
     setCategoriaCorrecta(categorias[0])
     setCategoria2(categorias[1])
-    setCategoria3(categorias[2])
-    setCategoria4(categorias[3])
+    if (params.nivel !== undefined && parseInt(params.nivel) > 1)
+      setCategoria3(categorias[2])
+    if (params.nivel !== undefined && parseInt(params.nivel) > 2)
+      setCategoria4(categorias[3])
   }, [categorias]) 
 
   useEffect(() => {
-    let pic = pictogramas.find((p : IPictogram) => 
+    let pic = pictogramas.sort(() => (Math.random() > 0.5 ? 1 : -1)).find((p : IPictogram) => 
       p.categorias?.sort(() => (Math.random() > 0.5 ? 1 : -1)).some(c => c.id === categoria1?.id 
         && c.id !== categoria2?.id && c.id !== categoria3?.id && c.id !== categoria4?.id))   
     pic === undefined ? setPictograma(null) : setPictograma(pic)
@@ -57,22 +59,34 @@ export default function Actividad(){
         } 
 
         // Reordenar al azar las categorias:
-        var categoriasFinales = [categoria1, categoria2, categoria3, categoria4]
+        var categoriasFinales = [categoria1, categoria2]
+        if (params.nivel !== undefined && parseInt(params.nivel) > 1)
+          categoriasFinales = categoriasFinales.concat([categoria3])
+        if (params.nivel !== undefined && parseInt(params.nivel) > 2)
+          categoriasFinales = categoriasFinales.concat([categoria4])
         var categoriasReorganizadas = categoriasFinales.sort(() => (Math.random() > 0.5 ? 1 : -1))
         setCategoria1(categoriasReorganizadas[0])
         setCategoria2(categoriasReorganizadas[1])
-        setCategoria3(categoriasReorganizadas[2])
-        setCategoria4(categoriasReorganizadas[3])
+        if (params.nivel !== undefined && parseInt(params.nivel) > 1)
+          setCategoria3(categoriasReorganizadas[2])
+        if (params.nivel !== undefined && parseInt(params.nivel) > 2)
+          setCategoria4(categoriasReorganizadas[3])
       })      
     }
     else {
         // Reordenar al azar las categorias:
-        var categoriasFinales = [categoria1, categoria2, categoria3, categoria4]
+        var categoriasFinales = [categoria1, categoria2]
+        if (params.nivel !== undefined && parseInt(params.nivel) > 1)
+          categoriasFinales = categoriasFinales.concat([categoria3])
+        if (params.nivel !== undefined && parseInt(params.nivel) > 2)
+          categoriasFinales = categoriasFinales.concat([categoria4])
         var categoriasReorganizadas = categoriasFinales.sort(() => (Math.random() > 0.5 ? 1 : -1))
         setCategoria1(categoriasReorganizadas[0])
         setCategoria2(categoriasReorganizadas[1])
-        setCategoria3(categoriasReorganizadas[2])
-        setCategoria4(categoriasReorganizadas[3])
+        if (params.nivel !== undefined && parseInt(params.nivel) > 1)
+          setCategoria3(categoriasReorganizadas[2])
+        if (params.nivel !== undefined && parseInt(params.nivel) > 2)
+          setCategoria4(categoriasReorganizadas[3])
     }
   }, [pictogramas])
 
