@@ -14,5 +14,6 @@ export interface IUsuario {
   schematic: boolean;
   nivel: number;
   ultimaActualizacion: string;
+  imagen: string;
   // EL USUARIO NO SE ELIMINA DE LA DB
 }

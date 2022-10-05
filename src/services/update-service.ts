@@ -4,8 +4,6 @@ import {
   EliminarPictogramaFavorito,
   EliminarPictogramaPropio,
   GuardarPictogramaFavorito,
-  ObtenerCategorias,
-  ObtenerImagenAsBlob,
   ObtenerInformacionPictogramas,
   ObtenerTotalCategorias,
   ObtenerTotalPictogramas,
@@ -19,13 +17,10 @@ import {
   IPictogramaPropioImagen,
 } from '../pictogramas/models/pictogramaImagen';
 import {
-  ActualizarUsuarioPassword,
-  CrearUsuario,
+  ActualizarUsuario,
   getUsuarioLogueado,
   ObtenerFavoritosDeUsuario,
   ObtenerUsuarioInfo,
-  ObtenerUsuarios,
-  SubirImagenPropia,
   SubirInformacionPictogramaPropio,
   usuarioLogueado,
 } from './usuarios-services';
@@ -313,7 +308,7 @@ export class UpdateService {
                 if (
                   usuarioApi.ultimaActualizacion < usuario.ultimaActualizacion
                 ) {
-                  await ActualizarUsuarioPassword(usuario);
+                  await ActualizarUsuario(usuario);
                 }
               }
             );

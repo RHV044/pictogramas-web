@@ -5,6 +5,11 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import {
   Autocomplete,
   Button,
+  Card,
+  CardActionArea,
+  CardContent,
+  CardHeader,
+  CardMedia,
   Checkbox,
   FormControl,
   FormHelperText,
@@ -58,7 +63,6 @@ export default function Configuracion() {
     setNivel(event.target.value as string);
   };
 
-
   const [userLogueado, setUserLogueado] = useState(null as IUsuario | null);
   const [nivel, setNivel] = React.useState('');
   const [violence, setViolence] = useState(false as boolean)
@@ -69,6 +73,7 @@ export default function Configuracion() {
   const [hair, setHair] = useState(false as boolean)
   const [schematic, setSchematic] = useState(false as boolean)
 
+  const [file, setFile] = useState("" as string)
 
   useEffect(() => {
     getUsuarioLogueado().then((usuario) => {
@@ -108,6 +113,24 @@ export default function Configuracion() {
     };
   }
 
+  function guardarImagenBase64(file: any) {
+    var reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = function () {
+      console.log(reader.result);
+      if(reader.result && userLogueado)
+        userLogueado.imagen = reader.result.toString()
+    };
+    reader.onerror = function (error) {
+      console.log('Error: ', error);
+    };
+
+    IndexedDbService.create().then(db => {      
+      db.putOrPatchValue("usuarios", userLogueado)
+      dispatchEvent(new CustomEvent('sincronizar'));
+    })
+ }
+
   return (
     <div>
       {userLogueado && (
@@ -121,14 +144,42 @@ export default function Configuracion() {
                   <SettingsIcon color="action" /> Configuración
                 </h1>
               </FormLabel>
-              <Paper style={{ width: '100%' }}>
-                <Container style={{ padding: 10 }}>
+              <Paper style={{ width: '100%' }}>                
+                <Container style={{ padding: 10 }}>                  
                   Nombre{' '}
                   <input
                     type="text"
                     defaultValue={userLogueado.nombreUsuario}
                   />{' '}
                   <br /> <br /> <br />
+                  <Card                        
+                    sx={{ maxWidth: 245 }}               
+                    style={{ marginTop: '5px' }}
+                    onClick={() => {
+                    }}
+                  >
+                    <CardActionArea>
+                      <CardMedia
+                        component="img"
+                        height="140"
+                        src={userLogueado && userLogueado.imagen !== "" ? userLogueado.imagen : "../../../../public/imagen-usuario.jpg"}
+                        alt={userLogueado.nombreUsuario}
+                      >
+                      </CardMedia>
+                      <CardHeader title={userLogueado.nombreUsuario}></CardHeader>
+                      <CardContent></CardContent>
+                    </CardActionArea>
+                  </Card>
+                  <Button variant="contained" component="label">
+                    Adjuntar Imagen para Usuario
+                    <input type="file" hidden 
+                    onChange={(evt) => { 
+                      if (evt.target.files){
+                        guardarImagenBase64(evt.target.files) 
+                      }          
+                      console.log(file)
+                    }}/>
+                  </Button>
                   <FormControl sx={{ m: 1, minWidth: 120 }}>
                     <InputLabel id="nivel-label">Nivel</InputLabel>
                     <Select

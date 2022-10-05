@@ -60,8 +60,8 @@ const SeleccionarCuenta = (props: any) => {
               <CardMedia
                 component="img"
                 height="140"
-                image="https://www.lavanguardia.com/files/content_image_mobile_filter/uploads/2017/04/24/5fa3cfbde979b.jpeg"
-                alt="MESSI"
+                src={usuario.imagen !== "" ? usuario.imagen : "../../../../public/imagen-usuario.jpg"}
+                alt={usuario.nombreUsuario}
               >
               </CardMedia>
               <CardHeader title={usuario.nombreUsuario}></CardHeader>

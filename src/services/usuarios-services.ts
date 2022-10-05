@@ -84,7 +84,7 @@ export async function CrearUsuario(
     })
 }
 
-export async function ActualizarUsuarioPassword(
+export async function ActualizarUsuario(
   usuario:IUsuario
   ) {
     // TODO: Revisar porque a la api no le llega el body
@@ -100,7 +100,8 @@ export async function ActualizarUsuarioPassword(
         AacColor: usuario.aacColor,
         Skin: usuario.skin,
         Hair: usuario.hair,
-        Nivel: usuario.nivel
+        Nivel: usuario.nivel,
+        Imagen: usuario.imagen
       },
       {
         headers: {
@@ -113,7 +114,7 @@ export async function ActualizarUsuarioPassword(
     })
 }
 
-export async function ActualizarUsuario(
+export async function ActualizarUsuarioPassword(
   usuario:IUsuario
   ) {
     // TODO: Revisar porque a la api no le llega el body

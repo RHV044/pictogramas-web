@@ -14,6 +14,8 @@ import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import { useLocation, useNavigate } from 'react-router-dom';
 import FormDialogValidarAcceso from '../configuracion/components/validarCambioConfiguracion';
+import { getUsuarioLogueado } from '../services/usuarios-services';
+import { IUsuario } from '../login/model/usuario';
 
 const pages = ['Pizarras', 'Actividades', 'Estadisticas'];
 const settings = ['Configuracion', 'Cambiar Cuenta'];
@@ -24,7 +26,19 @@ const ResponsiveAppBar = () => {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
   const [configuracionOpen, setConfiguracionOpen] = React.useState(false);
+  const [userLogueado, setUserLogueado] = React.useState(null as IUsuario | null);
 
+  React.useEffect(() => {
+    getUsuarioLogueado().then((usuario) => {
+      if (usuario != undefined) {
+        setUserLogueado(usuario);
+
+      }
+      else{
+        navigate('/cuenta/seleccionar' + location.search);
+      }
+    });
+  }, []);
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -149,9 +163,9 @@ const ResponsiveAppBar = () => {
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
+            <Tooltip title="Configuracion">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                <Avatar alt="Remy Sharp" src={userLogueado && userLogueado.imagen !== "" ? userLogueado.imagen : "../../../public/imagen-usuario.jpg"} />
               </IconButton>
             </Tooltip>
             <Menu
