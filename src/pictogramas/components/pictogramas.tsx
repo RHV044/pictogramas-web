@@ -110,8 +110,7 @@ export default function Pictogramas(props: any) {
     {
       let categoriaPadre = categorias.find(c => c.id === categoria.categoriaPadre)
       return(
-        <>{ categoriaPadre && ObtenerCategoriaPadre(categoriaPadre)}
-        /
+        <>{ categoriaPadre && ObtenerCategoriaPadre(categoriaPadre)}        
         {
           <CategoriaSeleccionada
             categoriaSeleccionada={categoria}

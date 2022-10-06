@@ -8,11 +8,12 @@ import {
   Grid,
 } from '@mui/material';
 import { Container } from '@mui/system';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { IPictogram } from '../models/pictogram';
 import React from 'react';
 import Speech from 'react-speech';
 import { ObtenerInterpretacionNatural } from '../services/pictogramas-services';
+import { lightBlue } from '@mui/material/colors';
 
 const apiPictogramas = process.env.URL_PICTOGRAMAS ?? 'http://localhost:5000';
 
@@ -20,6 +21,7 @@ export default function Seleccion(props: any) {
   const [pictogramas, setPictogramas] = useState([] as IPictogram[]);
   const [textoInterpretado, setTextoInterpretado] = useState("" as string)
   const [textoAInterpretar, setTextoAInterpretar] = useState("" as string)
+  const refInterpretacionLiteral = useRef();
   var i = 0;
 
   useEffect(() => {
@@ -41,6 +43,20 @@ export default function Seleccion(props: any) {
       return interpretacion
     })
   };
+  
+  function simulateMouseClick(element){
+    const mouseClickEvents = ['mousedown', 'click', 'mouseup'];
+    mouseClickEvents.forEach(mouseEventType =>
+      element.dispatchEvent(
+        new MouseEvent(mouseEventType, {
+            view: window,
+            bubbles: true,
+            cancelable: true,
+            buttons: 1
+        })
+      )
+    );
+  }
 
   return (
     <Container style={{padding: 10}}>
@@ -98,15 +114,24 @@ export default function Seleccion(props: any) {
       </Grid>
       {pictogramas.length > 0 && 
         <div>
-            <Speech 
-              // styles={"cursor: pointer; pointer-events: all; outline: none; background-color: gainsboro; border: 1px solid rgb(255, 255, 255); border-radius: 6px;"}
+          <Button style={{marginLeft: 5, marginRight: 5}} variant="contained" component="label" onClick={() => {
+            var element = document.querySelector('Interpretacion Natural');
+            console.log("Element: ", element)
+            simulateMouseClick(element);            
+          }}>        
+            Interpretacion Literal
+          </Button>
+            <Speech              
+              clas="InterpretacionNatural"
               // styles={{style}}
+              ref={refInterpretacionLiteral}
               textAsButton={true}
               displayText="Interpretacion Literal"
               text={(pictogramas.map(p => p.keywords[0].keyword)).toString()}
             />
             { textoAInterpretar.length > 0 && 
-              <Speech 
+              <Speech                 
+                ref={refInterpretacionLiteral}
                 // styles={"cursor: pointer; pointer-events: all; outline: none; background-color: gainsboro; border: 1px solid rgb(255, 255, 255); border-radius: 6px;"}
                 // styles={{style}}
                 textAsButton={true}

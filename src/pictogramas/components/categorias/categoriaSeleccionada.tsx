@@ -11,7 +11,7 @@ export default function CategoriaSeleccionada(props: any) {
     <div>
       <Card
         sx={{ maxWidth: 100 }}
-        style={{ marginTop: '10px' }}
+        style={{ marginTop: '10px', marginLeft: 35 }}
         onClick={() => {}}
       >
         <CardActionArea
