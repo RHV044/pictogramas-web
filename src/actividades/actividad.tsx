@@ -1,4 +1,4 @@
-import { Alert, Card, CardActionArea, CardContent, CardHeader, CardMedia, Grid } from "@mui/material";
+import { Alert, Button, Card, CardActionArea, CardContent, CardHeader, CardMedia, Grid } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import ResponsiveAppBar from "../commons/appBar";
@@ -22,6 +22,7 @@ export default function Actividad(){
   const [categoriaCorrecta, setCategoriaCorrecta] = useState({} as ICategoria)
   const [resultadoCorrecto, setResultadoCorrecto] = useState(false)
   const [resultadoIncorrecto, setResultadoIncorrecto] = useState(false)
+  const [racha, setRacha] = useState(0)
 
   useEffect(() => {
     inicializar()
@@ -97,6 +98,7 @@ export default function Actividad(){
 
   const verificar = (idCategoria : number) => {
     if (idCategoria === categoriaCorrecta.id){
+      setRacha(racha+1)
       setResultadoCorrecto(true)
       setTimeout(function () {
         cargarNuevoJuego()
@@ -104,6 +106,7 @@ export default function Actividad(){
       }, 1000);
     }
     else{
+      setRacha(0)
       setResultadoIncorrecto(true)
       setTimeout(function () {
         setResultadoIncorrecto(false)
@@ -143,7 +146,12 @@ export default function Actividad(){
       {categoria1 && categoria2 && pictograma &&
         <div>
           <ResponsiveAppBar />
-          Juego de Categorizar los Pictogramas - Nivel {params.nivel}
+          Juego de Categorizar los Pictogramas - Nivel {params.nivel} - Racha actual: {racha}
+          <Button style={{marginLeft: 5, marginRight: 5}} variant="contained" component="label" onClick={() => {
+            navigate('/actividades' + location.search);
+          }}>        
+            Volver a seleccion de nivel
+          </Button>
           {resultadoCorrecto ? <Alert severity="success">Correcto!</Alert> : <></> }
           {resultadoIncorrecto ? <Alert severity="error">Incorrecto</Alert> : <></> }
           <br/>

@@ -238,8 +238,11 @@ export default function Pictogramas(props: any) {
       <br></br>
       <hr />
       <FormDialog />
-      { categoriaSeleccionada && ListaCategorias(categoriaSeleccionada) }
-      { categoriaSeleccionada && OpcionesDeCategoria(categoriaSeleccionada) }
+      <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 10, md: 12 }}>
+           {/* TODO: Mejorar diseño */}
+        { categoriaSeleccionada && ListaCategorias(categoriaSeleccionada) }
+        { categoriaSeleccionada && OpcionesDeCategoria(categoriaSeleccionada) }
+      </Grid>
       <br />
       {/* TODO: Agregar algun separador para separar las raices */}
       <br />

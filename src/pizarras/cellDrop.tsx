@@ -105,7 +105,14 @@ export const CellDrop: FC<CellDropProps> = memo(function CellDrop({
   return (
     <div>
       { (graficosSinLugar.length === 0 ||  !graficosSinLugar.some(g => g.posicion.columna === columna && g.posicion.fila === fila)) && 
-        <div ref={drop} style={{ ...cellDropStyle, backgroundColor }} data-testid="dustbin">
+        <div ref={drop} style={{ ...cellDropStyle,
+          backgroundColor, 
+          marginLeft: 0,
+          marginTop: 0,
+          marginBottom: 0,
+          marginRight: 0
+        }} 
+        data-testid="dustbin">
           {isActive ? 'Release to drop' : 'Drag a box here'}
         </div>
       }

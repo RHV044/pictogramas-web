@@ -1,3 +1,4 @@
+import { Height } from "@mui/icons-material";
 import { Card, CardActionArea, CardContent, CardHeader, CardMedia } from "@mui/material";
 import { useEffect, useState } from "react";
 import { ICategoria } from "../../models/categoria";
@@ -13,7 +14,7 @@ export default function Categoria(props: any) {
   },[])
   return(           
     <Card
-      sx={{ maxWidth: 245, minWidth:150 }}
+      sx={{ maxWidth: 230, minWidth:70 }}
       style={{ marginTop: '10px' }}
       onClick={() => {}}
     >
@@ -32,11 +33,19 @@ export default function Categoria(props: any) {
       >
         <CardMedia
           component="img"
-          height="140"
+          height="160"
+          width="140"
           src={`data:image/png;base64,${categoria.imagen}`}
           alt="MESSI"
         ></CardMedia>
-        <CardHeader title={categoria.nombre}></CardHeader>
+        <CardHeader 
+          style={{
+            height: '100%',
+            marginBottom: 1,
+            paddingBottom: 0
+          }} 
+          title={categoria.nombre}>            
+        </CardHeader>
         <CardContent></CardContent>
       </CardActionArea>
     </Card>

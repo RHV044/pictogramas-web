@@ -408,8 +408,25 @@ export default function Pizarras(this: any) {
                   <TableRow key={f}>
                     {Array.from(Array(columnas), (d, c) => {
                       return (
-                        <TableCell key={f + '-' + c}>
-                          <div style={{ overflow: 'hidden', clear: 'both', backgroundColor:obtenerEstilo(f,c) }}>   {/* backgroundColor: 'green', ...cellDropStyle */}
+                        <TableCell key={f + '-' + c} style={{
+                          minHeight: 30,
+                          maxHeight: 80,
+                          minWidth: 30,
+                          maxWidth: 80
+                        }}>
+                          <div style={{ 
+                            overflow: 'hidden', 
+                            clear: 'both', 
+                            backgroundColor:obtenerEstilo(f,c),
+                            minHeight: 120,
+                            maxHeight: 240,
+                            minWidth: 120,
+                            maxWidth: 240,
+                            paddingBottom: 6,
+                            paddingLeft: 6,
+                            paddingRight: 1,
+                            paddingTop: 6
+                          }}>   {/* backgroundColor: 'green', ...cellDropStyle */}
                             <CellDrop fila={f} columna={c} name='celda' onDrop={() => {}} movimientos={movimientos} />
                             {/* <CellDrop fila={f} columna={c} name='celda' onDrop={() => {handleChange() }} movimientos={movimientos} /> */}
                           </div>

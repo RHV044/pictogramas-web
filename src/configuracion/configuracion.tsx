@@ -41,6 +41,7 @@ import { ICategoria } from '../pictogramas/models/categoria';
 import { formatDate, ObtenerCategorias } from '../pictogramas/services/pictogramas-services';
 import React from 'react';
 import FormDialogValidarAcceso from './components/validarCambioConfiguracion';
+import imagenUsuario from '../commons/imagen-usuario.jpg'
 
 function agruparElementos(datos, predicado) : ICategoria[] { //agrupar categorias por algun campo en particular
 
@@ -50,7 +51,6 @@ function agruparElementos(datos, predicado) : ICategoria[] { //agrupar categoria
 export default function Configuracion() {
   let navigate = useNavigate();
   let location = useLocation();
-  const usuarioImagen = require('../commons/imagen-usuario.jpg')
   const [usuarios, setUsuarios] = useState([] as IUsuario[]);
   const [db, setDb] = useState(IndexedDbService.create());
   const [categorias, setCategorias] = useState([] as ICategoria[]);
@@ -164,7 +164,7 @@ export default function Configuracion() {
                       <CardMedia
                         component="img"
                         height="140"
-                        src={userLogueado && userLogueado.imagen !== "" ? userLogueado.imagen : usuarioImagen}
+                        src={userLogueado && userLogueado.imagen && userLogueado.imagen !== "" ? userLogueado.imagen : imagenUsuario}
                         alt={userLogueado.nombreUsuario}
                       >
                       </CardMedia>

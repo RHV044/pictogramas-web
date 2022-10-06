@@ -87,7 +87,7 @@ export default function PictogramasPorCategoria(props: any) {
               <Grid key={pictograma.id ? pictograma.id : pictograma.identificador} item xs={12} sm={4} md={2}>
                 <Container key={pictograma.id ? pictograma.id : pictograma.identificador}>
                   <Card
-                    sx={{ maxWidth: 245, minWidth: 150 }}
+                    sx={{ maxWidth: 230, minWidth: 50 }}
                     style={{ marginTop: '10px' }}
                     onClick={() => { }}
                   >
@@ -104,14 +104,19 @@ export default function PictogramasPorCategoria(props: any) {
                     >
                       <CardMedia
                         component="img"
-                        height="140"
+                        height="150"
                         //image={apiPictogramas+'/pictogramas/'+pictograma.id+'/obtener'}
                         //image={pictograma.imagen}
                         //TODO: Optimizar o ver alternativa para levantar los base64
                         src={pictograma.idUsuario > 0 ? pictograma.imagen : `data:image/png;base64,${pictograma.imagen}`}
                         alt={pictograma.keywords[0].keyword}
                       ></CardMedia>
-                      <CardHeader
+                      <CardHeader           
+                        style={{
+                          height: '100%',
+                          marginBottom: 1,
+                          paddingBottom: 0
+                        }} 
                         title={pictograma.keywords[0].keyword}
                       ></CardHeader>
                       <CardContent></CardContent>

@@ -81,6 +81,11 @@ export default function Seleccion(props: any) {
                       alt={pictograma.keywords[0].keyword}
                     ></CardMedia>
                     <CardHeader
+                      style={{
+                        height: '100%',
+                        marginBottom: 1,
+                        paddingBottom: 0
+                      }} 
                       title={pictograma.keywords[0].keyword}
                     ></CardHeader>
                     <CardContent></CardContent>

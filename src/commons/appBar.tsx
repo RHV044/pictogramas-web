@@ -16,6 +16,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import FormDialogValidarAcceso from '../configuracion/components/validarCambioConfiguracion';
 import { getUsuarioLogueado } from '../services/usuarios-services';
 import { IUsuario } from '../login/model/usuario';
+import imagenUsuario from '../commons/imagen-usuario.jpg'
 
 const pages = ['Pizarras', 'Actividades', 'Estadisticas'];
 const settings = ['Configuracion', 'Cambiar Cuenta'];
@@ -165,7 +166,7 @@ const ResponsiveAppBar = () => {
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Configuracion">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src={userLogueado && userLogueado.imagen !== "" ? userLogueado.imagen : "../../../public/imagen-usuario.jpg"} />
+                <Avatar alt="Remy Sharp" src={userLogueado && userLogueado.imagen && userLogueado.imagen !== "" ? userLogueado.imagen : imagenUsuario} />
               </IconButton>
             </Tooltip>
             <Menu

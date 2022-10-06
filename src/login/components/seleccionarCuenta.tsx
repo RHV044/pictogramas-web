@@ -10,6 +10,7 @@ import {
 import { IUsuario } from '../model/usuario';
 import { cerrarSesionUsuario, getUsuarioLogueado, ObtenerUsuarios, setUsuarioLogueado, usuarioLogueado } from '../../services/usuarios-services';
 import { IndexedDbService } from '../../services/indexeddb-service';
+import imagenUsuario from '../../commons/imagen-usuario.jpg'
 
 const SeleccionarCuenta = (props: any) => {
   
@@ -60,7 +61,7 @@ const SeleccionarCuenta = (props: any) => {
               <CardMedia
                 component="img"
                 height="140"
-                src={usuario.imagen !== "" ? usuario.imagen : "../../../../public/imagen-usuario.jpg"}
+                src={usuario.imagen && usuario.imagen !== "" ? usuario.imagen : imagenUsuario}
                 alt={usuario.nombreUsuario}
               >
               </CardMedia>
