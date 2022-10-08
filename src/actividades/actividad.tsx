@@ -186,7 +186,7 @@ export default function Actividad(){
                 <CardMedia
                   component="img"
                   height="140"
-                  src={pictograma.imagen.includes('data:image') ? pictograma.imagen : `data:image/png;base64,${pictograma.imagen}`}
+                  src={pictograma.imagen && pictograma.imagen.includes('data:image') ? pictograma.imagen : `data:image/png;base64,${pictograma.imagen}`}
                   alt={pictograma.keywords[0].keyword}
                 ></CardMedia>
                 <CardHeader

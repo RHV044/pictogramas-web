@@ -265,14 +265,14 @@ export class IndexedDbService {
     if (result2 !== null && result2 !== undefined && result2.length > 0) {
       pictogramasFiltrados = result2;
       if (userid !== null && store2.length > 0 )
-        pictogramasFiltrados = store2.filter(
+        pictogramasFiltrados = result2.filter(
           (p: IPictogram) =>
             p.idUsuario === null ||
             p.idUsuario === userid ||
             p.idArasaac !== null
         );
       else
-        pictogramasFiltrados = store2.filter(
+        pictogramasFiltrados = result2.filter(
           (p: IPictogram) => p.idUsuario === null || p.idArasaac !== null
         );
 
