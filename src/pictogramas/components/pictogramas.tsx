@@ -141,7 +141,7 @@ export default function Pictogramas(props: any) {
     else
     {
       // Es categoria padre, debo mostrar categorias
-      let categoriasHijas = categorias.filter(c => c.categoriaPadre === categoria.id)
+      let categoriasHijas = categorias.filter(c => c.categoriaPadre === categoria.id && categoria.nivel <= (usuarioLogueado?.nivel !== undefined ? usuarioLogueado?.nivel : 0))
       return(
         <Container>
           <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 10, md: 12 }}>

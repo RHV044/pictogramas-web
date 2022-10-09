@@ -61,7 +61,16 @@ export default function Configuracion() {
   const [personalizarCategorias, setPersonalizarCategorias] = useState(false);
 
   const handleChange = (event: SelectChangeEvent) => {
+    
     setNivel(event.target.value as string);
+
+    if(Number(nivel) === 3){
+        setPersonalizarCategorias(true)
+    } else {
+      setPersonalizarCategorias(false)
+    }
+    if (userLogueado !== null)
+      userLogueado.nivel = Number(nivel) 
   };
 
   const [userLogueado, setUserLogueado] = useState(null as IUsuario | null);
@@ -75,6 +84,8 @@ export default function Configuracion() {
   const [schematic, setSchematic] = useState(false as boolean)
 
   const [file, setFile] = useState("" as string)
+
+  const niveles = ["Inicial","Intermedio","Avanzado", "Personalizado"];
 
   useEffect(() => {
     getUsuarioLogueado().then((usuario) => {
@@ -109,6 +120,7 @@ export default function Configuracion() {
       usuario.aacColor = aacColor;
       usuario.schematic = schematic;
       usuario.ultimaActualizacion = new Date().toISOString();
+      usuario.nivel = Number(nivel);
       (await db).putOrPatchValue('usuarios', usuario)
       dispatchEvent(new CustomEvent('sincronizar'));
     };
@@ -182,18 +194,23 @@ export default function Configuracion() {
                       console.log(file)
                     }}/>
                   </Button>
+                  <br></br>
+                  <br></br>
                   <FormControl sx={{ m: 1, minWidth: 120 }}>
-                    <InputLabel id="nivel-label">Nivel</InputLabel>
+                    <InputLabel id="nivel-select-label">{niveles[Number(nivel)]}</InputLabel>
                     <Select
-                      labelId="nivel-label"
-                      id="nivel-select"
-                      value={nivel}
+                      labelId="nivel-select-label"
+                      id="nivel-select"                      
+                      value={nivel}                      
                       label="Nivel"
                       onChange={handleChange}
+                      fullWidth
                     >
-                      <MenuItem value={1}>Inicial</MenuItem>
-                      <MenuItem value={2}>Intermedio</MenuItem>
-                      <MenuItem value={3}>Avanzado</MenuItem>
+                      <MenuItem value={0}>{niveles[0]}</MenuItem>
+                      <MenuItem value={1}>{niveles[1]}</MenuItem>
+                      <MenuItem value={2}>{niveles[2]}</MenuItem>
+                      <MenuItem value={3}>{niveles[3]}</MenuItem> 
+
                     </Select>
                   </FormControl>
                 </Container>
@@ -283,6 +300,7 @@ export default function Configuracion() {
             {
               <div>
                 <Switch
+                  disabled
                   checked={personalizarCategorias}
                   onChange={(evt) => setPersonalizarCategorias(evt?.target?.checked)}
                 /> Personalizar Categorias
