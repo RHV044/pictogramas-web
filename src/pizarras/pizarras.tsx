@@ -536,7 +536,7 @@ export default function Pizarras(this: any) {
                       <CardMedia
                         component="img"
                         height="140"
-                        src={pictograma.idUsuario > 0 ? pictograma.imagen : `data:image/png;base64,${pictograma.imagen}`}
+                        src={pictograma.imagen && pictograma.imagen.includes('data:image') ? pictograma.imagen : `data:image/png;base64,${pictograma.imagen}`}
                         alt={pictograma.keywords[0].keyword}
                       ></CardMedia>
                       <CardHeader

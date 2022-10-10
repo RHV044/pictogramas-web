@@ -78,9 +78,7 @@ export default function PictogramasPorCategoria(props: any) {
   return (
     <Container>
       <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 10, md: 12 }}>     
-        {pictogramas.map((pictograma) => {     
-          console.log("se mapea pictograma: ", pictograma)
-          console.log("imagen a mostrar: ", pictograma.idUsuario > 0 ? pictograma.imagen : `data:image/png;base64, ${pictograma.imagen}`)            
+        {pictogramas.map((pictograma) => {              
           if (cumpleFiltros(pictograma, userLogueado))
             return (
               //Como estan dentro de la categoria, se visualizan abajo, habria que extraerlo a otro lugar
@@ -108,7 +106,7 @@ export default function PictogramasPorCategoria(props: any) {
                         //image={apiPictogramas+'/pictogramas/'+pictograma.id+'/obtener'}
                         //image={pictograma.imagen}
                         //TODO: Optimizar o ver alternativa para levantar los base64
-                        src={pictograma.idUsuario > 0 ? pictograma.imagen : `data:image/png;base64,${pictograma.imagen}`}
+                        src={pictograma.imagen && pictograma.imagen.includes('data:image') ? pictograma.imagen : `data:image/png;base64,${pictograma.imagen}`}
                         alt={pictograma.keywords[0].keyword}
                       ></CardMedia>
                       <CardHeader           

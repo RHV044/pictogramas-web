@@ -30,6 +30,7 @@ const VincularCuenta = (props: any) => {
             let usuario = await ObtenerUsuario(username, password)
             console.log('usuario a vincular: ', usuario)
             await db.putOrPatchValue("usuarios", usuario)
+            dispatchEvent(new CustomEvent('sincronizar'));
             navigate("/cuenta/seleccionar" + location.search);
           }}
         >

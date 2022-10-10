@@ -32,7 +32,8 @@ export default function Actividad(){
     ObtenerCategoriasIndexDB().then((cats) => {
       setCategorias(cats.sort(() => (Math.random() > 0.5 ? 1 : -1)))
       ObtenerPictogramas().then((pics : IPictogram[]) => {
-        setPictogramas(pics);      
+        let picsArasaac = pics.filter(p => p.idArasaac > 0)
+          setPictogramas(picsArasaac);      
       });
     })
   }
@@ -51,44 +52,27 @@ export default function Actividad(){
     let pic = pictogramas.sort(() => (Math.random() > 0.5 ? 1 : -1)).find((p : IPictogram) => 
       p.categorias?.sort(() => (Math.random() > 0.5 ? 1 : -1)).some(c => c.id === categoria1?.id 
         && c.id !== categoria2?.id && c.id !== categoria3?.id && c.id !== categoria4?.id))   
-    pic === undefined ? setPictograma(null) : setPictograma(pic)
-    if (pic !== undefined && pic.imagen === ''){
-      //Obtener Imagen de pictograma
-      IndexedDbService.create().then(async (db) => {
-        if (pic !== undefined){
-          pic.imagen = (await db.getValue('imagenes', pic?.id)).imagen
-        } 
+    //Obtener Imagen de pictograma
+    IndexedDbService.create().then(async (db) => {
+      if (pic !== undefined){
+        pic.imagen = (await db.getValue('imagenes', pic?.id)).imagen
+        setPictograma(pic)
+      } 
 
-        // Reordenar al azar las categorias:
-        var categoriasFinales = [categoria1, categoria2]
-        if (params.nivel !== undefined && parseInt(params.nivel) > 1)
-          categoriasFinales = categoriasFinales.concat([categoria3])
-        if (params.nivel !== undefined && parseInt(params.nivel) > 2)
-          categoriasFinales = categoriasFinales.concat([categoria4])
-        var categoriasReorganizadas = categoriasFinales.sort(() => (Math.random() > 0.5 ? 1 : -1))
-        setCategoria1(categoriasReorganizadas[0])
-        setCategoria2(categoriasReorganizadas[1])
-        if (params.nivel !== undefined && parseInt(params.nivel) > 1)
-          setCategoria3(categoriasReorganizadas[2])
-        if (params.nivel !== undefined && parseInt(params.nivel) > 2)
-          setCategoria4(categoriasReorganizadas[3])
-      })      
-    }
-    else {
-        // Reordenar al azar las categorias:
-        var categoriasFinales = [categoria1, categoria2]
-        if (params.nivel !== undefined && parseInt(params.nivel) > 1)
-          categoriasFinales = categoriasFinales.concat([categoria3])
-        if (params.nivel !== undefined && parseInt(params.nivel) > 2)
-          categoriasFinales = categoriasFinales.concat([categoria4])
-        var categoriasReorganizadas = categoriasFinales.sort(() => (Math.random() > 0.5 ? 1 : -1))
-        setCategoria1(categoriasReorganizadas[0])
-        setCategoria2(categoriasReorganizadas[1])
-        if (params.nivel !== undefined && parseInt(params.nivel) > 1)
-          setCategoria3(categoriasReorganizadas[2])
-        if (params.nivel !== undefined && parseInt(params.nivel) > 2)
-          setCategoria4(categoriasReorganizadas[3])
-    }
+      // Reordenar al azar las categorias:
+      var categoriasFinales = [categoria1, categoria2]
+      if (params.nivel !== undefined && parseInt(params.nivel) > 1)
+        categoriasFinales = categoriasFinales.concat([categoria3])
+      if (params.nivel !== undefined && parseInt(params.nivel) > 2)
+        categoriasFinales = categoriasFinales.concat([categoria4])
+      var categoriasReorganizadas = categoriasFinales.sort(() => (Math.random() > 0.5 ? 1 : -1))
+      setCategoria1(categoriasReorganizadas[0])
+      setCategoria2(categoriasReorganizadas[1])
+      if (params.nivel !== undefined && parseInt(params.nivel) > 1)
+        setCategoria3(categoriasReorganizadas[2])
+      if (params.nivel !== undefined && parseInt(params.nivel) > 2)
+        setCategoria4(categoriasReorganizadas[3])
+    })    
   }, [pictogramas])
 
   const cargarNuevoJuego = () => {
@@ -129,7 +113,7 @@ export default function Actividad(){
           <CardMedia
             component="img"
             height="140"
-            src={`data:image/png;base64,${categoria.imagen}`}
+            src={categoria.imagen && categoria.imagen.includes('data:image') ? categoria.imagen : `data:image/png;base64,${categoria.imagen}`}
             alt={categoria.nombre}
           ></CardMedia>
           <CardHeader

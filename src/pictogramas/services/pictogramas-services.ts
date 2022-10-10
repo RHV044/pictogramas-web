@@ -109,8 +109,6 @@ export async function ObtenerPictogramasPorCategoria(
       const pp = pictogramas.concat(pictogramasPropios)
       console.log("pp: ", pp)
       let propios = pp.filter((p: IPictogram) => p.idUsuario === usuario?.id)
-      for(var i=0; i<propios.length; ++i)
-        propios[i].imagen = propios[i].file
       return await setPictogramas(propios)
     }
   }
