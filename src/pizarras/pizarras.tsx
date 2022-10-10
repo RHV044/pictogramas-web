@@ -60,7 +60,6 @@ export default function Pizarras(this: any) {
     null as ICategoria | null
   );
   const [graficos, setGraficos] = useState([] as Grafico[])  
-  const [render, setRender] = useState(true)
   const [, updateState] = useState({});
 
   const [graficosSinLugar, setGraficosSinLugar] = useState([] as Grafico[])
@@ -96,6 +95,10 @@ export default function Pizarras(this: any) {
   },[graficos])
 
   useEffect(()=>{
+    setCargando(false)  
+  },[graficosSinLugar])
+
+  useEffect(()=>{
     actualizarEstilos()
   },[columnas])
 
@@ -108,13 +111,12 @@ export default function Pizarras(this: any) {
 
   const handleChange = () => { 
     let graf = [...movimientos.getGraficos()]
-    setGraficos(graf);   
-    setGraficosSinLugar(graf)  
-    setRender(true) 
+    setGraficos([...graf]);   
+    setGraficosSinLugar([...graf])  
     if(!compararListas(graficos, graficosSinLugar)){
       let grafs = [...graficos]
-      setGraficosSinLugar(grafs)
-    }  
+      setGraficosSinLugar([...grafs])
+    }
   }
 
   const compararListas = (array1: Grafico[], array2: Grafico[]) => {
@@ -200,10 +202,10 @@ export default function Pizarras(this: any) {
             tipoContenido: grafico.esPictograma === true ? "pictograma" : "texto",
             contenido: grafico.esPictograma === true 
             ? 
-              ((grafico.idPictograma !== null && grafico.idPictograma !== 0 && grafico.idPictograma !== undefined)
+              ((grafico.identificadorPictograma)
               ? 
-                grafico.idPictograma.toString() 
-                :  grafico.identificadorPictograma)
+              grafico.identificadorPictograma 
+                :  grafico.idPictograma.toString())
                   : grafico.texto,
             color: estilosActuales.find(est => est.columna === c && est.fila === f)?.color,
             identificacion: grafico.identificacion
@@ -230,10 +232,10 @@ export default function Pizarras(this: any) {
           tipoContenido: grafico.esPictograma === true ? "pictograma" : "texto",
           contenido: grafico.esPictograma === true 
           ? 
-            ((grafico.idPictograma !== null && grafico.idPictograma !== 0 && grafico.idPictograma !== undefined)
+            ((grafico.identificadorPictograma)
             ? 
-              grafico.idPictograma.toString() 
-              :  grafico.identificadorPictograma)
+            grafico.identificadorPictograma 
+              :  grafico.idPictograma.toString())
                 : grafico.texto,
           color: "",
           identificacion: grafico.identificacion
@@ -245,7 +247,7 @@ export default function Pizarras(this: any) {
     return pizarraActual
   }
 
-  const setPizarraActual = (pizarra : IPizarra) => {
+  const setPizarraActual = async (pizarra : IPizarra) => {
     console.log("pizarra cargada: ", pizarra)
     setCargando(true)
     setFilas(pizarra.filas)
@@ -254,22 +256,33 @@ export default function Pizarras(this: any) {
     setPizarra(pizarra) 
     movimientos.eliminarGraficos()
     let nuevosGraficosSinLugar = [] as Grafico[]
-    db.then(async (base) =>{
+    await db.then(async (base) =>{
       let nuevosEstilos = [] as EstilosPizarras[]
       pizarra.celdas.forEach(async (celda) => {
         let imagenPictograma
         if (celda.tipoContenido === "pictograma")
         {        
-          imagenPictograma = await base.getValue("imagenes", parseInt(celda.contenido))
-          if (imagenPictograma === null || imagenPictograma === undefined)        
-            imagenPictograma = await base.getValue("imagenesPropias", parseInt(celda.contenido))  
+          try{
+            let pictograma= imagenPictograma = await base.getValue("imagenes", parseInt(celda.contenido))
+            if(pictograma)
+              imagenPictograma = pictograma.imagen          
+          }
+          catch(e){
+
+          }
+          if (imagenPictograma === null || imagenPictograma === undefined)  
+          {      
+            let pictogramaPropio= (await base.getValueByIdentificador("pictogramasPropios", celda.contenido))
+            if(pictogramaPropio)
+              imagenPictograma = pictogramaPropio.imagen
+          }
         }
         if(celda.tipoContenido === "texto" || celda.tipoContenido === "pictograma")
         {
           // TODO: Los pictogramas propios no se muestran al cargar
           let grafico = {
             esPictograma: celda.tipoContenido === "pictograma" ? true : false,
-            imagen: celda.tipoContenido === "pictograma" ? imagenPictograma.imagen : "",
+            imagen: celda.tipoContenido === "pictograma" ? imagenPictograma : "",
             texto: celda.tipoContenido === "texto" ? celda.contenido : "",
             posicion: {columna: celda.columna, fila: celda.fila} as Position,
             identificacion: celda.identificacion
@@ -280,12 +293,13 @@ export default function Pizarras(this: any) {
         let estilo = {color: celda.color, columna: celda.columna, fila: celda.fila} as EstilosPizarras
         nuevosEstilos.push(estilo)
       }); 
-      // TODO: Los pictogramas que no estan siendo utilizados no se muestran al instante, ver como corregir
-      setGraficosSinLugar(nuevosGraficosSinLugar)
+
       setEstilos(nuevosEstilos)  
-    })
-    handleChange()
-    setCargando(false)
+      // TODO: Si seteo los graficos sin lugar, hay problemas con respecto a que todas las acciones se retrasan, 
+      // si uso handleChange, todo anda bien pero no se muestran los graficos sin lugar hasta que interactue con algo
+      //setGraficosSinLugar([...nuevosGraficosSinLugar])    
+      handleChange()  
+    })  
   }
 
   const ObtenerCategoriaPadre = (categoria: ICategoria) => {
@@ -296,6 +310,7 @@ export default function Pizarras(this: any) {
       {          
         <CategoriaSeleccionada
           categoriaSeleccionada={categoria}
+          categoriaActual={categoriaSeleccionada}
           setCategoriaSeleccionada={setCategoriaSeleccionada}
         />
       }
@@ -306,10 +321,10 @@ export default function Pizarras(this: any) {
       let categoriaPadre = categorias.find(c => c.id === categoria.categoriaPadre)
       return(
         <>{ categoriaPadre && ObtenerCategoriaPadre(categoriaPadre)}
-        /
         {
           <CategoriaSeleccionada
             categoriaSeleccionada={categoria}
+            categoriaActual={categoriaSeleccionada}
             setCategoriaSeleccionada={setCategoriaSeleccionada}
           />
         }
@@ -398,7 +413,7 @@ export default function Pizarras(this: any) {
       <CargarPizarra setPizarra={setPizarraActual}/>
       </Container>
       <br />
-      {!cargando &&
+      {!cargando && 
         <Table component={Paper}>
           <Table sx={{ width: '100%', height: '100%' }} aria-label="simple table">
             <TableHead></TableHead>
@@ -488,7 +503,7 @@ export default function Pizarras(this: any) {
       }
       <div>
         <div style={{ overflow: 'hidden', clear: 'both' }}>
-        { !cargando && render && graficosSinLugar.map(grafico => {
+        { !cargando && graficosSinLugar.map(grafico => {
           if (grafico.posicion.columna === -1 && grafico.posicion.fila === -1)
             {
               if(grafico.esPictograma === false)
@@ -551,13 +566,12 @@ export default function Pizarras(this: any) {
           })}
         </Grid>
       </Container>
-      {/* TODO: Los pictogramas propios fallan al seleccionarse */}
+      <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 10, md: 12 }}>      
       { mostrarPictogramas && categoriaSeleccionada && ListaCategorias(categoriaSeleccionada) }
       { mostrarPictogramas && categoriaSeleccionada && OpcionesDeCategoria(categoriaSeleccionada) }
+      </Grid>
       { mostrarPictogramas &&
         <div>
-      Aca empiezan las categorias raices
-          <br />
           <CategoriasRaices
             setPictogramas={UpdatePictogramas}
             setCategoriaSeleccionada={setCategoriaSeleccionada}

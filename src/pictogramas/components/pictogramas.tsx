@@ -101,6 +101,7 @@ export default function Pictogramas(props: any) {
       {          
         <CategoriaSeleccionada
           categoriaSeleccionada={categoria}
+          categoriaActual={categoriaSeleccionada}
           setCategoriaSeleccionada={setCategoriaSeleccionada}
         />
       }
@@ -114,6 +115,7 @@ export default function Pictogramas(props: any) {
         {
           <CategoriaSeleccionada
             categoriaSeleccionada={categoria}
+            categoriaActual={categoriaSeleccionada}
             setCategoriaSeleccionada={setCategoriaSeleccionada}
           />
         }

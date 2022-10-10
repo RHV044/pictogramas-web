@@ -167,6 +167,18 @@ export class IndexedDbService {
     }
   }
 
+  public async getValueByIdentificador(tableName: string, identificador: string) {
+    try {
+      const tx = this.db.transaction(tableName, 'readonly');
+      const store = tx.objectStore(tableName);
+      const result = await store.get(identificador);
+      //console.log("Get Data ", JSON.stringify(result));
+      return result;
+    } catch (e) {
+      return null;
+    }
+  }
+
   public async getAllValues(tableName: string): Promise<any[]> {
     const tx = this.db.transaction(tableName, 'readonly');
     const store = tx.objectStore(tableName);
