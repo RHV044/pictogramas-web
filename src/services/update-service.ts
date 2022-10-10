@@ -538,4 +538,8 @@ export class UpdateService {
       console.log(ex);
     }
   }
+
+  async actualizarCategoriasPorUsuarios(){
+    
+  }
 }
