@@ -128,6 +128,20 @@ export class IndexedDbService {
           } else {
             objectStore = transaction.objectStore('favoritosPorUsuario');
           }
+
+          if (!db.objectStoreNames.contains('categoriasPorUsuario')) {
+            objectStore = db.createObjectStore('categoriasPorUsuario', {
+              autoIncrement: false,
+              keyPath: 'id',
+            });
+            objectStore.createIndex('categoriasPorUsuario-index', 'idUsuario', {
+              unique: false,
+              multiEntry: false,
+            });
+          } else {
+            objectStore = transaction.objectStore('categoriasPorUsuario');
+          }
+
         },
       });
       console.log('database opened');

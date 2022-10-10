@@ -188,3 +188,22 @@ export async function ObtenerFavoritosDeUsuario(idUsuario: number){
     return resp.data;
   })
 }
+
+export async function ObtenerCategoriasDeUsuario(idUsuario: number){
+  return await axios.get(apiPictogramas + `/categorias/categoriasDeUsuario/${idUsuario}`).then((resp) => {
+    console.log('PictogramasDeUsuarioObtenidos');
+    return resp.data;
+  })
+}
+
+export async function EliminarCategoriasDeUsuario(idUsuario: number, idCategoria: number) {
+  return await axios.delete(apiPictogramas + '/pictogramas/favoritos/' + idUsuario + '/' + idCategoria).then((resp) => {
+    return resp.data
+  });
+}
+
+export async function InsertarCategoriasDeUsuario(idUsuario: number, idCategoria: number){
+  return await axios.post(apiPictogramas + '/categorias/categoriasDeUsuario/' + idUsuario + '/' + idCategoria).then((resp) => {
+    return resp.data
+  });
+}
