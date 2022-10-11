@@ -189,21 +189,21 @@ export async function ObtenerFavoritosDeUsuario(idUsuario: number){
   })
 }
 
-export async function ObtenerCategoriasDeUsuario(idUsuario: number){
-  return await axios.get(apiPictogramas + `/categorias/categoriasDeUsuario/${idUsuario}`).then((resp) => {
+export async function ObtenerCategoriasPorUsuario(idUsuario: number){
+  return await axios.get(apiPictogramas + `/categoriasPorUsuario/${idUsuario}`).then((resp) => {
     console.log('PictogramasDeUsuarioObtenidos');
     return resp.data;
   })
 }
 
-export async function EliminarCategoriasDeUsuario(idUsuario: number, idCategoria: number) {
-  return await axios.delete(apiPictogramas + '/pictogramas/favoritos/' + idUsuario + '/' + idCategoria).then((resp) => {
+export async function EliminarCategoriasPorUsuario(idUsuario: number) {
+  return await axios.delete(apiPictogramas + '/categoriasPorUsuario/' + idUsuario).then((resp) => {
     return resp.data
   });
 }
 
-export async function InsertarCategoriasDeUsuario(idUsuario: number, idCategoria: number){
-  return await axios.post(apiPictogramas + '/categorias/categoriasDeUsuario/' + idUsuario + '/' + idCategoria).then((resp) => {
+export async function InsertarCategoriasPorUsuario(idUsuario: number, idCategoria: number){
+  return await axios.post(apiPictogramas + '/categoriasPorUsuario/' + idUsuario + '/' + idCategoria).then((resp) => {
     return resp.data
   });
 }
