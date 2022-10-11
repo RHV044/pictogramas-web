@@ -38,7 +38,7 @@ export default function CategoriasRaices(props: any) {
 
   return (
     <Container>
-      <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 10, md: 12 }}>
+      <Grid container spacing={{ xs: 3, md: 3 }} columns={{ xs: 10, sm: 10, md: 12 }}>
         {/* TODO: Agregar pictogramas recientes si fuera necesario */}
         <CategoriaPropios setCategoriaSeleccionada={props.setCategoriaSeleccionada} categoriaSeleccionada={categoriaSeleccionada}/>
         {categorias.map((categoria) => {
@@ -48,7 +48,7 @@ export default function CategoriasRaices(props: any) {
             return (
                 <Grid
                   key={categoria.id + '-' + categoria.nombre}
-                  item xs={12} sm={4} md={2}
+                  item xs={4} sm={3} md={2}
                 >
                   <Container key={categoria.id + '-' + categoria.nombre}>
                     <Categoria 

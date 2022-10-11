@@ -14,7 +14,7 @@ export default function Categoria(props: any) {
   },[])
   return(           
     <Card
-      sx={{ maxWidth: 230, minWidth:70 }}
+      sx={{ maxWidth: 230, minWidth:70, maxHeight: 240, minHeight: 50 }}
       style={{ marginTop: '10px' }}
       onClick={() => {}}
     >
@@ -36,17 +36,28 @@ export default function Categoria(props: any) {
           height="160"
           width="140"
           src={`data:image/png;base64,${categoria.imagen}`}
-          alt="MESSI"
+          alt={categoria.nombre}
         ></CardMedia>
         <CardHeader 
           style={{
             height: '100%',
+            width: '95%',
             marginBottom: 1,
             paddingBottom: 0
           }} 
-          title={categoria.nombre}>            
+          >          
         </CardHeader>
-        <CardContent></CardContent>
+        <CardContent 
+          style={{
+            marginTop: 1,
+            paddingTop: 0,
+            marginLeft: 4,
+            paddingLeft: 0,
+            fontWeight: 'bold'
+          }}
+        >
+          {categoria.nombre}
+        </CardContent>
       </CardActionArea>
     </Card>
   )
