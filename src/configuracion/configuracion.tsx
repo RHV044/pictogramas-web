@@ -64,8 +64,8 @@ export default function Configuracion() {
     
     setNivel(event.target.value as string);
 
-    if(Number(nivel) === 3){
-        setPersonalizarCategorias(true)
+    if(Number(event.target.value) === 3){
+      setPersonalizarCategorias(true)
     } else {
       setPersonalizarCategorias(false)
     }
