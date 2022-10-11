@@ -10,7 +10,7 @@ export default function CategoriaSeleccionada(props: any) {
   return (
     <div>
       <Card
-        sx={{ maxWidth: 100 }}
+        sx={{ maxWidth: 230, minWidth:70, maxHeight: 240, minHeight: 50 }}
         style={{ marginTop: '10px', marginLeft: 35 }}
         onClick={() => {}}
       >
@@ -24,12 +24,30 @@ export default function CategoriaSeleccionada(props: any) {
         >
           <CardMedia
             component="img"
-            height="140"
-            src={`data:image/png;base64,${props.categoriaSeleccionada.imagen}`}
-            alt="MESSI"
+            height="160"
+            width="140"
+            src={props.categoriaSeleccionada.imagen && props.categoriaSeleccionada.imagen.includes('data:image') ? props.categoriaSeleccionada.imagen : `data:image/png;base64,${props.categoriaSeleccionada.imagen}`}
+            alt={props.categoriaSeleccionada.nombre}
           ></CardMedia>
-          <CardHeader title={props.categoriaSeleccionada.nombre}></CardHeader>
-          <CardContent></CardContent>
+          <CardHeader           
+            style={{
+              height: '100%',
+              width: '95%',
+              marginBottom: 1,
+              paddingBottom: 0
+            }} 
+            ></CardHeader>
+          <CardContent
+            style={{
+              marginTop: 1,
+              paddingTop: 0,
+              marginLeft: 4,
+              paddingLeft: 0,
+              fontWeight: 'bold'
+            }}
+          >
+            {props.categoriaSeleccionada.nombre}
+          </CardContent>
         </CardActionArea>
       </Card>
     </div>

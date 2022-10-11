@@ -279,7 +279,6 @@ export default function Pizarras(this: any) {
         }
         if(celda.tipoContenido === "texto" || celda.tipoContenido === "pictograma")
         {
-          // TODO: Los pictogramas propios no se muestran al cargar
           let grafico = {
             esPictograma: celda.tipoContenido === "pictograma" ? true : false,
             imagen: celda.tipoContenido === "pictograma" ? imagenPictograma : "",
@@ -295,10 +294,10 @@ export default function Pizarras(this: any) {
       }); 
 
       setEstilos(nuevosEstilos)  
-      // TODO: Si seteo los graficos sin lugar, hay problemas con respecto a que todas las acciones se retrasan, 
-      // si uso handleChange, todo anda bien pero no se muestran los graficos sin lugar hasta que interactue con algo
-      //setGraficosSinLugar([...nuevosGraficosSinLugar])    
-      handleChange()  
+      handleChange() 
+      setTimeout(function () {
+        handleChange()
+      }, 500); 
     })  
   }
 

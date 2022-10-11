@@ -128,7 +128,7 @@ export default function Pictogramas(props: any) {
     return (<>{ObtenerCategoriaPadre(categoria)}</>)
   }
 
-  const OpcionesDeCategoria = (categoria: ICategoria) => {    
+  const OpcionesDeCategoria = (categoria: ICategoria) => {   
     if (categoria.esCategoriaFinal === true)
     {
       // Es categoria final, debo mostrar pictogramas

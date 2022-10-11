@@ -41,7 +41,7 @@ export default function CategoriaPropios(props: any) {
                 props.categoriaSeleccionada == null ||
                 props.categoriaSeleccionada !== -1
               ) {
-                let categoria = {id: -1, nombre: "Pictogramas Propios", esCategoriaFinal: true } as ICategoria
+                let categoria = {id: -1, nombre: "Pictogramas Propios", esCategoriaFinal: true, imagen:  userLogueado && userLogueado.imagen && userLogueado.imagen !== "" ? userLogueado.imagen : imagenUsuario} as ICategoria
                 props.setCategoriaSeleccionada(categoria);
               } else {
                 props.setCategoriaSeleccionada(null);

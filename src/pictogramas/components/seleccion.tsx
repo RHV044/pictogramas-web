@@ -14,6 +14,7 @@ import React from 'react';
 import Speech from 'react-speech';
 import { ObtenerInterpretacionNatural } from '../services/pictogramas-services';
 import { lightBlue } from '@mui/material/colors';
+import { useSpeechSynthesis } from 'react-speech-kit';
 
 const apiPictogramas = process.env.URL_PICTOGRAMAS ?? 'http://localhost:5000';
 
@@ -23,6 +24,7 @@ export default function Seleccion(props: any) {
   const [textoAInterpretar, setTextoAInterpretar] = useState("" as string)
   const refInterpretacionLiteral = useRef();
   var i = 0;
+  const { speak } = useSpeechSynthesis();
 
   useEffect(() => {
     console.log('pictogramas Actualizados: ', props.pictogramas);
@@ -70,7 +72,7 @@ export default function Seleccion(props: any) {
             <Grid key={i++} item xs={12} sm={4} md={2}>
               <Container key={i++}>
                 <Card
-                  sx={{ maxWidth: 245 }}
+                  sx={{ maxWidth: 230, minWidth:70, maxHeight: 240, minHeight: 50 }}
                   style={{ marginTop: '10px' }}
                   onClick={() => {
                     let nuevaLista = pictogramas.filter(
@@ -86,25 +88,30 @@ export default function Seleccion(props: any) {
                   <CardActionArea>
                     <CardMedia
                       component="img"
-                      height="140"
-                      // image={
-                      //   apiPictogramas +
-                      //   '/pictogramas/' +
-                      //   pictograma.id +
-                      //   '/obtener'
-                      // }
+                      height="160"
+                      width="140"
                       src={pictograma.imagen && pictograma.imagen.includes('data:image') ? pictograma.imagen : `data:image/png;base64,${pictograma.imagen}`}
                       alt={pictograma.keywords[0].keyword}
                     ></CardMedia>
                     <CardHeader
                       style={{
                         height: '100%',
+                        width: '95%',
                         marginBottom: 1,
                         paddingBottom: 0
                       }} 
-                      title={pictograma.keywords[0].keyword}
                     ></CardHeader>
-                    <CardContent></CardContent>
+                    <CardContent
+                      style={{
+                        marginTop: 1,
+                        paddingTop: 0,
+                        marginLeft: 4,
+                        paddingLeft: 0,
+                        fontWeight: 'bold'
+                      }}
+                    >
+                      {pictograma.keywords[0].keyword}
+                    </CardContent>
                   </CardActionArea>
                 </Card>
               </Container>
@@ -114,69 +121,21 @@ export default function Seleccion(props: any) {
       </Grid>
       {pictogramas.length > 0 && 
         <div>
-          <Button style={{marginLeft: 5, marginRight: 5}} variant="contained" component="label" onClick={() => {
-            var element = document.querySelector('Interpretacion Natural');
-            console.log("Element: ", element)
-            simulateMouseClick(element);            
+          <Button style={{marginLeft: 5, marginRight: 5, marginTop: 5}} variant="contained" component="label" onClick={() => {
+            speak({text:textoAInterpretar})
           }}>        
             Interpretacion Literal
-          </Button>
-            <Speech              
-              clas="InterpretacionNatural"
-              // styles={{style}}
-              ref={refInterpretacionLiteral}
-              textAsButton={true}
-              displayText="Interpretacion Literal"
-              text={(pictogramas.map(p => p.keywords[0].keyword)).toString()}
-            />
+            </Button>
             { textoAInterpretar.length > 0 && 
-              <Speech                 
-                ref={refInterpretacionLiteral}
-                // styles={"cursor: pointer; pointer-events: all; outline: none; background-color: gainsboro; border: 1px solid rgb(255, 255, 255); border-radius: 6px;"}
-                // styles={{style}}
-                textAsButton={true}
-                displayText="Interpretacion Natural"
-                // text={ObtenerInterpretacion()}
-                text={textoInterpretado}
-              />
+            <Button style={{marginLeft: 5, marginRight: 5, marginTop: 5}} variant="contained" component="label" onClick={() => {
+              let texto = ObtenerInterpretacion()
+              speak({ text: texto })
+            }}>
+              Interpretacion Natural
+            </Button>
             }
         </div>
         }
     </Container>
   );
 }
-
-const style = {
-  container: { },
-  text: { },
-  buttons: { },
-  play: {
-    hover: {
-      backgroundColor: 'GhostWhite'
-    },
-    button: {
-      cursor: 'pointer',
-      //pointerEvents: 'play',
-      outline: 'none',
-      backgroundColor: 'Gainsboro',
-      border: 'solid 1px rgba(255,255,255,1)',
-      borderRadius: 6
-    }
-  },
-  pause: {
-    play: { },
-    hover: { }
-  },
-  stop: {
-    play: {
-      hover: { },
-      button: { }
-    },
-  },
-  resume: {
-    play: {
-      hover: { },
-      button: { }
-    }
-  }
-};

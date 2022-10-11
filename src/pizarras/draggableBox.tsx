@@ -61,7 +61,7 @@ export const Box: FC<BoxProps> = function Box({ name, identificacion, onDrop, mo
     { esPictograma &&
       <div ref={drag} style={{ ...style, opacity, transform: `translate(${10}px, ${10}px)`, WebkitTransform: 'translate(${10}px, ${10}px)' }} data-testid={`box`}>
         <Card
-          sx={{ maxWidth: 245, minWidth:150 }}
+          sx={{ maxWidth: 230, minWidth:70, maxHeight: 240, minHeight: 50 }}
           style={{ marginTop: '10px' }}
           onClick={() => {}}
         >
@@ -71,14 +71,30 @@ export const Box: FC<BoxProps> = function Box({ name, identificacion, onDrop, mo
           >
             <CardMedia
               component="img"
-              height="140"
+              height="160"
+              width="140"
               src={imagen !== null && imagen !== undefined && imagen !== '' && imagen.includes('data:image') ? imagen : `data:image/png;base64,${imagen}`}
               alt={name}
             ></CardMedia>
             <CardHeader
-              title={name}
+              style={{
+                height: '100%',
+                width: '95%',
+                marginBottom: 1,
+                paddingBottom: 0
+              }} 
             ></CardHeader>
-            <CardContent></CardContent>
+            <CardContent
+              style={{
+                marginTop: 1,
+                paddingTop: 0,
+                marginLeft: 4,
+                paddingLeft: 0,
+                fontWeight: 'bold'
+              }}
+            >
+              {name}
+            </CardContent>
           </CardActionArea>
         </Card>
       </div>

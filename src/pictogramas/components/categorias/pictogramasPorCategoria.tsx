@@ -81,11 +81,10 @@ export default function PictogramasPorCategoria(props: any) {
         {pictogramas.map((pictograma) => {              
           if (cumpleFiltros(pictograma, userLogueado))
             return (
-              //Como estan dentro de la categoria, se visualizan abajo, habria que extraerlo a otro lugar
               <Grid key={pictograma.id ? pictograma.id : pictograma.identificador} item xs={12} sm={4} md={2}>
                 <Container key={pictograma.id ? pictograma.id : pictograma.identificador}>
                   <Card
-                    sx={{ maxWidth: 230, minWidth: 50 }}
+                    sx={{ maxWidth: 230, minWidth:70, maxHeight: 240, minHeight: 50 }}
                     style={{ marginTop: '10px' }}
                     onClick={() => { }}
                   >
@@ -102,22 +101,30 @@ export default function PictogramasPorCategoria(props: any) {
                     >
                       <CardMedia
                         component="img"
-                        height="150"
-                        //image={apiPictogramas+'/pictogramas/'+pictograma.id+'/obtener'}
-                        //image={pictograma.imagen}
-                        //TODO: Optimizar o ver alternativa para levantar los base64
+                        height="160"
+                        width="140"
                         src={pictograma.imagen && pictograma.imagen.includes('data:image') ? pictograma.imagen : `data:image/png;base64,${pictograma.imagen}`}
                         alt={pictograma.keywords[0].keyword}
                       ></CardMedia>
                       <CardHeader           
                         style={{
                           height: '100%',
+                          width: '95%',
                           marginBottom: 1,
                           paddingBottom: 0
                         }} 
-                        title={pictograma.keywords[0].keyword}
                       ></CardHeader>
-                      <CardContent></CardContent>
+                      <CardContent
+                        style={{
+                          marginTop: 1,
+                          paddingTop: 0,
+                          marginLeft: 4,
+                          paddingLeft: 0,
+                          fontWeight: 'bold'
+                        }}
+                      >
+                        {pictograma.keywords[0].keyword}
+                      </CardContent>
                     </CardActionArea>
 
                     <FavoritoButton pictograma={pictograma} favoritos={favoritos} />

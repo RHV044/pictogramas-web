@@ -101,7 +101,7 @@ export default function Actividad(){
   const renderCategoria = (categoria: ICategoria) => {
     return(<div>
       <Card
-        sx={{ maxWidth: 145, minWidth:25 }}
+        sx={{ maxWidth: 230, minWidth:70, maxHeight: 240, minHeight: 50 }}
         style={{ marginTop: '10px' }}
         onClick={() => {}}
       >
@@ -112,14 +112,30 @@ export default function Actividad(){
         >
           <CardMedia
             component="img"
-            height="140"
+            height="160"
+            width="140"
             src={categoria.imagen && categoria.imagen.includes('data:image') ? categoria.imagen : `data:image/png;base64,${categoria.imagen}`}
             alt={categoria.nombre}
           ></CardMedia>
           <CardHeader
-            title={categoria.nombre}
+            style={{
+              height: '100%',
+              width: '95%',
+              marginBottom: 1,
+              paddingBottom: 0
+            }} 
           ></CardHeader>
-          <CardContent></CardContent>
+          <CardContent
+            style={{
+              marginTop: 1,
+              paddingTop: 0,
+              marginLeft: 4,
+              paddingLeft: 0,
+              fontWeight: 'bold'
+            }}
+          >
+          {categoria.nombre}
+          </CardContent>
         </CardActionArea>
       </Card>
     </div>)
@@ -159,7 +175,7 @@ export default function Actividad(){
           </Grid>
           <div>
             <Card
-              sx={{ maxWidth: 245, minWidth:150 }}
+              sx={{ maxWidth: 230, minWidth:70, maxHeight: 240, minHeight: 50 }}
               style={{ marginTop: '10px' }}
               onClick={() => {}}
             >
@@ -169,14 +185,30 @@ export default function Actividad(){
               >
                 <CardMedia
                   component="img"
-                  height="140"
+                  height="160"
+                  width="140"
                   src={pictograma.imagen && pictograma.imagen.includes('data:image') ? pictograma.imagen : `data:image/png;base64,${pictograma.imagen}`}
                   alt={pictograma.keywords[0].keyword}
                 ></CardMedia>
                 <CardHeader
-                  title={pictograma.keywords[0].keyword}
+                  style={{
+                    height: '100%',
+                    width: '95%',
+                    marginBottom: 1,
+                    paddingBottom: 0
+                  }} 
                 ></CardHeader>
-                <CardContent></CardContent>
+                <CardContent
+                  style={{
+                    marginTop: 1,
+                    paddingTop: 0,
+                    marginLeft: 4,
+                    paddingLeft: 0,
+                    fontWeight: 'bold'
+                  }}
+                >
+                  {pictograma.keywords[0].keyword}
+                </CardContent>
               </CardActionArea>
             </Card>
           </div>
