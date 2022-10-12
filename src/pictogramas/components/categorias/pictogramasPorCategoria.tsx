@@ -25,14 +25,6 @@ export default function PictogramasPorCategoria(props: any) {
   const [pictogramas, setPictogramas] = useState([] as IPictogram[]);
   const [userLogueado, setUserLogueado] = useState(null as IUsuario | null);
 
-  const [violence, setViolence] = useState(false as boolean)
-  const [sex, setSex] = useState(false as boolean)
-  const [aac, setAac] = useState(false as boolean)
-  const [aacColor, setAacColor] = useState(false as boolean)
-  const [skin, setSkin] = useState(false as boolean)
-  const [hair, setHair] = useState(false as boolean)
-  const [schematic, setSchematic] = useState(false as boolean)
-
   const [db1, setDb1] = useState(new IndexedDbService())
 
   useEffect(() => {
@@ -40,13 +32,6 @@ export default function PictogramasPorCategoria(props: any) {
     getUsuarioLogueado().then((usuario) => {
       if (usuario != undefined) {
         setUserLogueado(usuario);
-        setViolence(usuario.violence);
-        setSex(usuario.sex);
-        setSkin(usuario.skin);
-        setHair(usuario.hair);
-        setAac(usuario.aac);
-        setAacColor(usuario.aacColor);
-        setSchematic(usuario.schematic);
       }
     });
   }, []);
