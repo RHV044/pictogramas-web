@@ -13,6 +13,7 @@ import { getUsuarioLogueado, usuarioLogueado, setUsuarioLogueadoVariable } from 
 import { ICategoria } from '../../models/categoria';
 import { ObtenerCategorias } from '../../services/pictogramas-services';
 import Categoria from './categoria';
+import CategoriaFavoritos from './categoriaFavoritos';
 import CategoriaPropios from './categoriaPropios';
 
 export default function CategoriasRaices(props: any) {
@@ -41,6 +42,7 @@ export default function CategoriasRaices(props: any) {
       <Grid container spacing={{ xs: 3, md: 3 }} columns={{ xs: 10, sm: 10, md: 12 }}>
         {/* TODO: Agregar pictogramas recientes si fuera necesario */}
         <CategoriaPropios setCategoriaSeleccionada={props.setCategoriaSeleccionada} categoriaSeleccionada={categoriaSeleccionada}/>
+        <CategoriaFavoritos setCategoriaSeleccionada={props.setCategoriaSeleccionada} categoriaSeleccionada={categoriaSeleccionada}/>
         {categorias.map((categoria) => {
           if ((categoria.categoriaPadre === null || categoria.categoriaPadre === undefined || categoria.categoriaPadre < 1) && 
               categoria.nivel <= (usuarioLogueado?.nivel !== undefined ? usuarioLogueado?.nivel : 0)) //TODO agregar consideracion para el nivel personalizado.
