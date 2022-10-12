@@ -73,7 +73,7 @@ export default function CategoriaFavoritos(props: any) {
                 fontWeight: 'bold'
               }}
             >
-            Pictogramas Favoritos
+            PICTOGRAMAS FAVORITOS
             </CardContent>
           </CardActionArea>
         </Card>

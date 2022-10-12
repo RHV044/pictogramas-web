@@ -73,7 +73,7 @@ export default function CategoriaPropios(props: any) {
                 fontWeight: 'bold'
               }}
             >
-            Pictogramas Propios
+            PICTOGRAMAS PROPIOS
             </CardContent>
           </CardActionArea>
         </Card>

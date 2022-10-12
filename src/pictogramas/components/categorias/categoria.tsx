@@ -56,7 +56,7 @@ export default function Categoria(props: any) {
             fontWeight: 'bold'
           }}
         >
-          {categoria.nombre}
+          {categoria.nombre ? categoria.nombre.toLocaleUpperCase() : ''}
         </CardContent>
       </CardActionArea>
     </Card>

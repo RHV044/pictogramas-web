@@ -46,7 +46,7 @@ export default function CategoriaSeleccionada(props: any) {
               fontWeight: 'bold'
             }}
           >
-            {props.categoriaSeleccionada.nombre}
+            {props.categoriaSeleccionada.nombre ? props.categoriaSeleccionada.nombre.toLocaleUpperCase() : ''}
           </CardContent>
         </CardActionArea>
       </Card>
