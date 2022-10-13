@@ -30,6 +30,8 @@ import PictogramasPorCategoria from './categorias/pictogramasPorCategoria';
 import { ObtenerCategorias, ObtenerPictogramas } from '../services/pictogramas-services';
 import Categoria from './categorias/categoria';
 import { getUsuarioLogueado, setUsuarioLogueado, setUsuarioLogueadoVariable, usuarioLogueado } from '../../services/usuarios-services';
+import Recientes from './sugerencias/recientes';
+import Sugeridos from './sugerencias/sugeridos';
 const db = new IndexedDbService();
 
 export default function Pictogramas(props: any) {
@@ -209,6 +211,12 @@ export default function Pictogramas(props: any) {
           filtrarPictogramas(event.target.value);
         }}
       />
+      <Recientes setPictogramas={UpdatePictogramas}
+            pictogramas={pictogramasSeleccionados}/>
+      {  pictogramasSeleccionados && pictogramasSeleccionados.length > 0 &&     
+      <Sugeridos setPictogramas={UpdatePictogramas}
+        pictogramas={pictogramasSeleccionados}/>
+      }
       <Container>
         <Grid
           container

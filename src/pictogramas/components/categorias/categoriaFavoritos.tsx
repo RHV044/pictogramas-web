@@ -13,7 +13,7 @@ import { getUsuarioLogueado } from '../../../services/usuarios-services';
 import { ICategoria } from '../../models/categoria';
 import imagenUsuario from '../../../commons/imagen-usuario.jpg'
 
-export default function CategoriaPropios(props: any) {
+export default function CategoriaFavoritos(props: any) {
   const [userLogueado, setUserLogueado] = useState(null as IUsuario | null);
   useEffect(() => {
     getUsuarioLogueado().then((usuario) => {
@@ -41,7 +41,7 @@ export default function CategoriaPropios(props: any) {
                 props.categoriaSeleccionada == null ||
                 props.categoriaSeleccionada !== -1
               ) {
-                let categoria = {id: -1, nombre: "Pictogramas Propios", esCategoriaFinal: true, imagen:  userLogueado && userLogueado.imagen && userLogueado.imagen !== "" ? userLogueado.imagen : imagenUsuario} as ICategoria
+                let categoria = {id: -2, nombre: "Pictogramas Favoritos", esCategoriaFinal: true, imagen:  userLogueado && userLogueado.imagen && userLogueado.imagen !== "" ? userLogueado.imagen : imagenUsuario} as ICategoria
                 props.setCategoriaSeleccionada(categoria);
               } else {
                 props.setCategoriaSeleccionada(null);
@@ -53,7 +53,7 @@ export default function CategoriaPropios(props: any) {
               height="160"
               width="140"
               src={userLogueado && userLogueado.imagen && userLogueado.imagen !== "" ? userLogueado.imagen : imagenUsuario}
-              alt="Pictogramas Propios"
+              alt="Pictogramas Favoritos"
             ></CardMedia>
             <CardHeader
               style={{
@@ -73,7 +73,7 @@ export default function CategoriaPropios(props: any) {
                 fontWeight: 'bold'
               }}
             >
-            PICTOGRAMAS PROPIOS
+            PICTOGRAMAS FAVORITOS
             </CardContent>
           </CardActionArea>
         </Card>
