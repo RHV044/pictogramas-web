@@ -108,7 +108,6 @@ export async function ObtenerPictogramasPorCategoria(
     if (pictogramasPropios !== null && pictogramasPropios !== undefined && pictogramasPropios.length > 0)
     {
       const pp = pictogramas.concat(pictogramasPropios)
-      console.log("pp: ", pp)
       let propios = pp.filter((p: IPictogram) => p.idUsuario === usuario?.id)
       return await setPictogramas(propios)
     }
@@ -123,7 +122,6 @@ export async function ObtenerPictogramasPorCategoria(
       if (pictogramasFavoritos !== null && pictogramasFavoritos !== undefined && pictogramasFavoritos.length > 0)
         {
           const pf = pictogramas.concat(pictogramasFavoritos)
-          console.log("pp: ", pf)
           let favoritos = pf.filter((p: IPictogram) => p.idUsuario === usuario?.id)
           return await setPictogramas(favoritos)
         }

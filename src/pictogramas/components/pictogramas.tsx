@@ -54,9 +54,7 @@ export default function Pictogramas(props: any) {
   const [db, setDb] = useState(IndexedDbService.create());
   const [categorias, setCategorias] = useState([] as ICategoria[]) 
 
-  const UpdatePictogramas =  async (pics: IPictogram[]) => {
-    let nuevosPics = [...pics]
-    
+  const LearnAndPredict = async (pics: IPictogram[]) => {
     if(pics && pics.length >= (pictogramasSeleccionados?.length ?? 0))
     {
       //Entrena al algoritmo Naive Bayes.
@@ -70,7 +68,13 @@ export default function Pictogramas(props: any) {
 
     }
     let prediccionProximoPicto = await predict(pics);
-    console.log(`Proximo Pictograma sugerido: ${prediccionProximoPicto?.id ?? "no prediction"}`);
+    console.log(`Proximo Pictograma sugerido: ${prediccionProximoPicto ? prediccionProximoPicto?.id + ' - ' + prediccionProximoPicto?.keywords[0].keyword: "no prediction"}`);
+  }
+
+  const UpdatePictogramas =  async (pics: IPictogram[]) => {
+    let nuevosPics = [...pics]
+    
+    LearnAndPredict(pics)
     setPictogramas(nuevosPics);
     // Esto se hace pero en la 2da vez el componente seleccion no se renderiza nuevamente
     setPictogramasSeleccionados(null);
@@ -192,16 +196,24 @@ export default function Pictogramas(props: any) {
 
   return (
     <div>
-      <ResponsiveAppBar />
-      <br />
-      <Seleccion
-        pictogramas={pictogramasSeleccionados}
-        setPictogramas={UpdatePictogramas}
-      />
-      <hr />
-      <CircularProgress variant="determinate" value={downloadPercentage} />
-      <br></br>
-      <br></br>
+      <ResponsiveAppBar />    
+      {pictogramasSeleccionados && pictogramasSeleccionados.length > 0  &&
+        <>
+          <Seleccion
+            pictogramas={pictogramasSeleccionados}
+            setPictogramas={UpdatePictogramas}
+          />
+          <hr />
+        </>
+      }
+      {/* TODO: Extraer esto en otro lado para poder mostrar cuanto descargo el updateService */}
+      {/* <CircularProgress variant="determinate" value={downloadPercentage} /> */}
+      <Recientes setPictogramas={UpdatePictogramas}
+            pictogramas={pictogramasSeleccionados}/>
+      {  pictogramasSeleccionados && pictogramasSeleccionados.length > 0 &&     
+      <Sugeridos setPictogramas={UpdatePictogramas}
+        pictogramas={pictogramasSeleccionados}/>
+      }
       <TextField
         id="input-tag-filter"
         label="Filtrar pictogramas por palabra clave o categoria"
@@ -211,12 +223,6 @@ export default function Pictogramas(props: any) {
           filtrarPictogramas(event.target.value);
         }}
       />
-      <Recientes setPictogramas={UpdatePictogramas}
-            pictogramas={pictogramasSeleccionados}/>
-      {  pictogramasSeleccionados && pictogramasSeleccionados.length > 0 &&     
-      <Sugeridos setPictogramas={UpdatePictogramas}
-        pictogramas={pictogramasSeleccionados}/>
-      }
       <Container>
         <Grid
           container
@@ -237,9 +243,10 @@ export default function Pictogramas(props: any) {
                       onClick={() => {
                         if(pictogramasSeleccionados){
                           let pictogramasSel = [...pictogramasSeleccionados];
-                          if (pictogramasSel !== null) {
+                          if (pictogramasSel !== null) {                            
                             pictogramasSel.push(pictograma);
-                            setPictogramasSeleccionados(pictogramasSel);
+                            LearnAndPredict(pictogramasSel)
+                            setPictogramasSeleccionados(pictogramasSel);                            
                           }
                         }
                       }}

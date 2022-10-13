@@ -62,7 +62,6 @@ export class UpdateService {
     if (!iniciando) {
       iniciando = true;
       let db = await IndexedDbService.create();
-
       let totalCategoriasLocales = await db.countValues('categorias');
       let totalCategorias = await ObtenerTotalCategorias();
       console.log(

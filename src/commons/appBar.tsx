@@ -17,6 +17,7 @@ import FormDialogValidarAcceso from '../configuracion/components/validarCambioCo
 import { getUsuarioLogueado } from '../services/usuarios-services';
 import { IUsuario } from '../login/model/usuario';
 import imagenUsuario from '../commons/imagen-usuario.jpg'
+import Logo from '../commons/Logo-PictogAR.png'
 
 const pages = ['Pizarras', 'Actividades', 'Estadisticas'];
 const settings = ['Configuracion', 'Cambiar Cuenta'];
@@ -75,8 +76,11 @@ const ResponsiveAppBar = () => {
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           {configuracionOpen && <FormDialogValidarAcceso cerrarValidarConfiguracion={cerrarValidarConfiguracion} />}
-          <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
-          <Typography
+          <a href="/pictogramas">
+            <img alt="Qries" src={Logo} height="65"/>
+          </a>
+          {/* <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} /> */}
+          {/* <Typography
             variant="h6"
             noWrap
             component="a"
@@ -92,7 +96,7 @@ const ResponsiveAppBar = () => {
             }}
           >
             PictogAR
-          </Typography>
+          </Typography> */}
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
