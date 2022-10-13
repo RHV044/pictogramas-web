@@ -101,6 +101,7 @@ export async function ObtenerPictogramasPorCategoria(
   let pictogramas = await db.getAllValues('pictograms');
 
   let usuario = await getUsuarioLogueado();
+  
   if(categoria === -1)
   {
     let pictogramasPropios = await db.getAllValues('pictogramasPropios');
@@ -111,6 +112,21 @@ export async function ObtenerPictogramasPorCategoria(
       let propios = pp.filter((p: IPictogram) => p.idUsuario === usuario?.id)
       return await setPictogramas(propios)
     }
+  }
+
+  if (categoria === -2)
+  {
+    let pictogramasFavoritos;
+    if(usuario !== null && usuario !== undefined) 
+      pictogramasFavoritos = await db.searchFavoritoByUser(usuario?.id); //TODO le pregunto a Gonza por las dudas
+        
+      if (pictogramasFavoritos !== null && pictogramasFavoritos !== undefined && pictogramasFavoritos.length > 0)
+        {
+          const pf = pictogramas.concat(pictogramasFavoritos)
+          console.log("pp: ", pf)
+          let favoritos = pf.filter((p: IPictogram) => p.idUsuario === usuario?.id)
+          return await setPictogramas(favoritos)
+        }
   }
 
 

@@ -37,7 +37,7 @@ export class IndexedDbService {
   }
 
   public async searchFavoritoByUser(
-    idUsuario: number
+    idUsuario: number | undefined
   ): Promise<IFavoritoPorUsuario[]> {
     let transaction = this.db.transaction('favoritosPorUsuario', 'readonly');
     let objectStore = transaction.objectStore('favoritosPorUsuario');
