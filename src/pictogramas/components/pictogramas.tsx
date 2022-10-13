@@ -15,6 +15,7 @@ import {
 } from '@mui/material';
 import { LoadPictogramsFromArasaac } from '../services/arasaac-service';
 import { IndexedDbService } from '../../services/indexeddb-service';
+import { learn, predict } from '../services/predictivo-service';
 import { IPictogram } from '../models/pictogram';
 import Pictogram from './pictogram';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -53,11 +54,28 @@ export default function Pictogramas(props: any) {
   const [db, setDb] = useState(IndexedDbService.create());
   const [categorias, setCategorias] = useState([] as ICategoria[]) 
 
-  const UpdatePictogramas = (pics: IPictogram[]) => {
+  const UpdatePictogramas =  async (pics: IPictogram[]) => {
     let nuevosPics = [...pics]
+    
+    if(pics && pics.length >= (pictogramasSeleccionados?.length ?? 0))
+    {
+      //Entrena al algoritmo Naive Bayes.
+      learn(pics);
+
+      // COMENTADO PARA NO LLENAR LA INDEXED DB DE DATOS HASTA ESTAR SEGURO DE COMO USARLOS
+      // let pictoAgregado = pics[pics.length-1];
+      // let pictoPrevio = pics[pics.length-2];
+      // let pictosAnteriores = pics.slice(0, pics.length-1);
+      // (await db).putBulkValue("historicoUsoPictogramas", [{pictograma: pictoAgregado, previo: pictoPrevio, todosLosAnteriores: pictosAnteriores }])
+
+    }
+    let prediccionProximoPicto = await predict(pics);
+    console.log(`Proximo Pictograma sugerido: ${prediccionProximoPicto?.id ?? "no prediction"}`);
     setPictogramas(nuevosPics);
     // Esto se hace pero en la 2da vez el componente seleccion no se renderiza nuevamente
     setPictogramasSeleccionados(null);
+
+
     setPictogramasSeleccionados(nuevosPics);
   };
 
