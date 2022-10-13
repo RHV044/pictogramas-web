@@ -20,8 +20,8 @@ const apiPictogramas = process.env.URL_PICTOGRAMAS ?? 'http://localhost:5000';
 
 export default function Seleccion(props: any) {
   const [pictogramas, setPictogramas] = useState([] as IPictogram[]);
-  const [textoInterpretado, setTextoInterpretado] = useState("" as string)
-  const [textoAInterpretar, setTextoAInterpretar] = useState("" as string)
+  const [textoInterpretado, setTextoInterpretado] = useState('' as string);
+  const [textoAInterpretar, setTextoAInterpretar] = useState('' as string);
   const refInterpretacionLiteral = useRef();
   var i = 0;
   const { speak } = useSpeechSynthesis();
@@ -32,36 +32,36 @@ export default function Seleccion(props: any) {
   }, [props.pictogramas]);
 
   useEffect(() => {
-    let texto = (props.pictogramas.map(p => p.keywords[0].keyword)).toString()
+    let texto = props.pictogramas.map((p) => p.keywords[0].keyword).toString();
     // ObtenerInterpretacionNatural(texto).then(interpretacion => {
     //   setTextoInterpretado(interpretacion)
     // })
-    setTextoAInterpretar(texto)
+    setTextoAInterpretar(texto);
   }, [props.pictogramas]);
 
   // TODO: IDEAL QUE ESTO OBTENGA CUANDO LE DEMOS AL BOTON Y AHI LE DE EL TEXTO
-  const ObtenerInterpretacion= () => {
-    ObtenerInterpretacionNatural(textoAInterpretar).then(interpretacion => {
-      return interpretacion
-    })
+  const ObtenerInterpretacion = () => {
+    ObtenerInterpretacionNatural(textoAInterpretar).then((interpretacion) => {
+      return interpretacion;
+    });
   };
-  
-  function simulateMouseClick(element){
+
+  function simulateMouseClick(element) {
     const mouseClickEvents = ['mousedown', 'click', 'mouseup'];
-    mouseClickEvents.forEach(mouseEventType =>
+    mouseClickEvents.forEach((mouseEventType) =>
       element.dispatchEvent(
         new MouseEvent(mouseEventType, {
-            view: window,
-            bubbles: true,
-            cancelable: true,
-            buttons: 1
+          view: window,
+          bubbles: true,
+          cancelable: true,
+          buttons: 1,
         })
       )
     );
   }
 
   return (
-    <Container style={{padding: 10}}>
+    <Container style={{ padding: 10 }}>
       <Grid
         container
         spacing={{ xs: 2, md: 3 }}
@@ -72,7 +72,12 @@ export default function Seleccion(props: any) {
             <Grid key={i++} item xs={12} sm={4} md={2}>
               <Container key={i++}>
                 <Card
-                  sx={{ maxWidth: 230, minWidth:70, maxHeight: 240, minHeight: 50 }}
+                  sx={{
+                    maxWidth: 230,
+                    minWidth: 70,
+                    maxHeight: 240,
+                    minHeight: 50,
+                  }}
                   style={{ marginTop: '10px' }}
                   onClick={() => {
                     let nuevaLista = pictogramas.filter(
@@ -90,7 +95,12 @@ export default function Seleccion(props: any) {
                       component="img"
                       height="160"
                       width="140"
-                      src={pictograma.imagen && pictograma.imagen.includes('data:image') ? pictograma.imagen : `data:image/png;base64,${pictograma.imagen}`}
+                      src={
+                        pictograma.imagen &&
+                        pictograma.imagen.includes('data:image')
+                          ? pictograma.imagen
+                          : `data:image/png;base64,${pictograma.imagen}`
+                      }
                       alt={pictograma.keywords[0].keyword}
                     ></CardMedia>
                     <CardHeader
@@ -98,8 +108,8 @@ export default function Seleccion(props: any) {
                         height: '100%',
                         width: '95%',
                         marginBottom: 1,
-                        paddingBottom: 0
-                      }} 
+                        paddingBottom: 0,
+                      }}
                     ></CardHeader>
                     <CardContent
                       style={{
@@ -107,7 +117,7 @@ export default function Seleccion(props: any) {
                         paddingTop: 0,
                         marginLeft: 4,
                         paddingLeft: 0,
-                        fontWeight: 'bold'
+                        fontWeight: 'bold',
                       }}
                     >
                       {pictograma.keywords[0].keyword}
@@ -119,23 +129,44 @@ export default function Seleccion(props: any) {
           );
         })}
       </Grid>
-      {pictogramas.length > 0 && 
-        <div>
-          <Button style={{marginLeft: 5, marginRight: 5, marginTop: 5}} variant="contained" component="label" onClick={() => {
-            speak({text:textoAInterpretar})
-          }}>        
-            Interpretacion Literal
+      {pictogramas.length > 0 && (
+        <Grid
+          container
+          spacing={{ xs: 2, md: 3 }}
+          columns={{ xs: 4, sm: 10, md: 12 }}
+          alignItems="center"
+          justifyContent="center"
+          style={{marginTop: 0}}
+        >
+          <Grid key="Literal" item xs={12} sm={4} md={2}>
+            <Button
+              style={{ marginLeft: 5, marginRight: 5, marginTop: 5, width: '100%' }}
+              variant="contained"
+              component="label"
+              onClick={() => {
+                speak({ text: textoAInterpretar });
+              }}
+            >
+              Interpretacion Literal
             </Button>
-            { textoAInterpretar.length > 0 && 
-            <Button style={{marginLeft: 5, marginRight: 5, marginTop: 5}} variant="contained" component="label" onClick={() => {
-              let texto = ObtenerInterpretacion()
-              speak({ text: texto })
-            }}>
-              Interpretacion Natural
-            </Button>
-            }
-        </div>
-        }
+          </Grid>
+          {textoAInterpretar.length > 0 && (
+            <Grid key="Natural" item xs={12} sm={4} md={2}>
+              <Button
+                style={{ marginLeft: 5, marginRight: 5, marginTop: 5, width: '100%' }}
+                variant="contained"
+                component="label"
+                onClick={() => {
+                  let texto = ObtenerInterpretacion();
+                  speak({ text: texto });
+                }}
+              >
+                Interpretacion Natural
+              </Button>
+            </Grid>
+          )}
+        </Grid>
+      )}
     </Container>
   );
 }

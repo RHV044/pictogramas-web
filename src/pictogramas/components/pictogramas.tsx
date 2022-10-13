@@ -27,9 +27,17 @@ import FormDialog from './crearPictograma';
 import { ICategoria } from '../models/categoria';
 import CategoriaSeleccionada from './categorias/categoriaSeleccionada';
 import PictogramasPorCategoria from './categorias/pictogramasPorCategoria';
-import { ObtenerCategorias, ObtenerPictogramas } from '../services/pictogramas-services';
+import {
+  ObtenerCategorias,
+  ObtenerPictogramas,
+} from '../services/pictogramas-services';
 import Categoria from './categorias/categoria';
-import { getUsuarioLogueado, setUsuarioLogueado, setUsuarioLogueadoVariable, usuarioLogueado } from '../../services/usuarios-services';
+import {
+  getUsuarioLogueado,
+  setUsuarioLogueado,
+  setUsuarioLogueadoVariable,
+  usuarioLogueado,
+} from '../../services/usuarios-services';
 import Recientes from './sugerencias/recientes';
 import Sugeridos from './sugerencias/sugeridos';
 const db = new IndexedDbService();
@@ -52,11 +60,10 @@ export default function Pictogramas(props: any) {
     [] as IPictogram[]
   );
   const [db, setDb] = useState(IndexedDbService.create());
-  const [categorias, setCategorias] = useState([] as ICategoria[]) 
+  const [categorias, setCategorias] = useState([] as ICategoria[]);
 
   const LearnAndPredict = async (pics: IPictogram[]) => {
-    if(pics && pics.length >= (pictogramasSeleccionados?.length ?? 0))
-    {
+    if (pics && pics.length >= (pictogramasSeleccionados?.length ?? 0)) {
       //Entrena al algoritmo Naive Bayes.
       learn(pics);
 
@@ -65,35 +72,40 @@ export default function Pictogramas(props: any) {
       // let pictoPrevio = pics[pics.length-2];
       // let pictosAnteriores = pics.slice(0, pics.length-1);
       // (await db).putBulkValue("historicoUsoPictogramas", [{pictograma: pictoAgregado, previo: pictoPrevio, todosLosAnteriores: pictosAnteriores }])
-
     }
     let prediccionProximoPicto = await predict(pics);
-    console.log(`Proximo Pictograma sugerido: ${prediccionProximoPicto ? prediccionProximoPicto?.id + ' - ' + prediccionProximoPicto?.keywords[0].keyword: "no prediction"}`);
-  }
+    console.log(
+      `Proximo Pictograma sugerido: ${
+        prediccionProximoPicto
+          ? prediccionProximoPicto?.id +
+            ' - ' +
+            prediccionProximoPicto?.keywords[0].keyword
+          : 'no prediction'
+      }`
+    );
+  };
 
-  const UpdatePictogramas =  async (pics: IPictogram[]) => {
-    let nuevosPics = [...pics]
-    
-    LearnAndPredict(pics)
+  const UpdatePictogramas = async (pics: IPictogram[]) => {
+    let nuevosPics = [...pics];
+
+    LearnAndPredict(pics);
     setPictogramas(nuevosPics);
     // Esto se hace pero en la 2da vez el componente seleccion no se renderiza nuevamente
     setPictogramasSeleccionados(null);
-
 
     setPictogramasSeleccionados(nuevosPics);
   };
 
   useEffect(() => {
-    getUsuarioLogueado().then(usuario => {
-      if(usuario === null || usuario === undefined){
+    getUsuarioLogueado().then((usuario) => {
+      if (usuario === null || usuario === undefined) {
         // Redirijo a seleccionar cuenta
         navigate('/cuenta/seleccionar' + location.search);
+      } else {
+        setUsuarioLogueadoVariable(usuario);
       }
-      else{
-        setUsuarioLogueadoVariable(usuario)
-      }
-    })
-    
+    });
+
     ObtenerPictogramas().then((pictogramas) => {
       setPictogramas(pictogramas);
     });
@@ -101,85 +113,106 @@ export default function Pictogramas(props: any) {
   }, []);
 
   const filtrarPictogramas = async (value: string) => {
-    if (value === '' || value === null)
-    {
-      setPictogramasFiltrados([])
-    }
-    else{
+    if (value === '' || value === null) {
+      setPictogramasFiltrados([]);
+    } else {
       let pictsFiltrados = pictogramas
-        .filter((p) => (p.keywords.some((k) => k.keyword.includes(value)) === true || p.categorias?.some((c) => c.nombre.includes(value)) === true))
-        .slice(0, 5)
-      await Promise.all(pictsFiltrados.map( async (p) => {
-        let imagen = await db.then( x => x.getValue('imagenes',p.id))
-        p.imagen = imagen.imagen
-      }))      
+        .filter(
+          (p) =>
+            p.keywords.some((k) => k.keyword.includes(value)) === true ||
+            p.categorias?.some((c) => c.nombre.includes(value)) === true
+        )
+        .slice(0, 5);
+      await Promise.all(
+        pictsFiltrados.map(async (p) => {
+          let imagen = await db.then((x) => x.getValue('imagenes', p.id));
+          p.imagen = imagen.imagen;
+        })
+      );
       setPictogramasFiltrados(pictsFiltrados);
     }
   };
 
   const ObtenerCategoriaPadre = (categoria: ICategoria) => {
-    if (categoria.categoriaPadre === null || categoria.categoriaPadre < 1 || categoria.categoriaPadre === undefined)
-    {
+    if (
+      categoria.categoriaPadre === null ||
+      categoria.categoriaPadre < 1 ||
+      categoria.categoriaPadre === undefined
+    ) {
       // Es categoria raiz
-      return (<>
-      {          
-        <CategoriaSeleccionada
-          categoriaSeleccionada={categoria}
-          categoriaActual={categoriaSeleccionada}
-          setCategoriaSeleccionada={setCategoriaSeleccionada}
-        />
-      }
-      </>)
-    }
-    else
-    {
-      let categoriaPadre = categorias.find(c => c.id === categoria.categoriaPadre)
-      return(
-        <>{ categoriaPadre && ObtenerCategoriaPadre(categoriaPadre)}        
-        {
-          <CategoriaSeleccionada
-            categoriaSeleccionada={categoria}
-            categoriaActual={categoriaSeleccionada}
-            setCategoriaSeleccionada={setCategoriaSeleccionada}
-          />
-        }
+      return (
+        <>
+          {
+            <CategoriaSeleccionada
+              categoriaSeleccionada={categoria}
+              categoriaActual={categoriaSeleccionada}
+              setCategoriaSeleccionada={setCategoriaSeleccionada}
+            />
+          }
         </>
-      )
+      );
+    } else {
+      let categoriaPadre = categorias.find(
+        (c) => c.id === categoria.categoriaPadre
+      );
+      return (
+        <>
+          {categoriaPadre && ObtenerCategoriaPadre(categoriaPadre)}
+          {
+            <CategoriaSeleccionada
+              categoriaSeleccionada={categoria}
+              categoriaActual={categoriaSeleccionada}
+              setCategoriaSeleccionada={setCategoriaSeleccionada}
+            />
+          }
+        </>
+      );
     }
-  }
+  };
 
   const ListaCategorias = (categoria: ICategoria) => {
-    return (<>{ObtenerCategoriaPadre(categoria)}</>)
-  }
+    return <>{ObtenerCategoriaPadre(categoria)}</>;
+  };
 
-  const OpcionesDeCategoria = (categoria: ICategoria) => {   
-    if (categoria.esCategoriaFinal === true)
-    {
+  const OpcionesDeCategoria = (categoria: ICategoria) => {
+    if (categoria.esCategoriaFinal === true) {
       // Es categoria final, debo mostrar pictogramas
-      return (<>
+      return (
+        <>
           <PictogramasPorCategoria
             categoria={categoria.id}
             setPictogramas={UpdatePictogramas}
             pictogramas={pictogramasSeleccionados}
           ></PictogramasPorCategoria>
-      </>)
-    }
-    else
-    {
+        </>
+      );
+    } else {
       // Es categoria padre, debo mostrar categorias
-      let categoriasHijas = categorias.filter(c => c.categoriaPadre === categoria.id && categoria.nivel <= (usuarioLogueado?.nivel !== undefined ? usuarioLogueado?.nivel : 0))
-      return(
+      let categoriasHijas = categorias.filter(
+        (c) =>
+          c.categoriaPadre === categoria.id &&
+          categoria.nivel <=
+            (usuarioLogueado?.nivel !== undefined ? usuarioLogueado?.nivel : 0)
+      );
+      return (
         <Container>
-          <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 10, md: 12 }}>
-          { categoriasHijas.map((categoria) => {
-            return (
+          <Grid
+            container
+            spacing={{ xs: 2, md: 3 }}
+            columns={{ xs: 4, sm: 10, md: 12 }}
+          >
+            {categoriasHijas.map((categoria) => {
+              return (
                 <Grid
                   key={categoria.id + '-' + categoria.nombre}
-                  item xs={12} sm={4} md={2}
+                  item
+                  xs={12}
+                  sm={4}
+                  md={2}
                 >
                   <Container key={categoria.id + '-' + categoria.nombre}>
-                    <Categoria 
-                      setCategoriaSeleccionada={setCategoriaSeleccionada} 
+                    <Categoria
+                      setCategoriaSeleccionada={setCategoriaSeleccionada}
                       categoria={categoria}
                       categoriaSeleccionada={categoriaSeleccionada}
                       categorias={categorias}
@@ -187,17 +220,17 @@ export default function Pictogramas(props: any) {
                   </Container>
                 </Grid>
               );
-          })}
+            })}
           </Grid>
         </Container>
-      )
+      );
     }
-  }
+  };
 
   return (
     <div>
-      <ResponsiveAppBar />    
-      {pictogramasSeleccionados && pictogramasSeleccionados.length > 0  &&
+      <ResponsiveAppBar />
+      {pictogramasSeleccionados && pictogramasSeleccionados.length > 0 && (
         <>
           <Seleccion
             pictogramas={pictogramasSeleccionados}
@@ -205,24 +238,42 @@ export default function Pictogramas(props: any) {
           />
           <hr />
         </>
-      }
+      )}
       {/* TODO: Extraer esto en otro lado para poder mostrar cuanto descargo el updateService */}
       {/* <CircularProgress variant="determinate" value={downloadPercentage} /> */}
-      <Recientes setPictogramas={UpdatePictogramas}
-            pictogramas={pictogramasSeleccionados}/>
-      {  pictogramasSeleccionados && pictogramasSeleccionados.length > 0 &&     
-      <Sugeridos setPictogramas={UpdatePictogramas}
-        pictogramas={pictogramasSeleccionados}/>
-      }
-      <TextField
-        id="input-tag-filter"
-        label="Filtrar pictogramas por palabra clave o categoria"
-        variant="standard"
-        onChange={(event) => {
-          //TODO: Revisar obtencion de pictogramas propios
-          filtrarPictogramas(event.target.value);
-        }}
+      <Recientes
+        setPictogramas={UpdatePictogramas}
+        pictogramas={pictogramasSeleccionados}
       />
+      {pictogramasSeleccionados && pictogramasSeleccionados.length > 0 && (
+        <Sugeridos
+          setPictogramas={UpdatePictogramas}
+          pictogramas={pictogramasSeleccionados}
+        />
+      )}
+      <Grid
+        container
+        spacing={{ xs: 2, md: 3 }}
+        columns={{ xs: 4, sm: 10, md: 12 }}
+        alignItems="center"
+        justifyContent="center"
+      >
+        <Grid key="Filtros" item xs={12} sm={4} md={2}>
+          <TextField
+            id="input-tag-filter"
+            label="Filtrar pictogramas por palabra clave o categoria"
+            variant="standard"
+            style={{marginBottom: 5, width:  '100%'}}
+            onChange={(event) => {
+              //TODO: Revisar obtencion de pictogramas propios
+              filtrarPictogramas(event.target.value);
+            }}
+          />
+        </Grid>
+        <Grid key="Creacion" item xs={12} sm={4} md={2}>
+          <FormDialog />
+        </Grid>
+      </Grid>
       <Container>
         <Grid
           container
@@ -241,12 +292,12 @@ export default function Pictogramas(props: any) {
                   >
                     <CardActionArea
                       onClick={() => {
-                        if(pictogramasSeleccionados){
+                        if (pictogramasSeleccionados) {
                           let pictogramasSel = [...pictogramasSeleccionados];
-                          if (pictogramasSel !== null) {                            
+                          if (pictogramasSel !== null) {
                             pictogramasSel.push(pictograma);
-                            LearnAndPredict(pictogramasSel)
-                            setPictogramasSeleccionados(pictogramasSel);                            
+                            LearnAndPredict(pictogramasSel);
+                            setPictogramasSeleccionados(pictogramasSel);
                           }
                         }
                       }}
@@ -254,7 +305,12 @@ export default function Pictogramas(props: any) {
                       <CardMedia
                         component="img"
                         height="140"
-                        src={pictograma.imagen && pictograma.imagen.includes('data:image') ? pictograma.imagen : `data:image/png;base64,${pictograma.imagen}`}
+                        src={
+                          pictograma.imagen &&
+                          pictograma.imagen.includes('data:image')
+                            ? pictograma.imagen
+                            : `data:image/png;base64,${pictograma.imagen}`
+                        }
                         alt={pictograma.keywords[0].keyword}
                       ></CardMedia>
                       <CardHeader
@@ -271,11 +327,15 @@ export default function Pictogramas(props: any) {
       </Container>
       <br></br>
       <hr />
-      <FormDialog />
-      <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 10, md: 12 }}>
-           {/* TODO: Mejorar diseño */}
-        { categoriaSeleccionada && ListaCategorias(categoriaSeleccionada) }
-        { categoriaSeleccionada && OpcionesDeCategoria(categoriaSeleccionada) }
+      <Grid
+        container
+        spacing={{ xs: 2, md: 3 }}
+        columns={{ xs: 4, sm: 10, md: 12 }}
+        style={{marginTop: 5}}
+      >
+        {/* TODO: Mejorar diseño */}
+        {categoriaSeleccionada && ListaCategorias(categoriaSeleccionada)}
+        {categoriaSeleccionada && OpcionesDeCategoria(categoriaSeleccionada)}
       </Grid>
       <br />
       {/* TODO: Agregar algun separador para separar las raices */}

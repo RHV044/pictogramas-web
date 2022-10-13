@@ -522,12 +522,12 @@ export default function Pizarras(this: any) {
         // handleChange()
         console.log(evt)
       }}/>  
-      { pictogramasFiltrados.length > 0 && <div>Seleccione los pictogramas que desee agregar para utilizar en la pizarra</div>}
       <Container>
         <Grid
           container
           spacing={{ xs: 2, md: 3 }}
           columns={{ xs: 4, sm: 10, md: 12 }}
+          style={{marginTop: 2, marginBottom: 2}}
         >    
       { pictogramasFiltrados.map((pictograma) => {
         return (
@@ -565,7 +565,7 @@ export default function Pizarras(this: any) {
           })}
         </Grid>
       </Container>
-      <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 10, md: 12 }}>      
+      <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 10, md: 12 }} style={{marginTop: 2, marginBottom: 2}}>      
       { mostrarPictogramas && categoriaSeleccionada && ListaCategorias(categoriaSeleccionada) }
       { mostrarPictogramas && categoriaSeleccionada && OpcionesDeCategoria(categoriaSeleccionada) }
       </Grid>

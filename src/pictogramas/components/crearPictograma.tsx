@@ -105,7 +105,7 @@ export default function FormDialog() {
 
   return (
     <div>
-      <Button style={{marginBottom: 20}} variant="outlined" onClick={handleClickOpen}>
+      <Button style={{marginBottom: 0}} variant="outlined" onClick={handleClickOpen}>
         Crear Pictograma
       </Button>
       <Dialog open={open} onClose={handleClose}>

@@ -185,7 +185,7 @@ export default function Sugeridos(props: any) {
   );
 
   return (
-    <Box>
+    <Box style={{marginLeft: 20}}>
       <FormControlLabel
         control={<Switch checked={checked} onChange={handleChange} />}
         label="Sugeridos"
