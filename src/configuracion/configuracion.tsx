@@ -98,6 +98,7 @@ export default function Configuracion() {
         setAac(usuario.aac);
         setAacColor(usuario.aacColor);
         setSchematic(usuario.schematic);
+        setNivel(usuario.nivel.toString());
       }
       else{
         navigate('/cuenta/seleccionar' + location.search);
