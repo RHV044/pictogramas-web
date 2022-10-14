@@ -156,6 +156,13 @@ export async function ObtenerImagen(
   return await (await axios.get(apiPictogramas + '/pictogramas/' + pictograma +'/obtener')).data
 }
 
+export async function ObtenerImagenDePictogramaLocal(
+  pictograma: number
+){
+  let db = await IndexedDbService.create();
+  return await db.getValue('imagenes', pictograma);
+}
+
 export async function ObtenerImagenAsBlob(
   pictograma: IPictogram
 ){

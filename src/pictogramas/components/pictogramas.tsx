@@ -59,6 +59,7 @@ export default function Pictogramas(props: any) {
   const [pictogramasFiltrados, setPictogramasFiltrados] = useState(
     [] as IPictogram[]
   );
+  const [pictogramasPredecidos, setPictogramasPredecidos] = useState([] as IPictogram[])
   const [db, setDb] = useState(IndexedDbService.create());
   const [categorias, setCategorias] = useState([] as ICategoria[]);
 
@@ -74,6 +75,7 @@ export default function Pictogramas(props: any) {
       // (await db).putBulkValue("historicoUsoPictogramas", [{pictograma: pictoAgregado, previo: pictoPrevio, todosLosAnteriores: pictosAnteriores }])
     }
     let prediccionProximoPicto = await predict(pics);
+    setPictogramasPredecidos([prediccionProximoPicto])    
     console.log(
       `Proximo Pictograma sugerido: ${
         prediccionProximoPicto
@@ -245,10 +247,11 @@ export default function Pictogramas(props: any) {
         setPictogramas={UpdatePictogramas}
         pictogramas={pictogramasSeleccionados}
       />
-      {pictogramasSeleccionados && pictogramasSeleccionados.length > 0 && (
+      {pictogramasSeleccionados && pictogramasSeleccionados.length > 0 &&
+       pictogramasPredecidos && pictogramasPredecidos.length > 0 && pictogramasPredecidos[0] && (
         <Sugeridos
           setPictogramas={UpdatePictogramas}
-          pictogramas={pictogramasSeleccionados}
+          pictogramas={pictogramasPredecidos}
         />
       )}
       <Grid

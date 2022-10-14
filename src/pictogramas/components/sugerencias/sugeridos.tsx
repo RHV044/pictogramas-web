@@ -22,7 +22,7 @@ import { IUsuario } from '../../../login/model/usuario';
 import { IPictogram } from '../../models/pictogram';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import {
-  ObtenerPictogramasPorCategoria,
+  ObtenerImagenDePictogramaLocal
 } from '../../services/pictogramas-services';
 
 export default function Sugeridos(props: any) {
@@ -33,13 +33,24 @@ export default function Sugeridos(props: any) {
 
   useEffect(() => {
     // TODO: Cambiar a Obtencion de pictogramas recientes
-    ObtenerPictogramasPorCategoria(setPictogramas, -1);
+    let pictogramasPredecidos = props.pictogramas
+    console.log("PICTOGRAMAS PREDCIDOS: ", pictogramasPredecidos)
+    if(pictogramasPredecidos){
+      pictogramasPredecidos.map(async (p: IPictogram) => {
+        if (p){
+          ObtenerImagenDePictogramaLocal(p.id).then(imagen =>{
+            p.imagen = imagen.imagen
+          }) 
+        }     
+      })  
+      setPictogramas(props.pictogramas) 
+    } 
     getUsuarioLogueado().then((usuario) => {
       if (usuario != undefined) {
         setUserLogueado(usuario);
       }
     });
-  }, []);
+  }, [props.pictogramas]);
 
   function cumpleFiltros(
     pictograma: IPictogram,
@@ -85,7 +96,7 @@ export default function Sugeridos(props: any) {
         spacing={{ xs: 2, md: 3 }}
         columns={{ xs: 4, sm: 10, md: 12 }}
       >
-        {pictogramas.map((pictograma) => {
+        {pictogramas && pictogramas.length > 0 && pictogramas.map((pictograma) => {
           if (cumpleFiltros(pictograma, userLogueado))
             return (
               <Grid
