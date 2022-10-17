@@ -2,7 +2,17 @@ import { IndexedDbService } from "../../services/indexeddb-service";
 import { IPictogram } from "../models/pictogram";
 let bayes = require("bayes");
 const db = new IndexedDbService();
-let classifier = bayes();
+const BAYES_CLASSIFIER_DB_ID = 0;
+
+let classifier = async () => {
+  let classifierObject = await (
+    await db
+  ).getValue("historicoUsoPictogramas", BAYES_CLASSIFIER_DB_ID);
+
+  let classifierJSON = classifierObject.classifier;
+
+  return classifierJSON ? bayes.fromJson(classifierJSON) : bayes();
+};
 
 export async function learn(seleccionPictogramas: IPictogram[]) {
   if (seleccionPictogramas.length > 1) {
@@ -17,14 +27,24 @@ export async function learn(seleccionPictogramas: IPictogram[]) {
     console.log(
       `Learning: ${keywords} ==> ${nuevoPicto.id ?? nuevoPicto.identificador}`
     );
-    classifier.learn(keywords, nuevoPicto.id ?? nuevoPicto.identificador);
+    (await classifier()).learn(
+      keywords,
+      nuevoPicto.id ?? nuevoPicto.identificador
+    );
+
+    (await db).putOrPatchValue("historicoUsoPictogramas", {
+      id: BAYES_CLASSIFIER_DB_ID,
+      classifier: (await classifier()).toJson(),
+    });
+
+    console.log(await classifier());
   }
 }
 
 export async function predict(pictogramas: IPictogram[]): Promise<IPictogram> {
-  let resultId = await classifier.categorize(getKeywordsText(pictogramas));
+  let resultId = (await classifier()).categorize(getKeywordsText(pictogramas));
 
-  let pictogram = db.getPictogram(Number(resultId));
+  let pictogram = db.getPictogram(Number(await resultId));
 
   return pictogram;
 }

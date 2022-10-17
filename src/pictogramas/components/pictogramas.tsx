@@ -68,11 +68,10 @@ export default function Pictogramas(props: any) {
       //Entrena al algoritmo Naive Bayes.
       learn(pics);
 
-      // COMENTADO PARA NO LLENAR LA INDEXED DB DE DATOS HASTA ESTAR SEGURO DE COMO USARLOS
-      // let pictoAgregado = pics[pics.length-1];
-      // let pictoPrevio = pics[pics.length-2];
-      // let pictosAnteriores = pics.slice(0, pics.length-1);
-      // (await db).putBulkValue("historicoUsoPictogramas", [{pictograma: pictoAgregado, previo: pictoPrevio, todosLosAnteriores: pictosAnteriores }])
+      let pictoAgregado = pics[pics.length-1];
+      let pictoPrevio = pics[pics.length-2];
+      let pictosAnteriores = pics.slice(0, pics.length-1);
+      (await db).putBulkValue("historicoUsoPictogramas", [{pictograma: pictoAgregado, previo: pictoPrevio, todosLosAnteriores: pictosAnteriores }])
     }
     let prediccionProximoPicto = await predict(pics);
     setPictogramasPredecidos([prediccionProximoPicto])    
