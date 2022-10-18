@@ -90,7 +90,6 @@ export default function Pictogramas(props: any) {
     let nuevosPics = [...pics];
 
     LearnAndPredict(pics);
-    setPictogramas(nuevosPics);
     // Esto se hace pero en la 2da vez el componente seleccion no se renderiza nuevamente
     setPictogramasSeleccionados(null);
 
