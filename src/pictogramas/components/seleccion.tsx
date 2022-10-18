@@ -15,6 +15,7 @@ import Speech from 'react-speech';
 import { ObtenerInterpretacionNatural } from '../services/pictogramas-services';
 import { lightBlue } from '@mui/material/colors';
 import { useSpeechSynthesis } from 'react-speech-kit';
+import { Delete } from '@mui/icons-material';
 
 const apiPictogramas = process.env.URL_PICTOGRAMAS ?? 'http://localhost:5000';
 
@@ -136,11 +137,16 @@ export default function Seleccion(props: any) {
           columns={{ xs: 4, sm: 10, md: 12 }}
           alignItems="center"
           justifyContent="center"
-          style={{marginTop: 0}}
+          style={{ marginTop: 0 }}
         >
           <Grid key="Literal" item xs={12} sm={4} md={2}>
             <Button
-              style={{ marginLeft: 5, marginRight: 5, marginTop: 5, width: '100%' }}
+              style={{
+                marginLeft: 5,
+                marginRight: 5,
+                marginTop: 5,
+                width: '100%',
+              }}
               variant="contained"
               component="label"
               onClick={() => {
@@ -153,7 +159,12 @@ export default function Seleccion(props: any) {
           {textoAInterpretar.length > 0 && (
             <Grid key="Natural" item xs={12} sm={4} md={2}>
               <Button
-                style={{ marginLeft: 5, marginRight: 5, marginTop: 5, width: '100%' }}
+                style={{
+                  marginLeft: 5,
+                  marginRight: 5,
+                  marginTop: 5,
+                  width: '100%',
+                }}
                 variant="contained"
                 component="label"
                 onClick={() => {
@@ -165,6 +176,16 @@ export default function Seleccion(props: any) {
               </Button>
             </Grid>
           )}
+          <Grid key="Natural" item xs={12} sm={4} md={2}>
+            <Button 
+              variant="outlined"
+              onClick={() => props.setPictogramas([])}
+            >
+              <Delete>                
+              </Delete>
+              Reiniciar Seleccion
+            </Button>
+          </Grid>
         </Grid>
       )}
     </Container>
