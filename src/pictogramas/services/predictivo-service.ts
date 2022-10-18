@@ -9,7 +9,7 @@ let classifier = async () => {
     await db
   ).getValue("historicoUsoPictogramas", BAYES_CLASSIFIER_DB_ID);
 
-  let classifierJSON = classifierObject.classifier;
+  let classifierJSON = classifierObject?.classifier;
 
   return classifierJSON ? bayes.fromJson(classifierJSON) : bayes();
 };
