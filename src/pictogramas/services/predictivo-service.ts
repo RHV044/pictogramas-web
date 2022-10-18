@@ -27,17 +27,15 @@ export async function learn(seleccionPictogramas: IPictogram[]) {
     console.log(
       `Learning: ${keywords} ==> ${nuevoPicto.id ?? nuevoPicto.identificador}`
     );
-    (await classifier()).learn(
-      keywords,
-      nuevoPicto.id ?? nuevoPicto.identificador
-    );
+    let classifierObject = await classifier();
+    classifierObject.learn(keywords, nuevoPicto.id ?? nuevoPicto.identificador);
 
     (await db).putOrPatchValue("historicoUsoPictogramas", {
       id: BAYES_CLASSIFIER_DB_ID,
-      classifier: (await classifier()).toJson(),
+      classifier: classifierObject.toJson(),
     });
 
-    console.log(await classifier());
+    console.log(classifierObject);
   }
 }
 
