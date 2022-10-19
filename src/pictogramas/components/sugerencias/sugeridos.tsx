@@ -128,6 +128,7 @@ export default function Sugeridos(props: any) {
                     >
                       <CardActionArea
                         onClick={() => {
+                          //TODO: Cuando se selecciona, pisa los seleccionados actual con 2 veces el mismo pictograma
                           let pictogramasSeleccionados = props.pictogramas;
                           pictogramasSeleccionados.push(pictograma);
                           props.setPictogramas(pictogramasSeleccionados);

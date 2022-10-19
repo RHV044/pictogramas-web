@@ -71,6 +71,8 @@ export default function Pictogramas(props: any) {
       let pictoAgregado = pics[pics.length-1];
       let pictoPrevio = pics[pics.length-2];
       let pictosAnteriores = pics.slice(0, pics.length-1);
+      //TODO: Si es el primero, es un nuevo registro
+      // pero si es uno que continua, debo pisar el registro (de esta manera guardo un unico registro que contiene toda la secuencia)
       (await db).putBulkValue("historicoUsoPictogramas", [{pictograma: pictoAgregado, previo: pictoPrevio, todosLosAnteriores: pictosAnteriores }])
     }
     let prediccionProximoPicto = await predict(pics);
