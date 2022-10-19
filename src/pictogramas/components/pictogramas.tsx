@@ -40,6 +40,7 @@ import {
 } from '../../services/usuarios-services';
 import Recientes from './sugerencias/recientes';
 import Sugeridos from './sugerencias/sugeridos';
+import { CurrencyBitcoin } from '@mui/icons-material';
 const db = new IndexedDbService();
 
 export default function Pictogramas(props: any) {
@@ -71,16 +72,39 @@ export default function Pictogramas(props: any) {
       let pictoAgregado = pics[pics.length-1];
       let pictoPrevio = pics[pics.length-2];
       let pictosAnteriores = pics.slice(0, pics.length-1);
-      (await db).putBulkValue("historicoUsoPictogramas", [{pictograma: pictoAgregado, previo: pictoPrevio, todosLosAnteriores: pictosAnteriores }])
+      //TODO: Si es el primero, es un nuevo registro
+      // pero si es uno que continua, debo pisar el registro (de esta manera guardo un unico registro que contiene toda la secuencia)
+      
+      if(pictosAnteriores.length > 0){
+        // Esta seleccion ya fue iniciada previamente, debo actualizar un registro existente
+        IndexedDbService.create().then((indexeddb) => {
+          indexeddb.getAllValues('historicoUsoPictogramas').then(async (registros) => {
+
+            // Agarro Automaticamente el ultimo ya que este es el que debo pisar
+            let historicoReverso = registros.slice().reverse();
+            let id = historicoReverso[0].id
+            if(id !== 0){
+              // Utilizo automaticamente el ultimo ID generado
+              indexeddb.putOrPatchValue("historicoUsoPictogramas", {id: id, fecha: new Date().toISOString(), usuario: usuarioLogueado?.id ,pictograma: pictoAgregado, previo: pictoPrevio, todosLosAnteriores: pictosAnteriores })
+            }   
+            else{
+              // No deberia nunca entrar aca
+              indexeddb.putOrPatchValue("historicoUsoPictogramas", {id: usuarioLogueado?.id + '_' + Date.now().toString(), usuario: usuarioLogueado?.id, fecha: new Date().toISOString(), pictograma: pictoAgregado, previo: pictoPrevio, todosLosAnteriores: pictosAnteriores })
+            }     
+          })
+        })        
+      }
+      else{
+        // Esta seleccion es nueva, debe obligatoriamente crear un nuevo registro
+        (await db).putBulkValue("historicoUsoPictogramas", [{id: usuarioLogueado?.id + '_' + Date.now().toString(), usuario: usuarioLogueado?.id, fecha: new Date().toISOString(), pictograma: pictoAgregado, previo: pictoPrevio, todosLosAnteriores: pictosAnteriores }])
+      }      
     }
-    let prediccionProximoPicto = await predict(pics);
-    setPictogramasPredecidos([prediccionProximoPicto])    
+    let prediccionProximosPictos = await predict(pics);
+    setPictogramasPredecidos(prediccionProximosPictos)    
     console.log(
-      `Proximo Pictograma sugerido: ${
-        prediccionProximoPicto
-          ? prediccionProximoPicto?.id +
-            ' - ' +
-            prediccionProximoPicto?.keywords[0].keyword
+      `Proximos Pictogramas sugerido: ${
+        prediccionProximosPictos && prediccionProximosPictos.length>0
+          ? prediccionProximosPictos.map(x=>x.keywords[0].keyword).reduce((prev,curr) => prev + ", " + curr)
           : 'no prediction'
       }`
     );
@@ -90,7 +114,6 @@ export default function Pictogramas(props: any) {
     let nuevosPics = [...pics];
 
     LearnAndPredict(pics);
-    setPictogramas(nuevosPics);
     // Esto se hace pero en la 2da vez el componente seleccion no se renderiza nuevamente
     setPictogramasSeleccionados(null);
 
@@ -98,6 +121,7 @@ export default function Pictogramas(props: any) {
   };
 
   useEffect(() => {
+    dispatchEvent(new CustomEvent('sincronizar'));
     getUsuarioLogueado().then((usuario) => {
       if (usuario === null || usuario === undefined) {
         // Redirijo a seleccionar cuenta
@@ -250,7 +274,8 @@ export default function Pictogramas(props: any) {
        pictogramasPredecidos && pictogramasPredecidos.length > 0 && pictogramasPredecidos[0] && (
         <Sugeridos
           setPictogramas={UpdatePictogramas}
-          pictogramas={pictogramasPredecidos}
+          pictogramas={pictogramasSeleccionados}
+          pictogramasPredecidos={pictogramasPredecidos}
         />
       )}
       <Grid

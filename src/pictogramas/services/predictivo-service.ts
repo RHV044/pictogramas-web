@@ -9,7 +9,7 @@ let classifier = async () => {
     await db
   ).getValue("historicoUsoPictogramas", BAYES_CLASSIFIER_DB_ID);
 
-  let classifierJSON = classifierObject.classifier;
+  let classifierJSON = classifierObject?.classifier;
 
   return classifierJSON ? bayes.fromJson(classifierJSON) : bayes();
 };
@@ -27,26 +27,31 @@ export async function learn(seleccionPictogramas: IPictogram[]) {
     console.log(
       `Learning: ${keywords} ==> ${nuevoPicto.id ?? nuevoPicto.identificador}`
     );
-    (await classifier()).learn(
-      keywords,
-      nuevoPicto.id ?? nuevoPicto.identificador
-    );
+    let classifierObject = await classifier();
+    classifierObject.learn(keywords, nuevoPicto.id ?? nuevoPicto.identificador);
 
     (await db).putOrPatchValue("historicoUsoPictogramas", {
       id: BAYES_CLASSIFIER_DB_ID,
-      classifier: (await classifier()).toJson(),
+      classifier: classifierObject.toJson(),
     });
 
-    console.log(await classifier());
+    console.log(classifierObject);
   }
 }
 
-export async function predict(pictogramas: IPictogram[]): Promise<IPictogram> {
-  let resultId = (await classifier()).categorize(getKeywordsText(pictogramas));
+export async function predict(
+  pictogramas: IPictogram[]
+): Promise<IPictogram[]> {
+  let resultIds: string[] = await (
+    await classifier()
+  ).categorize(getKeywordsText(pictogramas), 3);
 
-  let pictogram = db.getPictogram(Number(await resultId));
+  let pictograms: IPictogram[] = [];
 
-  return pictogram;
+  for (let id of resultIds) {
+    pictograms.push(await db.getPictogram(Number(id)));
+  }
+  return pictograms;
 }
 
 function getKeywordsText(pictograms: IPictogram[]): string {

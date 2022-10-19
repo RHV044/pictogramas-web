@@ -49,6 +49,7 @@ export default function Actividad(){
   }, [categorias]) 
 
   useEffect(() => {
+    dispatchEvent(new CustomEvent('sincronizar'));
     let pic = pictogramas.sort(() => (Math.random() > 0.5 ? 1 : -1)).find((p : IPictogram) => 
       p.categorias?.sort(() => (Math.random() > 0.5 ? 1 : -1)).some(c => c.id === categoria1?.id 
         && c.id !== categoria2?.id && c.id !== categoria3?.id && c.id !== categoria4?.id))   

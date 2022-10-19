@@ -33,24 +33,27 @@ export default function Sugeridos(props: any) {
 
   useEffect(() => {
     // TODO: Cambiar a Obtencion de pictogramas recientes
-    let pictogramasPredecidos = props.pictogramas
+    let pictogramasPredecidos = props.pictogramasPredecidos
     console.log("PICTOGRAMAS PREDCIDOS: ", pictogramasPredecidos)
     if(pictogramasPredecidos){
       pictogramasPredecidos.map(async (p: IPictogram) => {
-        if (p){
+        if (p !== undefined && p !== null){
           ObtenerImagenDePictogramaLocal(p.id).then(imagen =>{
-            p.imagen = imagen.imagen
+            if (imagen && imagen.imagen)
+            {
+              p.imagen = imagen.imagen
+            }
           }) 
         }     
       })  
-      setPictogramas(props.pictogramas) 
+      setPictogramas(props.pictogramasPredecidos) 
     } 
     getUsuarioLogueado().then((usuario) => {
       if (usuario != undefined) {
         setUserLogueado(usuario);
       }
     });
-  }, [props.pictogramas]);
+  }, [props.pictogramasPredecidos]);
 
   function cumpleFiltros(
     pictograma: IPictogram,
@@ -97,7 +100,7 @@ export default function Sugeridos(props: any) {
         columns={{ xs: 4, sm: 10, md: 12 }}
       >
         {pictogramas && pictogramas.length > 0 && pictogramas.map((pictograma) => {
-          if (cumpleFiltros(pictograma, userLogueado))
+          if (pictograma && cumpleFiltros(pictograma, userLogueado))
             return (
               <Grid
                 key={pictograma.id ? pictograma.id : pictograma.identificador}

@@ -176,7 +176,7 @@ export default function Seleccion(props: any) {
               </Button>
             </Grid>
           )}
-          <Grid key="Natural" item xs={12} sm={4} md={2}>
+          <Grid key="ReiniciarSeleccion" item xs={12} sm={4} md={2}>
             <Button 
               variant="outlined"
               onClick={() => props.setPictogramas([])}
