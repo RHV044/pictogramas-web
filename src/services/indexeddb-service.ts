@@ -145,7 +145,7 @@ export class IndexedDbService {
           if (!db.objectStoreNames.contains("historicoUsoPictogramas")) {
             objectStore = db.createObjectStore("historicoUsoPictogramas", {
               //TODO: Se podria sacar el autoincrement y generar un id que tenga por ejemplo usuario_date para poder registrar y luego usar en estadisticas
-              autoIncrement: true,
+              autoIncrement: false,
               keyPath: "id",
             });
           }
@@ -208,6 +208,7 @@ export class IndexedDbService {
     const tx = this.db.transaction(tableName, "readwrite");
     const store = tx.objectStore(tableName);
 
+    try{
     let source = await store.get(value.id);
     let newValue = value;
     if (source) newValue = apply(source, value);
@@ -215,6 +216,11 @@ export class IndexedDbService {
     const result = await store.put(newValue);
     console.log("Put Data ", JSON.stringify(result));
     return result;
+    }
+    catch(ex){
+      console.log("Error en put or patch value: ", ex)
+      return null
+    }
   }
 
   public async putOrPatchValueWithoutId(tableName: string, value: any) {

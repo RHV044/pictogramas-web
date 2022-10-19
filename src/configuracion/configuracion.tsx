@@ -88,6 +88,7 @@ export default function Configuracion() {
   const niveles = ["Inicial","Intermedio","Avanzado", "Personalizado"];
 
   useEffect(() => {
+    dispatchEvent(new CustomEvent('sincronizar'));
     getUsuarioLogueado().then((usuario) => {
       if (usuario != undefined) {
         setUserLogueado(usuario);

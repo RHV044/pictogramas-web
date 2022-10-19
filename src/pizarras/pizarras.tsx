@@ -74,6 +74,7 @@ export default function Pizarras(this: any) {
   const [pizarra, setPizarra] = useState({} as IPizarra)
   
   useEffect(() => {
+    dispatchEvent(new CustomEvent('sincronizar'));
     getUsuarioLogueado().then(usuario => {
       if(usuario === null || usuario === undefined){
         // Redirijo a seleccionar cuenta

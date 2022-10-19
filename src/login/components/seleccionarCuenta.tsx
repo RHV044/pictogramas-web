@@ -30,6 +30,7 @@ const SeleccionarCuenta = (props: any) => {
   })  
 
   useEffect(() => {
+    dispatchEvent(new CustomEvent('sincronizar'));
     console.log('vamos a obtener los usuarios')
     db.then(d => {
       setDb1(d)
