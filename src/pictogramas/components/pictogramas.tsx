@@ -40,6 +40,7 @@ import {
 } from '../../services/usuarios-services';
 import Recientes from './sugerencias/recientes';
 import Sugeridos from './sugerencias/sugeridos';
+import { CurrencyBitcoin } from '@mui/icons-material';
 const db = new IndexedDbService();
 
 export default function Pictogramas(props: any) {
@@ -75,14 +76,12 @@ export default function Pictogramas(props: any) {
       // pero si es uno que continua, debo pisar el registro (de esta manera guardo un unico registro que contiene toda la secuencia)
       (await db).putBulkValue("historicoUsoPictogramas", [{pictograma: pictoAgregado, previo: pictoPrevio, todosLosAnteriores: pictosAnteriores }])
     }
-    let prediccionProximoPicto = await predict(pics);
-    setPictogramasPredecidos([prediccionProximoPicto])    
+    let prediccionProximosPictos = await predict(pics);
+    setPictogramasPredecidos(prediccionProximosPictos)    
     console.log(
-      `Proximo Pictograma sugerido: ${
-        prediccionProximoPicto
-          ? prediccionProximoPicto?.id +
-            ' - ' +
-            prediccionProximoPicto?.keywords[0].keyword
+      `Proximos Pictogramas sugerido: ${
+        prediccionProximosPictos && prediccionProximosPictos.length>0
+          ? prediccionProximosPictos.map(x=>x.keywords[0].keyword).reduce((prev,curr) => prev + ", " + curr)
           : 'no prediction'
       }`
     );
