@@ -39,12 +39,19 @@ export async function learn(seleccionPictogramas: IPictogram[]) {
   }
 }
 
-export async function predict(pictogramas: IPictogram[]): Promise<IPictogram> {
-  let resultId = (await classifier()).categorize(getKeywordsText(pictogramas));
+export async function predict(
+  pictogramas: IPictogram[]
+): Promise<IPictogram[]> {
+  let resultIds: string[] = await (
+    await classifier()
+  ).categorize(getKeywordsText(pictogramas), 3);
 
-  let pictogram = db.getPictogram(Number(await resultId));
+  let pictograms: IPictogram[] = [];
 
-  return pictogram;
+  for (let id of resultIds) {
+    pictograms.push(await db.getPictogram(Number(id)));
+  }
+  return pictograms;
 }
 
 function getKeywordsText(pictograms: IPictogram[]): string {
