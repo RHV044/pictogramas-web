@@ -32,6 +32,7 @@ import { useEffect, useState } from 'react';
 import {
   ActualizarUsuarioPassword,
   getUsuarioLogueado,
+  InsertarCategoriasPorUsuario,
   usuarioLogueado,
 } from '../services/usuarios-services';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -42,6 +43,7 @@ import { formatDate, ObtenerCategorias } from '../pictogramas/services/pictogram
 import React from 'react';
 import FormDialogValidarAcceso from './components/validarCambioConfiguracion';
 import imagenUsuario from '../commons/imagen-usuario.jpg'
+import { ICategoriaPorUsuario } from '../pictogramas/models/categoriaPorUsuario';
 
 function agruparElementos(datos, predicado) : ICategoria[] { //agrupar categorias por algun campo en particular
 
@@ -144,6 +146,26 @@ export default function Configuracion() {
     reader.onerror = function (error) {
       console.log('Error: ', error);
     };
+ }
+
+ function actualizarCategoriasDeUsuario(categorias : ICategoria[]){
+  //TODO creo que habría que eliminar primero
+  if(userLogueado){
+  categorias.forEach(c => {
+    let categoriaPorUsuario : ICategoriaPorUsuario = {
+      id: userLogueado.id?.toString() + '_' + c.id,
+      idCategoria: c.id,
+      idUsuario: (userLogueado.id === undefined || userLogueado.id === null) ? 0 : userLogueado.id,
+      pendienteAgregar: true,
+      pendienteEliminar: false
+    };
+    IndexedDbService.create().then(async (db) => {
+      await db.putOrPatchValue('categoriasPorUsuario', categoriaPorUsuario);
+      dispatchEvent(new CustomEvent('sincronizar'));
+    })
+     
+  });  
+    }
  }
 
   return (
@@ -327,8 +349,12 @@ export default function Configuracion() {
               <Button
                 variant="contained"
                 style={{ alignItems: 'center', margin: '10px' }}
-                onClick={async () => {
+                onClick={async () => {                  
                   actualizarUsuario()
+                  if(Number(nivel) === 3){
+                        actualizarCategoriasDeUsuario(categoriasFiltradas)
+                  }
+                  
                   window.location.reload();
                 }}
               >

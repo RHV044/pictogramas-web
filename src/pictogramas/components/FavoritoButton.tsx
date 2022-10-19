@@ -50,7 +50,7 @@ const FavoritoButton = (props: any) => {
         const favPorUser: IFavoritoPorUsuario = {
           id: newId,
           idUsuario: (userLogueado.id === undefined || userLogueado.id === null) ? 0 : userLogueado.id,
-          idPictograma: props.pictograma.id,
+          idCategoria: props.pictograma.id,
           pendienteAgregar: true,
           pendienteEliminar: false
         };
@@ -62,7 +62,7 @@ const FavoritoButton = (props: any) => {
       } else {        
                 
         let favoritos = (await db).searchFavoritoByUser((userLogueado && userLogueado.id) ? userLogueado.id : 0);
-        let favorito = (await favoritos).find(f => f.idPictograma === props.pictograma.id);
+        let favorito = (await favoritos).find(f => f.idCategoria === props.pictograma.id);
         if (favorito){
           
           favorito.pendienteEliminar = true;

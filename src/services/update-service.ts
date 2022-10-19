@@ -19,6 +19,8 @@ import {
 import {
   ActualizarUsuario,
   getUsuarioLogueado,
+  InsertarCategoriasPorUsuario,
+  ObtenerCategoriasPorUsuario,
   ObtenerFavoritosDeUsuario,
   ObtenerUsuarioInfo,
   SubirInformacionPictogramaPropio,
@@ -33,6 +35,7 @@ import {
 import { GuardarPizarra } from '../pizarras/services/pizarras-services';
 import { IUsuario } from '../login/model/usuario';
 import { IFavoritoPorUsuario } from '../pictogramas/models/favoritoPorUsuario';
+import { ICategoriaPorUsuario } from '../pictogramas/models/categoriaPorUsuario';
 
 const apiPictogramas = process.env.URL_PICTOGRAMAS ?? 'http://localhost:5000';
 
@@ -44,6 +47,7 @@ let actualizacionPizarras = false;
 let actualizacionUsuarios = false;
 let actualizacionPictogramas = false;
 let actualizacionFavoritos = false;
+let actualizacionCategoriasPorUsuario = false;
 let iniciando = false;
 
 export class UpdateService {
@@ -283,6 +287,7 @@ export class UpdateService {
       this.actualizarUsuarios();
       this.actualizarPictogramas();
       this.actualizarFavoritos();
+      this.actualizarCategoriasPorUsuarios();
     }
   }
 
@@ -324,8 +329,9 @@ export class UpdateService {
 
   async actualizarPictogramas() {
     try {
+      let usuario = (await getUsuarioLogueado());
       let usuarioId =
-        usuarioLogueado?.id !== undefined ? usuarioLogueado?.id : 0;
+        usuario !== undefined ? usuario.id : 0;
       ObtenerInformacionPictogramas().then((pictogramas) => {
         let pictogramasFiltrados = pictogramas.filter(
           (p: IPictogram) => p.idUsuario === usuarioId
@@ -404,9 +410,10 @@ export class UpdateService {
 
   async actualizarPizarras() {
     try {
+      let usuario = (await getUsuarioLogueado());
       let usuarioId =
-        usuarioLogueado?.id !== undefined ? usuarioLogueado?.id : 0;
-      ObtenerPizarras(usuarioId).then((pizarrasApi: IPizarra[]) => {
+        usuario !== undefined ? usuario.id : 0;
+      ObtenerPizarras(usuarioId !== undefined ? usuarioId : 0).then((pizarrasApi: IPizarra[]) => {
         IndexedDbService.create().then((db) => {
           db.getAllValues('pizarras').then(async (pizarras: IPizarra[]) => {
             // Carga de pizarras de la api que no esten en el indexDb
@@ -477,9 +484,10 @@ export class UpdateService {
 
   async actualizarFavoritos() {
     try {
+      let usuario = (await getUsuarioLogueado());
       let usuarioId =
-        usuarioLogueado?.id !== undefined ? usuarioLogueado?.id : 0;
-      ObtenerFavoritosDeUsuario(usuarioId).then(
+        usuario !== undefined ? usuario.id : 0;
+      ObtenerFavoritosDeUsuario(usuarioId !== undefined ? usuarioId : 0).then(
         (favoritosApi: IFavoritoPorUsuario[]) => {
           IndexedDbService.create().then((db) => {
             db.getAllValues('favoritosPorUsuario').then(
@@ -494,7 +502,7 @@ export class UpdateService {
                     const favCompleto: IFavoritoPorUsuario = {
                       id: favorito.id,
                       idUsuario: favorito.idUsuario,
-                      idPictograma: favorito.idPictograma,
+                      idCategoria: favorito.idCategoria,
                       pendienteAgregar: false,
                       pendienteEliminar: false,
                     };
@@ -506,8 +514,8 @@ export class UpdateService {
                   // Creacion del favorito en la api
                   if (favorito.pendienteAgregar) {
                     await GuardarPictogramaFavorito(
-                      favorito.idPictograma,
-                      usuarioId
+                      favorito.idCategoria,
+                      usuarioId !== undefined ? usuarioId : 0
                     );
                     favorito.pendienteAgregar = false;
                     db.putOrPatchValue('favoritosPorUsuario', favorito);
@@ -518,8 +526,8 @@ export class UpdateService {
                   // Eliminacion de favorito en la api
                   if (favorito.pendienteEliminar) {
                     EliminarPictogramaFavorito(
-                      favorito.idPictograma,
-                      usuarioId
+                      favorito.idCategoria,
+                      usuarioId !== undefined ? usuarioId : 0
                     ).then(() => {
                       // let idFavorito = usuarioId.toString() + "_" + favorito.idPictograma.toString();
                       db.deleteValue('favoritosPorUsuario', favorito.id);
@@ -539,6 +547,65 @@ export class UpdateService {
   }
 
   async actualizarCategoriasPorUsuarios(){
-    
+    try {
+      let usuario = (await getUsuarioLogueado());
+      let usuarioId =
+        usuario !== undefined ? usuario.id : 0;
+      ObtenerCategoriasPorUsuario(usuarioId !== undefined ? usuarioId : 0).then(
+        (categoriasDeUsuarioApi: ICategoriaPorUsuario[]) => {
+          IndexedDbService.create().then((db) => {
+            db.getAllValues('categoriasPorUsuario').then(
+              async (categoriasDeUsuario: ICategoriaPorUsuario[]) => {
+                // Carga de categoriaPorUsuario de la api que no esten en el indexDb
+                categoriasDeUsuarioApi.map((categoriaDeUsuario) => {
+                  if (
+                    !categoriasDeUsuario.some(
+                      (cxu) => cxu.id === categoriaDeUsuario.id && !cxu.pendienteAgregar
+                    )
+                  ) {
+                    const cxuCompleto: IFavoritoPorUsuario = {
+                      id: categoriaDeUsuario.id,
+                      idUsuario: categoriaDeUsuario.idUsuario,
+                      idCategoria: categoriaDeUsuario.idCategoria,
+                      pendienteAgregar: false,
+                      pendienteEliminar: false,
+                    };
+                    db.putOrPatchValue('favoritosPorUsuario', cxuCompleto);
+                  }
+                });
+
+                categoriasDeUsuario.map(async (categoriaDeUsuario) => {
+                  // Creacion del categoriaPorUsuario en la api
+                  if (categoriaDeUsuario.pendienteAgregar) {
+                    await InsertarCategoriasPorUsuario(
+                      usuarioId !== undefined ? usuarioId : 0,
+                      categoriaDeUsuario.idCategoria                      
+                    );
+                    categoriaDeUsuario.pendienteAgregar = false;
+                    db.putOrPatchValue('categoriasPorUsuario', categoriaDeUsuario);
+                  }
+
+                  //TODO: Verificar funcionamiento
+
+                  // Eliminacion de categoriaPorUsuario en la api
+                  if (categoriaDeUsuario.pendienteEliminar) {
+                    InsertarCategoriasPorUsuario(
+                      usuarioId !== undefined ? usuarioId : 0,
+                      categoriaDeUsuario.idCategoria
+                    ).then(() => {                      
+                      db.deleteValue('categoriasPorUsuario', categoriaDeUsuario.id);
+                    });
+                  }
+                });
+              }
+            );
+            actualizacionCategoriasPorUsuario = false;
+          });
+        }
+      );
+    } catch (ex) {
+      actualizacionCategoriasPorUsuario = false;
+      console.log(ex);
+    }
   }
 }

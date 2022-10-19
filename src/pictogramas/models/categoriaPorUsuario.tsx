@@ -1,7 +1,7 @@
 export interface ICategoriaPorUsuario {
     id: string,
     idUsuario: number,
-    idPictograma: number,
+    idCategoria: number,
     pendienteEliminar: boolean,
     pendienteAgregar: boolean
 }
