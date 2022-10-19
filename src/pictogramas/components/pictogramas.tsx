@@ -251,7 +251,8 @@ export default function Pictogramas(props: any) {
        pictogramasPredecidos && pictogramasPredecidos.length > 0 && pictogramasPredecidos[0] && (
         <Sugeridos
           setPictogramas={UpdatePictogramas}
-          pictogramas={pictogramasPredecidos}
+          pictogramas={pictogramasSeleccionados}
+          pictogramasPredecidos={pictogramasPredecidos}
         />
       )}
       <Grid

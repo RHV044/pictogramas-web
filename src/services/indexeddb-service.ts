@@ -144,6 +144,7 @@ export class IndexedDbService {
 
           if (!db.objectStoreNames.contains("historicoUsoPictogramas")) {
             objectStore = db.createObjectStore("historicoUsoPictogramas", {
+              //TODO: Se podria sacar el autoincrement y generar un id que tenga por ejemplo usuario_date para poder registrar y luego usar en estadisticas
               autoIncrement: true,
               keyPath: "id",
             });
