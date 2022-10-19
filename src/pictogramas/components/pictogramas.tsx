@@ -79,24 +79,24 @@ export default function Pictogramas(props: any) {
         // Esta seleccion ya fue iniciada previamente, debo actualizar un registro existente
         IndexedDbService.create().then((indexeddb) => {
           indexeddb.getAllValues('historicoUsoPictogramas').then(async (registros) => {
-            
+
             // Agarro Automaticamente el ultimo ya que este es el que debo pisar
             let historicoReverso = registros.slice().reverse();
             let id = historicoReverso[0].id
             if(id !== 0){
               // Utilizo automaticamente el ultimo ID generado
-              indexeddb.putOrPatchValue("historicoUsoPictogramas", {id: id, fecha: new Date().toISOString(), pictograma: pictoAgregado, previo: pictoPrevio, todosLosAnteriores: pictosAnteriores })
+              indexeddb.putOrPatchValue("historicoUsoPictogramas", {id: id, fecha: new Date().toISOString(), usuario: usuarioLogueado?.id ,pictograma: pictoAgregado, previo: pictoPrevio, todosLosAnteriores: pictosAnteriores })
             }   
             else{
               // No deberia nunca entrar aca
-              indexeddb.putOrPatchValue("historicoUsoPictogramas", {id: usuarioLogueado?.id + '_' + Date.now().toString(), fecha: new Date().toISOString(), pictograma: pictoAgregado, previo: pictoPrevio, todosLosAnteriores: pictosAnteriores })
+              indexeddb.putOrPatchValue("historicoUsoPictogramas", {id: usuarioLogueado?.id + '_' + Date.now().toString(), usuario: usuarioLogueado?.id, fecha: new Date().toISOString(), pictograma: pictoAgregado, previo: pictoPrevio, todosLosAnteriores: pictosAnteriores })
             }     
           })
         })        
       }
       else{
         // Esta seleccion es nueva, debe obligatoriamente crear un nuevo registro
-        (await db).putBulkValue("historicoUsoPictogramas", [{id: usuarioLogueado?.id + '_' + Date.now().toString(), fecha: new Date().toISOString(), pictograma: pictoAgregado, previo: pictoPrevio, todosLosAnteriores: pictosAnteriores }])
+        (await db).putBulkValue("historicoUsoPictogramas", [{id: usuarioLogueado?.id + '_' + Date.now().toString(), usuario: usuarioLogueado?.id, fecha: new Date().toISOString(), pictograma: pictoAgregado, previo: pictoPrevio, todosLosAnteriores: pictosAnteriores }])
       }      
     }
     let prediccionProximosPictos = await predict(pics);

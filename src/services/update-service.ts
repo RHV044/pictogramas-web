@@ -44,6 +44,7 @@ let actualizacionPizarras = false;
 let actualizacionUsuarios = false;
 let actualizacionPictogramas = false;
 let actualizacionFavoritos = false;
+let actualizacionEstadisticas = false;
 let iniciando = false;
 
 export class UpdateService {
@@ -273,24 +274,50 @@ export class UpdateService {
       !actualizacionPictogramas &&
       !actualizacionFavoritos &&
       !actualizacionPizarras &&
-      !actualizacionUsuarios
+      !actualizacionUsuarios &&
+      !actualizacionEstadisticas
     ) {
       actualizacionPictogramas = true;
       actualizacionFavoritos = true;
       actualizacionPizarras = true;
       actualizacionUsuarios = true;
+      actualizacionEstadisticas = true;
       this.actualizarPizarras();
       this.actualizarUsuarios();
       this.actualizarPictogramas();
       this.actualizarFavoritos();
+      this.actualizarEstadisticas();
     }
   }
 
   //
   // La creacion de Usuario requiere obligatoriamente de conectividad por cuestiones practicas
   //
-  async;
-  actualizarUsuarios() {
+  async actualizarEstadisticas() {
+    try {
+      //Obtener usuarios del indexDB
+      IndexedDbService.create().then((db) => {
+        db.getAllValues('historicoUsoPictogramas').then(async (registros: IUsuario[]) => {
+          registros.map(async (registro) => {
+            if (registro.id && registro.id !== 0)
+            {
+              //No es el categorize, lo debo guardar en la api y luego borrarlo
+              //db.deleteValue('historicoUsoPictogramas', registro.id.toString())
+            }
+
+          });
+          actualizacionEstadisticas = false;
+        });
+      });
+    } catch (ex) {
+      actualizacionEstadisticas = false;
+    }
+  }
+
+  //
+  // La creacion de Usuario requiere obligatoriamente de conectividad por cuestiones practicas
+  //
+  async actualizarUsuarios() {
     try {
       //Obtener usuarios del indexDB
       IndexedDbService.create().then((db) => {
