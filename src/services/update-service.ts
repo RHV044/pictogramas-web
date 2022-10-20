@@ -320,7 +320,6 @@ export class UpdateService {
               await GuardarEstadistica(registro)
               await db.deleteValue('historicoUsoPictogramas', registro.id.toString())
             }
-
           });
           actualizacionEstadisticas = false;
         });
