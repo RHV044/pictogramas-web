@@ -19,6 +19,7 @@ import {
 import {
   ActualizarUsuario,
   getUsuarioLogueado,
+  GuardarEstadistica,
   InsertarCategoriasPorUsuario,
   ObtenerCategoriasPorUsuario,
   ObtenerFavoritosDeUsuario,
@@ -273,25 +274,34 @@ export class UpdateService {
   }
 
   async sincronizar() {
-    if (
-      window.navigator.onLine &&
-      !actualizacionPictogramas &&
-      !actualizacionFavoritos &&
-      !actualizacionPizarras &&
-      !actualizacionUsuarios &&
-      !actualizacionEstadisticas
-    ) {
-      actualizacionPictogramas = true;
-      actualizacionFavoritos = true;
-      actualizacionPizarras = true;
-      actualizacionUsuarios = true;
-      actualizacionEstadisticas = true;
-      this.actualizarPizarras();
-      this.actualizarUsuarios();
-      this.actualizarPictogramas();
-      this.actualizarFavoritos();
-      this.actualizarEstadisticas();
-      this.actualizarCategoriasPorUsuarios();
+    try{
+      if (
+        window.navigator.onLine &&
+        !actualizacionPictogramas &&
+        !actualizacionFavoritos &&
+        !actualizacionPizarras &&
+        !actualizacionUsuarios &&
+        !actualizacionEstadisticas
+      ) {
+        actualizacionPictogramas = true;
+        actualizacionFavoritos = true;
+        actualizacionPizarras = true;
+        actualizacionUsuarios = true;
+        actualizacionEstadisticas = true;
+        this.actualizarPizarras();
+        this.actualizarUsuarios();
+        this.actualizarPictogramas();
+        this.actualizarFavoritos();
+        this.actualizarEstadisticas();
+        this.actualizarCategoriasPorUsuarios();      
+      }
+    }
+    catch(ex){
+      actualizacionPictogramas = false;
+      actualizacionFavoritos = false;
+      actualizacionPizarras = false;
+      actualizacionUsuarios = false;
+      actualizacionEstadisticas = false;
     }
   }
 
@@ -307,7 +317,8 @@ export class UpdateService {
             if (registro.id && registro.id !== 0)
             {
               //No es el categorize, lo debo guardar en la api y luego borrarlo
-              //db.deleteValue('historicoUsoPictogramas', registro.id.toString())
+              await GuardarEstadistica(registro)
+              await db.deleteValue('historicoUsoPictogramas', registro.id.toString())
             }
 
           });
