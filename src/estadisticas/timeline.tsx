@@ -69,8 +69,9 @@ export default function TimeLine(props: any){
       }
     });
 
+    pictogramas.sort(p => p.cantidad).slice(0,5)
     console.log("PICTOGRAMAS DE ESTADISTICA: ", pictogramas)
-    //TODO: Se deben ordernar por la cantidad, y devolver una cantidad de elementos especificada
+
     return pictogramas
   }
 
@@ -83,7 +84,7 @@ export default function TimeLine(props: any){
           variant="body2"
           color="text.secondary"
         >
-          9:30 am
+          6:00 a 11:00
         </TimelineOppositeContent>
         <TimelineSeparator>
           <TimelineConnector />
@@ -105,7 +106,7 @@ export default function TimeLine(props: any){
           variant="body2"
           color="text.secondary"
         >
-          10:00 am
+          12:00 a 15:00
         </TimelineOppositeContent>
         <TimelineSeparator>
           <TimelineConnector />
