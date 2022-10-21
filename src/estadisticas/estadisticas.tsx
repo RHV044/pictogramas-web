@@ -34,7 +34,7 @@ export default function Estadisticas(){
           </Box>
           <Box sx={{ display: 'flex' }}> Total Categorias distintas utilizadas: {estadisticas.cantidadDeCategoriasDistintasUtilizadas} </Box>
           {/* TODO: Podriamos ver de mostrar alguna rutina que se repita */}
-          <TimeLine />
+          <TimeLine estadisticas={estadisticas.todasLasEstadisticas}/>
         </>
       )}
     </div>

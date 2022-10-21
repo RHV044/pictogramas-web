@@ -161,6 +161,15 @@ export async function ObtenerPictogramasConImagenes(ids : number[]){
   return pictogramasFiltrados
 }
 
+export async function ObtenerPictogramaConImagenes(id : number){
+  let db = await IndexedDbService.create();
+  let pictograma = await db.getValue('pictograms', id);
+
+  pictograma.imagen = (await db.getValue('imagenes', pictograma.id)).imagen
+
+  return pictograma
+}
+
 export async function ObtenerCategoriasPorIds(ids : number[]){
   let db = await IndexedDbService.create();
   let categorias = await db.getAllValues('categorias');

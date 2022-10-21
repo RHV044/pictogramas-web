@@ -1,4 +1,3 @@
-import * as React from 'react';
 import Timeline from '@mui/lab/Timeline';
 import TimelineItem from '@mui/lab/TimelineItem';
 import TimelineSeparator from '@mui/lab/TimelineSeparator';
@@ -11,8 +10,70 @@ import LaptopMacIcon from '@mui/icons-material/LaptopMac';
 import HotelIcon from '@mui/icons-material/Hotel';
 import RepeatIcon from '@mui/icons-material/Repeat';
 import Typography from '@mui/material/Typography';
+import { useEffect, useState } from 'react';
+import { IEstadistica } from './model/estadistica';
+import { IPictogramaEstadistica } from './model/pictogramaEstadistica';
+import { ObtenerPictogramaConImagenes, ObtenerPictogramasConImagenes } from '../pictogramas/services/pictogramas-services';
+
+
 
 export default function TimeLine(props: any){
+
+  const [pictogramasMañana, setPictogramasMañana] = useState([] as IPictogramaEstadistica[])
+  const [pictogramasMediodia, setPictogramasMediodia] = useState([] as IPictogramaEstadistica[])
+  const [pictogramasTarde, setPictogramasTarde] = useState([] as IPictogramaEstadistica[])
+  const [pictogramasNoche, setPictogramasNoche] = useState([] as IPictogramaEstadistica[])
+
+  useEffect(() => {
+    let estadisticas = props.estadisticas as IEstadistica[]
+    let mañana = estadisticas.filter(e => new Date(e.fecha).getHours() >= 6 && new Date(e.fecha).getHours() < 12)
+    let mediodia = estadisticas.filter(e => new Date(e.fecha).getHours() >= 12 && new Date(e.fecha).getHours() < 16)
+    let tarde = estadisticas.filter(e => new Date(e.fecha).getHours() >= 16 && new Date(e.fecha).getHours() < 20)
+    let noche = estadisticas.filter(e =>new Date(e.fecha).getHours() >= 20 && new Date(e.fecha).getHours() < 2)
+
+    ObtenerPictogramasOrdenados(mañana).then(pics => {
+      setPictogramasMañana(pics)
+    })
+    ObtenerPictogramasOrdenados(mediodia).then(pics => {
+      setPictogramasMañana(pics)
+    })
+    ObtenerPictogramasOrdenados(tarde).then(pics => {
+      setPictogramasMañana(pics)
+    })
+    ObtenerPictogramasOrdenados(noche).then(pics => {
+      setPictogramasMañana(pics)
+    })
+  },[])
+
+  async function ObtenerPictogramasOrdenados(estadisticas: IEstadistica[]) : Promise<IPictogramaEstadistica[]>{
+    let pictogramas = [] as IPictogramaEstadistica[]
+    estadisticas.forEach(async (estadistica) => {
+      if(pictogramas.some((p: IPictogramaEstadistica) => p.id === estadistica.pictograma)){
+        // Ya existe, debo aumentar su contador
+        pictogramas.map(p => {
+          if(p.id === estadistica.pictograma){
+            p.cantidad += 1
+            p.estadisticas.push(estadistica)
+          }
+        })
+      }
+      else{
+        // Lo agrego a la lista  
+        let pictograma = await ObtenerPictogramaConImagenes(estadistica.pictograma)      
+        pictogramas.push({
+          cantidad: 1,
+          estadisticas: [estadistica],
+          id: estadistica.pictograma,
+          pictograma: pictograma
+        })
+      }
+    });
+
+    console.log("PICTOGRAMAS DE ESTADISTICA: ", pictogramas)
+    //TODO: Se deben ordernar por la cantidad, y devolver una cantidad de elementos especificada
+    return pictogramas
+  }
+
   return (
     <Timeline position="alternate">
       <TimelineItem>
