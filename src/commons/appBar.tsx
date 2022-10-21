@@ -173,7 +173,7 @@ const ResponsiveAppBar = () => {
               </Button>
             ))}
           </Box>
-
+          {/* TODO: Podriamos agregar aca un mensaje y porcentaje de sincronizacion */}
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Configuracion">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
