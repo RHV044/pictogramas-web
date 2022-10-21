@@ -4,6 +4,7 @@ import ResponsiveAppBar from "../commons/appBar";
 import { getUsuarioLogueado, ObtenerEstadisticas } from "../services/usuarios-services";
 import CategoriasMasUtilizadas from "./categoriasMasUtilizadas";
 import PictogramasMasUtilizados from "./pictogramasMasUtilizados";
+import TimeLine from "./timeline";
 
 export default function Estadisticas(){
   const [estadisticas, setEstadisticas] = useState(null as  any)
@@ -32,6 +33,8 @@ export default function Estadisticas(){
             <CategoriasMasUtilizadas categorias={estadisticas.categoriasMasUtilizadas}/>
           </Box>
           <Box sx={{ display: 'flex' }}> Total Categorias distintas utilizadas: {estadisticas.cantidadDeCategoriasDistintasUtilizadas} </Box>
+          {/* TODO: Podriamos ver de mostrar alguna rutina que se repita */}
+          <TimeLine />
         </>
       )}
     </div>
