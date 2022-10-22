@@ -83,10 +83,8 @@ export default function Configuracion() {
   const [nivel, setNivel] = React.useState('');
   const [violence, setViolence] = useState(false as boolean)
   const [sex, setSex] = useState(false as boolean)
-  const [aac, setAac] = useState(false as boolean)
-  const [aacColor, setAacColor] = useState(false as boolean)
-  const [skin, setSkin] = useState(false as boolean)
-  const [hair, setHair] = useState(false as boolean)
+  // const [aac, setAac] = useState(false as boolean)
+  // const [aacColor, setAacColor] = useState(false as boolean)
   const [schematic, setSchematic] = useState(false as boolean)
 
   const [file, setFile] = useState("" as string)
@@ -100,10 +98,8 @@ export default function Configuracion() {
         setUserLogueado(usuario);
         setViolence(usuario.violence);
         setSex(usuario.sex);
-        setSkin(usuario.skin);
-        setHair(usuario.hair);
-        setAac(usuario.aac);
-        setAacColor(usuario.aacColor);
+        // setAac(usuario.aac);
+        // setAacColor(usuario.aacColor);
         setSchematic(usuario.schematic);
         setNivel(usuario.nivel.toString());
       }
@@ -138,10 +134,8 @@ export default function Configuracion() {
       let usuario = userLogueado
       usuario.violence = violence;
       usuario.sex = sex;
-      usuario.skin = skin;
-      usuario.hair = hair;
-      usuario.aac = aac;
-      usuario.aacColor = aacColor;
+      // usuario.aac = aac;
+      // usuario.aacColor = aacColor;
       usuario.schematic = schematic;
       usuario.ultimaActualizacion = new Date().toISOString();
       usuario.nivel = Number(nivel);
@@ -267,8 +261,8 @@ export default function Configuracion() {
                   </Button>
                   <br></br>
                   <br></br>
-                  <FormControl sx={{ m: 1, minWidth: 120 }}>
-                    <InputLabel id="nivel-select-label">{niveles[Number(nivel)]}</InputLabel>
+                  <FormControl sx={{ m: 1, minWidth: 120 }}>                     
+                    <InputLabel id="nivel-select-label">Nivel</InputLabel>
                     <Select
                       labelId="nivel-select-label"
                       id="nivel-select"                      
@@ -308,29 +302,7 @@ export default function Configuracion() {
                     label="Permitir Contenido sexual"
                     labelPlacement="end"
                   />
-                  <FormControlLabel
-                    style={{ alignItems: 'left' }}
-                    control={
-                      <Checkbox
-                        checked={skin}
-                        onChange={(evt) => setSkin(evt?.target?.checked)}
-                      />
-                    }
-                    label="Tiene piel"
-                    labelPlacement="end"
-                  />
-                  <FormControlLabel
-                    style={{ alignItems: 'left' }}
-                    control={
-                      <Checkbox
-                        checked={hair}
-                        onChange={(evt) => setHair(evt?.target?.checked)}
-                      />
-                    }
-                    label="Tiene pelo"
-                    labelPlacement="end"
-                  />
-                  <FormControlLabel
+                  {/* <FormControlLabel
                     style={{ alignItems: 'left' }}
                     control={
                       <Checkbox
@@ -351,7 +323,7 @@ export default function Configuracion() {
                     }
                     label="Aac Color"
                     labelPlacement="end"
-                  />
+                  /> */}
                   <FormControlLabel
                     style={{ alignItems: 'left' }}
                     control={

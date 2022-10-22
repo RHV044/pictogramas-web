@@ -66,12 +66,10 @@ export default function Sugeridos(props: any) {
         pictograma.violence === false) &&
       (pictograma.sex === usuario.sex || pictograma.sex === false) &&
       (pictograma.schematic === usuario.schematic ||
-        pictograma.schematic === false) &&
-      (pictograma.hair === usuario.hair || pictograma.hair === false) &&
-      (pictograma.aacColor === usuario.aacColor ||
-        pictograma.aacColor === false) &&
-      (pictograma.skin === usuario.skin || pictograma.skin === false) &&
-      (pictograma.aac === usuario.aac || pictograma.aac === false)
+        pictograma.schematic === false) 
+      //   && (pictograma.aacColor === usuario.aacColor ||
+      //   pictograma.aacColor === false) &&
+      // (pictograma.aac === usuario.aac || pictograma.aac === false)
     );
   }
 
