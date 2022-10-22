@@ -40,23 +40,22 @@ function App() {
     {/* <DndProvider backend={ TouchBackend } options={{ enableMouseEvents: true }}> */}
       <BrowserRouter>
         <Routes>
-
-            <Route path="/cuenta/seleccionar" element={<SeleccionarCuenta props={undefined} />} />
-            <Route path="/cuenta/modificar" element={<ModificarCuenta props={undefined} />} />
-            <Route path="/cuenta/vincular" element={<VincularCuenta props={undefined} />} />
-            <Route path="/cuenta/crear" element={<CrearCuenta props={undefined} />} />
-            <Route path="/pictogramas" element={<Pictogramas/>} />
-            <Route path="/categorias" element={<CategoriasRaices/>} />
-            <Route path="/configuracion" element={<Configuracion/>} />
-            <Route path="/pizarras" element={<Pizarras/>} />
-            <Route path="/estadisticas" element={<Estadisticas/>} />
-            <Route path="/actividades" element={<SeleccionDeNivel/>} />
-            <Route path="/actividad/:nivel" element={<Actividad/>} />
-
-            <Route path="/" element={<Navigate to="/cuenta/seleccionar" />} />
-            <Route path="/pictogramas-web" element={<Navigate to="/cuenta/seleccionar" />} />
-            <Route path="/cambiarcuenta" element={<Navigate to="/cuenta/seleccionar" />} />
-
+          <Route path="/cuenta/seleccionar" element={<SeleccionarCuenta props={undefined} />} />
+          <Route path="/cuenta/modificar" element={<ModificarCuenta props={undefined} />} />
+          <Route path="/cuenta/vincular" element={<VincularCuenta props={undefined} />} />
+          <Route path="/cuenta/crear" element={<CrearCuenta props={undefined} />} />
+          <Route path="/pictogramas" element={<Pictogramas/>} />
+          <Route path="/categorias" element={<CategoriasRaices/>} />
+          <Route path="/configuracion" element={<Configuracion/>} />
+          <Route path="/pizarras" element={<Pizarras/>} />
+          <Route path="/estadisticas" element={<Estadisticas/>} />
+          <Route path="/actividades" element={<SeleccionDeNivel/>} />
+          <Route path="/actividad/:nivel" element={<Actividad/>} />
+          <Route path="/" element={<Navigate to="/cuenta/seleccionar" />} />
+          <Route path="/pictogramas-web" element={<Navigate to="/cuenta/seleccionar" />} />
+          <Route path="/cambiarcuenta" element={<Navigate to="/cuenta/seleccionar" />} />
+            {/* Optional index route if no nested routes match */}
+          <Route path="*" element={<Navigate to="/pictogramas" />} />
         </Routes>
       </BrowserRouter>
     </DndProvider>

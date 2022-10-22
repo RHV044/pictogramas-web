@@ -84,6 +84,26 @@ export async function CrearUsuario(
     })
 }
 
+export async function GuardarEstadistica(
+  estadistica: any 
+  ) {    
+    return await axios.post(apiPictogramas + '/estadisticas',
+      estadistica
+    )
+    .then((resp) => {
+      return resp.data
+    })
+}
+
+export async function ObtenerEstadisticas(
+  usuario: any
+) {
+  return await axios.get(apiPictogramas + '/estadisticas/' + usuario)
+    .then(response => {
+      return response.data
+    })
+}
+
 export async function ActualizarUsuario(
   usuario:IUsuario
   ) {

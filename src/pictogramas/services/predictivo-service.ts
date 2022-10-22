@@ -4,14 +4,22 @@ let bayes = require("bayes");
 const db = new IndexedDbService();
 const BAYES_CLASSIFIER_DB_ID = 0;
 
+let inMemoryClassifier;
 let classifier = async () => {
+  if (inMemoryClassifier) return inMemoryClassifier;
+
   let classifierObject = await (
     await db
   ).getValue("historicoUsoPictogramas", BAYES_CLASSIFIER_DB_ID);
 
-  let classifierJSON = classifierObject?.classifier;
+  if (typeof classifierObject?.classifier === "object") {
+    inMemoryClassifier = bayes.importFromObject(classifierObject?.classifier);
+  } else if (typeof classifierObject?.classifier === "string") {
+    (await db).deleteValue("historicoUsoPictogramas", BAYES_CLASSIFIER_DB_ID);
+    inMemoryClassifier = bayes.importFromJson(classifierObject?.classifier);
+  } else inMemoryClassifier = bayes();
 
-  return classifierJSON ? bayes.fromJson(classifierJSON) : bayes();
+  return inMemoryClassifier;
 };
 
 export async function learn(seleccionPictogramas: IPictogram[]) {
@@ -32,7 +40,7 @@ export async function learn(seleccionPictogramas: IPictogram[]) {
 
     (await db).putOrPatchValue("historicoUsoPictogramas", {
       id: BAYES_CLASSIFIER_DB_ID,
-      classifier: classifierObject.toJson(),
+      classifier: classifierObject.exportToObject(),
     });
 
     console.log(classifierObject);
@@ -42,14 +50,15 @@ export async function learn(seleccionPictogramas: IPictogram[]) {
 export async function predict(
   pictogramas: IPictogram[]
 ): Promise<IPictogram[]> {
-  let resultIds: string[] = await (
+  let resultIds: any[] = await (
     await classifier()
   ).categorize(getKeywordsText(pictogramas), 3);
 
   let pictograms: IPictogram[] = [];
 
-  for (let id of resultIds) {
-    pictograms.push(await db.getPictogram(Number(id)));
+  for (let result of resultIds) {
+    let dbPicto = await db.getPictogram(Number(result?.name));
+    if (dbPicto) pictograms.push(dbPicto);
   }
   return pictograms;
 }

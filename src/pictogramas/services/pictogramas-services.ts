@@ -150,6 +150,33 @@ export async function ObtenerPictogramasPorCategoria(
   }
 }
 
+export async function ObtenerPictogramasConImagenes(ids : number[]){
+  let db = await IndexedDbService.create();
+  let pictogramas = await db.getAllValues('pictograms');
+  let pictogramasFiltrados = pictogramas.filter((p: IPictogram) => ids.includes(p.id))
+
+  for(var i=0; i<pictogramasFiltrados.length; ++i)
+    pictogramasFiltrados[i].imagen = (await db.getValue('imagenes', pictogramasFiltrados[i].id)).imagen
+
+  return pictogramasFiltrados
+}
+
+export async function ObtenerPictogramaConImagenes(id : number){
+  let db = await IndexedDbService.create();
+  let pictograma = await db.getValue('pictograms', id);
+
+  pictograma.imagen = (await db.getValue('imagenes', pictograma.id)).imagen
+
+  return pictograma
+}
+
+export async function ObtenerCategoriasPorIds(ids : number[]){
+  let db = await IndexedDbService.create();
+  let categorias = await db.getAllValues('categorias');
+  let categoriasFiltradas = categorias.filter((c: ICategoria) => ids.includes(c.id))
+  return categoriasFiltradas
+}
+
 export async function ObtenerImagen(
   pictograma: number
 ){
