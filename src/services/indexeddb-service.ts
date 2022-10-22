@@ -2,6 +2,7 @@ import { IDBPDatabase, openDB } from "idb";
 import { apply } from "json-merge-patch";
 import { IUsuario } from "../login/model/usuario";
 import { ICategoria } from "../pictogramas/models/categoria";
+import { ICategoriaPorUsuario } from "../pictogramas/models/categoriaPorUsuario";
 import { IFavoritoPorUsuario } from "../pictogramas/models/favoritoPorUsuario";
 import { IPictogram } from "../pictogramas/models/pictogram";
 import { getUsuarioLogueado, usuarioLogueado } from "./usuarios-services";
@@ -43,6 +44,17 @@ export class IndexedDbService {
     let objectStore = transaction.objectStore("favoritosPorUsuario");
 
     var index = objectStore.index("favoritosPorUsuario-index");
+
+    return await index.getAll(idUsuario);
+  }
+
+  public async searchCategoriasPorUsuarioByUser(
+    idUsuario: number | undefined
+  ): Promise<ICategoriaPorUsuario[]> {
+    let transaction = this.db.transaction("categoriasPorUsuario", "readonly");
+    let objectStore = transaction.objectStore("categoriasPorUsuario");
+
+    var index = objectStore.index("categoriasPorUsuario-index");
 
     return await index.getAll(idUsuario);
   }

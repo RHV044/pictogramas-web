@@ -44,6 +44,7 @@ import React from 'react';
 import FormDialogValidarAcceso from './components/validarCambioConfiguracion';
 import imagenUsuario from '../commons/imagen-usuario.jpg'
 import { ICategoriaPorUsuario } from '../pictogramas/models/categoriaPorUsuario';
+import FiltroCategoriasPorUsuario from './components/filtroCategoriasPorUsuario';
 
 function agruparElementos(datos, predicado) : ICategoria[] { //agrupar categorias por algun campo en particular
 
@@ -58,6 +59,9 @@ export default function Configuracion() {
   const [categorias, setCategorias] = useState([] as ICategoria[]);
   const [categoriasFiltradas, setCategoriasFiltradas] = useState(
     [] as ICategoria[]
+  );
+  const [categoriasDeUsuario, setCategoriasDeUsuario] = useState(
+    [] as ICategoriaPorUsuario[]
   );
 
   const [personalizarCategorias, setPersonalizarCategorias] = useState(false);
@@ -113,6 +117,22 @@ export default function Configuracion() {
     ObtenerCategorias(setCategorias);
   }, []);
 
+  useEffect(() => {
+    obtenerCategoriasDeUsuario();
+  }, []);
+
+  useEffect(() => {
+    getUsuarioLogueado().then((usuario) => {
+      let usuarioNivel =
+      usuario !== undefined ? usuario.nivel : 0;
+  if(usuarioNivel === 3){
+    setPersonalizarCategorias(true);
+  } else {
+    setPersonalizarCategorias(false);
+  }
+    });   
+  }, []);
+
   const actualizarUsuario = async () => {
     if (userLogueado) {
       let usuario = userLogueado
@@ -149,8 +169,8 @@ export default function Configuracion() {
     };
  }
 
- function actualizarCategoriasDeUsuario(categorias : ICategoria[]){
-  //TODO creo que habría que eliminar primero
+  function insertarCategoriasDeUsuario(categorias : ICategoria[]){
+  
   if(userLogueado){
   categorias.forEach(c => {
     let categoriaPorUsuario : ICategoriaPorUsuario = {
@@ -167,6 +187,33 @@ export default function Configuracion() {
      
   });  
     }
+ }
+
+ function eliminarCategoriasDeUsuario() {
+      if(userLogueado){
+        IndexedDbService.create().then(async (db) => {
+          let cxus = await (await db).searchCategoriasPorUsuarioByUser((userLogueado && userLogueado.id) ? userLogueado.id : 0);
+          cxus.forEach(async cxu => {
+            cxu.pendienteEliminar = true;
+          await db.putOrPatchValue('categoriasPorUsuario', cxu);
+          });
+        })
+        dispatchEvent(new CustomEvent('sincronizar'));
+      }
+ }
+
+ function obtenerCategoriasDeUsuario() {
+  if(userLogueado){
+    IndexedDbService.create().then(async (db) => {
+      let cxus = await (await db).searchCategoriasPorUsuarioByUser((userLogueado && userLogueado.id) ? userLogueado.id : 0);
+      cxus.forEach(async cxu => {
+        cxu.pendienteEliminar = true;
+      await db.putOrPatchValue('categoriasPorUsuario', cxu);
+      });
+      setCategoriasDeUsuario(cxus);
+    })
+    
+  }
  }
 
   return (
@@ -324,9 +371,8 @@ export default function Configuracion() {
             {
               <div>
                 <Switch
-                  disabled
                   checked={personalizarCategorias}
-                  onChange={(evt) => setPersonalizarCategorias(evt?.target?.checked)}
+                  onChange={handleChange}
                 /> Personalizar Categorias
               </div>
             }
@@ -335,10 +381,11 @@ export default function Configuracion() {
               <div>
                 Seleccione las categorías que desea visualizar
                 {categorias.length > 0 && (
-                  <Filtros
+                  <FiltroCategoriasPorUsuario
                     // filtros={categorias.sort((a,b) => a.categoriaPadre - b.categoriaPadre)} //TODO ver si este ordenamiento se puede usar como corte
-                    filtros = {agruparElementos(categorias, (c => c.categoriaPadre === 0))[0]} 
+                    filtros = {agruparElementos(categorias, (c => c.esCategoriaFinal === true))[0]}
                     setFiltros={setCategoriasFiltradas}
+                    categoriasDeUsuario={categoriasDeUsuario}
                     filtro={'Categorias'}
                   />
                 )}
@@ -353,9 +400,12 @@ export default function Configuracion() {
                 onClick={async () => {                  
                   actualizarUsuario()
                   if(Number(nivel) === 3){
-                        actualizarCategoriasDeUsuario(categoriasFiltradas)
+                        //TODO revisar  las desmarcadas
+                        insertarCategoriasDeUsuario(categoriasFiltradas)
                   }
-                  
+                  else {
+                    eliminarCategoriasDeUsuario()
+                  }
                   window.location.reload();
                 }}
               >

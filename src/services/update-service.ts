@@ -590,7 +590,7 @@ export class UpdateService {
                       (cxu) => cxu.id === categoriaDeUsuario.id && !cxu.pendienteAgregar
                     )
                   ) {
-                    const cxuCompleto: IFavoritoPorUsuario = {
+                    const cxuCompleto: ICategoriaPorUsuario = {
                       id: categoriaDeUsuario.id,
                       idUsuario: categoriaDeUsuario.idUsuario,
                       idCategoria: categoriaDeUsuario.idCategoria,
