@@ -7,7 +7,7 @@ export default function FiltroCategoriasPorUsuario(props: any) {
   const [filtrosSeleccionados, setfiltrosSeleccionados] = useState([] as any[]);
   const [filtros, setFiltros] = useState(props.filtros as any[]); 
   const [categoriasPorUsuario, setCategoriasPorUsuario] = useState([] as ICategoriaPorUsuario[]);
-  
+
   let filtrosDesmarcados = [];
 
   useEffect(() => {
