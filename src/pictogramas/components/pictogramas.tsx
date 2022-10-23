@@ -41,6 +41,7 @@ import {
 import Recientes from './sugerencias/recientes';
 import Sugeridos from './sugerencias/sugeridos';
 import { CurrencyBitcoin } from '@mui/icons-material';
+import { ICategoriaPorUsuario } from '../models/categoriaPorUsuario';
 const db = new IndexedDbService();
 
 export default function Pictogramas(props: any) {
@@ -63,6 +64,8 @@ export default function Pictogramas(props: any) {
   const [pictogramasPredecidos, setPictogramasPredecidos] = useState([] as IPictogram[])
   const [db, setDb] = useState(IndexedDbService.create());
   const [categorias, setCategorias] = useState([] as ICategoria[]);
+  const [categoriasPorUsuario, setCategoriasPorUsuario] = useState([] as ICategoriaPorUsuario[]);
+
 
   const LearnAndPredict = async (pics: IPictogram[]) => {
     if (pics && pics.length >= (pictogramasSeleccionados?.length ?? 0)) {
@@ -122,18 +125,28 @@ export default function Pictogramas(props: any) {
 
   useEffect(() => {
     dispatchEvent(new CustomEvent('sincronizar'));
+    
     getUsuarioLogueado().then((usuario) => {
       if (usuario === null || usuario === undefined) {
         // Redirijo a seleccionar cuenta
         navigate('/cuenta/seleccionar' + location.search);
       } else {
+        
         setUsuarioLogueadoVariable(usuario);
+        
+        if((usuario?.nivel !== undefined ? usuario?.nivel : 0) === 3){
+          IndexedDbService.create().then(async (indexeddb) => {
+            let categoriasPorUsuario = await indexeddb.getAllValues('categoriasPorUsuario');
+            setCategoriasPorUsuario(categoriasPorUsuario);
+          })
+        }
       }
-    });
+    })
 
     ObtenerPictogramas().then((pictogramas) => {
       setPictogramas(pictogramas);
     });
+    
     ObtenerCategorias(setCategorias);
   }, []);
 
@@ -199,7 +212,12 @@ export default function Pictogramas(props: any) {
     return <>{ObtenerCategoriaPadre(categoria)}</>;
   };
 
+  const filtrarCategorias = (categorias: ICategoria[]) => {
+    
+  }
+
   const OpcionesDeCategoria = (categoria: ICategoria) => {
+    let categoriasHijas : ICategoria[];
     if (categoria.esCategoriaFinal === true) {
       // Es categoria final, debo mostrar pictogramas
       return (
@@ -212,13 +230,18 @@ export default function Pictogramas(props: any) {
         </>
       );
     } else {
+      
       // Es categoria padre, debo mostrar categorias
-      let categoriasHijas = categorias.filter(
-        (c) =>
-          c.categoriaPadre === categoria.id &&
-          categoria.nivel <=
-            (usuarioLogueado?.nivel !== undefined ? usuarioLogueado?.nivel : 0)
-      );
+
+      
+      if((usuarioLogueado?.nivel !== undefined ? usuarioLogueado?.nivel : 0)  === 3){
+          categoriasHijas = categorias.filter(c => c.categoriaPadre === categoria.id && (categoriasPorUsuario.some(cxu => cxu.idCategoria === c.id) || !c.esCategoriaFinal))
+      }
+      else{
+        categoriasHijas = categorias.filter(c => c.categoriaPadre === categoria.id && categoria.nivel <= (usuarioLogueado?.nivel !== undefined ? usuarioLogueado?.nivel : 0));
+      }
+    }
+      
       return (
         <Container>
           <Grid
@@ -250,7 +273,7 @@ export default function Pictogramas(props: any) {
         </Container>
       );
     }
-  };
+
 
   return (
     <div>
