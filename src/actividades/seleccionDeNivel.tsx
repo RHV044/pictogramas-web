@@ -1,7 +1,6 @@
 import { Button, Grid, Typography, Container } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
 import ResponsiveAppBar from "../commons/appBar";
-import { actividadesStyle } from './actividadesStyle'
 
 export default function SeleccionDeNivel() {
   let navigate = useNavigate();
