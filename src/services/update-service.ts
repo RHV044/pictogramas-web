@@ -18,6 +18,7 @@ import {
 } from '../pictogramas/models/pictogramaImagen';
 import {
   ActualizarUsuario,
+  EliminarCategoriasPorUsuario,
   getUsuarioLogueado,
   GuardarEstadistica,
   InsertarCategoriasPorUsuario,
@@ -594,7 +595,7 @@ export class UpdateService {
             db.getAllValues('categoriasPorUsuario').then(
               async (categoriasDeUsuario: ICategoriaPorUsuario[]) => {
                 // Carga de categoriaPorUsuario de la api que no esten en el indexDb
-                categoriasDeUsuarioApi.map((categoriaDeUsuario) => {
+                categoriasDeUsuarioApi.map(async (categoriaDeUsuario) => {
                   if (
                     !categoriasDeUsuario.some(
                       (cxu) => cxu.id === categoriaDeUsuario.id && !cxu.pendienteAgregar
@@ -607,11 +608,22 @@ export class UpdateService {
                       pendienteAgregar: false,
                       pendienteEliminar: false,
                     };
-                    db.putOrPatchValue('favoritosPorUsuario', cxuCompleto);
+                    await db.putOrPatchValue('favoritosPorUsuario', cxuCompleto);
                   }
                 });
 
                 categoriasDeUsuario.map(async (categoriaDeUsuario) => {
+                  
+                  
+                  // Eliminacion de categoriaPorUsuario en la api
+                  if (categoriaDeUsuario.pendienteEliminar) {
+                    await EliminarCategoriasPorUsuario(
+                      usuarioId !== undefined ? usuarioId : 0,
+                      categoriaDeUsuario.idCategoria
+                    )                      
+                    await db.deleteValue('categoriasPorUsuario', categoriaDeUsuario.id);                    
+                  }               
+                  
                   // Creacion del categoriaPorUsuario en la api
                   if (categoriaDeUsuario.pendienteAgregar) {
                     await InsertarCategoriasPorUsuario(
@@ -619,20 +631,11 @@ export class UpdateService {
                       categoriaDeUsuario.idCategoria                      
                     );
                     categoriaDeUsuario.pendienteAgregar = false;
-                    db.putOrPatchValue('categoriasPorUsuario', categoriaDeUsuario);
+                    await db.putOrPatchValue('categoriasPorUsuario', categoriaDeUsuario);
                   }
 
                   //TODO: Verificar funcionamiento
 
-                  // Eliminacion de categoriaPorUsuario en la api
-                  if (categoriaDeUsuario.pendienteEliminar) {
-                    InsertarCategoriasPorUsuario(
-                      usuarioId !== undefined ? usuarioId : 0,
-                      categoriaDeUsuario.idCategoria
-                    ).then(() => {                      
-                      db.deleteValue('categoriasPorUsuario', categoriaDeUsuario.id);
-                    });
-                  }
                 });
               }
             );

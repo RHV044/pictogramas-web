@@ -216,8 +216,8 @@ export async function ObtenerCategoriasPorUsuario(idUsuario: number){
   })
 }
 
-export async function EliminarCategoriasPorUsuario(idUsuario: number) {
-  return await axios.delete(apiPictogramas + '/categoriasPorUsuario/' + idUsuario).then((resp) => {
+export async function EliminarCategoriasPorUsuario(idUsuario: number, idCategoria: number) {
+  return await axios.delete(apiPictogramas + '/categoriasPorUsuario/' + idUsuario + '/' + idCategoria).then((resp) => {
     return resp.data
   });
 }

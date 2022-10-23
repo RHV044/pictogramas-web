@@ -32,7 +32,6 @@ import { useEffect, useState } from 'react';
 import {
   ActualizarUsuarioPassword,
   getUsuarioLogueado,
-  InsertarCategoriasPorUsuario,
   usuarioLogueado,
 } from '../services/usuarios-services';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -72,6 +71,7 @@ export default function Configuracion() {
 
     if(Number(event.target.value) === 3){
       setPersonalizarCategorias(true)
+      obtenerCategoriasDeUsuario();
     } else {
       setPersonalizarCategorias(false)
     }
@@ -91,10 +91,13 @@ export default function Configuracion() {
 
   const niveles = ["Inicial","Intermedio","Avanzado", "Personalizado"];
 
+  const [categoriasPorUsuarioOriginal, setCategoriasPorUsuarioOriginal] = useState([] as ICategoriaPorUsuario[]);
+
+
   useEffect(() => {
     dispatchEvent(new CustomEvent('sincronizar'));
     getUsuarioLogueado().then((usuario) => {
-      if (usuario != undefined) {
+      if (usuario !== undefined) {
         setUserLogueado(usuario);
         setViolence(usuario.violence);
         setSex(usuario.sex);
@@ -183,31 +186,31 @@ export default function Configuracion() {
     }
  }
 
- function eliminarCategoriasDeUsuario() {
+ function eliminarCategoriasDeUsuario(categorias : ICategoriaPorUsuario[]) {
       if(userLogueado){
         IndexedDbService.create().then(async (db) => {
           let cxus = await (await db).searchCategoriasPorUsuarioByUser((userLogueado && userLogueado.id) ? userLogueado.id : 0);
           cxus.forEach(async cxu => {
-            cxu.pendienteEliminar = true;
-          await db.putOrPatchValue('categoriasPorUsuario', cxu);
+            if(categorias.some(c => c.idCategoria === cxu.idCategoria)){
+              cxu.pendienteAgregar = true;
+              cxu.pendienteEliminar = true;
+              await db.putOrPatchValue('categoriasPorUsuario', cxu);
+            }           
           });
         })
         dispatchEvent(new CustomEvent('sincronizar'));
       }
  }
 
- function obtenerCategoriasDeUsuario() {
-  if(userLogueado){
-    IndexedDbService.create().then(async (db) => {
-      let cxus = await (await db).searchCategoriasPorUsuarioByUser((userLogueado && userLogueado.id) ? userLogueado.id : 0);
-      cxus.forEach(async cxu => {
-        cxu.pendienteEliminar = true;
-      await db.putOrPatchValue('categoriasPorUsuario', cxu);
-      });
-      setCategoriasDeUsuario(cxus);
-    })
-    
-  }
+ async function obtenerCategoriasDeUsuario() {
+    let usuario = (await getUsuarioLogueado());    
+    if(usuario){
+      IndexedDbService.create().then(async (db) => {
+        let cxus = await (await (await db).searchCategoriasPorUsuarioByUser((usuario && usuario.id) ? usuario.id : 0)).filter(c => !c.pendienteEliminar);        
+        setCategoriasDeUsuario(cxus);
+        setCategoriasPorUsuarioOriginal(cxus);
+      })
+    }
  }
 
   return (
@@ -373,11 +376,15 @@ export default function Configuracion() {
                   actualizarUsuario()
                   if(Number(nivel) === 3){
                         //TODO revisar  las desmarcadas
-                        insertarCategoriasDeUsuario(categoriasFiltradas)
-                  }
-                  else {
-                    eliminarCategoriasDeUsuario()
-                  }
+                        console.log("Categorias originales: ", categoriasPorUsuarioOriginal);
+                        console.log("Categorias filtradas: ", categoriasFiltradas);
+                        let categoriasAEliminar = categoriasPorUsuarioOriginal.filter((cat : ICategoriaPorUsuario) => !categoriasFiltradas.some((c : ICategoria) => c.id === cat.idCategoria));
+                        console.log("Categorias a eliminar: ", categoriasAEliminar);
+                        let categoriasAGuardar = categoriasFiltradas.filter((cat : ICategoria) => !categoriasPorUsuarioOriginal.some((c : ICategoriaPorUsuario) => c.idCategoria === cat.id));
+                        console.log("Categorias a guardar: ", categoriasAGuardar);
+                        insertarCategoriasDeUsuario(categoriasAGuardar);
+                        eliminarCategoriasDeUsuario(categoriasAEliminar);
+                  }                  
                   window.location.reload();
                 }}
               >
