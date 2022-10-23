@@ -15,7 +15,7 @@ import Speech from 'react-speech';
 import { ObtenerInterpretacionNatural } from '../services/pictogramas-services';
 import { lightBlue } from '@mui/material/colors';
 import { useSpeechSynthesis } from 'react-speech-kit';
-import { Delete } from '@mui/icons-material';
+import { Delete, Mic } from '@mui/icons-material';
 
 const apiPictogramas = process.env.URL_PICTOGRAMAS ?? 'http://localhost:5000';
 
@@ -153,6 +153,8 @@ export default function Seleccion(props: any) {
                 speak({ text: textoAInterpretar });
               }}
             >
+              <Mic>
+              </Mic>
               Interpretacion Literal
             </Button>
           </Grid>
@@ -172,6 +174,8 @@ export default function Seleccion(props: any) {
                   speak({ text: texto });
                 }}
               >
+                <Mic>
+                </Mic>
                 Interpretacion Natural
               </Button>
             </Grid>
