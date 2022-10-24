@@ -31,7 +31,7 @@ jobs:
       - name: Run SSH command
         uses: garygrossgarten/github-action-ssh@0.7.0
         with:
-          command: cd pictogar && sudo docker-compose pull && sudo docker-compose up -d --no-deps pictogar-api
+          command: cd pictogar && sudo docker-compose pull pictogar-web && sudo docker-compose up -d --no-deps pictogar-web
           host: 20.115.17.201
           username: pictogar-user
           password: ${{ secrets.SSH_SERVER_PASSWORD }}
