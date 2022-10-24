@@ -19,7 +19,6 @@ export default function CategoriaFavoritos(props: any) {
     getUsuarioLogueado().then((usuario) => {
       if (usuario != undefined) {
         setUserLogueado(usuario);
-
       }
     });
   }, []);

@@ -189,6 +189,8 @@ export class UpdateService {
           }
         );
 
+        //TODO: Esto se deberia correr fuera del if de cantidad de pictogramas locales vs en la api,
+        // ya que pueden faltar imagenes y no pictogramas
         let totalImagenesLocales = await db.countValues('imagenes');
         if (totalImagenesLocales < informacionArasaac.length) {
           // Obtencion imagenes de pictogramas arasaac
