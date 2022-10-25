@@ -341,12 +341,15 @@ export class UpdateService {
         usuario !== undefined ? usuario.id : 0;
       IndexedDbService.create().then(async (db) => {
         let recientes = await ObtenerPictogramasRecientes(10, usuarioId)
-        let id = 1;
-        console.log("RECIENTES: ", recientes)
+        db.getAllValues('recientes').then(async (registros: any[]) => {
+          registros.map(async (registro) => {
+            if(registro.usuario === usuarioId)
+              await db.deleteValue('recientes', registro.id)
+          });
+          actualizacionEstadisticas = false;
+        });
         recientes.forEach(async (reciente) => {
-          reciente.id = id;
           await db.putOrPatchValue('recientes', reciente)
-          id = id + 1;
         });
       });
     } catch (ex) {

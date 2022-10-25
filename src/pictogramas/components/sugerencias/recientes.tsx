@@ -22,6 +22,7 @@ import { IUsuario } from '../../../login/model/usuario';
 import { IPictogram } from '../../models/pictogram';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import {
+  ObtenerPictogramasConImagenes,
   ObtenerPictogramasPorCategoria,
 } from '../../services/pictogramas-services';
 
@@ -33,7 +34,15 @@ export default function Recientes(props: any) {
 
   useEffect(() => {
     // TODO: Cambiar a Obtencion de pictogramas recientes
-    ObtenerPictogramasPorCategoria(setPictogramas, -1);
+    IndexedDbService.create().then(async (db) => {
+      db.getAllValues('recientes').then(async (registros: any[]) => {
+        let ids = registros.map(r => {return r.pictograma})
+        ObtenerPictogramasConImagenes(ids).then(pics =>{
+          console.log("pics: ", pics)
+          setPictogramas(pics)
+        })
+      });
+    });
     getUsuarioLogueado().then((usuario) => {
       if (usuario != undefined) {
         setUserLogueado(usuario);
