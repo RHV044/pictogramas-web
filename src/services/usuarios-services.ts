@@ -6,8 +6,8 @@ import { IPictogram } from "../pictogramas/models/pictogram";
 import { IndexedDbService } from "./indexeddb-service";
 
 var CryptoJS = require("crypto-js");
-const apiPictogramas = window.__RUNTIME_CONFIG__.REACT_APP_URL_PICTOGRAMAS ?? "http://localhost:5000";
-const encryptKey = window.__RUNTIME_CONFIG__.REACT_APP_ENCRYPT_KEY ?? "8080808080808080";
+const apiPictogramas = process.env.REACT_APP_URL_PICTOGRAMAS ?? "http://localhost:5000";
+const encryptKey = process.env.REACT_APP_ENCRYPT_KEY ?? "8080808080808080";
 var indexDb = new IndexedDbService();
 export let usuarioLogueado: IUsuario|null = null 
 

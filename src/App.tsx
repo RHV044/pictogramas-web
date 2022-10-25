@@ -27,7 +27,7 @@ function App() {
 
   useEffect(() => {
     let updateService = new UpdateService()
-    console.log("URL PICTOGRAMAS: ", window.__RUNTIME_CONFIG__.REACT_APP_URL_PICTOGRAMAS)
+    console.log("URL PICTOGRAMAS: ", process.env.REACT_APP_URL_PICTOGRAMAS)
     console.log("es mobile? : ", isMobile)
   },[])
 

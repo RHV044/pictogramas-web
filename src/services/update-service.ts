@@ -39,7 +39,7 @@ import { IUsuario } from '../login/model/usuario';
 import { IFavoritoPorUsuario } from '../pictogramas/models/favoritoPorUsuario';
 import { ICategoriaPorUsuario } from '../pictogramas/models/categoriaPorUsuario';
 
-const apiPictogramas = window.__RUNTIME_CONFIG__.REACT_APP_URL_PICTOGRAMAS ?? 'http://localhost:5000';
+const apiPictogramas = process.env.REACT_APP_URL_PICTOGRAMAS ?? 'http://localhost:5000';
 
 type MyState = {
   categorias: ICategoria[];
