@@ -11,4 +11,4 @@ RUN npm i --legacy-peer-deps
 # add app
 COPY . ./
 # start app
-CMD ["npm", "start-prod"]
+CMD ["npm", "start"]
