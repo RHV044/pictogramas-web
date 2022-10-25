@@ -60,7 +60,7 @@
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build",
     "start": "cross-env NODE_ENV=development runtime-env-cra --config-name=./public/runtime-env.js --env-file=.env && react-scripts start",
-    "start-prod": "cross-env NODE_ENV=development runtime-env-cra --config-name=./public/runtime-env.js --env-file=.env && react-scripts start",
+    "start-prod": "cross-env NODE_ENV=production runtime-env-cra --config-name=./public/runtime-env.js --env-file=.env.production && react-scripts start",
     "build": "react-scripts build",
     "build-prod": "env-cmd -f .env.production npm run-script build",
     "test": "react-scripts test",
