@@ -17,7 +17,7 @@ import { lightBlue } from '@mui/material/colors';
 import { useSpeechSynthesis } from 'react-speech-kit';
 import { Delete, Mic } from '@mui/icons-material';
 
-const apiPictogramas = process.env.URL_PICTOGRAMAS ?? 'http://localhost:5000';
+const apiPictogramas = window.__RUNTIME_CONFIG__.REACT_APP_URL_PICTOGRAMAS ?? 'http://localhost:5000';
 
 export default function Seleccion(props: any) {
   const [pictogramas, setPictogramas] = useState([] as IPictogram[]);

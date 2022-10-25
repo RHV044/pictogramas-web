@@ -24,7 +24,7 @@ import { IndexedDbService } from '../../../services/indexeddb-service';
 import FavoritoButton from '../FavoritoButton';
 import Categoria from './categoria';
 
-const apiPictogramas = process.env.URL_PICTOGRAMAS ?? 'http://localhost:5000';
+const apiPictogramas = window.__RUNTIME_CONFIG__.REACT_APP_URL_PICTOGRAMAS ?? 'http://localhost:5000';
 
 export default function PictogramasPorCategoria(props: any) {
   const [pictogramas, setPictogramas] = useState([] as IPictogram[]);

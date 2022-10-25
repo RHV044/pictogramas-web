@@ -1,7 +1,7 @@
 import axios from "axios";
 import { IPizarra } from "../models/pizarra";
 
-const apiPictogramas = process.env.URL_PICTOGRAMAS ?? "http://localhost:5000";
+const apiPictogramas = window.__RUNTIME_CONFIG__.REACT_APP_URL_PICTOGRAMAS ?? "http://localhost:5000";
 
 export async function ObtenerPizarras(usuarioId: number){
   return await axios.get(apiPictogramas + '/pizarras/' + usuarioId)

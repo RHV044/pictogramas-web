@@ -6,7 +6,7 @@ import { getUsuarioLogueado, usuarioLogueado } from "../../services/usuarios-ser
 import { ICategoria } from "../models/categoria";
 import { IPictogram } from "../models/pictogram";
 
-const apiPictogramas = process.env.URL_PICTOGRAMAS ?? "http://localhost:5000";
+const apiPictogramas = window.__RUNTIME_CONFIG__.REACT_APP_URL_PICTOGRAMAS ?? "http://localhost:5000";
 
 export function formatDate(date) {
   return (
