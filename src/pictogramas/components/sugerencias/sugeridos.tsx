@@ -34,7 +34,6 @@ export default function Sugeridos(props: any) {
   useEffect(() => {
     // TODO: Cambiar a Obtencion de pictogramas recientes
     let pictogramasPredecidos = props.pictogramasPredecidos
-    console.log("PICTOGRAMAS PREDCIDOS: ", pictogramasPredecidos)
     if(pictogramasPredecidos){
       pictogramasPredecidos.map(async (p: IPictogram) => {
         if (p !== undefined && p !== null){

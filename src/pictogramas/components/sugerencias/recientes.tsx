@@ -38,7 +38,6 @@ export default function Recientes(props: any) {
       db.getAllValues('recientes').then(async (registros: any[]) => {
         let ids = registros.map(r => {return r.pictograma})
         ObtenerPictogramasConImagenes(ids).then(pics =>{
-          console.log("pics: ", pics)
           setPictogramas(pics)
         })
       });
