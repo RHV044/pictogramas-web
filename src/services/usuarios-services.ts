@@ -55,6 +55,13 @@ export async function ObtenerUsuarioInfo(id: number | undefined){
     })
 }
 
+export async function ObtenerPictogramasRecientes(cantidad: number, usuario: number | undefined){
+  return axios.get(apiPictogramas + '/estadisticas/recientes/' + usuario + '?cantidad=' + cantidad)
+    .then(response => {
+      return response.data
+    })
+}
+
 export async function ObtenerUsuario(
   username: string,
   password: string

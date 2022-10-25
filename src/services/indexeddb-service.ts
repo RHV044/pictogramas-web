@@ -61,7 +61,7 @@ export class IndexedDbService {
 
   public async initializeSchema() {
     try {
-      this.db = await openDB(this.database, 4, {
+      this.db = await openDB(this.database, 5, {
         upgrade(
           db: IDBPDatabase,
           oldVersion: number,
@@ -79,6 +79,13 @@ export class IndexedDbService {
           // Esta bueno separar por categorias o me conviene reutlizar pictograms?
           if (!db.objectStoreNames.contains("categorias")) {
             objectStore = db.createObjectStore("categorias", {
+              autoIncrement: false,
+              keyPath: "id",
+            });
+          }
+
+          if (!db.objectStoreNames.contains("recientes")) {
+            objectStore = db.createObjectStore("recientes", {
               autoIncrement: false,
               keyPath: "id",
             });

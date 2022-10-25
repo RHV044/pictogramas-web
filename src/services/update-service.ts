@@ -24,6 +24,7 @@ import {
   InsertarCategoriasPorUsuario,
   ObtenerCategoriasPorUsuario,
   ObtenerFavoritosDeUsuario,
+  ObtenerPictogramasRecientes,
   ObtenerUsuarioInfo,
   SubirInformacionPictogramaPropio,
   usuarioLogueado,
@@ -51,6 +52,7 @@ let actualizacionPictogramas = false;
 let actualizacionFavoritos = false;
 let actualizacionEstadisticas = false;
 let actualizacionCategoriasPorUsuario = false;
+let actualizacionRecientes = false;
 let iniciando = false;
 
 export class UpdateService {
@@ -284,19 +286,22 @@ export class UpdateService {
         !actualizacionFavoritos &&
         !actualizacionPizarras &&
         !actualizacionUsuarios &&
-        !actualizacionEstadisticas
+        !actualizacionEstadisticas &&
+        !actualizacionRecientes
       ) {
         actualizacionPictogramas = true;
         actualizacionFavoritos = true;
         actualizacionPizarras = true;
         actualizacionUsuarios = true;
         actualizacionEstadisticas = true;
+        actualizacionRecientes = true;
         this.actualizarPizarras();
         this.actualizarUsuarios();
         this.actualizarPictogramas();
         this.actualizarFavoritos();
         this.actualizarEstadisticas();
-        this.actualizarCategoriasPorUsuarios();      
+        this.actualizarCategoriasPorUsuarios();
+        this.actualizarRecientes();      
       }
     }
     catch(ex){
@@ -305,17 +310,14 @@ export class UpdateService {
       actualizacionPizarras = false;
       actualizacionUsuarios = false;
       actualizacionEstadisticas = false;
+      actualizacionRecientes = false;
     }
   }
 
-  //
-  // La creacion de Usuario requiere obligatoriamente de conectividad por cuestiones practicas
-  //
   async actualizarEstadisticas() {
     try {
-      //Obtener usuarios del indexDB
       IndexedDbService.create().then((db) => {
-        db.getAllValues('historicoUsoPictogramas').then(async (registros: IUsuario[]) => {
+        db.getAllValues('historicoUsoPictogramas').then(async (registros: any[]) => {
           registros.map(async (registro) => {
             if (registro.id && registro.id !== 0)
             {
@@ -329,6 +331,26 @@ export class UpdateService {
       });
     } catch (ex) {
       actualizacionEstadisticas = false;
+    }
+  }
+
+  async actualizarRecientes() {
+    try {
+      let usuario = (await getUsuarioLogueado());
+      let usuarioId =
+        usuario !== undefined ? usuario.id : 0;
+      IndexedDbService.create().then(async (db) => {
+        let recientes = await ObtenerPictogramasRecientes(10, usuarioId)
+        let id = 1;
+        console.log("RECIENTES: ", recientes)
+        recientes.forEach(async (reciente) => {
+          reciente.id = id;
+          await db.putOrPatchValue('recientes', reciente)
+          id = id + 1;
+        });
+      });
+    } catch (ex) {
+      actualizacionRecientes = false;
     }
   }
 
