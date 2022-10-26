@@ -25,6 +25,7 @@ import {
   ObtenerPictogramasConImagenes,
   ObtenerPictogramasPorCategoria,
 } from '../../services/pictogramas-services';
+import RecientesImagen from './assets/recientes.png';
 
 export default function Recientes(props: any) {
   const [checked, setChecked] = useState(false);
@@ -36,10 +37,12 @@ export default function Recientes(props: any) {
     // TODO: Revisar si se debe ordenar por fecha del mas reciente al menos
     IndexedDbService.create().then(async (db) => {
       db.getAllValues('recientes').then(async (registros: any[]) => {
-        let ids = registros.map(r => {return r.pictograma})
-        ObtenerPictogramasConImagenes(ids).then(pics =>{
-          setPictogramas(pics)
-        })
+        let ids = registros.map((r) => {
+          return r.pictograma;
+        });
+        ObtenerPictogramasConImagenes(ids).then((pics) => {
+          setPictogramas(pics);
+        });
       });
     });
     getUsuarioLogueado().then((usuario) => {
@@ -60,7 +63,7 @@ export default function Recientes(props: any) {
         pictograma.violence === false) &&
       (pictograma.sex === usuario.sex || pictograma.sex === false) &&
       (pictograma.schematic === usuario.schematic ||
-        pictograma.schematic === false) 
+        pictograma.schematic === false)
       //   && (pictograma.aacColor === usuario.aacColor ||
       //   pictograma.aacColor === false) &&
       // (pictograma.aac === usuario.aac || pictograma.aac === false)
@@ -190,14 +193,52 @@ export default function Recientes(props: any) {
     </Container>
   );
 
+  const imagen = (
+    <Card
+      sx={{ maxWidth: 130, minWidth: 30, maxHeight: 140, minHeight: 20 }}
+      style={{ marginTop: '10px' }}
+      onClick={() => {}}
+    >
+      <CardActionArea
+        onClick={() => {
+          handleChange();
+        }}
+      >
+        <CardMedia
+          component="img"
+          height="50"
+          width="50"
+          src={RecientesImagen}
+          alt="Recientes"
+        ></CardMedia>
+        <CardHeader
+          style={{
+            height: '50%',
+            width: '95%',
+            marginBottom: 1,
+            paddingBottom: 0,
+          }}
+        ></CardHeader>
+        <CardContent
+          style={{
+            marginTop: 1,
+            paddingTop: 0,
+            marginLeft: 4,
+            paddingLeft: 0,
+            fontWeight: 'bold',
+          }}
+        >
+          Recientes
+        </CardContent>
+      </CardActionArea>
+    </Card>
+  );
+
   return (
     <Box style={{ marginLeft: 20 }}>
       {pictogramas.length > 0 && (
         <>
-          <FormControlLabel
-            control={<Switch checked={checked} onChange={handleChange} />}
-            label="Recientes"
-          />
+          {imagen}
           {checked && (
             <Box sx={{ display: 'flex' }}>{pictogramasRecientes}</Box>
           )}

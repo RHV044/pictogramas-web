@@ -61,53 +61,80 @@ export default function Pictogramas(props: any) {
   const [pictogramasFiltrados, setPictogramasFiltrados] = useState(
     [] as IPictogram[]
   );
-  const [pictogramasPredecidos, setPictogramasPredecidos] = useState([] as IPictogram[])
+  const [pictogramasPredecidos, setPictogramasPredecidos] = useState(
+    [] as IPictogram[]
+  );
   const [db, setDb] = useState(IndexedDbService.create());
   const [categorias, setCategorias] = useState([] as ICategoria[]);
-  const [categoriasPorUsuario, setCategoriasPorUsuario] = useState([] as ICategoriaPorUsuario[]);
-
+  const [categoriasPorUsuario, setCategoriasPorUsuario] = useState(
+    [] as ICategoriaPorUsuario[]
+  );
 
   const LearnAndPredict = async (pics: IPictogram[]) => {
     if (pics && pics.length >= (pictogramasSeleccionados?.length ?? 0)) {
       //Entrena al algoritmo Naive Bayes.
       learn(pics);
 
-      let pictoAgregado = pics[pics.length-1];
-      let pictoPrevio = pics[pics.length-2];
-      let pictosAnteriores = pics.slice(0, pics.length-1);
+      let pictoAgregado = pics[pics.length - 1];
+      let pictoPrevio = pics[pics.length - 2];
+      let pictosAnteriores = pics.slice(0, pics.length - 1);
       //TODO: Si es el primero, es un nuevo registro
       // pero si es uno que continua, debo pisar el registro (de esta manera guardo un unico registro que contiene toda la secuencia)
-      
-      if(pictosAnteriores.length > 0){
+
+      if (pictosAnteriores.length > 0) {
         // Esta seleccion ya fue iniciada previamente, debo actualizar un registro existente
         IndexedDbService.create().then((indexeddb) => {
-          indexeddb.getAllValues('historicoUsoPictogramas').then(async (registros) => {
-
-            // Agarro Automaticamente el ultimo ya que este es el que debo pisar
-            let historicoReverso = registros.slice().reverse();
-            let id = historicoReverso[0].id
-            if(id !== 0){
-              // Utilizo automaticamente el ultimo ID generado
-              indexeddb.putOrPatchValue("historicoUsoPictogramas", {id: id, fecha: new Date().toISOString(), usuario: usuarioLogueado?.id ,pictograma: pictoAgregado, previo: pictoPrevio, todosLosAnteriores: pictosAnteriores })
-            }   
-            else{
-              // No deberia nunca entrar aca
-              indexeddb.putOrPatchValue("historicoUsoPictogramas", {id: usuarioLogueado?.id + '_' + Date.now().toString(), usuario: usuarioLogueado?.id, fecha: new Date().toISOString(), pictograma: pictoAgregado, previo: pictoPrevio, todosLosAnteriores: pictosAnteriores })
-            }     
-          })
-        })        
-      }
-      else{
+          indexeddb
+            .getAllValues('historicoUsoPictogramas')
+            .then(async (registros) => {
+              // Agarro Automaticamente el ultimo ya que este es el que debo pisar
+              let historicoReverso = registros.slice().reverse();
+              let id = historicoReverso[0].id;
+              if (id !== 0) {
+                // Utilizo automaticamente el ultimo ID generado
+                indexeddb.putOrPatchValue('historicoUsoPictogramas', {
+                  id: id,
+                  fecha: new Date().toISOString(),
+                  usuario: usuarioLogueado?.id,
+                  pictograma: pictoAgregado,
+                  previo: pictoPrevio,
+                  todosLosAnteriores: pictosAnteriores,
+                });
+              } else {
+                // No deberia nunca entrar aca
+                indexeddb.putOrPatchValue('historicoUsoPictogramas', {
+                  id: usuarioLogueado?.id + '_' + Date.now().toString(),
+                  usuario: usuarioLogueado?.id,
+                  fecha: new Date().toISOString(),
+                  pictograma: pictoAgregado,
+                  previo: pictoPrevio,
+                  todosLosAnteriores: pictosAnteriores,
+                });
+              }
+            });
+        });
+      } else {
         // Esta seleccion es nueva, debe obligatoriamente crear un nuevo registro
-        (await db).putBulkValue("historicoUsoPictogramas", [{id: usuarioLogueado?.id + '_' + Date.now().toString(), usuario: usuarioLogueado?.id, fecha: new Date().toISOString(), pictograma: pictoAgregado, previo: pictoPrevio, todosLosAnteriores: pictosAnteriores }])
-      }      
+        (await db).putBulkValue('historicoUsoPictogramas', [
+          {
+            id: usuarioLogueado?.id + '_' + Date.now().toString(),
+            usuario: usuarioLogueado?.id,
+            fecha: new Date().toISOString(),
+            pictograma: pictoAgregado,
+            previo: pictoPrevio,
+            todosLosAnteriores: pictosAnteriores,
+          },
+        ]);
+      }
     }
     let prediccionProximosPictos = await predict(pics);
-    setPictogramasPredecidos(prediccionProximosPictos)    
+    setPictogramasPredecidos(prediccionProximosPictos);
     console.log(
       `Proximos Pictogramas sugerido: ${
-        prediccionProximosPictos && prediccionProximosPictos.length>0
-          ? prediccionProximosPictos.map(x=>x.keywords[0].keyword).reduce((prev,curr) => prev + ", " + curr)
+        prediccionProximosPictos && prediccionProximosPictos.length > 0
+          ? prediccionProximosPictos
+              .map((x) => x.keywords[0].keyword)
+              .reduce((prev, curr) => prev + ', ' + curr)
           : 'no prediction'
       }`
     );
@@ -125,28 +152,29 @@ export default function Pictogramas(props: any) {
 
   useEffect(() => {
     dispatchEvent(new CustomEvent('sincronizar'));
-    
+
     getUsuarioLogueado().then((usuario) => {
       if (usuario === null || usuario === undefined) {
         // Redirijo a seleccionar cuenta
         navigate('/cuenta/seleccionar' + location.search);
       } else {
-        
         setUsuarioLogueadoVariable(usuario);
-        
-        if((usuario?.nivel !== undefined ? usuario?.nivel : 0) === 3){
+
+        if ((usuario?.nivel !== undefined ? usuario?.nivel : 0) === 3) {
           IndexedDbService.create().then(async (indexeddb) => {
-            let categoriasPorUsuario = await indexeddb.getAllValues('categoriasPorUsuario');
+            let categoriasPorUsuario = await indexeddb.getAllValues(
+              'categoriasPorUsuario'
+            );
             setCategoriasPorUsuario(categoriasPorUsuario);
-          })
+          });
         }
       }
-    })
+    });
 
     ObtenerPictogramas().then((pictogramas) => {
       setPictogramas(pictogramas);
     });
-    
+
     ObtenerCategorias(setCategorias);
   }, []);
 
@@ -212,12 +240,10 @@ export default function Pictogramas(props: any) {
     return <>{ObtenerCategoriaPadre(categoria)}</>;
   };
 
-  const filtrarCategorias = (categorias: ICategoria[]) => {
-    
-  }
+  const filtrarCategorias = (categorias: ICategoria[]) => {};
 
   const OpcionesDeCategoria = (categoria: ICategoria) => {
-    let categoriasHijas : ICategoria[];
+    let categoriasHijas: ICategoria[];
     if (categoria.esCategoriaFinal === true) {
       // Es categoria final, debo mostrar pictogramas
       return (
@@ -230,50 +256,61 @@ export default function Pictogramas(props: any) {
         </>
       );
     } else {
-      
       // Es categoria padre, debo mostrar categorias
 
-      
-      if((usuarioLogueado?.nivel !== undefined ? usuarioLogueado?.nivel : 0)  === 3){
-          categoriasHijas = categorias.filter(c => c.categoriaPadre === categoria.id && (categoriasPorUsuario.some(cxu => cxu.idCategoria === c.id) || !c.esCategoriaFinal))
+      if (
+        (usuarioLogueado?.nivel !== undefined ? usuarioLogueado?.nivel : 0) ===
+        3
+      ) {
+        categoriasHijas = categorias.filter(
+          (c) =>
+            c.categoriaPadre === categoria.id &&
+            (categoriasPorUsuario.some((cxu) => cxu.idCategoria === c.id) ||
+              !c.esCategoriaFinal)
+        );
+      } else {
+        categoriasHijas = categorias.filter(
+          (c) =>
+            c.categoriaPadre === categoria.id &&
+            categoria.nivel <=
+              (usuarioLogueado?.nivel !== undefined
+                ? usuarioLogueado?.nivel
+                : 0)
+        );
       }
-      else{
-        categoriasHijas = categorias.filter(c => c.categoriaPadre === categoria.id && categoria.nivel <= (usuarioLogueado?.nivel !== undefined ? usuarioLogueado?.nivel : 0));
-      }
-    }
-      
-      return (
-        <Container>
-          <Grid
-            container
-            spacing={{ xs: 2, md: 3 }}
-            columns={{ xs: 4, sm: 10, md: 12 }}
-          >
-            {categoriasHijas.map((categoria) => {
-              return (
-                <Grid
-                  key={categoria.id + '-' + categoria.nombre}
-                  item
-                  xs={12}
-                  sm={4}
-                  md={2}
-                >
-                  <Container key={categoria.id + '-' + categoria.nombre}>
-                    <Categoria
-                      setCategoriaSeleccionada={setCategoriaSeleccionada}
-                      categoria={categoria}
-                      categoriaSeleccionada={categoriaSeleccionada}
-                      categorias={categorias}
-                    />
-                  </Container>
-                </Grid>
-              );
-            })}
-          </Grid>
-        </Container>
-      );
     }
 
+    return (
+      <Container>
+        <Grid
+          container
+          spacing={{ xs: 2, md: 3 }}
+          columns={{ xs: 4, sm: 10, md: 12 }}
+        >
+          {categoriasHijas.map((categoria) => {
+            return (
+              <Grid
+                key={categoria.id + '-' + categoria.nombre}
+                item
+                xs={12}
+                sm={4}
+                md={2}
+              >
+                <Container key={categoria.id + '-' + categoria.nombre}>
+                  <Categoria
+                    setCategoriaSeleccionada={setCategoriaSeleccionada}
+                    categoria={categoria}
+                    categoriaSeleccionada={categoriaSeleccionada}
+                    categorias={categorias}
+                  />
+                </Container>
+              </Grid>
+            );
+          })}
+        </Grid>
+      </Container>
+    );
+  };
 
   return (
     <div>
@@ -289,18 +326,23 @@ export default function Pictogramas(props: any) {
       )}
       {/* TODO: Extraer esto en otro lado para poder mostrar cuanto descargo el updateService */}
       {/* <CircularProgress variant="determinate" value={downloadPercentage} /> */}
+
       <Recientes
         setPictogramas={UpdatePictogramas}
         pictogramas={pictogramasSeleccionados}
       />
-      {pictogramasSeleccionados && pictogramasSeleccionados.length > 0 &&
-       pictogramasPredecidos && pictogramasPredecidos.length > 0 && pictogramasPredecidos[0] && (
-        <Sugeridos
-          setPictogramas={UpdatePictogramas}
-          pictogramas={pictogramasSeleccionados}
-          pictogramasPredecidos={pictogramasPredecidos}
-        />
-      )}
+      {pictogramasSeleccionados &&
+        pictogramasSeleccionados.length > 0 &&
+        pictogramasPredecidos &&
+        pictogramasPredecidos.length > 0 &&
+        pictogramasPredecidos[0] && (
+          <Sugeridos
+            setPictogramas={UpdatePictogramas}
+            pictogramas={pictogramasSeleccionados}
+            pictogramasPredecidos={pictogramasPredecidos}
+          />
+        )}
+
       <Grid
         container
         spacing={{ xs: 2, md: 3 }}
@@ -313,7 +355,7 @@ export default function Pictogramas(props: any) {
             id="input-tag-filter"
             label="Filtrar pictogramas por palabra clave o categoria"
             variant="standard"
-            style={{marginBottom: 5, width:  '100%'}}
+            style={{ marginBottom: 5, width: '100%' }}
             onChange={(event) => {
               //TODO: Revisar obtencion de pictogramas propios
               filtrarPictogramas(event.target.value);
@@ -381,7 +423,7 @@ export default function Pictogramas(props: any) {
         container
         spacing={{ xs: 2, md: 3 }}
         columns={{ xs: 4, sm: 10, md: 12 }}
-        style={{marginTop: 5}}
+        style={{ marginTop: 5 }}
       >
         {/* TODO: Mejorar diseño */}
         {categoriaSeleccionada && ListaCategorias(categoriaSeleccionada)}

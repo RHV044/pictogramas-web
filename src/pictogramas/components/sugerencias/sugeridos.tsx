@@ -21,9 +21,8 @@ import { getUsuarioLogueado } from '../../../services/usuarios-services';
 import { IUsuario } from '../../../login/model/usuario';
 import { IPictogram } from '../../models/pictogram';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
-import {
-  ObtenerImagenDePictogramaLocal
-} from '../../services/pictogramas-services';
+import { ObtenerImagenDePictogramaLocal } from '../../services/pictogramas-services';
+import PredictivoImagen from './assets/adivinar.png';
 
 export default function Sugeridos(props: any) {
   const [checked, setChecked] = useState(false);
@@ -33,20 +32,19 @@ export default function Sugeridos(props: any) {
 
   useEffect(() => {
     // TODO: Cambiar a Obtencion de pictogramas recientes
-    let pictogramasPredecidos = props.pictogramasPredecidos
-    if(pictogramasPredecidos){
+    let pictogramasPredecidos = props.pictogramasPredecidos;
+    if (pictogramasPredecidos) {
       pictogramasPredecidos.map(async (p: IPictogram) => {
-        if (p !== undefined && p !== null){
-          ObtenerImagenDePictogramaLocal(p.id).then(imagen =>{
-            if (imagen && imagen.imagen)
-            {
-              p.imagen = imagen.imagen
+        if (p !== undefined && p !== null) {
+          ObtenerImagenDePictogramaLocal(p.id).then((imagen) => {
+            if (imagen && imagen.imagen) {
+              p.imagen = imagen.imagen;
             }
-          }) 
-        }     
-      })  
-      setPictogramas(props.pictogramasPredecidos) 
-    } 
+          });
+        }
+      });
+      setPictogramas(props.pictogramasPredecidos);
+    }
     getUsuarioLogueado().then((usuario) => {
       if (usuario != undefined) {
         setUserLogueado(usuario);
@@ -65,7 +63,7 @@ export default function Sugeridos(props: any) {
         pictograma.violence === false) &&
       (pictograma.sex === usuario.sex || pictograma.sex === false) &&
       (pictograma.schematic === usuario.schematic ||
-        pictograma.schematic === false) 
+        pictograma.schematic === false)
       //   && (pictograma.aacColor === usuario.aacColor ||
       //   pictograma.aacColor === false) &&
       // (pictograma.aac === usuario.aac || pictograma.aac === false)
@@ -96,111 +94,151 @@ export default function Sugeridos(props: any) {
         spacing={{ xs: 2, md: 3 }}
         columns={{ xs: 4, sm: 10, md: 12 }}
       >
-        {pictogramas && pictogramas.length > 0 && pictogramas.map((pictograma) => {
-          if (pictograma && cumpleFiltros(pictograma, userLogueado))
-            return (
-              <Grid
-                key={pictograma.id ? pictograma.id : pictograma.identificador}
-                item
-                xs={12}
-                sm={4}
-                md={2}
-              >
-                <Grow
-                  in={checked}
-                  style={{ transformOrigin: '0 0 0' }}
-                  {...(checked ? { timeout: 1000 } : {})}
+        {pictogramas &&
+          pictogramas.length > 0 &&
+          pictogramas.map((pictograma) => {
+            if (pictograma && cumpleFiltros(pictograma, userLogueado))
+              return (
+                <Grid
+                  key={pictograma.id ? pictograma.id : pictograma.identificador}
+                  item
+                  xs={12}
+                  sm={4}
+                  md={2}
                 >
-                  <Container
-                    key={
-                      pictograma.id ? pictograma.id : pictograma.identificador
-                    }
+                  <Grow
+                    in={checked}
+                    style={{ transformOrigin: '0 0 0' }}
+                    {...(checked ? { timeout: 1000 } : {})}
                   >
-                    <Card
-                      sx={{
-                        maxWidth: 230,
-                        minWidth: 70,
-                        maxHeight: 240,
-                        minHeight: 50,
-                      }}
-                      style={{ marginTop: '10px' }}
-                      onClick={() => {}}
+                    <Container
+                      key={
+                        pictograma.id ? pictograma.id : pictograma.identificador
+                      }
                     >
-                      <CardActionArea
-                        onClick={() => {
-                          let pictogramasSeleccionados = props.pictogramas;
-                          pictogramasSeleccionados.push(pictograma);
-                          props.setPictogramas(pictogramasSeleccionados);
-                          console.log(
-                            'se agrego un pictograma: ',
-                            props.pictogramas
-                          );
+                      <Card
+                        sx={{
+                          maxWidth: 230,
+                          minWidth: 70,
+                          maxHeight: 240,
+                          minHeight: 50,
                         }}
+                        style={{ marginTop: '10px' }}
+                        onClick={() => {}}
                       >
-                        <CardMedia
-                          component="img"
-                          height="160"
-                          width="140"
-                          src={
-                            pictograma.imagen &&
-                            pictograma.imagen.includes('data:image')
-                              ? pictograma.imagen
-                              : `data:image/png;base64,${pictograma.imagen}`
-                          }
-                          alt={pictograma.keywords[0].keyword}
-                        ></CardMedia>
-                        <CardHeader
-                          style={{
-                            height: '100%',
-                            width: '95%',
-                            marginBottom: 1,
-                            paddingBottom: 0,
-                          }}
-                        ></CardHeader>
-                        <CardContent
-                          style={{
-                            marginTop: 1,
-                            paddingTop: 0,
-                            marginLeft: 4,
-                            paddingLeft: 0,
-                            fontWeight: 'bold',
-                          }}
-                        >
-                          {pictograma.keywords[0].keyword}
-                        </CardContent>
-                      </CardActionArea>
-
-                      <FavoritoButton
-                        pictograma={pictograma}
-                        favoritos={favoritos}
-                      />
-
-                      {userLogueado?.id === pictograma.idUsuario && (
-                        <IconButton
-                          aria-label="eliminar"
+                        <CardActionArea
                           onClick={() => {
-                            eliminarPictograma(pictograma);
+                            let pictogramasSeleccionados = props.pictogramas;
+                            pictogramasSeleccionados.push(pictograma);
+                            props.setPictogramas(pictogramasSeleccionados);
+                            console.log(
+                              'se agrego un pictograma: ',
+                              props.pictogramas
+                            );
                           }}
                         >
-                          <HighlightOffIcon />
-                        </IconButton>
-                      )}
-                    </Card>
-                  </Container>
-                </Grow>
-              </Grid>
-            );
-        })}
+                          <CardMedia
+                            component="img"
+                            height="160"
+                            width="140"
+                            src={
+                              pictograma.imagen &&
+                              pictograma.imagen.includes('data:image')
+                                ? pictograma.imagen
+                                : `data:image/png;base64,${pictograma.imagen}`
+                            }
+                            alt={pictograma.keywords[0].keyword}
+                          ></CardMedia>
+                          <CardHeader
+                            style={{
+                              height: '100%',
+                              width: '95%',
+                              marginBottom: 1,
+                              paddingBottom: 0,
+                            }}
+                          ></CardHeader>
+                          <CardContent
+                            style={{
+                              marginTop: 1,
+                              paddingTop: 0,
+                              marginLeft: 4,
+                              paddingLeft: 0,
+                              fontWeight: 'bold',
+                            }}
+                          >
+                            {pictograma.keywords[0].keyword}
+                          </CardContent>
+                        </CardActionArea>
+
+                        <FavoritoButton
+                          pictograma={pictograma}
+                          favoritos={favoritos}
+                        />
+
+                        {userLogueado?.id === pictograma.idUsuario && (
+                          <IconButton
+                            aria-label="eliminar"
+                            onClick={() => {
+                              eliminarPictograma(pictograma);
+                            }}
+                          >
+                            <HighlightOffIcon />
+                          </IconButton>
+                        )}
+                      </Card>
+                    </Container>
+                  </Grow>
+                </Grid>
+              );
+          })}
       </Grid>
     </Container>
   );
 
+  const imagen = (
+    <Card
+      sx={{ maxWidth: 130, minWidth: 30, maxHeight: 140, minHeight: 20 }}
+      style={{ marginTop: '10px' }}
+      onClick={() => {}}
+    >
+      <CardActionArea
+        onClick={() => {
+          handleChange();
+        }}
+      >
+        <CardMedia
+          component="img"
+          height="50"
+          width="50"
+          src={PredictivoImagen}
+          alt="Recientes"
+        ></CardMedia>
+        <CardHeader
+          style={{
+            height: '50%',
+            width: '95%',
+            marginBottom: 1,
+            paddingBottom: 0,
+          }}
+        ></CardHeader>
+        <CardContent
+          style={{
+            marginTop: 1,
+            paddingTop: 0,
+            marginLeft: 4,
+            paddingLeft: 0,
+            fontWeight: 'bold',
+          }}
+        >
+          Recientes
+        </CardContent>
+      </CardActionArea>
+    </Card>
+  );
+
   return (
-    <Box style={{marginLeft: 20}}>
-      <FormControlLabel
-        control={<Switch checked={checked} onChange={handleChange} />}
-        label="Sugeridos"
-      />
+    <Box style={{ marginLeft: 20 }}>
+      {imagen}
       {checked && <Box sx={{ display: 'flex' }}>{pictogramasRecientes}</Box>}
     </Box>
   );

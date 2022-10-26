@@ -12,6 +12,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { getUsuarioLogueado, usuarioLogueado, setUsuarioLogueadoVariable } from '../../../services/usuarios-services';
 import { ICategoria } from '../../models/categoria';
 import { ObtenerCategorias } from '../../services/pictogramas-services';
+import Recientes from '../sugerencias/recientes';
 import Categoria from './categoria';
 import CategoriaFavoritos from './categoriaFavoritos';
 import CategoriaPropios from './categoriaPropios';
