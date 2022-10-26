@@ -181,7 +181,7 @@ export class IndexedDbService {
     return this.getValue("pictograms", id) as Promise<IPictogram>;
   }
 
-  public async getValue(tableName: string, id: number) {
+  public async getValue(tableName: string, id: number | string) {
     try {
       const tx = this.db.transaction(tableName, "readonly");
       const store = tx.objectStore(tableName);
