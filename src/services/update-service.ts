@@ -342,14 +342,18 @@ export class UpdateService {
       IndexedDbService.create().then(async (db) => {
         let recientes = await ObtenerPictogramasRecientes(10, usuarioId)
         db.getAllValues('recientes').then(async (registros: any[]) => {
-          registros.map(async (registro) => {
-            if(registro.usuario === usuarioId)
-              await db.deleteValue('recientes', registro.id)
+          recientes.forEach(async (reciente) => {
+            await db.putOrPatchValue('recientes', reciente)
           });
+          // TODO: Ver de evitar la eliminacion, quizas dejando ciertos ids fijos
+          if(registros.length > 100)
+          {
+            registros.map(async (registro) => {
+              if(registro.usuario === usuarioId)
+                await db.deleteValue('recientes', registro.id)
+            });
+          }
           actualizacionEstadisticas = false;
-        });
-        recientes.forEach(async (reciente) => {
-          await db.putOrPatchValue('recientes', reciente)
         });
       });
     } catch (ex) {

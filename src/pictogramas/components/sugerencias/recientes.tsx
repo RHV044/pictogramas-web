@@ -33,7 +33,7 @@ export default function Recientes(props: any) {
   const [userLogueado, setUserLogueado] = useState(null as IUsuario | null);
 
   useEffect(() => {
-    // TODO: Cambiar a Obtencion de pictogramas recientes
+    // TODO: Revisar si se debe ordenar por fecha del mas reciente al menos
     IndexedDbService.create().then(async (db) => {
       db.getAllValues('recientes').then(async (registros: any[]) => {
         let ids = registros.map(r => {return r.pictograma})
@@ -191,12 +191,18 @@ export default function Recientes(props: any) {
   );
 
   return (
-    <Box style={{marginLeft: 20}}>
-      <FormControlLabel
-        control={<Switch checked={checked} onChange={handleChange} />}
-        label="Recientes"
-      />
-      {checked && <Box sx={{ display: 'flex' }}>{pictogramasRecientes}</Box>}
+    <Box style={{ marginLeft: 20 }}>
+      {pictogramas.length > 0 && (
+        <>
+          <FormControlLabel
+            control={<Switch checked={checked} onChange={handleChange} />}
+            label="Recientes"
+          />
+          {checked && (
+            <Box sx={{ display: 'flex' }}>{pictogramasRecientes}</Box>
+          )}
+        </>
+      )}
     </Box>
   );
 }

@@ -52,7 +52,7 @@ export async function predict(
 ): Promise<IPictogram[]> {
   let resultIds: any[] = await (
     await classifier()
-  ).categorize(getKeywordsText(pictogramas), 3);
+  ).categorize(getKeywordsText(pictogramas), 5);
 
   let pictograms: IPictogram[] = [];
 
