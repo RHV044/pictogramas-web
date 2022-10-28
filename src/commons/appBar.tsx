@@ -16,8 +16,10 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import FormDialogValidarAcceso from '../configuracion/components/validarCambioConfiguracion';
 import { getUsuarioLogueado } from '../services/usuarios-services';
 import { IUsuario } from '../login/model/usuario';
-import imagenUsuario from '../commons/imagen-usuario.jpg'
-import Logo from '../commons/Logo-PictogAR.png'
+import imagenUsuario from '../commons/imagen-usuario.jpg';
+import Logo from '../commons/Logo-PictogAR.png';
+import { useSelector } from 'react-redux';
+import { RootState } from '../redux/store';
 
 const pages = ['Pizarras', 'Actividades', 'Estadisticas'];
 const settings = ['Configuracion', 'Cambiar Cuenta'];
@@ -25,18 +27,23 @@ const settings = ['Configuracion', 'Cambiar Cuenta'];
 const ResponsiveAppBar = () => {
   let navigate = useNavigate();
   let location = useLocation();
-  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
-  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
+    null
+  );
+  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
+    null
+  );
   const [configuracionOpen, setConfiguracionOpen] = React.useState(false);
-  const [userLogueado, setUserLogueado] = React.useState(null as IUsuario | null);
+  const [userLogueado, setUserLogueado] = React.useState(
+    null as IUsuario | null
+  );
+  const porcentaje = useSelector((state: RootState) => state.porcentaje.value);
 
   React.useEffect(() => {
     getUsuarioLogueado().then((usuario) => {
       if (usuario != undefined) {
         setUserLogueado(usuario);
-
-      }
-      else{
+      } else {
         navigate('/cuenta/seleccionar' + location.search);
       }
     });
@@ -61,25 +68,32 @@ const ResponsiveAppBar = () => {
     setConfiguracionOpen(false);
   };
 
-
   const handleChange = (page: string) => {
     if (page === 'Configuracion') {
-      setConfiguracionOpen(true)
+      setConfiguracionOpen(true);
+    } else {
+      navigate(
+        `/${page.toLocaleLowerCase().replace(/ /g, '')}` + location.search
+      );
     }
-    else {
-      navigate(`/${page.toLocaleLowerCase().replace(/ /g, '')}` + location.search);
-    }
-  }
+  };
 
   return (
     <AppBar position="static" style={{ marginBottom: 10 }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          {configuracionOpen && <FormDialogValidarAcceso cerrarValidarConfiguracion={cerrarValidarConfiguracion} />}
+          {configuracionOpen && (
+            <FormDialogValidarAcceso
+              cerrarValidarConfiguracion={cerrarValidarConfiguracion}
+            />
+          )}
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             <a href="/pictogramas">
-              <img alt="Qries" src={Logo} height="65"/>
+              <img alt="Qries" src={Logo} height="65" />
             </a>
+            <Typography textAlign="right">
+              Descargado: {porcentaje.toString()} %
+            </Typography>
           </Box>
           {/* <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} /> */}
           {/* <Typography
@@ -130,18 +144,26 @@ const ResponsiveAppBar = () => {
               }}
             >
               {pages.map((page) => (
-                <MenuItem key={page} onClick={() => {
-                  handleChange(page)
-                }}>
+                <MenuItem
+                  key={page}
+                  onClick={() => {
+                    handleChange(page);
+                  }}
+                >
                   <Typography textAlign="center">{page}</Typography>
                 </MenuItem>
               ))}
+
             </Menu>
+
           </Box>
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <a href="/pictogramas">
-              <img alt="Qries" src={Logo} height="65"/>
+              <img alt="Qries" src={Logo} height="65" />
             </a>
+            <Typography textAlign="right">
+              Descargado: {porcentaje.toString()} %
+            </Typography>
           </Box>
           {/* <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
           <Typography
@@ -177,7 +199,16 @@ const ResponsiveAppBar = () => {
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Configuracion">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src={userLogueado && userLogueado.imagen && userLogueado.imagen !== "" ? userLogueado.imagen : imagenUsuario} />
+                <Avatar
+                  alt="Remy Sharp"
+                  src={
+                    userLogueado &&
+                    userLogueado.imagen &&
+                    userLogueado.imagen !== ''
+                      ? userLogueado.imagen
+                      : imagenUsuario
+                  }
+                />
               </IconButton>
             </Tooltip>
             <Menu

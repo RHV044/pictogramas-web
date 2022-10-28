@@ -349,6 +349,7 @@ export default function Pictogramas(props: any) {
         columns={{ xs: 4, sm: 10, md: 12 }}
         alignItems="center"
         justifyContent="center"
+        style={{marginTop:0}}
       >
         <Grid key="Filtros" item xs={12} sm={4} md={2}>
           <TextField

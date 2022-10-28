@@ -4,6 +4,8 @@ import "./index.css";
 import App from "./App";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import reportWebVitals from "./reportWebVitals";
+import { Provider } from "react-redux";
+import { store } from "./redux/store";
 
 // Request persistent storage for site
 if (navigator.storage && navigator.storage.persist) {
@@ -19,7 +21,9 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <React.StrictMode>
+          <Provider store={store}>
     <App />
+    </Provider>
   </React.StrictMode>
 );
 

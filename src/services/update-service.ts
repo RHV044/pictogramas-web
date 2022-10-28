@@ -8,7 +8,6 @@ import {
   ObtenerTotalCategorias,
   ObtenerTotalPictogramas,
   ObtenerYGuardarCategorias,
-  VerificarConexion,
 } from '../pictogramas/services/pictogramas-services';
 import { IndexedDbService } from './indexeddb-service';
 import axios from 'axios';
@@ -27,7 +26,6 @@ import {
   ObtenerPictogramasRecientes,
   ObtenerUsuarioInfo,
   SubirInformacionPictogramaPropio,
-  usuarioLogueado,
 } from './usuarios-services';
 import { IPizarra } from '../pizarras/models/pizarra';
 import {
@@ -40,10 +38,15 @@ import { IUsuario } from '../login/model/usuario';
 import { IFavoritoPorUsuario } from '../pictogramas/models/favoritoPorUsuario';
 import { ICategoriaPorUsuario } from '../pictogramas/models/categoriaPorUsuario';
 
-const apiPictogramas = process.env.REACT_APP_URL_PICTOGRAMAS ?? 'http://localhost:5000';
+const apiPictogramas =
+  process.env.REACT_APP_URL_PICTOGRAMAS ?? 'http://localhost:5000';
 
 type MyState = {
   categorias: ICategoria[];
+  categoriasDescargadas: boolean;
+  pictogramasDescargados: boolean;
+  imagenesDescargadas: boolean;
+  iniciando: boolean;
 };
 
 let actualizacionPizarras = false;
@@ -53,11 +56,14 @@ let actualizacionFavoritos = false;
 let actualizacionEstadisticas = false;
 let actualizacionCategoriasPorUsuario = false;
 let actualizacionRecientes = false;
-let iniciando = false;
 
 export class UpdateService {
   state: MyState = {
     categorias: [],
+    categoriasDescargadas: false,
+    pictogramasDescargados: false,
+    imagenesDescargadas: false,
+    iniciando: false,
   };
 
   constructor() {
@@ -67,131 +73,155 @@ export class UpdateService {
     this.sincronizar();
   }
 
+  porcentajeDeDescarga() {
+    let porcentaje = 0;
+    if (this.state.categoriasDescargadas) porcentaje = porcentaje + 20;
+    if (this.state.pictogramasDescargados) porcentaje = porcentaje + 20;
+    if (this.state.imagenesDescargadas) porcentaje = porcentaje + 60;
+    return porcentaje
+  }
+
   async initialize() {
-    if (!iniciando) {
-      iniciando = true;
-      let db = await IndexedDbService.create();
-      let totalCategoriasLocales = await db.countValues('categorias');
-      let totalCategorias = await ObtenerTotalCategorias();
-      console.log(
-        `Total categorias: ${totalCategorias} vs total categorias locales: ${totalCategoriasLocales}`
-      );
-      if (totalCategoriasLocales < totalCategorias) {
-        await ObtenerYGuardarCategorias(async (cats: ICategoria[]) => {
-          cats.forEach((cat) => {
-            if (!cats.some((c) => c.categoriaPadre === cat.id))
-              cat.esCategoriaFinal = true;
-            else cat.esCategoriaFinal = false;
+    if (!this.state.iniciando) {
+      try {
+        console.log('Seteo iniciando true');
+        this.state.iniciando = true;
+        console.log('Arranca');
+        let db = await IndexedDbService.create();
+        let totalCategoriasLocales = await db.countValues('categorias');
+        let totalCategorias = await ObtenerTotalCategorias();
+        console.log(
+          `Total categorias: ${totalCategorias} vs total categorias locales: ${totalCategoriasLocales}`
+        );
+        if (totalCategoriasLocales < totalCategorias) {
+          await ObtenerYGuardarCategorias(async (cats: ICategoria[]) => {
+            cats.forEach((cat) => {
+              if (!cats.some((c) => c.categoriaPadre === cat.id))
+                cat.esCategoriaFinal = true;
+              else cat.esCategoriaFinal = false;
+            });
+            await db.putBulkValue('categorias', cats);
+            // Obtencion imagenes de categorias
+
+            const maxParallelRequests = 500;
+            let count = 0;
+            let start = 0;
+            let end = 1;
+            while (count < cats.length) {
+              end =
+                cats.length - count <= maxParallelRequests
+                  ? start + (cats.length - count)
+                  : start + maxParallelRequests;
+
+              let aGroupOfInfoCats = cats.slice(start, end);
+              count += end - start;
+              start = end;
+
+              let groupRequestPromises: Promise<any>[] = aGroupOfInfoCats.map(
+                // eslint-disable-next-line no-loop-func
+                async (cat: ICategoria) => {
+                  // Get the pictogram's image
+                  return axios
+                    .get(
+                      `${apiPictogramas}/categorias/${cat.id}/obtener/base64`
+                    )
+                    .then(async (response) => {
+                      cat.imagen = response.data;
+                      await db.putOrPatchValue('categorias', cat);
+                    });
+                }
+              );
+            }
           });
-          await db.putBulkValue('categorias', cats);
-          // Obtencion imagenes de categorias
+        }    
+        this.state.categoriasDescargadas = true    
 
-          const maxParallelRequests = 500;
-          let count = 0;
-          let start = 0;
-          let end = 1;
-          while (count < cats.length) {
-            end =
-              cats.length - count <= maxParallelRequests
-                ? start + (cats.length - count)
-                : start + maxParallelRequests;
+        let usuario = await getUsuarioLogueado();
+        let totalPictogramasLocales = 1;
+        if (usuario != null && usuario !== undefined && usuario.id != null)
+          totalPictogramasLocales =
+            (await db.countPictogramasDeUsuarioLocales(usuario.id)) +
+            (await db.countPictogramasLocales(usuario.id));
+        else totalPictogramasLocales = await db.countPictogramasLocales(null);
 
-            let aGroupOfInfoCats = cats.slice(start, end);
-            count += end - start;
-            start = end;
-
-            let groupRequestPromises: Promise<any>[] = aGroupOfInfoCats.map(
-              // eslint-disable-next-line no-loop-func
-              async (cat: ICategoria) => {
-                // Get the pictogram's image
-                return axios
-                  .get(`${apiPictogramas}/categorias/${cat.id}/obtener/base64`)
-                  .then(async (response) => {
-                    cat.imagen = response.data;
-                    await db.putOrPatchValue('categorias', cat);
-                  });
-              }
-            );
-          }
-        });
-      }
-
-      let usuario = await getUsuarioLogueado();
-      let totalPictogramasLocales = 1;
-      if (usuario != null && usuario !== undefined && usuario.id != null)
-        totalPictogramasLocales =
-          (await db.countPictogramasDeUsuarioLocales(usuario.id)) +
-          (await db.countPictogramasLocales(usuario.id));
-      else
-        totalPictogramasLocales = await db.countPictogramasLocales(null);
-
-      let totalPictogramas = await ObtenerTotalPictogramas();
-      console.log(
-        `Total pictogramas: ${totalPictogramas} vs total pictogramas locales: ${totalPictogramasLocales}`
-      );
-      if (totalPictogramasLocales < totalPictogramas) {
+        let totalPictogramas = await ObtenerTotalPictogramas();
+        console.log(
+          `Total pictogramas: ${totalPictogramas} vs total pictogramas locales: ${totalPictogramasLocales}`
+        );
         let informacion = await ObtenerInformacionPictogramas(); // obtiene pictos de arasaac y de usuario
         let informacionPropios = informacion.filter(
           (p) => p.idUsuario === usuario?.id
         );
         let informacionArasaac = informacion.filter((p) => p.idArasaac > 0);
+        if (totalPictogramasLocales < totalPictogramas) {
+          db.putBulkValue('pictograms', informacionArasaac);
+          db.putBulkValue('pictogramasPropios', informacionPropios);
 
-        db.putBulkValue('pictograms', informacionArasaac);
-        db.putBulkValue('pictogramasPropios', informacionPropios);
-
-        // Obtencion imagenes de pictogramas pictogramas propios
-        db.getAllValues('pictogramasPropios').then(
-          async (pictogramas: IPictogram[]) => {
-            if (usuario != null && usuario !== undefined && usuario.id != null)
-              pictogramas = pictogramas.filter(
-                (p) =>
-                  (p.idUsuario === null ||
-                  p.idUsuario === usuario?.id ||
-                  p.idArasaac !== null) && (p.imagen === '' || p.imagen === null || p.imagen === undefined) 
-              );
-            else
-              pictogramas = pictogramas.filter(
-                (p) => (p.idUsuario === null || p.idArasaac !== null) && (p.imagen === '' || p.imagen === null || p.imagen === undefined) 
-              );
-            const maxParallelRequests = 500;
-            let count = 0;
-            let start = 0;
-            let end = 1;
-            while (count < pictogramas.length) {
-              end =
-                pictogramas.length - count <= maxParallelRequests
-                  ? start + (pictogramas.length - count)
-                  : start + maxParallelRequests;
-
-              let aGroupOfInfoPictograms = pictogramas.slice(start, end);
-              count += end - start;
-              start = end;
-
-              let groupRequestPromises: Promise<any>[] =
-                aGroupOfInfoPictograms.map(
-                  // eslint-disable-next-line no-loop-func
-                  async (pictoInfo: IPictogram) => {
-                    // Get the pictogram's image
-                    return axios
-                      .get(
-                        `${apiPictogramas}/pictogramas/${pictoInfo.id}/obtener/base64`
-                      )
-                      .then(async (response) => {
-                        pictoInfo.imagen = response.data;
-                        await db.putOrPatchValue(
-                          'pictogramasPropios',
-                          pictoInfo
-                        );
-                      });
-                  }
+          // Obtencion imagenes de pictogramas pictogramas propios
+          db.getAllValues('pictogramasPropios').then(
+            async (pictogramas: IPictogram[]) => {
+              if (
+                usuario != null &&
+                usuario !== undefined &&
+                usuario.id != null
+              )
+                pictogramas = pictogramas.filter(
+                  (p) =>
+                    (p.idUsuario === null ||
+                      p.idUsuario === usuario?.id ||
+                      p.idArasaac !== null) &&
+                    (p.imagen === '' ||
+                      p.imagen === null ||
+                      p.imagen === undefined)
                 );
+              else
+                pictogramas = pictogramas.filter(
+                  (p) =>
+                    (p.idUsuario === null || p.idArasaac !== null) &&
+                    (p.imagen === '' ||
+                      p.imagen === null ||
+                      p.imagen === undefined)
+                );
+              const maxParallelRequests = 500;
+              let count = 0;
+              let start = 0;
+              let end = 1;
+              while (count < pictogramas.length) {
+                end =
+                  pictogramas.length - count <= maxParallelRequests
+                    ? start + (pictogramas.length - count)
+                    : start + maxParallelRequests;
 
-              await Promise.all(groupRequestPromises);
+                let aGroupOfInfoPictograms = pictogramas.slice(start, end);
+                count += end - start;
+                start = end;
+
+                let groupRequestPromises: Promise<any>[] =
+                  aGroupOfInfoPictograms.map(
+                    // eslint-disable-next-line no-loop-func
+                    async (pictoInfo: IPictogram) => {
+                      // Get the pictogram's image
+                      return axios
+                        .get(
+                          `${apiPictogramas}/pictogramas/${pictoInfo.id}/obtener/base64`
+                        )
+                        .then(async (response) => {
+                          pictoInfo.imagen = response.data;
+                          await db.putOrPatchValue(
+                            'pictogramasPropios',
+                            pictoInfo
+                          );
+                        });
+                    }
+                  );
+
+                await Promise.all(groupRequestPromises);
+              }
             }
-          }
-        );
+          );
+        }
+        this.state.pictogramasDescargados = true  
 
-        //TODO: Esto se deberia correr fuera del if de cantidad de pictogramas locales vs en la api,
         // ya que pueden faltar imagenes y no pictogramas
         let totalImagenesLocales = await db.countValues('imagenes');
         if (totalImagenesLocales < informacionArasaac.length) {
@@ -206,12 +236,19 @@ export class UpdateService {
                 pictogramas = pictogramas.filter(
                   (p) =>
                     (p.idUsuario === null ||
-                    p.idUsuario === usuario?.id ||
-                    p.idArasaac !== null) && (p.imagen === '' || p.imagen === null || p.imagen === undefined) 
+                      p.idUsuario === usuario?.id ||
+                      p.idArasaac !== null) &&
+                    (p.imagen === '' ||
+                      p.imagen === null ||
+                      p.imagen === undefined)
                 );
               else
                 pictogramas = pictogramas.filter(
-                  (p) => (p.idUsuario === null || p.idArasaac !== null) && (p.imagen === '' || p.imagen === null || p.imagen === undefined) 
+                  (p) =>
+                    (p.idUsuario === null || p.idArasaac !== null) &&
+                    (p.imagen === '' ||
+                      p.imagen === null ||
+                      p.imagen === undefined)
                 );
               const maxParallelRequests = 500;
               let count = 0;
@@ -259,9 +296,16 @@ export class UpdateService {
             }
           );
         }
+        this.state.imagenesDescargadas = true 
+
+        this.state.iniciando = false;
+      } catch (ex) {
+        console.log('OCURRIO UN ERROR INICIALIZANDO UPDATE SERVICE');
+        this.state.categoriasDescargadas = true 
+        this.state.pictogramasDescargados = true 
+        this.state.imagenesDescargadas = true 
       }
     }
-    iniciando = false;
   }
 
   async addEventsListener() {
@@ -279,7 +323,7 @@ export class UpdateService {
   }
 
   async sincronizar() {
-    try{
+    try {
       if (
         window.navigator.onLine &&
         !actualizacionPictogramas &&
@@ -301,10 +345,9 @@ export class UpdateService {
         this.actualizarFavoritos();
         this.actualizarEstadisticas();
         this.actualizarCategoriasPorUsuarios();
-        this.actualizarRecientes();      
+        this.actualizarRecientes();
       }
-    }
-    catch(ex){
+    } catch (ex) {
       actualizacionPictogramas = false;
       actualizacionFavoritos = false;
       actualizacionPizarras = false;
@@ -317,17 +360,21 @@ export class UpdateService {
   async actualizarEstadisticas() {
     try {
       IndexedDbService.create().then((db) => {
-        db.getAllValues('historicoUsoPictogramas').then(async (registros: any[]) => {
-          registros.map(async (registro) => {
-            if (registro.id && registro.id !== 0)
-            {
-              //No es el categorize, lo debo guardar en la api y luego borrarlo
-              await GuardarEstadistica(registro)
-              await db.deleteValue('historicoUsoPictogramas', registro.id.toString())
-            }
-          });
-          actualizacionEstadisticas = false;
-        });
+        db.getAllValues('historicoUsoPictogramas').then(
+          async (registros: any[]) => {
+            registros.map(async (registro) => {
+              if (registro.id && registro.id !== 0) {
+                //No es el categorize, lo debo guardar en la api y luego borrarlo
+                await GuardarEstadistica(registro);
+                await db.deleteValue(
+                  'historicoUsoPictogramas',
+                  registro.id.toString()
+                );
+              }
+            });
+            actualizacionEstadisticas = false;
+          }
+        );
       });
     } catch (ex) {
       actualizacionEstadisticas = false;
@@ -336,21 +383,19 @@ export class UpdateService {
 
   async actualizarRecientes() {
     try {
-      let usuario = (await getUsuarioLogueado());
-      let usuarioId =
-        usuario !== undefined ? usuario.id : 0;
+      let usuario = await getUsuarioLogueado();
+      let usuarioId = usuario !== undefined ? usuario.id : 0;
       IndexedDbService.create().then(async (db) => {
-        let recientes = await ObtenerPictogramasRecientes(10, usuarioId)
+        let recientes = await ObtenerPictogramasRecientes(10, usuarioId);
         db.getAllValues('recientes').then(async (registros: any[]) => {
           recientes.forEach(async (reciente) => {
-            await db.putOrPatchValue('recientes', reciente)
+            await db.putOrPatchValue('recientes', reciente);
           });
           // TODO: Ver de evitar la eliminacion, quizas dejando ciertos ids fijos
-          if(registros.length > 100)
-          {
+          if (registros.length > 100) {
             registros.map(async (registro) => {
-              if(registro.usuario === usuarioId)
-                await db.deleteValue('recientes', registro.id)
+              if (registro.usuario === usuarioId)
+                await db.deleteValue('recientes', registro.id);
             });
           }
           actualizacionEstadisticas = false;
@@ -398,9 +443,8 @@ export class UpdateService {
 
   async actualizarPictogramas() {
     try {
-      let usuario = (await getUsuarioLogueado());
-      let usuarioId =
-        usuario !== undefined ? usuario.id : 0;
+      let usuario = await getUsuarioLogueado();
+      let usuarioId = usuario !== undefined ? usuario.id : 0;
       ObtenerInformacionPictogramas().then((pictogramas) => {
         let pictogramasFiltrados = pictogramas.filter(
           (p: IPictogram) => p.idUsuario === usuarioId
@@ -479,72 +523,73 @@ export class UpdateService {
 
   async actualizarPizarras() {
     try {
-      let usuario = (await getUsuarioLogueado());
-      let usuarioId =
-        usuario !== undefined ? usuario.id : 0;
-      ObtenerPizarras(usuarioId !== undefined ? usuarioId : 0).then((pizarrasApi: IPizarra[]) => {
-        IndexedDbService.create().then((db) => {
-          db.getAllValues('pizarras').then(async (pizarras: IPizarra[]) => {
-            // Carga de pizarras de la api que no esten en el indexDb
-            pizarrasApi.map((pizarra) => {
-              if (
-                !pizarras.some(
-                  (p) => p.id === pizarra.id && !p.pendienteCreacion
-                )
-              ) {
-                db.putOrPatchValue('pizarras', pizarra);
-              }
-            });
+      let usuario = await getUsuarioLogueado();
+      let usuarioId = usuario !== undefined ? usuario.id : 0;
+      ObtenerPizarras(usuarioId !== undefined ? usuarioId : 0).then(
+        (pizarrasApi: IPizarra[]) => {
+          IndexedDbService.create().then((db) => {
+            db.getAllValues('pizarras').then(async (pizarras: IPizarra[]) => {
+              // Carga de pizarras de la api que no esten en el indexDb
+              pizarrasApi.map((pizarra) => {
+                if (
+                  !pizarras.some(
+                    (p) => p.id === pizarra.id && !p.pendienteCreacion
+                  )
+                ) {
+                  db.putOrPatchValue('pizarras', pizarra);
+                }
+              });
 
-            console.log('Pizarras api: ', pizarrasApi);
-            console.log('Pizarras locales: ', pizarras);
-            pizarras.map(async (pizarra) => {
-              // Creacion de pizarra en la api
-              if (pizarra.pendienteCreacion) {
-                await GuardarPizarra(pizarra);
-                pizarra.pendienteCreacion = false;
-                db.putOrPatchValue('pizarras', pizarra);
-              }
+              console.log('Pizarras api: ', pizarrasApi);
+              console.log('Pizarras locales: ', pizarras);
+              pizarras.map(async (pizarra) => {
+                // Creacion de pizarra en la api
+                if (pizarra.pendienteCreacion) {
+                  await GuardarPizarra(pizarra);
+                  pizarra.pendienteCreacion = false;
+                  db.putOrPatchValue('pizarras', pizarra);
+                }
 
-              //TODO: Verificar funcionamiento de actualizacion
-              // Actualizacion de pizarra
-              if (
-                pizarrasApi.some(
-                  (p) =>
-                    p.id === pizarra.id &&
-                    p.ultimaActualizacion < pizarra.ultimaActualizacion
-                )
-              ) {
-                // Debo actualizar la pizarra en el IndexDb
-                console.log('Se actualiza pizarra en indexDb');
-                let p = pizarras.find((p) => p.id === pizarra.id);
-                pizarra = p ? p : pizarra;
-                db.putOrPatchValue('pizarras', pizarra);
-              } else {
+                //TODO: Verificar funcionamiento de actualizacion
+                // Actualizacion de pizarra
                 if (
                   pizarrasApi.some(
                     (p) =>
                       p.id === pizarra.id &&
-                      p.ultimaActualizacion > pizarra.ultimaActualizacion
+                      p.ultimaActualizacion < pizarra.ultimaActualizacion
                   )
                 ) {
-                  // Debo actualizar la pizarra en la api
-                  console.log('Se actualiza pizarra en la api');
-                  await ActualizarPizarra(pizarra);
+                  // Debo actualizar la pizarra en el IndexDb
+                  console.log('Se actualiza pizarra en indexDb');
+                  let p = pizarras.find((p) => p.id === pizarra.id);
+                  pizarra = p ? p : pizarra;
+                  db.putOrPatchValue('pizarras', pizarra);
+                } else {
+                  if (
+                    pizarrasApi.some(
+                      (p) =>
+                        p.id === pizarra.id &&
+                        p.ultimaActualizacion > pizarra.ultimaActualizacion
+                    )
+                  ) {
+                    // Debo actualizar la pizarra en la api
+                    console.log('Se actualiza pizarra en la api');
+                    await ActualizarPizarra(pizarra);
+                  }
                 }
-              }
 
-              // Eliminacion de pizarra en la api
-              if (pizarra.pendienteEliminacion) {
-                EliminarPizarra(pizarra).then(() => {
-                  db.deleteValue('pizarras', pizarra.id);
-                });
-              }
+                // Eliminacion de pizarra en la api
+                if (pizarra.pendienteEliminacion) {
+                  EliminarPizarra(pizarra).then(() => {
+                    db.deleteValue('pizarras', pizarra.id);
+                  });
+                }
+              });
             });
+            actualizacionPizarras = false;
           });
-          actualizacionPizarras = false;
-        });
-      });
+        }
+      );
     } catch (ex) {
       actualizacionPizarras = false;
       console.log(ex);
@@ -553,9 +598,8 @@ export class UpdateService {
 
   async actualizarFavoritos() {
     try {
-      let usuario = (await getUsuarioLogueado());
-      let usuarioId =
-        usuario !== undefined ? usuario.id : 0;
+      let usuario = await getUsuarioLogueado();
+      let usuarioId = usuario !== undefined ? usuario.id : 0;
       ObtenerFavoritosDeUsuario(usuarioId !== undefined ? usuarioId : 0).then(
         (favoritosApi: IFavoritoPorUsuario[]) => {
           IndexedDbService.create().then((db) => {
@@ -615,11 +659,10 @@ export class UpdateService {
     }
   }
 
-  async actualizarCategoriasPorUsuarios(){
+  async actualizarCategoriasPorUsuarios() {
     try {
-      let usuario = (await getUsuarioLogueado());
-      let usuarioId =
-        usuario !== undefined ? usuario.id : 0;
+      let usuario = await getUsuarioLogueado();
+      let usuarioId = usuario !== undefined ? usuario.id : 0;
       ObtenerCategoriasPorUsuario(usuarioId !== undefined ? usuarioId : 0).then(
         (categoriasDeUsuarioApi: ICategoriaPorUsuario[]) => {
           IndexedDbService.create().then((db) => {
@@ -629,7 +672,9 @@ export class UpdateService {
                 categoriasDeUsuarioApi.map(async (categoriaDeUsuario) => {
                   if (
                     !categoriasDeUsuario.some(
-                      (cxu) => cxu.id === categoriaDeUsuario.id && !cxu.pendienteAgregar
+                      (cxu) =>
+                        cxu.id === categoriaDeUsuario.id &&
+                        !cxu.pendienteAgregar
                     )
                   ) {
                     const cxuCompleto: ICategoriaPorUsuario = {
@@ -639,34 +684,40 @@ export class UpdateService {
                       pendienteAgregar: false,
                       pendienteEliminar: false,
                     };
-                    await db.putOrPatchValue('favoritosPorUsuario', cxuCompleto);
+                    await db.putOrPatchValue(
+                      'favoritosPorUsuario',
+                      cxuCompleto
+                    );
                   }
                 });
 
                 categoriasDeUsuario.map(async (categoriaDeUsuario) => {
-                  
-                  
                   // Eliminacion de categoriaPorUsuario en la api
                   if (categoriaDeUsuario.pendienteEliminar) {
                     await EliminarCategoriasPorUsuario(
                       usuarioId !== undefined ? usuarioId : 0,
                       categoriaDeUsuario.idCategoria
-                    )                      
-                    await db.deleteValue('categoriasPorUsuario', categoriaDeUsuario.id);                    
-                  }               
-                  
+                    );
+                    await db.deleteValue(
+                      'categoriasPorUsuario',
+                      categoriaDeUsuario.id
+                    );
+                  }
+
                   // Creacion del categoriaPorUsuario en la api
                   if (categoriaDeUsuario.pendienteAgregar) {
                     await InsertarCategoriasPorUsuario(
                       usuarioId !== undefined ? usuarioId : 0,
-                      categoriaDeUsuario.idCategoria                      
+                      categoriaDeUsuario.idCategoria
                     );
                     categoriaDeUsuario.pendienteAgregar = false;
-                    await db.putOrPatchValue('categoriasPorUsuario', categoriaDeUsuario);
+                    await db.putOrPatchValue(
+                      'categoriasPorUsuario',
+                      categoriaDeUsuario
+                    );
                   }
 
                   //TODO: Verificar funcionamiento
-
                 });
               }
             );
