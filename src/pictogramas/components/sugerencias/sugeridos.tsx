@@ -230,7 +230,7 @@ export default function Sugeridos(props: any) {
             fontWeight: 'bold',
           }}
         >
-          Recientes
+          Sugeridos
         </CardContent>
       </CardActionArea>
     </Card>
