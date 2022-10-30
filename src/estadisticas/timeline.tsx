@@ -13,66 +13,165 @@ import Typography from '@mui/material/Typography';
 import { useEffect, useState } from 'react';
 import { IEstadistica } from './model/estadistica';
 import { IPictogramaEstadistica } from './model/pictogramaEstadistica';
-import { ObtenerPictogramaConImagenes, ObtenerPictogramasConImagenes } from '../pictogramas/services/pictogramas-services';
+import {
+  ObtenerPictogramaConImagenes,
+  ObtenerPictogramasConImagenes,
+} from '../pictogramas/services/pictogramas-services';
+import {
+  Card,
+  CardActionArea,
+  CardContent,
+  CardHeader,
+  CardMedia,
+  Container,
+  Grid,
+} from '@mui/material';
 
-
-
-export default function TimeLine(props: any){
-
-  const [pictogramasMañana, setPictogramasMañana] = useState([] as IPictogramaEstadistica[])
-  const [pictogramasMediodia, setPictogramasMediodia] = useState([] as IPictogramaEstadistica[])
-  const [pictogramasTarde, setPictogramasTarde] = useState([] as IPictogramaEstadistica[])
-  const [pictogramasNoche, setPictogramasNoche] = useState([] as IPictogramaEstadistica[])
+export default function TimeLine(props: any) {
+  const [pictogramasMañana, setPictogramasMañana] = useState(
+    [] as IPictogramaEstadistica[]
+  );
+  const [pictogramasMediodia, setPictogramasMediodia] = useState(
+    [] as IPictogramaEstadistica[]
+  );
+  const [pictogramasTarde, setPictogramasTarde] = useState(
+    [] as IPictogramaEstadistica[]
+  );
+  const [pictogramasNoche, setPictogramasNoche] = useState(
+    [] as IPictogramaEstadistica[]
+  );
 
   useEffect(() => {
-    let estadisticas = props.estadisticas as IEstadistica[]
-    let mañana = estadisticas.filter(e => new Date(e.fecha).getHours() >= 6 && new Date(e.fecha).getHours() < 12)
-    let mediodia = estadisticas.filter(e => new Date(e.fecha).getHours() >= 12 && new Date(e.fecha).getHours() < 16)
-    let tarde = estadisticas.filter(e => new Date(e.fecha).getHours() >= 16 && new Date(e.fecha).getHours() < 20)
-    let noche = estadisticas.filter(e =>new Date(e.fecha).getHours() >= 20 && new Date(e.fecha).getHours() < 2)
+    let estadisticas = props.estadisticas as IEstadistica[];
+    let mañana = estadisticas.filter(
+      (e) =>
+        new Date(e.fecha).getHours() >= 6 && new Date(e.fecha).getHours() < 12
+    );
+    let mediodia = estadisticas.filter(
+      (e) =>
+        new Date(e.fecha).getHours() >= 12 && new Date(e.fecha).getHours() < 16
+    );
+    let tarde = estadisticas.filter(
+      (e) =>
+        new Date(e.fecha).getHours() >= 16 && new Date(e.fecha).getHours() < 20
+    );
+    let noche = estadisticas.filter(
+      (e) =>
+        new Date(e.fecha).getHours() >= 20 || new Date(e.fecha).getHours() < 2
+    );
 
-    ObtenerPictogramasOrdenados(mañana).then(pics => {
-      setPictogramasMañana(pics)
-    })
-    ObtenerPictogramasOrdenados(mediodia).then(pics => {
-      setPictogramasMañana(pics)
-    })
-    ObtenerPictogramasOrdenados(tarde).then(pics => {
-      setPictogramasMañana(pics)
-    })
-    ObtenerPictogramasOrdenados(noche).then(pics => {
-      setPictogramasMañana(pics)
-    })
-  },[])
+    ObtenerPictogramasOrdenados(mañana).then((pics) => {
+      setPictogramasMañana(pics);
+    });
+    ObtenerPictogramasOrdenados(mediodia).then((pics) => {
+      setPictogramasMediodia(pics);
+    });
+    ObtenerPictogramasOrdenados(tarde).then((pics) => {
+      setPictogramasTarde(pics);
+    });
+    ObtenerPictogramasOrdenados(noche).then((pics) => {
+      setPictogramasNoche(pics);
+    });
+  }, []);
 
-  async function ObtenerPictogramasOrdenados(estadisticas: IEstadistica[]) : Promise<IPictogramaEstadistica[]>{
-    let pictogramas = [] as IPictogramaEstadistica[]
+  async function ObtenerPictogramasOrdenados(
+    estadisticas: IEstadistica[]
+  ): Promise<IPictogramaEstadistica[]> {
+    let pictogramas = [] as IPictogramaEstadistica[];
     estadisticas.forEach(async (estadistica) => {
-      if(pictogramas.some((p: IPictogramaEstadistica) => p.id === estadistica.pictograma)){
+      if (
+        pictogramas.some(
+          (p: IPictogramaEstadistica) => estadistica.pictograma === p.id
+        )
+      ) {
         // Ya existe, debo aumentar su contador
-        pictogramas.map(p => {
-          if(p.id === estadistica.pictograma){
-            p.cantidad += 1
-            p.estadisticas.push(estadistica)
-          }
-        })
-      }
-      else{
-        // Lo agrego a la lista  
-        let pictograma = await ObtenerPictogramaConImagenes(estadistica.pictograma)      
-        pictogramas.push({
-          cantidad: 1,
-          estadisticas: [estadistica],
-          id: estadistica.pictograma,
-          pictograma: pictograma
-        })
+        await Promise.all(
+          pictogramas.map((p) => {
+            if (p.id === estadistica.pictograma) {
+              p.cantidad += 1;
+              p.estadisticas.push(estadistica);
+            }
+          })
+        );
+      } else {
+        pictogramas = [
+          ...pictogramas,
+          {
+            cantidad: 1,
+            estadisticas: [estadistica],
+            id: estadistica.pictograma,
+            pictograma: null,
+          },
+        ];
       }
     });
 
-    pictogramas.sort(p => p.cantidad).slice(0,5)
-    console.log("PICTOGRAMAS DE ESTADISTICA: ", pictogramas)
+    pictogramas = pictogramas.sort(compare).slice(0, 5);
+    for (const picto of pictogramas) {
+      picto.pictograma = await ObtenerPictogramaConImagenes(picto.id);
+    }
+    return pictogramas;
+  }
 
-    return pictogramas
+  function compare(a, b) {
+    if (a.cantidad > b.cantidad) {
+      return -1;
+    }
+    if (a.cantidad < b.cantidad) {
+      return 1;
+    }
+    return 0;
+  }
+
+  function renderPictograma(pictograma) {
+    return (
+      <Container key={pictograma.id ? pictograma.id : pictograma.identificador}>
+        <Card
+          sx={{
+            maxWidth: 230,
+            minWidth: 70,
+            maxHeight: 240,
+            minHeight: 50,
+          }}
+          style={{ marginTop: '10px' }}
+          onClick={() => {}}
+        >
+          <CardActionArea onClick={() => {}}>
+            <CardMedia
+              component="img"
+              height="160"
+              width="140"
+              src={
+                pictograma.imagen && pictograma.imagen.includes('data:image')
+                  ? pictograma.imagen
+                  : `data:image/png;base64,${pictograma.imagen}`
+              }
+              alt={pictograma.keywords[0].keyword}
+            ></CardMedia>
+            <CardHeader
+              style={{
+                height: '100%',
+                width: '95%',
+                marginBottom: 1,
+                paddingBottom: 0,
+              }}
+            ></CardHeader>
+            <CardContent
+              style={{
+                marginTop: 1,
+                paddingTop: 0,
+                marginLeft: 4,
+                paddingLeft: 0,
+                fontWeight: 'bold',
+                paddingBottom: 0,
+              }}
+            >
+              {pictograma.keywords[0].keyword.toLocaleUpperCase()}
+            </CardContent>
+          </CardActionArea>
+        </Card>
+      </Container>
+    );
   }
 
   return (
@@ -89,15 +188,42 @@ export default function TimeLine(props: any){
         <TimelineSeparator>
           <TimelineConnector />
           <TimelineDot>
-            <FastfoodIcon />
+            {pictogramasMañana.length > 1 &&
+              pictogramasMañana[0].pictograma &&
+              renderPictograma(pictogramasMañana[0].pictograma)}
           </TimelineDot>
           <TimelineConnector />
         </TimelineSeparator>
         <TimelineContent sx={{ py: '12px', px: 2 }}>
-          <Typography variant="h6" component="span">
-            Eat
-          </Typography>
-          <Typography>Because you need strength</Typography>
+          {pictogramasMañana.length > 2 && (
+            <Grid
+              container
+              spacing={{ xs: 2, md: 3 }}
+              columns={{ xs: 4, sm: 10, md: 12 }}
+            >
+              {pictogramasMañana.map((pictograma) => {
+                if (
+                  pictograma.id !== pictogramasMañana[0].id &&
+                  pictograma.pictograma
+                )
+                  return (
+                    <Grid
+                      key={
+                        pictograma.pictograma.id
+                          ? pictograma.pictograma.id
+                          : pictograma.pictograma.identificador
+                      }
+                      item
+                      xs={12}
+                      sm={4}
+                      md={2}
+                    >
+                      {renderPictograma(pictograma.pictograma)}
+                    </Grid>
+                  );
+              })}
+            </Grid>
+          )}
         </TimelineContent>
       </TimelineItem>
       <TimelineItem>
@@ -111,45 +237,141 @@ export default function TimeLine(props: any){
         <TimelineSeparator>
           <TimelineConnector />
           <TimelineDot color="primary">
-            <LaptopMacIcon />
+            {pictogramasMediodia.length > 1 &&
+              pictogramasMediodia[0].pictograma &&
+              renderPictograma(pictogramasMediodia[0].pictograma)}
           </TimelineDot>
           <TimelineConnector />
         </TimelineSeparator>
         <TimelineContent sx={{ py: '12px', px: 2 }}>
-          <Typography variant="h6" component="span">
-            Code
-          </Typography>
-          <Typography>Because it&apos;s awesome!</Typography>
+          {pictogramasMediodia.length > 2 && (
+            <Grid
+              container
+              spacing={{ xs: 2, md: 3 }}
+              columns={{ xs: 4, sm: 10, md: 12 }}
+            >
+              {pictogramasMediodia.map((pictograma) => {
+                if (
+                  pictograma.id !== pictogramasMediodia[0].id &&
+                  pictograma.pictograma
+                )
+                  return (
+                    <Grid
+                      key={
+                        pictograma.pictograma.id
+                          ? pictograma.pictograma.id
+                          : pictograma.pictograma.identificador
+                      }
+                      item
+                      xs={12}
+                      sm={4}
+                      md={2}
+                    >
+                      {renderPictograma(pictograma.pictograma)}
+                    </Grid>
+                  );
+              })}
+            </Grid>
+          )}
         </TimelineContent>
       </TimelineItem>
       <TimelineItem>
+        <TimelineOppositeContent
+          sx={{ m: 'auto 0' }}
+          align="right"
+          variant="body2"
+          color="text.secondary"
+        >
+          16:00 a 19:00
+        </TimelineOppositeContent>
         <TimelineSeparator>
           <TimelineConnector />
           <TimelineDot color="primary" variant="outlined">
-            <HotelIcon />
+            {pictogramasTarde.length > 1 &&
+              pictogramasTarde[0].pictograma &&
+              renderPictograma(pictogramasTarde[0].pictograma)}
           </TimelineDot>
           <TimelineConnector sx={{ bgcolor: 'secondary.main' }} />
         </TimelineSeparator>
         <TimelineContent sx={{ py: '12px', px: 2 }}>
-          <Typography variant="h6" component="span">
-            Sleep
-          </Typography>
-          <Typography>Because you need rest</Typography>
+          {pictogramasTarde.length > 2 && (
+            <Grid
+              container
+              spacing={{ xs: 2, md: 3 }}
+              columns={{ xs: 4, sm: 10, md: 12 }}
+            >
+              {pictogramasTarde.map((pictograma) => {
+                if (
+                  pictograma.id !== pictogramasTarde[0].id &&
+                  pictograma.pictograma
+                )
+                  return (
+                    <Grid
+                      key={
+                        pictograma.pictograma.id
+                          ? pictograma.pictograma.id
+                          : pictograma.pictograma.identificador
+                      }
+                      item
+                      xs={12}
+                      sm={4}
+                      md={2}
+                    >
+                      {renderPictograma(pictograma.pictograma)}
+                    </Grid>
+                  );
+              })}
+            </Grid>
+          )}
         </TimelineContent>
       </TimelineItem>
       <TimelineItem>
+        <TimelineOppositeContent
+          sx={{ m: 'auto 0' }}
+          variant="body2"
+          color="text.secondary"
+        >
+          20:00 a 24:00
+        </TimelineOppositeContent>
         <TimelineSeparator>
           <TimelineConnector sx={{ bgcolor: 'secondary.main' }} />
           <TimelineDot color="secondary">
-            <RepeatIcon />
+            {pictogramasNoche.length > 1 &&
+              pictogramasNoche[0].pictograma &&
+              renderPictograma(pictogramasNoche[0].pictograma)}
           </TimelineDot>
           <TimelineConnector />
         </TimelineSeparator>
         <TimelineContent sx={{ py: '12px', px: 2 }}>
-          <Typography variant="h6" component="span">
-            Repeat
-          </Typography>
-          <Typography>Because this is the life you love!</Typography>
+          {pictogramasNoche.length > 2 && (
+            <Grid
+              container
+              spacing={{ xs: 2, md: 3 }}
+              columns={{ xs: 4, sm: 10, md: 12 }}
+            >
+              {pictogramasNoche.map((pictograma) => {
+                if (
+                  pictograma.id !== pictogramasNoche[0].id &&
+                  pictograma.pictograma
+                )
+                  return (
+                    <Grid
+                      key={
+                        pictograma.pictograma.id
+                          ? pictograma.pictograma.id
+                          : pictograma.pictograma.identificador
+                      }
+                      item
+                      xs={12}
+                      sm={4}
+                      md={2}
+                    >
+                      {renderPictograma(pictograma.pictograma)}
+                    </Grid>
+                  );
+              })}
+            </Grid>
+          )}
         </TimelineContent>
       </TimelineItem>
     </Timeline>

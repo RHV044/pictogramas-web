@@ -5,5 +5,5 @@ export interface IPictogramaEstadistica{
   id: number,
   cantidad: number,
   estadisticas: IEstadistica[],
-  pictograma: IPictogram
+  pictograma: IPictogram | null
 }
