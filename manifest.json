@@ -1,0 +1,9 @@
+{
+  "name": "Pictogramas",
+  "short_name": "Pictogramas",
+  "description": "Aplicacion para la utilizacion de pictogramas.",
+  "start_url": "/",
+  "display": "fullscreen",
+  "theme_color": "#B12A34",
+  "background_color": "#B12A34"
+}
