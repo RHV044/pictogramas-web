@@ -86,7 +86,7 @@ export default function EstilosFormDialog(props: any) {
             Puede dar estilos por fila, columna o a una celda en especifico
             <br/>
             <Container>
-              <Box sx={{ minWidth: 120 }}>
+              <Box sx={{ minWidth: 120, marginTop:5 }}>
                 <FormControl fullWidth>
                   <InputLabel id="demo-simple-select-label">Fila</InputLabel>
                   <Select
@@ -101,7 +101,7 @@ export default function EstilosFormDialog(props: any) {
                   </Select>
                 </FormControl>
               </Box>
-              <Box sx={{ minWidth: 120 }}>
+              <Box sx={{ minWidth: 120, marginTop:5 }}>
                 <FormControl fullWidth>
                   <InputLabel id="demo-simple-select-label">Columna</InputLabel>
                   <Select
@@ -122,7 +122,7 @@ export default function EstilosFormDialog(props: any) {
                 Seleccione el color de fondo
                 <ColorPicker width={456} height={228}
                     color={color}
-                    onChange={setColor} hideHSV dark />;
+                    onChange={setColor} hideHSV dark />
                 </div>
             }
           </DialogContentText>

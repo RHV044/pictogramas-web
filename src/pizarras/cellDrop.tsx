@@ -113,7 +113,7 @@ export const CellDrop: FC<CellDropProps> = memo(function CellDrop({
           marginRight: 0
         }} 
         data-testid="dustbin">
-          {isActive ? 'Release to drop' : 'Drag a box here'}
+          {isActive ? 'Suelta para posicionar' : 'Arrastra un pictograma/texto'}
         </div>
       }
       { (graficosSinLugar.length > 0 && graficosSinLugar.some(g => g.posicion.columna === columna && g.posicion.fila === fila)) && 
