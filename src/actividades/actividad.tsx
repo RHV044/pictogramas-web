@@ -45,8 +45,8 @@ export default function Actividad() {
   }, []);
 
   const inicializar = () => {
-    ObtenerCategoriasIndexDB().then((cats) => {
-      setCategorias(cats.sort(() => (Math.random() > 0.5 ? 1 : -1)));
+    ObtenerCategoriasIndexDB().then((cats) => {      
+      setCategorias(cats.filter((c :ICategoria) => c.nombre !== "Vocabulario nuclear" && c.nombre !== "Vocabulario central").sort(() => (Math.random() > 0.5 ? 1 : -1)));
       ObtenerPictogramas().then((pics: IPictogram[]) => {
         let picsArasaac = pics.filter((p) => p.idArasaac > 0);
         setPictogramas(picsArasaac);
@@ -168,7 +168,7 @@ export default function Actividad() {
                 fontWeight: 'bold',
               }}
             >
-              {categoria.nombre}
+              {categoria.nombre.toLocaleUpperCase()}
             </CardContent>
           </CardActionArea>
         </Card>
@@ -292,18 +292,18 @@ export default function Actividad() {
             }}>
             <Card
               sx={{
-                maxWidth: 230,
+                maxWidth: 240,
                 minWidth: 70,
                 maxHeight: 240,
-                minHeight: 50,
+                minHeight: 70,
               }}
               style={{ marginTop: '10px' }}
             >
               <CardActionArea onClick={() => speak({ text: pictograma.keywords[0].keyword})}>
                 <CardMedia
                   component="img"
-                  height="160"
-                  width="140"
+                  height="180"
+                  width="180"
                   src={
                     pictograma.imagen &&
                     pictograma.imagen.includes('data:image')
@@ -329,7 +329,7 @@ export default function Actividad() {
                     fontWeight: 'bold',
                   }}
                 >
-                  {pictograma.keywords[0].keyword}
+                  {pictograma.keywords[0].keyword.toLocaleUpperCase()}
                 </CardContent>
               </CardActionArea>
             </Card>

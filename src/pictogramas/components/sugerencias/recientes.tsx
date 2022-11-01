@@ -228,7 +228,7 @@ export default function Recientes(props: any) {
             fontWeight: 'bold',
           }}
         >
-          Recientes
+          RECIENTES
         </CardContent>
       </CardActionArea>
     </Card>

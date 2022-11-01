@@ -296,7 +296,10 @@ export default function Pictogramas(props: any) {
                 sm={4}
                 md={2}
               >
-                <Container key={categoria.id + '-' + categoria.nombre} maxWidth="xl">
+                <Container
+                  key={categoria.id + '-' + categoria.nombre}
+                  maxWidth="xl"
+                >
                   <Categoria
                     setCategoriaSeleccionada={setCategoriaSeleccionada}
                     categoria={categoria}
@@ -349,7 +352,7 @@ export default function Pictogramas(props: any) {
         columns={{ xs: 4, sm: 10, md: 12 }}
         alignItems="center"
         justifyContent="center"
-        style={{marginTop:0}}
+        style={{ marginTop: 0 }}
       >
         <Grid key="Filtros" item xs={12} sm={4} md={2}>
           <TextField
@@ -406,10 +409,18 @@ export default function Pictogramas(props: any) {
                         }
                         alt={pictograma.keywords[0].keyword}
                       ></CardMedia>
-                      <CardHeader
-                        title={pictograma.keywords[0].keyword}
-                      ></CardHeader>
-                      <CardContent></CardContent>
+                      <CardHeader></CardHeader>
+                      <CardContent
+                        style={{
+                          marginTop: 1,
+                          paddingTop: 0,
+                          marginLeft: 4,
+                          paddingLeft: 0,
+                          fontWeight: 'bold',
+                        }}
+                      >
+                        {pictograma.keywords[0].keyword.toLocaleUpperCase()}
+                      </CardContent>
                     </CardActionArea>
                   </Card>
                 </Container>

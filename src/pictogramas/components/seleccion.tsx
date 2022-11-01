@@ -121,7 +121,7 @@ export default function Seleccion(props: any) {
                         fontWeight: 'bold',
                       }}
                     >
-                      {pictograma.keywords[0].keyword}
+                      {pictograma.keywords[0].keyword.toLocaleUpperCase()}
                     </CardContent>
                   </CardActionArea>
                 </Card>
