@@ -562,7 +562,15 @@ export default function Pizarras(this: any) {
           </Table>
         </Table>
       )}
-      <br />
+        <Container
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginTop: 10,
+            marginBottom:5
+          }}
+        >
       <TextField
         style={{ marginLeft: 5 }}
         label="Texto para agregar"
@@ -588,18 +596,35 @@ export default function Pizarras(this: any) {
       >
         Agregar Texto
       </Button>
-      <br />
+      </Container>
+
       {pictogramas.length > 0 && (
-        <div>
+              <Container
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginTop: 10,
+                marginBottom:5
+              }}
+            >
           <Switch
             checked={mostrarPictogramas}
             onChange={(evt) => setMostrarPictogramas(evt?.target?.checked)}
           />{' '}
           Mostrar Pictogramas
-        </div>
+          </Container>
       )}
       {mostrarPictogramas && (
-        <div>
+              <Container
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginTop: 10,
+                marginBottom:5
+              }}
+            >
           <TextField
             style={{ marginLeft: 5, marginTop: 5, marginBottom: 5 }}
             label="Buscar Pictograma"
@@ -611,8 +636,9 @@ export default function Pizarras(this: any) {
             size="small"
           />
           <br />
-        </div>
+          </Container>
       )}
+
       <div>
         <div style={{ overflow: 'hidden', clear: 'both' }}>
           {!cargando &&
