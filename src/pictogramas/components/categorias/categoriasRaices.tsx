@@ -39,8 +39,8 @@ export default function CategoriasRaices(props: any) {
   }, []);
 
   return (
-    <Container>
-      <Grid container spacing={{ xs: 3, md: 3 }} columns={{ xs: 10, sm: 10, md: 12 }} style={{marginTop: 1}}>
+    <Container maxWidth="xl">
+      <Grid container spacing={{ xs: 3, md: 3 }} columns={{ xs: 10, sm: 10, md: 12 }} style={{marginTop: 1, marginLeft: 0, marginRight: 0}}>
         {/* TODO: Agregar pictogramas recientes si fuera necesario */}
         <CategoriaPropios setCategoriaSeleccionada={props.setCategoriaSeleccionada} categoriaSeleccionada={categoriaSeleccionada}/>
         <CategoriaFavoritos setCategoriaSeleccionada={props.setCategoriaSeleccionada} categoriaSeleccionada={categoriaSeleccionada}/>

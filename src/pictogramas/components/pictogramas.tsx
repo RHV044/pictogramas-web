@@ -281,7 +281,7 @@ export default function Pictogramas(props: any) {
     }
 
     return (
-      <Container>
+      <Container maxWidth="xl">
         <Grid
           container
           spacing={{ xs: 2, md: 3 }}
@@ -296,7 +296,7 @@ export default function Pictogramas(props: any) {
                 sm={4}
                 md={2}
               >
-                <Container key={categoria.id + '-' + categoria.nombre}>
+                <Container key={categoria.id + '-' + categoria.nombre} maxWidth="xl">
                   <Categoria
                     setCategoriaSeleccionada={setCategoriaSeleccionada}
                     categoria={categoria}

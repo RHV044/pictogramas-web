@@ -32,7 +32,7 @@ export default function CategoriaPropios(props: any) {
     >
       <Container key={-1}>
         <Card
-          sx={{ maxWidth: 230, minWidth:70, maxHeight: 240, minHeight: 50 }}
+          sx={{ maxWidth: 240, minWidth:70, maxHeight: 240, minHeight: 50 }}
           style={{ marginTop: '10px' }}
         >
           <CardActionArea
@@ -50,8 +50,8 @@ export default function CategoriaPropios(props: any) {
           >
             <CardMedia
               component="img"
-              height="160"
-              width="140"
+              height="180"
+              width="180"
               src={userLogueado && userLogueado.imagen && userLogueado.imagen !== "" ? userLogueado.imagen : imagenUsuario}
               alt="Pictogramas Propios"
             ></CardMedia>

@@ -132,7 +132,7 @@ export default function Actividad() {
     return (
       <div>
         <Card
-          sx={{ maxWidth: 230, minWidth: 70, maxHeight: 240, minHeight: 50 }}
+          sx={{ maxWidth: 240, minWidth: 100, maxHeight: 240, minHeight: 100 }}
           style={{ marginTop: '10px' }}
           onClick={() => {}}
         >
@@ -143,8 +143,7 @@ export default function Actividad() {
           >
             <CardMedia
               component="img"
-              height="160"
-              width="140"
+              style={{height: 180, width: 180 }}
               src={
                 categoria.imagen && categoria.imagen.includes('data:image')
                   ? categoria.imagen

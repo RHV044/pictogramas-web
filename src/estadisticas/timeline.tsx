@@ -129,8 +129,8 @@ export default function TimeLine(props: any) {
       <Container key={pictograma.id ? pictograma.id : pictograma.identificador}>
         <Card
           sx={{
-            maxWidth: 230 - (index*10),
-            minWidth: 70 - (index*10),
+            maxWidth: 240 - (index*10),
+            minWidth: 100 - (index*10),
             maxHeight: 240 - (index*10),
             minHeight: 50 - (index*10),
           }}
@@ -141,7 +141,7 @@ export default function TimeLine(props: any) {
             <CardMedia
               component="img"
               height={160- (index*10)}
-              width={140- (index*10)}
+              width={170- (index*10)}
               src={
                 pictograma.imagen && pictograma.imagen.includes('data:image')
                   ? pictograma.imagen
@@ -188,7 +188,7 @@ export default function TimeLine(props: any) {
         </TimelineOppositeContent>
         <TimelineSeparator>
           <TimelineConnector />
-          <TimelineDot>
+          <TimelineDot variant="outlined">
             {pictogramasMañana.length > 1 &&
               pictogramasMañana[0].pictograma &&
               renderPictograma(pictogramasMañana[0].pictograma, 0)}
@@ -218,6 +218,7 @@ export default function TimeLine(props: any) {
                       xs={12}
                       sm={4}
                       md={2}
+                      style={{marginLeft:15}}
                     >
                       {renderPictograma(pictograma.pictograma, pictogramasMañana.indexOf(pictograma))}
                     </Grid>
@@ -237,7 +238,7 @@ export default function TimeLine(props: any) {
         </TimelineOppositeContent>
         <TimelineSeparator>
           <TimelineConnector />
-          <TimelineDot color="primary">
+          <TimelineDot color="primary" variant="outlined">
             {pictogramasMediodia.length > 1 &&
               pictogramasMediodia[0].pictograma &&
               renderPictograma(pictogramasMediodia[0].pictograma, 0)}
@@ -269,6 +270,7 @@ export default function TimeLine(props: any) {
                       xs={12}
                       sm={4}
                       md={2}
+                      style={{marginRight:15}}
                     >
                       {renderPictograma(pictograma.pictograma, pictogramasMediodia.indexOf(pictograma))}
                     </Grid>
@@ -289,7 +291,7 @@ export default function TimeLine(props: any) {
         </TimelineOppositeContent>
         <TimelineSeparator>
           <TimelineConnector />
-          <TimelineDot color="primary" variant="outlined">
+          <TimelineDot variant="outlined">
             {pictogramasTarde.length > 1 &&
               pictogramasTarde[0].pictograma &&
               renderPictograma(pictogramasTarde[0].pictograma, 0)}
@@ -319,6 +321,7 @@ export default function TimeLine(props: any) {
                       xs={12}
                       sm={4}
                       md={2}
+                      style={{marginLeft:15}}
                     >
                       {renderPictograma(pictograma.pictograma, pictogramasTarde.indexOf(pictograma))}
                     </Grid>
@@ -336,9 +339,9 @@ export default function TimeLine(props: any) {
         >
           20:00 a 24:00
         </TimelineOppositeContent>
-        <TimelineSeparator>
+        <TimelineSeparator >
           <TimelineConnector sx={{ bgcolor: 'secondary.main' }} />
-          <TimelineDot color="secondary">
+          <TimelineDot color="primary" variant="outlined">
             {pictogramasNoche.length > 1 &&
               pictogramasNoche[0].pictograma &&
               renderPictograma(pictogramasNoche[0].pictograma, 0)}
@@ -370,6 +373,7 @@ export default function TimeLine(props: any) {
                       xs={12}
                       sm={4}
                       md={2}
+                      style={{marginRight:15}}
                     >
                       {renderPictograma(pictograma.pictograma, pictogramasNoche.indexOf(pictograma))}
                     </Grid>
