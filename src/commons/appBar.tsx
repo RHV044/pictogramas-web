@@ -20,6 +20,8 @@ import imagenUsuario from '../commons/imagen-usuario.jpg';
 import Logo from '../commons/Logo-PictogAR.png';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
+import { CircularProgress } from '@mui/material';
+import { Check } from '@mui/icons-material';
 
 const pages = ['Pizarras', 'Actividades', 'Estadisticas'];
 const settings = ['Configuracion', 'Cambiar Cuenta'];
@@ -91,28 +93,38 @@ const ResponsiveAppBar = () => {
             <a href="/pictogramas">
               <img alt="Qries" src={Logo} height="65" />
             </a>
-            <Typography textAlign="right">
-              Descargado: {porcentaje.toString()} %
-            </Typography>
+            {porcentaje < 100 && (
+              <Box
+                sx={{
+                  position: 'relative',
+                  display: 'inline-flex',
+                  marginTop: 0,
+                  paddingTop: 1.5,
+                }}
+              >
+                <CircularProgress color="secondary" />
+                <Box
+                  sx={{
+                    top: 0,
+                    left: 0,
+                    bottom: 0,
+                    right: 0,
+                    position: 'absolute',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <Typography
+                    variant="caption"
+                    component="div"
+                    color="text.secondary"
+                  >{`${porcentaje.toString()}%`}</Typography>
+                </Box>
+              </Box>
+            )}
+            {porcentaje === 100 && <Check></Check>}
           </Box>
-          {/* <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} /> */}
-          {/* <Typography
-            variant="h6"
-            noWrap
-            component="a"
-            href="/pictogramas"
-            sx={{
-              mr: 2,
-              display: { xs: 'none', md: 'flex' },
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
-              color: 'inherit',
-              textDecoration: 'none',
-            }}
-          >
-            PictogAR
-          </Typography> */}
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
@@ -153,37 +165,44 @@ const ResponsiveAppBar = () => {
                   <Typography textAlign="center">{page}</Typography>
                 </MenuItem>
               ))}
-
             </Menu>
-
           </Box>
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <a href="/pictogramas">
               <img alt="Qries" src={Logo} height="65" />
             </a>
-            <Typography textAlign="right">
-              Descargado: {porcentaje.toString()} %
-            </Typography>
+            {porcentaje < 100 && (
+              <Box
+                sx={{
+                  position: 'relative',
+                  display: 'inline-flex',
+                  marginTop: 0,
+                  paddingTop: 1.5,
+                }}
+              >
+                <CircularProgress color="secondary" />
+                <Box
+                  sx={{
+                    top: 0,
+                    left: 0,
+                    bottom: 0,
+                    right: 0,
+                    position: 'absolute',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <Typography
+                    variant="caption"
+                    component="div"
+                    color="text.secondary"
+                  >{`${porcentaje.toString()}%`}</Typography>
+                </Box>
+              </Box>
+            )}
+            {porcentaje === 100 && <Check></Check>}
           </Box>
-          {/* <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
-          <Typography
-            variant="h5"
-            noWrap
-            component="a"
-            href="/pictogramas"
-            sx={{
-              mr: 2,
-              display: { xs: 'flex', md: 'none' },
-              flexGrow: 1,
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
-              color: 'inherit',
-              textDecoration: 'none',
-            }}
-          >
-            PictogAR
-          </Typography> */}
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages.map((page) => (
               <Button

@@ -79,7 +79,7 @@ export class Movimientos {
     this.graficos.push({
       esPictograma: true,
       imagen: pic.imagen, 
-      texto: pic.keywords[0].keyword, 
+      texto: pic.keywords[0].keyword.toLocaleUpperCase(), 
       posicion: {columna: -1, fila: -1}, 
       identificacion:Date.now().toString(),
       idPictograma: pic.id,

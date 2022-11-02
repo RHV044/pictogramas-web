@@ -1,4 +1,11 @@
-import { Box, Typography } from '@mui/material';
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Box,
+  Container,
+  Typography,
+} from '@mui/material';
 import { useEffect, useState } from 'react';
 import ResponsiveAppBar from '../commons/appBar';
 import {
@@ -8,6 +15,7 @@ import {
 import CategoriasMasUtilizadas from './categoriasMasUtilizadas';
 import PictogramasMasUtilizados from './pictogramasMasUtilizados';
 import TimeLine from './timeline';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 export default function Estadisticas() {
   const [estadisticas, setEstadisticas] = useState(null as any);
@@ -37,76 +45,113 @@ export default function Estadisticas() {
       </Box>
       {estadisticas && (
         <>
-          <Box
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <Typography variant="h6" gutterBottom>
-              Pictogramas Mas Utilizados
-            </Typography>
-          </Box>
-          <Box sx={{ display: 'flex' }}>
-            <PictogramasMasUtilizados
-              pictogramas={estadisticas.pictogramasMasUtilizados}
-            />
-          </Box>
+          <Container maxWidth="xl">
+            <Accordion>
+              <Box
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'left',
+                }}
+              >
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon />}
+                  aria-controls="panel1a-content"
+                  id="panel1a-header"
+                >
+                  <Typography variant="h6" gutterBottom>
+                    Pictogramas Mas Utilizados
+                  </Typography>
+                </AccordionSummary>
+              </Box>
+              <AccordionDetails>
+                <Box sx={{ display: 'flex' }}>
+                  <PictogramasMasUtilizados
+                    pictogramas={estadisticas.pictogramasMasUtilizados}
+                  />
+                </Box>
 
-          <Box
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <Typography variant="h6" gutterBottom>
-              Total Pictogramas distintos utilizados:{' '}
-              {estadisticas.cantidadDePictogramasDistintosUtilizados}
-            </Typography>
-          </Box>
-
-          <Box
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <Typography variant="h6" gutterBottom>
-              Categorias Mas Utilizadas
-            </Typography>
-          </Box>
-          <Box sx={{ display: 'flex' }}>
-            <CategoriasMasUtilizadas
-              categorias={estadisticas.categoriasMasUtilizadas}
-            />
-          </Box>
-          <Box
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <Typography variant="h6" gutterBottom>
-              Total Categorias distintas utilizadas:{' '}
-              {estadisticas.cantidadDeCategoriasDistintasUtilizadas}
-            </Typography>
-          </Box>
-          <Box
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <Typography variant="h6" gutterBottom>
-              Pictogramas mas utilizados por rangos horarios
-            </Typography>
-          </Box>
-          <TimeLine estadisticas={estadisticas.todasLasEstadisticas} />
+                <Box
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'left',
+                    marginTop: 5,
+                  }}
+                >
+                  <Typography variant="h6" gutterBottom>
+                    Total Pictogramas distintos utilizados:{' '}
+                    {estadisticas.cantidadDePictogramasDistintosUtilizados}
+                  </Typography>
+                </Box>
+              </AccordionDetails>
+            </Accordion>
+          </Container>
+          <Container maxWidth="xl">
+            <Accordion style={{ marginTop: 20 }}>
+              <Box
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'left',
+                }}
+              >
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon />}
+                  aria-controls="panel1a-content"
+                  id="panel1a-header"
+                >
+                  <Typography variant="h6" gutterBottom>
+                    Categorias Mas Utilizadas
+                  </Typography>
+                </AccordionSummary>
+              </Box>
+              <AccordionDetails>
+                <Box sx={{ display: 'flex' }}>
+                  <CategoriasMasUtilizadas
+                    categorias={estadisticas.categoriasMasUtilizadas}
+                  />
+                </Box>
+                <Box
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'left',
+                    marginTop: 5,
+                  }}
+                >
+                  <Typography variant="h6" gutterBottom>
+                    Total Categorias distintas utilizadas:{' '}
+                    {estadisticas.cantidadDeCategoriasDistintasUtilizadas}
+                  </Typography>
+                </Box>
+              </AccordionDetails>
+            </Accordion>
+          </Container>
+          <Container maxWidth="xl">
+            <Accordion style={{ marginTop: 20 }}>
+              <Box
+                style={{
+                  display: 'flex',
+                  // alignItems: 'center',
+                  // justifyContent: 'center',
+                }}
+              >
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon />}
+                  aria-controls="panel1a-content"
+                  id="panel1a-header"
+                >
+                  <Typography variant="h6" gutterBottom>
+                    Pictogramas mas utilizados por rangos horarios
+                  </Typography>
+                </AccordionSummary>
+              </Box>
+              <AccordionDetails>
+                <TimeLine estadisticas={estadisticas.todasLasEstadisticas} />
+              </AccordionDetails>
+            </Accordion>
+          </Container>
         </>
       )}
     </div>

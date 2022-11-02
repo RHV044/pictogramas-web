@@ -14,7 +14,7 @@ export default function Categoria(props: any) {
   },[])
   return(           
     <Card
-      sx={{ maxWidth: 240, minWidth:70, maxHeight: 240, minHeight: 50 }}
+      sx={{ maxWidth: 240, minWidth:70, maxHeight: 240, minHeight: 70 }}
       style={{ marginTop: '10px' }}
       onClick={() => {}}
     >

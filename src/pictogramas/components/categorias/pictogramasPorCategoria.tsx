@@ -94,9 +94,9 @@ export default function PictogramasPorCategoria(props: any) {
                 >
                   <Card
                     sx={{
-                      maxWidth: 230,
-                      minWidth: 70,
-                      maxHeight: 240,
+                      maxWidth: 225,
+                      minWidth: 50,
+                      maxHeight: 225,
                       minHeight: 50,
                     }}
                     style={{ marginTop: '10px' }}
@@ -116,7 +116,7 @@ export default function PictogramasPorCategoria(props: any) {
                       <CardMedia
                         component="img"
                         height="160"
-                        width="140"
+                        width="160"
                         src={
                           pictograma.imagen &&
                           pictograma.imagen.includes('data:image')

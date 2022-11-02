@@ -8,6 +8,7 @@ import {
   Container,
   Grid,
   Paper,
+  Stack,
   Switch,
   Table,
   TableBody,
@@ -15,6 +16,7 @@ import {
   TableHead,
   TableRow,
   TextField,
+  Typography,
 } from '@mui/material';
 import { Box } from './draggableBox';
 import {
@@ -445,10 +447,10 @@ export default function Pizarras(this: any) {
         <Container
           style={{
             display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
+            // alignItems: 'center',
+            // justifyContent: 'center',
             marginTop: 10,
-            marginBottom:5
+            marginBottom: 15,
           }}
         >
           <TextField
@@ -476,32 +478,34 @@ export default function Pizarras(this: any) {
             size="small"
           />
         </Container>
-        <Grid
+        <Stack direction="row" spacing={2} style={{ marginTop: 5 }}>
+          {/* <Grid
           container
-          justifyContent="center"
-          alignItems="center"
+          // justifyContent="center"
+          // alignItems="center"
           style={{ marginLeft: 1 }}
           spacing={{ xs: 2, md: 3 }}
           columns={{ xs: 4, sm: 8, md: 12 }}
-        >
-          <Grid key="Estilos" item xs={2} sm={4} md={3}>
-            <EstilosFormDialog
-              filas={filas}
-              columnas={columnas}
-              estilos={[...estilos]}
-              actualizarEstilos={nuevosEstilos}
-            />
-          </Grid>
-          <Grid key="Guardar" item xs={2} sm={4} md={3}>
-            <GuardarPizarra
-              obtenerPizarra={obtenerPizarraActual}
-              nombrePizarra={nombrePizarra}
-            />
-          </Grid>
-          <Grid key="Cargar" item xs={2} sm={4} md={3}>
-            <CargarPizarra setPizarra={setPizarraActual} />
-          </Grid>
-        </Grid>
+        > */}
+          {/* <Grid key="Estilos" item xs={2} sm={4} md={3}> */}
+          <EstilosFormDialog
+            filas={filas}
+            columnas={columnas}
+            estilos={[...estilos]}
+            actualizarEstilos={nuevosEstilos}
+          />
+          {/* </Grid>
+          <Grid key="Guardar" item xs={2} sm={4} md={3}> */}
+          <GuardarPizarra
+            obtenerPizarra={obtenerPizarraActual}
+            nombrePizarra={nombrePizarra}
+          />
+          {/* </Grid>
+          <Grid key="Cargar" item xs={2} sm={4} md={3}> */}
+          <CargarPizarra setPizarra={setPizarraActual} />
+          {/* </Grid>
+        </Grid> */}
+        </Stack>
       </Container>
       <br />
       {!cargando && (
@@ -562,93 +566,32 @@ export default function Pizarras(this: any) {
           </Table>
         </Table>
       )}
-        <Container
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            marginTop: 10,
-            marginBottom:5
-          }}
-        >
-      <TextField
-        style={{ marginLeft: 5 }}
-        label="Texto para agregar"
-        id="outlined-size-small"
-        value={texto}
-        onChange={(evt) => setTexto(evt?.target?.value)}
-        size="small"
-        onKeyDown={(e) => {
-          if (e.keyCode == 13) {
-            agregarTexto();
-            handleChange();
-          }
-        }}
-      />
-      <Button
-        style={{ marginLeft: 5, marginRight: 5 }}
-        variant="contained"
-        component="label"
-        onClick={() => {
-          agregarTexto();
-          handleChange();
+      <Container
+        style={{
+          display: 'flex',
+          // alignItems: 'center',
+          // justifyContent: 'center',
+          marginTop: 10,
+          marginBottom: 5,
         }}
       >
-        Agregar Texto
-      </Button>
-      </Container>
-
-      {pictogramas.length > 0 && (
-              <Container
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                marginTop: 10,
-                marginBottom:5
-              }}
-            >
-          <Switch
-            checked={mostrarPictogramas}
-            onChange={(evt) => setMostrarPictogramas(evt?.target?.checked)}
-          />{' '}
-          Mostrar Pictogramas
-          </Container>
-      )}
-      {mostrarPictogramas && (
-              <Container
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                marginTop: 10,
-                marginBottom:5
-              }}
-            >
-          <TextField
-            style={{ marginLeft: 5, marginTop: 5, marginBottom: 5 }}
-            label="Buscar Pictograma"
-            id="outlined-size-small"
-            onChange={(evt) => {
-              //TODO: No esta obteniendo pictogramas propios
-              filtrarPictogramas(evt.target.value);
-            }}
-            size="small"
-          />
-          <br />
-          </Container>
-      )}
-
-      <div>
-        <div style={{ overflow: 'hidden', clear: 'both' }}>
-          {!cargando &&
-            graficosSinLugar.map((grafico) => {
-              if (
-                grafico.posicion.columna === -1 &&
-                grafico.posicion.fila === -1
-              ) {
-                if (grafico.esPictograma === false)
-                  return (
+        {!cargando &&
+          graficosSinLugar.map((grafico) => {
+            if (
+              grafico.posicion.columna === -1 &&
+              grafico.posicion.fila === -1
+            ) {
+              if (grafico.esPictograma === false)
+                return (
+                  <Container
+                    style={{
+                      display: 'flex',
+                      // alignItems: 'center',
+                      // justifyContent: 'center',
+                      marginTop: 10,
+                      marginBottom: 5,
+                    }}
+                  >
                     <Box
                       name={grafico.texto}
                       key={grafico.identificacion}
@@ -662,10 +605,20 @@ export default function Pizarras(this: any) {
                         handleChange();
                       }}
                     />
-                  );
-                //fila={-1} columna={-1} esPictograma={false} imagen={''} onDrop={() => { }}/>)
-                else
-                  return (
+                  </Container>
+                );
+              //fila={-1} columna={-1} esPictograma={false} imagen={''} onDrop={() => { }}/>)
+              else
+                return (
+                  <Container
+                    style={{
+                      display: 'flex',
+                      // alignItems: 'center',
+                      // justifyContent: 'center',
+                      marginTop: 10,
+                      marginBottom: 5,
+                    }}
+                  >
                     <Box
                       name={grafico.texto}
                       key={grafico.identificacion}
@@ -679,22 +632,115 @@ export default function Pizarras(this: any) {
                         handleChange();
                       }}
                     />
-                  );
-                //fila={-1} columna={-1} esPictograma={true} imagen={grafico.imagen} onDrop={() => { }}/>)
-              }
-            })}
-          {refresco && <></>}
-        </div>
-      </div>
-      <Trash
-        movimientos={movimientos}
-        name="Tachito"
-        onDrop={(evt) => {
-          handleChange()
-          console.log(evt);
+                  </Container>
+                );
+              //fila={-1} columna={-1} esPictograma={true} imagen={grafico.imagen} onDrop={() => { }}/>)
+            }
+          })}
+        {refresco && <></>}
+      </Container>
+      <Container
+        style={{
+          display: 'flex',
+          // alignItems: 'center',
+          // justifyContent: 'center',
+          marginTop: 10,
+          marginBottom: 5,
         }}
-      />
+      >
+        <Trash
+          movimientos={movimientos}
+          name="Tachito"
+          onDrop={(evt) => {
+            handleChange();
+            console.log(evt);
+          }}
+        />
+      </Container>
+      <hr></hr>
+      <Container
+        style={{
+          display: 'flex',
+          // alignItems: 'center',
+          // justifyContent: 'center',
+          marginTop: 10,
+          marginBottom: 5,
+        }}
+      >
+        <TextField
+          style={{ marginLeft: 5 }}
+          label="Texto para agregar"
+          id="outlined-size-small"
+          value={texto}
+          onChange={(evt) => setTexto(evt?.target?.value)}
+          size="small"
+          onKeyDown={(e) => {
+            if (e.keyCode == 13) {
+              agregarTexto();
+              handleChange();
+            }
+          }}
+        />
+        <Button
+          style={{ marginLeft: 5, marginRight: 5 }}
+          variant="contained"
+          component="label"
+          onClick={() => {
+            agregarTexto();
+            handleChange();
+          }}
+        >
+          Agregar Texto
+        </Button>
+      </Container>
+
+      {pictogramas.length > 0 && (
+        <Container
+          style={{
+            display: 'flex',
+            // alignItems: 'center',
+            // justifyContent: 'center',
+            marginTop: 10,
+            marginBottom: 5,
+          }}
+        >
+          <Switch
+            checked={mostrarPictogramas}
+            onChange={(evt) => setMostrarPictogramas(evt?.target?.checked)}
+          />{' '}
+          Mostrar Pictogramas
+        </Container>
+      )}
+      {mostrarPictogramas && <hr></hr>}
+      {mostrarPictogramas && (
+        <Container
+          style={{
+            display: 'flex',
+            // alignItems: 'center',
+            // justifyContent: 'center',
+            marginTop: 10,
+            marginBottom: 5,
+          }}
+        >
+          <TextField
+            style={{ marginLeft: 5, marginTop: 5, marginBottom: 5 }}
+            label="Buscar Pictograma"
+            id="outlined-size-small"
+            onChange={(evt) => {
+              //TODO: No esta obteniendo pictogramas propios
+              filtrarPictogramas(evt.target.value);
+            }}
+            size="small"
+          />
+        </Container>
+      )}
+      
       <Container>
+        { pictogramasFiltrados.length > 0 && 
+          <Typography>
+            Seleccione pictogramas para agregar en el tablero
+          </Typography>
+        }
         <Grid
           container
           spacing={{ xs: 2, md: 3 }}
@@ -706,7 +752,12 @@ export default function Pizarras(this: any) {
               <Grid key={pictograma.id} item xs={12} sm={4} md={2}>
                 <Container key={pictograma.id}>
                   <Card
-                    sx={{ maxWidth: 245, minWidth: 150 }}
+                    sx={{
+                      maxWidth: 225,
+                      minWidth: 50,
+                      maxHeight: 225,
+                      minHeight: 50,
+                    }}
                     style={{ marginTop: '10px' }}
                     onClick={() => {}}
                   >
@@ -721,7 +772,8 @@ export default function Pizarras(this: any) {
                     >
                       <CardMedia
                         component="img"
-                        height="140"
+                        height="160"
+                        width="160"
                         src={
                           pictograma.imagen &&
                           pictograma.imagen.includes('data:image')
@@ -730,10 +782,18 @@ export default function Pizarras(this: any) {
                         }
                         alt={pictograma.keywords[0].keyword}
                       ></CardMedia>
-                      <CardHeader
-                        title={pictograma.keywords[0].keyword}
-                      ></CardHeader>
-                      <CardContent></CardContent>
+                      <CardHeader></CardHeader>
+                      <CardContent
+                        style={{
+                          marginTop: 1,
+                          paddingTop: 0,
+                          marginLeft: 4,
+                          paddingLeft: 0,
+                          fontWeight: 'bold',
+                        }}
+                      >
+                        {pictograma.keywords[0].keyword.toLocaleUpperCase()}
+                      </CardContent>
                     </CardActionArea>
                   </Card>
                 </Container>
@@ -742,6 +802,7 @@ export default function Pizarras(this: any) {
           })}
         </Grid>
       </Container>
+      {mostrarPictogramas && <hr></hr> }
       <Grid
         container
         spacing={{ xs: 2, md: 3 }}
