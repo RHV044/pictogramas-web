@@ -79,7 +79,7 @@ export default function Estadisticas() {
                     marginTop: 5,
                   }}
                 >
-                  <Typography variant="h6" gutterBottom>
+                  <Typography variant="button" display="block" gutterBottom>
                     Total Pictogramas distintos utilizados:{' '}
                     {estadisticas.cantidadDePictogramasDistintosUtilizados}
                   </Typography>
@@ -120,7 +120,7 @@ export default function Estadisticas() {
                     marginTop: 5,
                   }}
                 >
-                  <Typography variant="h6" gutterBottom>
+                  <Typography variant="button" display="block" gutterBottom>
                     Total Categorias distintas utilizadas:{' '}
                     {estadisticas.cantidadDeCategoriasDistintasUtilizadas}
                   </Typography>

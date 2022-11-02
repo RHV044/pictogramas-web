@@ -195,7 +195,7 @@ export default function Recientes(props: any) {
 
   const imagen = (
     <Card
-      sx={{ maxWidth: 130, minWidth: 30, maxHeight: 140, minHeight: 20 }}
+      sx={{ maxWidth: 180, minWidth: 30, maxHeight: 180, minHeight: 30 }}
       style={{ marginTop: '10px' }}
       onClick={() => {}}
     >
@@ -206,8 +206,8 @@ export default function Recientes(props: any) {
       >
         <CardMedia
           component="img"
-          height="50"
-          width="50"
+          height="140"
+          width="140"
           src={RecientesImagen}
           alt="Recientes"
         ></CardMedia>

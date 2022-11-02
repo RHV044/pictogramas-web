@@ -102,7 +102,7 @@ const ResponsiveAppBar = () => {
                   paddingTop: 1.5,
                 }}
               >
-                <CircularProgress color="secondary" />
+                <CircularProgress color="warning" />
                 <Box
                   sx={{
                     top: 0,
@@ -116,9 +116,10 @@ const ResponsiveAppBar = () => {
                   }}
                 >
                   <Typography
-                    variant="caption"
+                    variant="button"
                     component="div"
                     color="text.secondary"
+                    display="block"
                   >{`${porcentaje.toString()}%`}</Typography>
                 </Box>
               </Box>
@@ -194,9 +195,10 @@ const ResponsiveAppBar = () => {
                   }}
                 >
                   <Typography
-                    variant="caption"
+                    variant="button"
                     component="div"
                     color="text.secondary"
+                    display="block"
                   >{`${porcentaje.toString()}%`}</Typography>
                 </Box>
               </Box>
