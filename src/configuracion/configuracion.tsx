@@ -140,7 +140,9 @@ export default function Configuracion() {
       // usuario.aac = aac;
       // usuario.aacColor = aacColor;
       usuario.schematic = schematic;
-      usuario.ultimaActualizacion = new Date().toISOString();
+      var tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
+      var localISOTime = (new Date(Date.now() - tzoffset)).toISOString().slice(0, -1);
+      usuario.ultimaActualizacion = localISOTime;
       usuario.nivel = Number(nivel);
       (await db).putOrPatchValue('usuarios', usuario)
       dispatchEvent(new CustomEvent('sincronizar'));
@@ -152,7 +154,9 @@ export default function Configuracion() {
     reader.readAsDataURL(file);
     reader.onload = function () {
       if(reader.result && userLogueado){
-        var fechaActualizacion = new Date().toISOString()
+        var tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
+        var localISOTime = (new Date(Date.now() - tzoffset)).toISOString().slice(0, -1);
+        var fechaActualizacion = localISOTime
         userLogueado.ultimaActualizacion = fechaActualizacion;
         userLogueado.imagen = reader.result.toString()
         IndexedDbService.create().then(async (db) => {      

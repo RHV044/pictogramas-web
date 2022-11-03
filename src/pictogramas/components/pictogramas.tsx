@@ -92,9 +92,11 @@ export default function Pictogramas(props: any) {
               let id = historicoReverso[0].id;
               if (id !== 0) {
                 // Utilizo automaticamente el ultimo ID generado
+                var tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
+                var localISOTime = (new Date(Date.now() - tzoffset)).toISOString().slice(0, -1);
                 indexeddb.putOrPatchValue('historicoUsoPictogramas', {
                   id: id,
-                  fecha: new Date().toISOString(),
+                  fecha: localISOTime,
                   usuario: usuarioLogueado?.id,
                   pictograma: pictoAgregado,
                   previo: pictoPrevio,
@@ -102,10 +104,12 @@ export default function Pictogramas(props: any) {
                 });
               } else {
                 // No deberia nunca entrar aca
+                var tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
+                var localISOTime = (new Date(Date.now() - tzoffset)).toISOString().slice(0, -1);
                 indexeddb.putOrPatchValue('historicoUsoPictogramas', {
                   id: usuarioLogueado?.id + '_' + Date.now().toString(),
                   usuario: usuarioLogueado?.id,
-                  fecha: new Date().toISOString(),
+                  fecha: localISOTime,
                   pictograma: pictoAgregado,
                   previo: pictoPrevio,
                   todosLosAnteriores: pictosAnteriores,
@@ -115,11 +119,13 @@ export default function Pictogramas(props: any) {
         });
       } else {
         // Esta seleccion es nueva, debe obligatoriamente crear un nuevo registro
+        var tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
+        var localISOTime = (new Date(Date.now() - tzoffset)).toISOString().slice(0, -1);
         (await db).putBulkValue('historicoUsoPictogramas', [
           {
             id: usuarioLogueado?.id + '_' + Date.now().toString(),
             usuario: usuarioLogueado?.id,
-            fecha: new Date().toISOString(),
+            fecha: localISOTime,
             pictograma: pictoAgregado,
             previo: pictoPrevio,
             todosLosAnteriores: pictosAnteriores,

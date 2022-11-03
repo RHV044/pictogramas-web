@@ -60,16 +60,25 @@ export default function TimeLine(props: any) {
         new Date(e.fecha).getHours() >= 20 || new Date(e.fecha).getHours() < 2
     );
 
+    // console.log("ESTADISTICAS MAÑANA: ", mañana)
+    // console.log("ESTADISTICAS MEDIODIA: ", mediodia)
+    // console.log("ESTADISTICAS TARDE: ", tarde)
+    // console.log("ESTADISTICAS NOCHE: ", noche)
+
     ObtenerPictogramasOrdenados(mañana).then((pics) => {
+      //console.log("PICTOGRAMAS MAÑANA: ", pics)
       setPictogramasMañana(pics);
     });
     ObtenerPictogramasOrdenados(mediodia).then((pics) => {
+      //console.log("PICTOGRAMAS MEDIODIA: ", pics)
       setPictogramasMediodia(pics);
     });
     ObtenerPictogramasOrdenados(tarde).then((pics) => {
+      //console.log("PICTOGRAMAS TARDE: ", pics)
       setPictogramasTarde(pics);
     });
     ObtenerPictogramasOrdenados(noche).then((pics) => {
+      //console.log("PICTOGRAMAS NOCHE: ", pics)
       setPictogramasNoche(pics);
     });
   }, []);
@@ -110,6 +119,7 @@ export default function TimeLine(props: any) {
     for (const picto of pictogramas) {
       picto.pictograma = await ObtenerPictogramaConImagenes(picto.id);
     }
+
     return pictogramas;
   }
 
@@ -124,7 +134,6 @@ export default function TimeLine(props: any) {
   }
 
   function renderPictograma(pictograma, index) {
-    console.log("INDEX: ", index)
     return (
       <Container key={pictograma.id ? pictograma.id : pictograma.identificador}>
         <Card
@@ -189,14 +198,14 @@ export default function TimeLine(props: any) {
         <TimelineSeparator>
           <TimelineConnector />
           <TimelineDot variant="outlined">
-            {pictogramasMañana.length > 1 &&
+            {pictogramasMañana.length > 0 &&
               pictogramasMañana[0].pictograma &&
               renderPictograma(pictogramasMañana[0].pictograma, 0)}
           </TimelineDot>
           <TimelineConnector />
         </TimelineSeparator>
         <TimelineContent sx={{ py: '12px', px: 2 }}>
-          {pictogramasMañana.length > 2 && (
+          {pictogramasMañana.length > 1 && (
             <Grid
               container
               spacing={{ xs: 2, md: 3 }}
@@ -239,14 +248,14 @@ export default function TimeLine(props: any) {
         <TimelineSeparator>
           <TimelineConnector />
           <TimelineDot color="primary" variant="outlined">
-            {pictogramasMediodia.length > 1 &&
+            {pictogramasMediodia.length > 0 &&
               pictogramasMediodia[0].pictograma &&
               renderPictograma(pictogramasMediodia[0].pictograma, 0)}
           </TimelineDot>
           <TimelineConnector />
         </TimelineSeparator>
         <TimelineContent sx={{ py: '12px', px: 2 }}>
-          {pictogramasMediodia.length > 2 && (
+          {pictogramasMediodia.length > 1 && (
             <Grid
               container
               direction="row-reverse"
@@ -292,14 +301,14 @@ export default function TimeLine(props: any) {
         <TimelineSeparator>
           <TimelineConnector />
           <TimelineDot variant="outlined">
-            {pictogramasTarde.length > 1 &&
+            {pictogramasTarde.length > 0 &&
               pictogramasTarde[0].pictograma &&
               renderPictograma(pictogramasTarde[0].pictograma, 0)}
           </TimelineDot>
           <TimelineConnector sx={{ bgcolor: 'secondary.main' }} />
         </TimelineSeparator>
         <TimelineContent sx={{ py: '12px', px: 2 }}>
-          {pictogramasTarde.length > 2 && (
+          {pictogramasTarde.length > 1 && (
             <Grid
               container
               spacing={{ xs: 2, md: 3 }}
@@ -342,14 +351,14 @@ export default function TimeLine(props: any) {
         <TimelineSeparator >
           <TimelineConnector sx={{ bgcolor: 'secondary.main' }} />
           <TimelineDot color="primary" variant="outlined">
-            {pictogramasNoche.length > 1 &&
+            {pictogramasNoche.length > 0 &&
               pictogramasNoche[0].pictograma &&
               renderPictograma(pictogramasNoche[0].pictograma, 0)}
           </TimelineDot>
           <TimelineConnector />
         </TimelineSeparator>
         <TimelineContent sx={{ py: '12px', px: 2 }}>
-          {pictogramasNoche.length > 2 && (
+          {pictogramasNoche.length > 1 && (
             <Grid
               container
               direction="row-reverse"
