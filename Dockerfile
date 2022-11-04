@@ -1,5 +1,5 @@
 # pull the official base image
-FROM node:alpine
+FROM node:alpine as build-stage
 # set working direction
 WORKDIR /app
 # add `/app/node_modules/.bin` to $PATH
@@ -8,7 +8,8 @@ ENV PATH /app/node_modules/.bin:$PATH
 COPY package.json ./
 COPY package-lock.json ./
 RUN npm i --legacy-peer-deps
-# add app
 COPY . ./
-# start app
-CMD ["npm", "run", "start-prod"]
+RUN npm run build-prod
+
+FROM nginx:1.15
+COPY --from=build-stage /app/build/ /usr/share/nginx/html
