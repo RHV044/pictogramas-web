@@ -41,10 +41,9 @@ export default function Seleccion(props: any) {
   }, [props.pictogramas]);
 
   // TODO: IDEAL QUE ESTO OBTENGA CUANDO LE DEMOS AL BOTON Y AHI LE DE EL TEXTO
-  const ObtenerInterpretacion = () => {
-    ObtenerInterpretacionNatural(textoAInterpretar).then((interpretacion) => {
-      return interpretacion;
-    });
+  const ObtenerInterpretacion = async () => {
+    var text = textoAInterpretar.replace(/,/g, ' ');
+    return await ObtenerInterpretacionNatural(text)
   };
 
   function simulateMouseClick(element) {
@@ -169,8 +168,8 @@ export default function Seleccion(props: any) {
                 }}
                 variant="contained"
                 component="label"
-                onClick={() => {
-                  let texto = ObtenerInterpretacion();
+                onClick={async () => {
+                  let texto = await ObtenerInterpretacion();
                   speak({ text: texto });
                 }}
               >
