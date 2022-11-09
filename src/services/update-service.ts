@@ -6,6 +6,7 @@ import {
   GuardarPictogramaFavorito,
   ObtenerInformacionPictogramas,
   ObtenerTotalCategorias,
+  ObtenerTotalImagenesPictogramas,
   ObtenerTotalPictogramas,
   ObtenerYGuardarCategorias,
 } from '../pictogramas/services/pictogramas-services';
@@ -88,21 +89,27 @@ export class UpdateService {
         this.state.iniciando = true;
         console.log('Arranca');
         let db = await IndexedDbService.create();
-        let totalCategoriasLocales = await db.countValues('categorias');
+        // TODO: obtener las categorias locales y no el total, y descargar imagen si imagen es vacia
+        let totalCategoriasLocales = await db.getAllValues('categorias');
         let totalCategorias = await ObtenerTotalCategorias();
         console.log(
           `Total categorias: ${totalCategorias} vs total categorias locales: ${totalCategoriasLocales}`
         );
-        if (totalCategoriasLocales < totalCategorias) {
+        if (totalCategoriasLocales.length < totalCategorias) {
           await ObtenerYGuardarCategorias(async (cats: ICategoria[]) => {
+            cats = cats.filter(c => !totalCategoriasLocales.some(cl => cl.id === c.id))
             cats.forEach((cat) => {
               if (!cats.some((c) => c.categoriaPadre === cat.id))
                 cat.esCategoriaFinal = true;
               else cat.esCategoriaFinal = false;
+
+              cat.imagen = ''
             });
             await db.putBulkValue('categorias', cats);
             // Obtencion imagenes de categorias
-
+            
+            cats = await db.getAllValues('categorias');
+            cats = cats.filter(c => c.imagen.length < 2)
             const maxParallelRequests = 500;
             let count = 0;
             let start = 0;
@@ -222,9 +229,12 @@ export class UpdateService {
         }
         this.state.pictogramasDescargados = true  
 
-        // ya que pueden faltar imagenes y no pictogramas
-        let totalImagenesLocales = await db.countValues('imagenes');
-        if (totalImagenesLocales < informacionArasaac.length) {
+        let totalImagenesEnApi = await ObtenerTotalImagenesPictogramas();
+        console.log("TOTAL IMAGENES EN STORAGE: ", totalImagenesEnApi.length)
+        console.log("IMAGENES EN STORAGE: ", totalImagenesEnApi)
+        let totalImagenesLocales = await db.getAllValues('imagenes');
+        console.log("IMAGENES LOCALES: ", totalImagenesLocales)
+        if (totalImagenesLocales.length < totalImagenesEnApi.length) {
           // Obtencion imagenes de pictogramas arasaac
           db.getAllValues('pictograms').then(
             async (pictogramas: IPictogram[]) => {
@@ -254,6 +264,8 @@ export class UpdateService {
               let count = 0;
               let start = 0;
               let end = 1;
+              pictogramas = pictogramas.filter(p => !totalImagenesLocales.some(imagen => imagen.id === p.id) && totalImagenesEnApi.includes(p.id.toString()))
+              console.log("Pictogramas faltantes de imagenes: ", pictogramas)
               while (count < pictogramas.length) {
                 end =
                   pictogramas.length - count <= maxParallelRequests

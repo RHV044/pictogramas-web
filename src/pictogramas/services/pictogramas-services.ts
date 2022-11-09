@@ -223,6 +223,14 @@ export async function ObtenerTotalPictogramas() {
   });
 }
 
+export async function ObtenerTotalImagenesPictogramas() {
+  let url: string;
+  url = '/pictogramas/imagenes/total';
+  return await axios.get(apiPictogramas + url).then((response) => {
+    return response.data;
+  });
+}
+
 export async function ObtenerInformacionPictogramas() {
   let url: string;
   let usuario = await getUsuarioLogueado();
