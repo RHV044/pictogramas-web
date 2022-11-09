@@ -40,6 +40,7 @@ const ResponsiveAppBar = () => {
     null as IUsuario | null
   );
   const porcentaje = useSelector((state: RootState) => state.porcentaje.value);
+  const [renderListo, setRenderListo] = React.useState(false);
 
   React.useEffect(() => {
     getUsuarioLogueado().then((usuario) => {
@@ -50,6 +51,11 @@ const ResponsiveAppBar = () => {
       }
     });
   }, []);
+
+  React.useEffect(() => {
+    if (porcentaje === 100)
+      renderSincronizadoListo()
+  }, [porcentaje])
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -79,6 +85,13 @@ const ResponsiveAppBar = () => {
       );
     }
   };
+
+  const renderSincronizadoListo = () => {
+    setRenderListo(true)
+    setTimeout(function () {
+      setRenderListo(false)
+    }, 5000);
+  }
 
   return (
     <AppBar position="static" style={{ marginBottom: 10 }}>
@@ -124,7 +137,7 @@ const ResponsiveAppBar = () => {
                 </Box>
               </Box>
             )}
-            {porcentaje === 100 && <Check></Check>}
+            {porcentaje === 100 && renderListo && <Check></Check>}
           </Box>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
@@ -203,7 +216,7 @@ const ResponsiveAppBar = () => {
                 </Box>
               </Box>
             )}
-            {porcentaje === 100 && <Check></Check>}
+            {porcentaje === 100 && renderListo && <Check></Check>}
           </Box>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages.map((page) => (
