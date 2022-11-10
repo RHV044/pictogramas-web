@@ -188,20 +188,27 @@ export default function Pictogramas(props: any) {
     if (value === '' || value === null) {
       setPictogramasFiltrados([]);
     } else {
+      let pictsIguales = pictogramas
+      .filter(
+        (p) =>
+          p.keywords.some((k) => k.keyword.normalize("NFD").replace(/[\u0300-\u036f]/g, "") === value.normalize("NFD").replace(/[\u0300-\u036f]/g, "")) === true 
+      )
+      .slice(0, 5);
       let pictsFiltrados = pictogramas
         .filter(
           (p) =>
-            p.keywords.some((k) => k.keyword.includes(value)) === true ||
-            p.categorias?.some((c) => c.nombre.includes(value)) === true
+            p.keywords.some((k) => k.keyword.normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(value.normalize("NFD").replace(/[\u0300-\u036f]/g, ""))) === true ||
+            p.categorias?.some((c) => c.nombre.normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(value.normalize("NFD").replace(/[\u0300-\u036f]/g, ""))) === true
         )
         .slice(0, 5);
+      const arrayFinal = pictsIguales.concat(pictsFiltrados);
       await Promise.all(
-        pictsFiltrados.map(async (p) => {
+        arrayFinal.map(async (p) => {
           let imagen = await db.then((x) => x.getValue('imagenes', p.id));
           p.imagen = imagen.imagen;
         })
       );
-      setPictogramasFiltrados(pictsFiltrados);
+      setPictogramasFiltrados(arrayFinal);
     }
   };
 
@@ -367,7 +374,6 @@ export default function Pictogramas(props: any) {
             variant="standard"
             style={{ marginBottom: 5, width: '100%' }}
             onChange={(event) => {
-              //TODO: Revisar obtencion de pictogramas propios
               filtrarPictogramas(event.target.value);
             }}
           />
