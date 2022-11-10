@@ -136,8 +136,10 @@ export async function ObtenerPictogramasPorCategoria(
     let pictogramasFiltrados = pictogramas.filter((p: IPictogram) => p.categorias && p.categorias.some((c: ICategoria) => c.id === categoria))
 
     //TODO: Si el pictograma es propio, la imagen esta en otro indexedDb
-    for(var i=0; i<pictogramasFiltrados.length; ++i)
-      pictogramasFiltrados[i].imagen = (await db.getValue('imagenes', pictogramasFiltrados[i].id)).imagen
+    for(var i=0; i<pictogramasFiltrados.length; ++i){
+      let imagen = (await db.getValue('imagenes', pictogramasFiltrados[i].id))
+      pictogramasFiltrados[i].imagen = imagen !== undefined && imagen !== null ? imagen.imagen : ""
+    }
 
     return await setPictogramas(pictogramasFiltrados)
   }
