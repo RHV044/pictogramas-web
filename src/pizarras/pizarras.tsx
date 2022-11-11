@@ -780,7 +780,7 @@ export default function Pizarras(this: any) {
                             ? pictograma.imagen
                             : `data:image/png;base64,${pictograma.imagen}`
                         }
-                        alt={pictograma.keywords[0].keyword}
+                        alt={pictograma.keywords.length > 1 ? pictograma.keywords[1].keyword : pictograma.keywords[0].keyword}
                       ></CardMedia>
                       <CardHeader></CardHeader>
                       <CardContent
@@ -792,7 +792,7 @@ export default function Pizarras(this: any) {
                           fontWeight: 'bold',
                         }}
                       >
-                        {pictograma.keywords[0].keyword.toLocaleUpperCase()}
+                        {pictograma.keywords.length > 1 ? pictograma.keywords[1].keyword : pictograma.keywords[0].keyword.toLocaleUpperCase()}
                       </CardContent>
                     </CardActionArea>
                   </Card>

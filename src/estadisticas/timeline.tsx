@@ -156,7 +156,7 @@ export default function TimeLine(props: any) {
                   ? pictograma.imagen
                   : `data:image/png;base64,${pictograma.imagen}`
               }
-              alt={pictograma.keywords[0].keyword}
+              alt={pictograma.keywords.length > 1 ? pictograma.keywords[1].keyword : pictograma.keywords[0].keyword}
             ></CardMedia>
             <CardHeader
               style={{
@@ -176,7 +176,7 @@ export default function TimeLine(props: any) {
                 paddingBottom: 0,
               }}
             >
-              {pictograma.keywords[0].keyword.toLocaleUpperCase()}
+              {pictograma.keywords.length > 1 ? pictograma.keywords[1].keyword : pictograma.keywords[0].keyword.toLocaleUpperCase()}
             </CardContent>
           </CardActionArea>
         </Card>
