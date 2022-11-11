@@ -133,8 +133,10 @@ export class UpdateService {
                       `${apiPictogramas}/categorias/${cat.id}/obtener/base64`
                     )
                     .then(async (response) => {
-                      cat.imagen = response.data;
-                      await db.putOrPatchValue('categorias', cat);
+                      if (!response.data.includes("Error")){
+                        cat.imagen = response.data;
+                        await db.putOrPatchValue('categorias', cat);
+                      }
                     });
                 }
               );
@@ -213,11 +215,13 @@ export class UpdateService {
                           `${apiPictogramas}/pictogramas/${pictoInfo.id}/obtener/base64`
                         )
                         .then(async (response) => {
-                          pictoInfo.imagen = response.data;
-                          await db.putOrPatchValue(
-                            'pictogramasPropios',
-                            pictoInfo
-                          );
+                          if (!response.data.includes("Error")){
+                            pictoInfo.imagen = response.data;
+                            await db.putOrPatchValue(
+                              'pictogramasPropios',
+                              pictoInfo
+                            );
+                          }
                         });
                     }
                   );
