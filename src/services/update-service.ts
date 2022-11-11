@@ -109,7 +109,7 @@ export class UpdateService {
             // Obtencion imagenes de categorias
             
             cats = await db.getAllValues('categorias');
-            cats = cats.filter(c => c.imagen.length < 2)
+            cats = cats.filter(c => c.imagen.length < 2 || c.imagen.includes("Error"))
             const maxParallelRequests = 500;
             let count = 0;
             let start = 0;
@@ -181,7 +181,7 @@ export class UpdateService {
                       p.idArasaac !== null) &&
                     (p.imagen === '' ||
                       p.imagen === null ||
-                      p.imagen === undefined)
+                      p.imagen === undefined || p.imagen.includes("Error"))
                 );
               else
                 pictogramas = pictogramas.filter(
@@ -189,7 +189,7 @@ export class UpdateService {
                     (p.idUsuario === null || p.idArasaac !== null) &&
                     (p.imagen === '' ||
                       p.imagen === null ||
-                      p.imagen === undefined)
+                      p.imagen === undefined || p.imagen.includes("Error"))
                 );
               const maxParallelRequests = 500;
               let count = 0;
@@ -254,7 +254,7 @@ export class UpdateService {
                       p.idArasaac !== null) &&
                     (p.imagen === '' ||
                       p.imagen === null ||
-                      p.imagen === undefined)
+                      p.imagen === undefined || p.imagen.includes("Error"))
                 );
               else
                 pictogramas = pictogramas.filter(
@@ -262,7 +262,7 @@ export class UpdateService {
                     (p.idUsuario === null || p.idArasaac !== null) &&
                     (p.imagen === '' ||
                       p.imagen === null ||
-                      p.imagen === undefined)
+                      p.imagen === undefined || p.imagen.includes("Error"))
                 );
               const maxParallelRequests = 500;
               let count = 0;
