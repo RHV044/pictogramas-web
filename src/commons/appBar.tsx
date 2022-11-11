@@ -53,9 +53,8 @@ const ResponsiveAppBar = () => {
   }, []);
 
   React.useEffect(() => {
-    if (porcentaje === 100)
-      renderSincronizadoListo()
-  }, [porcentaje])
+    if (porcentaje === 100) renderSincronizadoListo();
+  }, [porcentaje]);
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -87,11 +86,11 @@ const ResponsiveAppBar = () => {
   };
 
   const renderSincronizadoListo = () => {
-    setRenderListo(true)
+    setRenderListo(true);
     setTimeout(function () {
-      setRenderListo(false)
+      setRenderListo(false);
     }, 5000);
-  }
+  };
 
   return (
     <AppBar position="static" style={{ marginBottom: 10 }}>
@@ -107,37 +106,52 @@ const ResponsiveAppBar = () => {
               <img alt="Qries" src={Logo} height="65" />
             </a>
             {porcentaje < 100 && (
+              <Box style={{ marginLeft: 10 }}>
+                <Box
+                  sx={{
+                    position: 'relative',
+                    display: 'inline-flex',
+                    marginTop: 0,
+                    paddingTop: 1.5,
+                  }}
+                >
+                  <CircularProgress color="warning" />
+                  <Box
+                    sx={{
+                      top: 0,
+                      left: 0,
+                      bottom: 0,
+                      right: 0,
+                      position: 'absolute',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      marginTop: 2,
+                    }}
+                  >
+                    <Typography
+                      variant="button"
+                      component="div"
+                      color="text.secondary"
+                      display="block"
+                    >{`${porcentaje.toString()}%`}</Typography>
+                  </Box>
+                </Box>
+              </Box>
+            )}
+            {porcentaje === 100 && renderListo && (
               <Box
                 sx={{
                   position: 'relative',
                   display: 'inline-flex',
-                  marginTop: 0,
+                  marginTop: 1,
                   paddingTop: 1.5,
+                  marginLeft: 3,
                 }}
               >
-                <CircularProgress color="warning" />
-                <Box
-                  sx={{
-                    top: 0,
-                    left: 0,
-                    bottom: 0,
-                    right: 0,
-                    position: 'absolute',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <Typography
-                    variant="button"
-                    component="div"
-                    color="text.secondary"
-                    display="block"
-                  >{`${porcentaje.toString()}%`}</Typography>
-                </Box>
+                <Check></Check>
               </Box>
             )}
-            {porcentaje === 100 && renderListo && <Check></Check>}
           </Box>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
@@ -186,6 +200,40 @@ const ResponsiveAppBar = () => {
               <img alt="Qries" src={Logo} height="65" />
             </a>
             {porcentaje < 100 && (
+              <Box style={{ marginLeft: 10 }}>
+                <Box
+                  sx={{
+                    position: 'relative',
+                    display: 'inline-flex',
+                    marginTop: 0,
+                    paddingTop: 1.5,
+                  }}
+                >
+                  <CircularProgress color="warning" />
+                  <Box
+                    sx={{
+                      top: 0,
+                      left: 0,
+                      bottom: 0,
+                      right: 0,
+                      position: 'absolute',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      marginTop: 2,
+                    }}
+                  >
+                    <Typography
+                      variant="button"
+                      component="div"
+                      color="text.secondary"
+                      display="block"
+                    >{`${porcentaje.toString()}%`}</Typography>
+                  </Box>
+                </Box>
+              </Box>
+            )}
+            {porcentaje === 100 && renderListo && (
               <Box
                 sx={{
                   position: 'relative',
@@ -194,29 +242,9 @@ const ResponsiveAppBar = () => {
                   paddingTop: 1.5,
                 }}
               >
-                <CircularProgress color="secondary" />
-                <Box
-                  sx={{
-                    top: 0,
-                    left: 0,
-                    bottom: 0,
-                    right: 0,
-                    position: 'absolute',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <Typography
-                    variant="button"
-                    component="div"
-                    color="text.secondary"
-                    display="block"
-                  >{`${porcentaje.toString()}%`}</Typography>
-                </Box>
+                <Check></Check>
               </Box>
             )}
-            {porcentaje === 100 && renderListo && <Check></Check>}
           </Box>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages.map((page) => (
