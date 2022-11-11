@@ -287,19 +287,24 @@ export class UpdateService {
                           `${apiPictogramas}/pictogramas/${pictoInfo.id}/obtener/base64`
                         )
                         .then(async (response) => {
-                          let pictogramaImagen = {
-                            id: pictoInfo.id,
-                            imagen: response.data,
-                          } as IPictogramaImagen;
-                          // pictoInfo.imagen = response.data
-                          pictoInfo.imagen = '';
-                          await db.putOrPatchValue('pictograms', pictoInfo);
-                          // console.log('se obtuvo la imagen: ', pictoInfo.imagen)
-                          await db.putOrPatchValue(
-                            'imagenes',
-                            pictogramaImagen
-                          );
-                        });
+                          if (!response.data.includes("Error")){
+                            let pictogramaImagen = {
+                              id: pictoInfo.id,
+                              imagen: response.data,
+                            } as IPictogramaImagen;
+                            // pictoInfo.imagen = response.data
+                            pictoInfo.imagen = '';
+                            await db.putOrPatchValue('pictograms', pictoInfo);
+                            // console.log('se obtuvo la imagen: ', pictoInfo.imagen)
+                            await db.putOrPatchValue(
+                              'imagenes',
+                              pictogramaImagen
+                            );
+                          }
+                        })
+                        .catch(err => {
+                          console.log("No se pudo descargar la imagen del pictograma: ", err)
+                        })
                     }
                   );
 
