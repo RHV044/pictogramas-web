@@ -85,9 +85,7 @@ export class UpdateService {
   async initialize() {
     if (!this.state.iniciando) {
       try {
-        console.log('Seteo iniciando true');
         this.state.iniciando = true;
-        console.log('Arranca');
         let db = await IndexedDbService.create();
         // TODO: obtener las categorias locales y no el total, y descargar imagen si imagen es vacia
         let totalCategoriasLocales = await db.getAllValues('categorias');
@@ -325,6 +323,7 @@ export class UpdateService {
         this.state.categoriasDescargadas = true 
         this.state.pictogramasDescargados = true 
         this.state.imagenesDescargadas = true 
+        this.state.iniciando = false;
       }
     }
   }
@@ -347,6 +346,7 @@ export class UpdateService {
     try {
       if (
         window.navigator.onLine &&
+        !this.state.iniciando &&
         !actualizacionPictogramas &&
         !actualizacionFavoritos &&
         !actualizacionPizarras &&
