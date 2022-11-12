@@ -1,4 +1,4 @@
-# Pictogramas-Web / PictogAR
+# Pictogramas-Web / PictogAR 
 
 ## Getting started
 
