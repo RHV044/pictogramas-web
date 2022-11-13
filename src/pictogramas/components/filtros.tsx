@@ -30,7 +30,6 @@ export default function Filtros(props: any) {
                     newFilters.push(option)
                     props.setFiltros(newFilters)
                     setfiltrosSeleccionados(newFilters)
-                    console.log('Filtros seleccionados: ', filtrosSeleccionados)
                   }
                   else {
                     let filtrado = filtrosSeleccionados.filter(f => f.nombre !== option.nombre)

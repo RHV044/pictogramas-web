@@ -3,4 +3,5 @@ export interface IKeyword {
   keyword: string;
   meaning: string;
   plural: string;
+  tipo: number;
 }

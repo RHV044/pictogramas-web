@@ -41,10 +41,9 @@ export default function Seleccion(props: any) {
   }, [props.pictogramas]);
 
   // TODO: IDEAL QUE ESTO OBTENGA CUANDO LE DEMOS AL BOTON Y AHI LE DE EL TEXTO
-  const ObtenerInterpretacion = () => {
-    ObtenerInterpretacionNatural(textoAInterpretar).then((interpretacion) => {
-      return interpretacion;
-    });
+  const ObtenerInterpretacion = async () => {
+    var text = textoAInterpretar.replace(/,/g, ' ');
+    return await ObtenerInterpretacionNatural(text)
   };
 
   function simulateMouseClick(element) {
@@ -102,7 +101,7 @@ export default function Seleccion(props: any) {
                           ? pictograma.imagen
                           : `data:image/png;base64,${pictograma.imagen}`
                       }
-                      alt={pictograma.keywords[0].keyword}
+                      alt={pictograma.keywords.length > 1 && pictograma.keywords[0].tipo !== 1 ? pictograma.keywords[1].keyword.toLocaleUpperCase() : pictograma.keywords[0].keyword}
                     ></CardMedia>
                     <CardHeader
                       style={{
@@ -121,7 +120,7 @@ export default function Seleccion(props: any) {
                         fontWeight: 'bold',
                       }}
                     >
-                      {pictograma.keywords[0].keyword.toLocaleUpperCase()}
+                      {pictograma.keywords.length > 1 && pictograma.keywords[0].tipo !== 1 ? pictograma.keywords[1].keyword.toLocaleUpperCase() : pictograma.keywords[0].keyword.toLocaleUpperCase()}
                     </CardContent>
                   </CardActionArea>
                 </Card>
@@ -169,8 +168,8 @@ export default function Seleccion(props: any) {
                 }}
                 variant="contained"
                 component="label"
-                onClick={() => {
-                  let texto = ObtenerInterpretacion();
+                onClick={async () => {
+                  let texto = await ObtenerInterpretacion();
                   speak({ text: texto });
                 }}
               >

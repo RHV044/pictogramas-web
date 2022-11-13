@@ -41,6 +41,8 @@ export default function Actividad() {
   const [categoriaCorrecta, setCategoriaCorrecta] = useState({} as ICategoria);
   const [resultadoCorrecto, setResultadoCorrecto] = useState(false);
   const [resultadoIncorrecto, setResultadoIncorrecto] = useState(false);
+  const [pictogramaCargado, setPictogramaCargado] = useState(false);
+  const [categoriasReorganizadas, setCategoriasReorganizadas] = useState(false);
   const [racha, setRacha] = useState(0);
   const { speak } = useSpeechSynthesis();
   const [categoriasPorUsuario, setCategoriasPorUsuario] = useState(
@@ -53,6 +55,8 @@ export default function Actividad() {
   }, []);
 
   const inicializar = () => {
+    setPictogramaCargado(false);
+    setCategoriasReorganizadas(false);
     getUsuarioLogueado().then((usuario) => {
       if(usuario === null || usuario === undefined){
         // Redirijo a seleccionar cuenta
@@ -94,7 +98,7 @@ export default function Actividad() {
           });
         }
       }
-    })    
+    }) 
   };
 
   useEffect(() => {
@@ -125,8 +129,11 @@ export default function Actividad() {
     //Obtener Imagen de pictograma
     IndexedDbService.create().then(async (db) => {
       if (pic !== undefined) {
-        pic.imagen = (await db.getValue('imagenes', pic?.id)).imagen;
+        let imagen = await db.getValue('imagenes', pic?.id);
+        pic.imagen =
+          imagen !== undefined && imagen !== null ? imagen.imagen : '';
         setPictograma(pic);
+        setPictogramaCargado(true);
       }
 
       // Reordenar al azar las categorias:
@@ -144,6 +151,8 @@ export default function Actividad() {
         setCategoria3(categoriasReorganizadas[2]);
       if (params.nivel !== undefined && parseInt(params.nivel) > 2)
         setCategoria4(categoriasReorganizadas[3]);
+
+      setCategoriasReorganizadas(true);
     });
   }, [pictogramas]);
 
@@ -152,11 +161,11 @@ export default function Actividad() {
     // navigate('/actividad/' + params.nivel + location.search);
   };
 
-  const verificar = (idCategoria: number, categoria:string) => {
+  const verificar = (idCategoria: number, categoria: string) => {
     if (idCategoria === categoriaCorrecta.id) {
       setRacha(racha + 1);
       setResultadoCorrecto(true);
-      speak({ text: categoria + ", Correcto" });
+      speak({ text: categoria + ', Correcto' });
       setTimeout(function () {
         cargarNuevoJuego();
         setResultadoCorrecto(false);
@@ -164,7 +173,7 @@ export default function Actividad() {
     } else {
       setRacha(0);
       setResultadoIncorrecto(true);
-      speak({ text: categoria + ", Incorrecto" });
+      speak({ text: categoria + ', Incorrecto' });
       setTimeout(function () {
         setResultadoIncorrecto(false);
       }, 1500);
@@ -186,7 +195,7 @@ export default function Actividad() {
           >
             <CardMedia
               component="img"
-              style={{height: 180, width: 180 }}
+              style={{ height: 180, width: 180 }}
               src={
                 categoria.imagen && categoria.imagen.includes('data:image')
                   ? categoria.imagen
@@ -280,103 +289,114 @@ export default function Actividad() {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              marginTop:10
+              marginTop: 10,
             }}
           >
             <Typography variant="h5" gutterBottom>
               Categorias:
             </Typography>
           </Box>
-          <Grid
-            container
-            justifyContent="center"
-            alignItems="center"
-            style={{marginLeft: 1}}
-            spacing={{ xs: 2, md: 3 }}
-            columns={{ xs: 4, sm: 8, md: 12 }}
-          >
-            <Grid key={categoria1.id} item xs={2} sm={4} md={3}>
-              {renderCategoria(categoria1)}
+          {categoriasReorganizadas && (
+            <Grid
+              container
+              justifyContent="center"
+              alignItems="center"
+              style={{ marginLeft: 1 }}
+              spacing={{ xs: 2, md: 3 }}
+              columns={{ xs: 4, sm: 8, md: 12 }}
+            >
+              <Grid key={categoria1.id} item xs={2} sm={4} md={3}>
+                {renderCategoria(categoria1)}
+              </Grid>
+              <Grid key={categoria2.id} item xs={2} sm={4} md={3}>
+                {renderCategoria(categoria2)}
+              </Grid>
+              {params.nivel !== undefined &&
+                parseInt(params.nivel) > 1 &&
+                categoria3 !== null && (
+                  <Grid key={categoria3.id} item xs={2} sm={4} md={3}>
+                    {renderCategoria(categoria3)}
+                  </Grid>
+                )}
+              {params.nivel !== undefined &&
+                parseInt(params.nivel) > 2 &&
+                categoria4 !== null && (
+                  <Grid key={categoria4.id} item xs={2} sm={4} md={3}>
+                    {renderCategoria(categoria4)}
+                  </Grid>
+                )}
             </Grid>
-            <Grid key={categoria2.id} item xs={2} sm={4} md={3}>
-              {renderCategoria(categoria2)}
-            </Grid>
-            {params.nivel !== undefined &&
-              parseInt(params.nivel) > 1 &&
-              categoria3 !== null && (
-                <Grid key={categoria3.id} item xs={2} sm={4} md={3}>
-                  {renderCategoria(categoria3)}
-                </Grid>
-              )}
-            {params.nivel !== undefined &&
-              parseInt(params.nivel) > 2 &&
-              categoria4 !== null && (
-                <Grid key={categoria4.id} item xs={2} sm={4} md={3}>
-                  {renderCategoria(categoria4)}
-                </Grid>
-              )}
-          </Grid>
+          )}
+
           <Box
             style={{
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              marginTop:30
+              marginTop: 30,
             }}
           >
             <Typography variant="h5" gutterBottom>
               Pictograma:
             </Typography>
           </Box>
-          <Box style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-            <Card
-              sx={{
-                maxWidth: 240,
-                minWidth: 70,
-                maxHeight: 240,
-                minHeight: 70,
+          {pictogramaCargado && (
+            <Box
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
               }}
-              style={{ marginTop: '10px' }}
             >
-              <CardActionArea onClick={() => speak({ text: pictograma.keywords[0].keyword})}>
-                <CardMedia
-                  component="img"
-                  height="180"
-                  width="180"
-                  src={
-                    pictograma.imagen &&
-                    pictograma.imagen.includes('data:image')
-                      ? pictograma.imagen
-                      : `data:image/png;base64,${pictograma.imagen}`
+              <Card
+                sx={{
+                  maxWidth: 240,
+                  minWidth: 70,
+                  maxHeight: 240,
+                  minHeight: 70,
+                }}
+                style={{ marginTop: '10px' }}
+              >
+                <CardActionArea
+                  onClick={() =>
+                    speak({ text: pictograma.keywords.length > 1 && pictograma.keywords[0].tipo !== 1 ? pictograma.keywords[1].keyword.toLocaleUpperCase() : pictograma.keywords.length > 1 && pictograma.keywords[0].tipo !== 1 ? pictograma.keywords[1].keyword.toLocaleUpperCase() : pictograma.keywords[0].keyword })
                   }
-                  alt={pictograma.keywords[0].keyword}
-                ></CardMedia>
-                <CardHeader
-                  style={{
-                    height: '100%',
-                    width: '95%',
-                    marginBottom: 1,
-                    paddingBottom: 0,
-                  }}
-                ></CardHeader>
-                <CardContent
-                  style={{
-                    marginTop: 1,
-                    paddingTop: 0,
-                    marginLeft: 4,
-                    paddingLeft: 0,
-                    fontWeight: 'bold',
-                  }}
                 >
-                  {pictograma.keywords[0].keyword.toLocaleUpperCase()}
-                </CardContent>
-              </CardActionArea>
-            </Card>
-          </Box>
+                  <CardMedia
+                    component="img"
+                    height="180"
+                    width="180"
+                    src={
+                      pictograma.imagen &&
+                      pictograma.imagen.includes('data:image')
+                        ? pictograma.imagen
+                        : `data:image/png;base64,${pictograma.imagen}`
+                    }
+                    alt={pictograma.keywords.length > 1 && pictograma.keywords[0].tipo !== 1 ? pictograma.keywords[1].keyword.toLocaleUpperCase() : pictograma.keywords[0].keyword}
+                  ></CardMedia>
+                  <CardHeader
+                    style={{
+                      height: '100%',
+                      width: '95%',
+                      marginBottom: 1,
+                      paddingBottom: 0,
+                    }}
+                  ></CardHeader>
+                  <CardContent
+                    style={{
+                      marginTop: 1,
+                      paddingTop: 0,
+                      marginLeft: 4,
+                      paddingLeft: 0,
+                      fontWeight: 'bold',
+                    }}
+                  >
+                    {pictograma.keywords.length > 1 && pictograma.keywords[0].tipo !== 1 ? pictograma.keywords[1].keyword.toLocaleUpperCase() : pictograma.keywords[0].keyword.toLocaleUpperCase()}
+                  </CardContent>
+                </CardActionArea>
+              </Card>
+            </Box>
+          )}
         </div>
       )}
     </div>

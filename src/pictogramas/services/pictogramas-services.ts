@@ -136,8 +136,10 @@ export async function ObtenerPictogramasPorCategoria(
     let pictogramasFiltrados = pictogramas.filter((p: IPictogram) => p.categorias && p.categorias.some((c: ICategoria) => c.id === categoria))
 
     //TODO: Si el pictograma es propio, la imagen esta en otro indexedDb
-    for(var i=0; i<pictogramasFiltrados.length; ++i)
-      pictogramasFiltrados[i].imagen = (await db.getValue('imagenes', pictogramasFiltrados[i].id)).imagen
+    for(var i=0; i<pictogramasFiltrados.length; ++i){
+      let imagen = (await db.getValue('imagenes', pictogramasFiltrados[i].id))
+      pictogramasFiltrados[i].imagen = imagen !== undefined && imagen !== null ? imagen.imagen : ""
+    }
 
     return await setPictogramas(pictogramasFiltrados)
   }
@@ -218,6 +220,14 @@ export async function ObtenerTotalPictogramas() {
     url = '/pictogramas/total?UsuarioId=' + usuario.id;
   else 
     url = '/pictogramas/total';
+  return await axios.get(apiPictogramas + url).then((response) => {
+    return response.data;
+  });
+}
+
+export async function ObtenerTotalImagenesPictogramas() {
+  let url: string;
+  url = '/pictogramas/imagenes/total';
   return await axios.get(apiPictogramas + url).then((response) => {
     return response.data;
   });

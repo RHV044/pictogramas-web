@@ -185,24 +185,30 @@ export default function Pizarras(this: any) {
 
   const filtrarPictogramas = async (value: string) => {
     if (value === '' || value === null) {
-      console.log('no hay mas pictogramas filtrados');
       setPictogramasFiltrados([]);
     } else {
+      let pictsIguales = pictogramas
+      .filter(
+        (p) =>
+          p.keywords.some((k) => k.keyword.normalize("NFD").replace(/[\u0300-\u036f]/g, "") === value.normalize("NFD").replace(/[\u0300-\u036f]/g, "")) === true 
+      )
+      .slice(0, 5);
       let pictsFiltrados = pictogramas
         .filter(
           (p) =>
-            p.keywords.some((k) => k.keyword.includes(value)) === true ||
-            p.categorias?.some((c) => c.nombre.includes(value)) === true
+            (p.keywords.some((k) => k.keyword.normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(value.normalize("NFD").replace(/[\u0300-\u036f]/g, ""))) === true ||
+            p.categorias?.some((c) => c.nombre.normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(value.normalize("NFD").replace(/[\u0300-\u036f]/g, ""))) === true ) &&
+            !pictsIguales.some(pic => p.id === pic.id)
         )
         .slice(0, 5);
-      //TODO: Revisar obtencion de pictogramas propios
+      const arrayFinal = pictsIguales.concat(pictsFiltrados);
       await Promise.all(
-        pictsFiltrados.map(async (p) => {
+        arrayFinal.map(async (p) => {
           let imagen = await db.then((x) => x.getValue('imagenes', p.id));
           p.imagen = imagen.imagen;
         })
       );
-      setPictogramasFiltrados(pictsFiltrados);
+      setPictogramasFiltrados(arrayFinal);
     }
   };
 
@@ -779,8 +785,8 @@ export default function Pizarras(this: any) {
         >
           {pictogramasFiltrados.map((pictograma) => {
             return (
-              <Grid key={pictograma.id} item xs={12} sm={4} md={2}>
-                <Container key={pictograma.id}>
+              <Grid key={pictograma.id + '_' + pictograma.keywords[0].keyword + '_' + pictograma.keywords[0].id + '_' + Math.random()} item xs={12} sm={4} md={2}>
+                <Container key={pictograma.id + '_' + pictograma.keywords[0].keyword + '_' + pictograma.keywords[0].id + '_' + Math.random()}>
                   <Card
                     sx={{
                       maxWidth: 225,
@@ -810,7 +816,7 @@ export default function Pizarras(this: any) {
                             ? pictograma.imagen
                             : `data:image/png;base64,${pictograma.imagen}`
                         }
-                        alt={pictograma.keywords[0].keyword}
+                        alt={pictograma.keywords.length > 1 && pictograma.keywords[0].tipo !== 1 ? pictograma.keywords[1].keyword.toLocaleUpperCase() : pictograma.keywords[0].keyword}
                       ></CardMedia>
                       <CardHeader></CardHeader>
                       <CardContent
@@ -822,7 +828,7 @@ export default function Pizarras(this: any) {
                           fontWeight: 'bold',
                         }}
                       >
-                        {pictograma.keywords[0].keyword.toLocaleUpperCase()}
+                        {pictograma.keywords.length > 1 && pictograma.keywords[0].tipo !== 1 ? pictograma.keywords[1].keyword.toLocaleUpperCase() : pictograma.keywords[0].keyword.toLocaleUpperCase()}
                       </CardContent>
                     </CardActionArea>
                   </Card>

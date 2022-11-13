@@ -94,9 +94,11 @@ export default function Pictogramas(props: any) {
               let id = historicoReverso[0].id;
               if (id !== 0) {
                 // Utilizo automaticamente el ultimo ID generado
+                var tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
+                var localISOTime = (new Date(Date.now() - tzoffset)).toISOString().slice(0, -1);
                 indexeddb.putOrPatchValue('historicoUsoPictogramas', {
                   id: id,
-                  fecha: new Date().toISOString(),
+                  fecha: localISOTime,
                   usuario: usuarioLogueado?.id,
                   pictograma: pictoAgregado,
                   previo: pictoPrevio,
@@ -104,10 +106,12 @@ export default function Pictogramas(props: any) {
                 });
               } else {
                 // No deberia nunca entrar aca
+                var tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
+                var localISOTime = (new Date(Date.now() - tzoffset)).toISOString().slice(0, -1);
                 indexeddb.putOrPatchValue('historicoUsoPictogramas', {
                   id: usuarioLogueado?.id + '_' + Date.now().toString(),
                   usuario: usuarioLogueado?.id,
-                  fecha: new Date().toISOString(),
+                  fecha: localISOTime,
                   pictograma: pictoAgregado,
                   previo: pictoPrevio,
                   todosLosAnteriores: pictosAnteriores,
@@ -117,11 +121,13 @@ export default function Pictogramas(props: any) {
         });
       } else {
         // Esta seleccion es nueva, debe obligatoriamente crear un nuevo registro
+        var tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
+        var localISOTime = (new Date(Date.now() - tzoffset)).toISOString().slice(0, -1);
         (await db).putBulkValue('historicoUsoPictogramas', [
           {
             id: usuarioLogueado?.id + '_' + Date.now().toString(),
             usuario: usuarioLogueado?.id,
-            fecha: new Date().toISOString(),
+            fecha: localISOTime,
             pictograma: pictoAgregado,
             previo: pictoPrevio,
             todosLosAnteriores: pictosAnteriores,
@@ -183,20 +189,28 @@ export default function Pictogramas(props: any) {
     if (value === '' || value === null) {
       setPictogramasFiltrados([]);
     } else {
+      let pictsIguales = pictogramas
+      .filter(
+        (p) =>
+          p.keywords.some((k) => k.keyword.normalize("NFD").replace(/[\u0300-\u036f]/g, "") === value.normalize("NFD").replace(/[\u0300-\u036f]/g, "")) === true 
+      )
+      .slice(0, 5);
       let pictsFiltrados = pictogramas
         .filter(
           (p) =>
-            p.keywords.some((k) => k.keyword.includes(value)) === true ||
-            p.categorias?.some((c) => c.nombre.includes(value)) === true
+            (p.keywords.some((k) => k.keyword.normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(value.normalize("NFD").replace(/[\u0300-\u036f]/g, ""))) === true ||
+            p.categorias?.some((c) => c.nombre.normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(value.normalize("NFD").replace(/[\u0300-\u036f]/g, ""))) === true) &&
+            !pictsIguales.some(pic => p.id === pic.id)
         )
         .slice(0, 5);
+      const arrayFinal = pictsIguales.concat(pictsFiltrados);
       await Promise.all(
-        pictsFiltrados.map(async (p) => {
+        arrayFinal.map(async (p) => {
           let imagen = await db.then((x) => x.getValue('imagenes', p.id));
           p.imagen = imagen.imagen;
         })
       );
-      setPictogramasFiltrados(pictsFiltrados);
+      setPictogramasFiltrados(arrayFinal);
     }
   };
 
@@ -361,7 +375,6 @@ export default function Pictogramas(props: any) {
             variant="standard"
             style={{ marginBottom: 5, width: '100%' }}
             onChange={(event) => {
-              //TODO: Revisar obtencion de pictogramas propios
               filtrarPictogramas(event.target.value);
             }}
           />
@@ -379,8 +392,8 @@ export default function Pictogramas(props: any) {
           {pictogramasFiltrados.map((pictograma) => {
             return (
               //Como estan dentro de la categoria, se visualizan abajo, habria que extraerlo a otro lugar
-              <Grid key={pictograma.id} item xs={12} sm={4} md={2}>
-                <Container key={pictograma.id}>
+              <Grid key={pictograma.id + '_' + pictograma.keywords[0].keyword + '_' + pictograma.keywords[0].id + '_' + Math.random()} item xs={12} sm={4} md={2}>
+                <Container key={pictograma.id + '_' + pictograma.keywords[0].keyword + '_' + pictograma.keywords[0].id + '_' + Math.random()}>
                   <Card
                     sx={{ maxWidth: 245, minWidth: 150 }}
                     style={{ marginTop: '10px' }}
@@ -407,7 +420,7 @@ export default function Pictogramas(props: any) {
                             ? pictograma.imagen
                             : `data:image/png;base64,${pictograma.imagen}`
                         }
-                        alt={pictograma.keywords[0].keyword}
+                        alt={pictograma.keywords.length > 1 && pictograma.keywords[0].tipo !== 1 ? pictograma.keywords[1].keyword.toLocaleUpperCase() : pictograma.keywords[0].keyword}
                       ></CardMedia>
                       <CardHeader></CardHeader>
                       <CardContent
@@ -419,7 +432,7 @@ export default function Pictogramas(props: any) {
                           fontWeight: 'bold',
                         }}
                       >
-                        {pictograma.keywords[0].keyword.toLocaleUpperCase()}
+                        {pictograma.keywords.length > 1 && pictograma.keywords[0].tipo !== 1 ? pictograma.keywords[1].keyword.toLocaleUpperCase() : pictograma.keywords[0].keyword.toLocaleUpperCase()}
                       </CardContent>
                     </CardActionArea>
                   </Card>
