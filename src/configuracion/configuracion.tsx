@@ -79,10 +79,12 @@ export default function Configuracion() {
       userLogueado.nivel = Number(nivel) 
   };
 
+
   const [userLogueado, setUserLogueado] = useState(null as IUsuario | null);
   const [nivel, setNivel] = React.useState('');
-  const [violence, setViolence] = useState(false as boolean)
-  const [sex, setSex] = useState(false as boolean)
+  const [violence, setViolence] = useState(false as boolean);
+  const [sex, setSex] = useState(false as boolean);
+  const [nombreUsuario, setNombreUsuario] = useState('' as string);
 
   const [schematic, setSchematic] = useState(false as boolean)
 
@@ -102,6 +104,7 @@ export default function Configuracion() {
         setSex(usuario.sex);
         setSchematic(usuario.schematic);
         setNivel(usuario.nivel.toString());
+        setNombreUsuario(usuario.nombreUsuario);
       }
       else{
         navigate('/cuenta/seleccionar' + location.search);
@@ -115,7 +118,7 @@ export default function Configuracion() {
 
   useEffect(() => {
     obtenerCategoriasDeUsuario();
-  }, []);
+  }, [categorias]);
 
   useEffect(() => {
     getUsuarioLogueado().then((usuario) => {
@@ -131,7 +134,8 @@ export default function Configuracion() {
 
   const actualizarUsuario = async () => {
     if (userLogueado) {
-      let usuario = userLogueado
+      let usuario = userLogueado;
+      usuario.nombreUsuario = nombreUsuario;
       usuario.violence = violence;
       usuario.sex = sex;
       usuario.schematic = schematic;
@@ -208,6 +212,9 @@ export default function Configuracion() {
         let cxus = await (await (await db).searchCategoriasPorUsuarioByUser((usuario && usuario.id) ? usuario.id : 0)).filter(c => !c.pendienteEliminar);        
         setCategoriasDeUsuario(cxus);
         setCategoriasPorUsuarioOriginal(cxus);
+        setCategoriasFiltradas(categorias.filter(c => cxus.some(cxu => cxu.idCategoria === c.id)));
+        console.log('categorias: ', categorias);
+        console.log('categorias filtradas: ', categorias.filter(c => cxus.some(cxu => cxu.idCategoria === c.id)));
       })
     }
  }
@@ -228,9 +235,10 @@ export default function Configuracion() {
               <Paper style={{ width: '100%' }}>                
                 <Container style={{ padding: 10 }}>                  
                   Nombre{' '}
-                  <input
+                  <TextField
                     type="text"
                     defaultValue={userLogueado.nombreUsuario}
+                    onChange={(evt) => setNombreUsuario(evt.target.value)}
                   />{' '}
                   <br /> <br /> <br />
                   <Card                        
