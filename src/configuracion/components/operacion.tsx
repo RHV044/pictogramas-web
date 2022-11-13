@@ -31,13 +31,6 @@ export default function Operacion(props: any) {
 
         props.setResultadoCorrecto(resultadoCorrecto);
     }, [])
-
-    // const sumaa: SumaVerificadora = {
-    //     number1 : randomNumberGenerator(1, 10),
-    //     number2 : randomNumberGenerator(1, 10) 
-    // }
-
-    // suma.resultadoCorrecto = suma.number1 + suma.number2;
     
     return (
         <div>

@@ -19,7 +19,7 @@ import { learn, predict } from '../services/predictivo-service';
 import { IPictogram } from '../models/pictogram';
 import Pictogram from './pictogram';
 import { useLocation, useNavigate } from 'react-router-dom';
-import CategoriasRaices from './categorias/categoriasRaices';
+import CategoriasRaices, { verificarValidezDeCategoria } from './categorias/categoriasRaices';
 import Seleccion from './seleccion';
 import { UpdateService } from '../../services/update-service';
 import ResponsiveAppBar from '../../commons/appBar';
@@ -42,6 +42,7 @@ import Recientes from './sugerencias/recientes';
 import Sugeridos from './sugerencias/sugeridos';
 import { CurrencyBitcoin } from '@mui/icons-material';
 import { ICategoriaPorUsuario } from '../models/categoriaPorUsuario';
+import { IUsuario } from '../../login/model/usuario';
 const db = new IndexedDbService();
 
 export default function Pictogramas(props: any) {
@@ -69,6 +70,7 @@ export default function Pictogramas(props: any) {
   const [categoriasPorUsuario, setCategoriasPorUsuario] = useState(
     [] as ICategoriaPorUsuario[]
   );
+  const [user, setUser] = useState(null as IUsuario | null);
 
   const LearnAndPredict = async (pics: IPictogram[]) => {
     if (pics && pics.length >= (pictogramasSeleccionados?.length ?? 0)) {
@@ -159,14 +161,13 @@ export default function Pictogramas(props: any) {
         navigate('/cuenta/seleccionar' + location.search);
       } else {
         setUsuarioLogueadoVariable(usuario);
-
+        setUser(usuario);
         if ((usuario?.nivel !== undefined ? usuario?.nivel : 0) === 3) {
-          IndexedDbService.create().then(async (indexeddb) => {
-            let categoriasPorUsuario = await indexeddb.getAllValues(
-              'categoriasPorUsuario'
-            );
-            setCategoriasPorUsuario(categoriasPorUsuario);
-          });
+          IndexedDbService.create().then(async (db) => {
+            db.searchCategoriasPorUsuarioByUser((usuario && usuario.id) ? usuario.id : 0).then(cxus => {
+              cxus = cxus.filter(c => !c.pendienteEliminar);
+              setCategoriasPorUsuario(cxus);  
+            })})
         }
       }
     });
@@ -244,7 +245,9 @@ export default function Pictogramas(props: any) {
 
   const OpcionesDeCategoria = (categoria: ICategoria) => {
     let categoriasHijas: ICategoria[];
-    if (categoria.esCategoriaFinal === true) {
+    if (
+      categoria.esCategoriaFinal === true &&
+      (user?.nivel !== 3 || verificarValidezDeCategoria(categoria, categorias, categoriasPorUsuario))){
       // Es categoria final, debo mostrar pictogramas
       return (
         <>
@@ -257,19 +260,15 @@ export default function Pictogramas(props: any) {
       );
     } else {
       // Es categoria padre, debo mostrar categorias
-
       if (
-        (usuarioLogueado?.nivel !== undefined ? usuarioLogueado?.nivel : 0) ===
-        3
-      ) {
+        (usuarioLogueado?.nivel !== undefined ? usuarioLogueado?.nivel : 0) === 3
+      ) { //nivel personalizado
         categoriasHijas = categorias.filter(
-          (c) =>
-            c.categoriaPadre === categoria.id &&
-            (categoriasPorUsuario.some((cxu) => cxu.idCategoria === c.id) ||
-              !c.esCategoriaFinal)
+          (c) =>            
+            (c.categoriaPadre === categoria.id && verificarValidezDeCategoria(c, categorias, categoriasPorUsuario))            
         );
       } else {
-        categoriasHijas = categorias.filter(
+        categoriasHijas = categorias.filter( 
           (c) =>
             c.categoriaPadre === categoria.id &&
             categoria.nivel <=
@@ -280,6 +279,7 @@ export default function Pictogramas(props: any) {
       }
     }
 
+    console.log("categorias hijas: ", categoriasHijas);
     return (
       <Container maxWidth="xl">
         <Grid
@@ -444,10 +444,18 @@ export default function Pictogramas(props: any) {
       <br />
       {/* TODO: Agregar algun separador para separar las raices */}
       <br />
+      {
+      user !== null &&
+      categorias.length > 0 && 
+      (user.nivel !== 3 || categoriasPorUsuario.length > 0) &&
       <CategoriasRaices
         setPictogramas={UpdatePictogramas}
         setCategoriaSeleccionada={setCategoriaSeleccionada}
+        usuarioLogueado={user}
+        categoriasPorUsuario={categoriasPorUsuario}        
+        categorias={categorias}
       />
+      }
     </div>
   );
 }

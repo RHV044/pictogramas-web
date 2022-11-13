@@ -21,6 +21,10 @@ import {
 } from '../pictogramas/services/pictogramas-services';
 import { IndexedDbService } from '../services/indexeddb-service';
 import { useSpeechSynthesis } from 'react-speech-kit';
+import { verificarValidezDeCategoria } from '../pictogramas/components/categorias/categoriasRaices';
+import { ICategoriaPorUsuario } from '../pictogramas/models/categoriaPorUsuario';
+import { getUsuarioLogueado } from '../services/usuarios-services';
+import { IUsuario } from '../login/model/usuario';
 
 export default function Actividad() {
   let navigate = useNavigate();
@@ -39,19 +43,58 @@ export default function Actividad() {
   const [resultadoIncorrecto, setResultadoIncorrecto] = useState(false);
   const [racha, setRacha] = useState(0);
   const { speak } = useSpeechSynthesis();
+  const [categoriasPorUsuario, setCategoriasPorUsuario] = useState(
+    [] as ICategoriaPorUsuario[]
+  );
+  const [user, setUser] = useState(null as IUsuario | null);
 
   useEffect(() => {
     inicializar();
   }, []);
 
   const inicializar = () => {
-    ObtenerCategoriasIndexDB().then((cats) => {      
-      setCategorias(cats.filter((c :ICategoria) => c.nombre !== "Vocabulario nuclear" && c.nombre !== "Vocabulario central").sort(() => (Math.random() > 0.5 ? 1 : -1)));
-      ObtenerPictogramas().then((pics: IPictogram[]) => {
-        let picsArasaac = pics.filter((p) => p.idArasaac > 0);
-        setPictogramas(picsArasaac);
-      });
-    });
+    getUsuarioLogueado().then((usuario) => {
+      if(usuario === null || usuario === undefined){
+        // Redirijo a seleccionar cuenta
+        navigate('/cuenta/seleccionar' + location.search);
+      } else {
+        setUser(usuario);
+        if((user?.nivel !== undefined ? user?.nivel : 0) === 3){
+          console.log('Nivel personalizado');
+          IndexedDbService.create().then(async (db) => {
+            db.searchCategoriasPorUsuarioByUser((user && user.id) ? user.id : 0).then(cxus => {
+              cxus = cxus.filter(c => !c.pendienteEliminar);
+              setCategoriasPorUsuario(cxus);
+            })});
+          console.log('categoriasPorUsuario seteadas: ', categoriasPorUsuario);
+            ObtenerCategoriasIndexDB().then(async (cats) => {
+              //setCategorias(cats);
+              let categoriasValidadas : ICategoria[] = [];
+              console.log('categorias: ', cats);
+              cats.forEach(c => {
+                if(verificarValidezDeCategoria(c,cats,categoriasPorUsuario)){
+                  categoriasValidadas.push(c);
+                }                
+              });
+              console.log('categorias en base a la validez obtenidas: ', categoriasValidadas);              
+              setCategorias(categoriasValidadas.filter((c :ICategoria) => c.nombre !== "Vocabulario nuclear" && c.nombre !== "Vocabulario central").sort(() => (Math.random() > 0.5 ? 1 : -1)));
+              ObtenerPictogramas().then((pics: IPictogram[]) => {
+                let picsArasaac = pics.filter((p) => p.idArasaac > 0);
+                setPictogramas(picsArasaac);
+              });
+            });
+        } else {
+          ObtenerCategoriasIndexDB().then((cats) => {            
+            let categoriasParaUsuario = cats.filter(c => c.nivel <=  (user === undefined || user === null || user?.nivel === undefined ? 0 : user?.nivel)); //TODO chequear si dejo ese valor en 0 o en 1 para que por lo menos matchee con algo
+            setCategorias(categoriasParaUsuario.filter((c :ICategoria) => c.nombre !== "Vocabulario nuclear" && c.nombre !== "Vocabulario central").sort(() => (Math.random() > 0.5 ? 1 : -1)));
+            ObtenerPictogramas().then((pics: IPictogram[]) => {
+              let picsArasaac = pics.filter((p) => p.idArasaac > 0);
+              setPictogramas(picsArasaac);
+            });
+          });
+        }
+      }
+    })    
   };
 
   useEffect(() => {

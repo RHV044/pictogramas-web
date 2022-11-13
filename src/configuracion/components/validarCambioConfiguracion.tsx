@@ -13,7 +13,7 @@ export default function FormDialogValidarAcceso(props: any) {
     const handleClose = () => {
         props.cerrarValidarConfiguracion()
     }
-
+    
     return (
         <div>
             <Dialog open={true} onClose={handleClose}>

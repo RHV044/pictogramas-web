@@ -9,8 +9,10 @@ import {
 import { Container } from '@mui/system';
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { getUsuarioLogueado, usuarioLogueado, setUsuarioLogueadoVariable } from '../../../services/usuarios-services';
+import { IUsuario } from '../../../login/model/usuario';
+import { IndexedDbService } from '../../../services/indexeddb-service';
 import { ICategoria } from '../../models/categoria';
+import { ICategoriaPorUsuario } from '../../models/categoriaPorUsuario';
 import { ObtenerCategorias } from '../../services/pictogramas-services';
 import Recientes from '../sugerencias/recientes';
 import Categoria from './categoria';
@@ -18,24 +20,13 @@ import CategoriaFavoritos from './categoriaFavoritos';
 import CategoriaPropios from './categoriaPropios';
 
 export default function CategoriasRaices(props: any) {
-  let navigate = useNavigate();
-  let location = useLocation();
-  const [categorias, setCategorias] = useState([] as ICategoria[]);
+
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState(
     {} as ICategoria | null
   );
+  
 
   useEffect(() => {
-    getUsuarioLogueado().then(usuario => {
-      if(usuario === null || usuario === undefined){
-        // Redirijo a seleccionar cuenta
-        navigate('/cuenta/seleccionar' + location.search);
-      }
-      else{
-        setUsuarioLogueadoVariable(usuario)
-      }
-    })
-    ObtenerCategorias(setCategorias);
   }, []);
 
   return (
@@ -44,9 +35,9 @@ export default function CategoriasRaices(props: any) {
         {/* TODO: Agregar pictogramas recientes si fuera necesario */}
         <CategoriaPropios setCategoriaSeleccionada={props.setCategoriaSeleccionada} categoriaSeleccionada={categoriaSeleccionada}/>
         <CategoriaFavoritos setCategoriaSeleccionada={props.setCategoriaSeleccionada} categoriaSeleccionada={categoriaSeleccionada}/>
-        {categorias.map((categoria) => {
+        {props.categorias.map((categoria) => {
           if ((categoria.categoriaPadre === null || categoria.categoriaPadre === undefined || categoria.categoriaPadre < 1) && 
-              categoria.nivel <= (usuarioLogueado?.nivel !== undefined ? usuarioLogueado?.nivel : 0)) //TODO agregar consideracion para el nivel personalizado.
+              categoria.nivel <= (props.usuarioLogueado?.nivel !== undefined ? props.usuarioLogueado?.nivel : 0) && (props.usuarioLogueado?.nivel !== 3 || verificarValidezDeCategoria(categoria, props.categorias, props.categoriasPorUsuario))) //TODO agregar consideracion para el nivel personalizado.
           {
             return (
                 <Grid
@@ -58,7 +49,7 @@ export default function CategoriasRaices(props: any) {
                       setCategoriaSeleccionada={props.setCategoriaSeleccionada} 
                       categoria={categoria}
                       categoriaSeleccionada={categoriaSeleccionada}
-                      categorias={categorias}
+                      categorias={props.categorias}
                     />
                   </Container>
                 </Grid>
@@ -69,3 +60,40 @@ export default function CategoriasRaices(props: any) {
     </Container>
   );
 }
+
+export function verificarValidezDeCategoria(categoria : ICategoria, categorias : ICategoria[], categoriasPorUsuario: ICategoriaPorUsuario[]){
+    if(categoria.esCategoriaFinal){
+      if(categoriasPorUsuario.some(cat => cat.idCategoria === categoria.id)){
+      console.log("CATEGORIA VALIDA: ", categoria.id )
+      return true;
+      } else {      
+        return false;
+      }      
+    } else {
+      let categoriasHijas = categorias.filter(cat => cat.categoriaPadre === categoria.id);
+      return categoriasHijas.some(c => verificarValidezDeCategoria(c, categorias, categoriasPorUsuario));
+    }   
+}
+
+// export function descendientesAMostrar(categoriaTarget : ICategoria, categorias : ICategoria[],
+//   categoriasDeUsuario : ICategoriaPorUsuario[]) : ICategoria[] {
+
+//    let categoriasHijas = categorias.filter(cat => cat.categoriaPadre === categoriaTarget.id);
+//    let siguienteFilaCategoriasNoFinales : ICategoria[] = [];
+
+//    categoriasHijas.forEach(cat => {
+//     if(!cat.esCategoriaFinal){
+//       siguienteFilaCategoriasNoFinales.concat(categorias.filter(categoria => categoria.categoriaPadre === cat.id));
+//     }
+//     else{ //comprobar si la categoria final esta en categorias por usuario
+//       if(!(categoriasDeUsuario.some(cxu => cxu.idCategoria === cat.id))){
+//         categoriasHijas = categoriasHijas.filter(c => c.id !== cat.id);
+//       }
+//     }
+//     if (siguienteFilaCategoriasNoFinales != null){
+//       categoriasHijas.concat(descendientesAMostrar(cat, siguienteFilaCategoriasNoFinales, categoriasDeUsuario)); //idea: aca llamar recursivamente a la funcion
+//    }
+//    });   
+
+//    return categoriasHijas; //esto no va a andar jajajaaj
+// }

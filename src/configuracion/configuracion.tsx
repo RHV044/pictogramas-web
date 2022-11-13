@@ -83,8 +83,7 @@ export default function Configuracion() {
   const [nivel, setNivel] = React.useState('');
   const [violence, setViolence] = useState(false as boolean)
   const [sex, setSex] = useState(false as boolean)
-  // const [aac, setAac] = useState(false as boolean)
-  // const [aacColor, setAacColor] = useState(false as boolean)
+
   const [schematic, setSchematic] = useState(false as boolean)
 
   const [file, setFile] = useState("" as string)
@@ -101,8 +100,6 @@ export default function Configuracion() {
         setUserLogueado(usuario);
         setViolence(usuario.violence);
         setSex(usuario.sex);
-        // setAac(usuario.aac);
-        // setAacColor(usuario.aacColor);
         setSchematic(usuario.schematic);
         setNivel(usuario.nivel.toString());
       }
@@ -137,8 +134,6 @@ export default function Configuracion() {
       let usuario = userLogueado
       usuario.violence = violence;
       usuario.sex = sex;
-      // usuario.aac = aac;
-      // usuario.aacColor = aacColor;
       usuario.schematic = schematic;
       usuario.ultimaActualizacion = new Date().toISOString();
       usuario.nivel = Number(nivel);
@@ -305,28 +300,6 @@ export default function Configuracion() {
                     label="Permitir Contenido sexual"
                     labelPlacement="end"
                   />
-                  {/* <FormControlLabel
-                    style={{ alignItems: 'left' }}
-                    control={
-                      <Checkbox
-                        checked={aac}
-                        onChange={(evt) => setAac(evt?.target?.checked)}
-                      />
-                    }
-                    label="Aac"
-                    labelPlacement="end"
-                  />
-                  <FormControlLabel
-                    style={{ alignItems: 'left' }}
-                    control={
-                      <Checkbox
-                        checked={aacColor}
-                        onChange={(evt) => setAacColor(evt?.target?.checked)}
-                      />
-                    }
-                    label="Aac Color"
-                    labelPlacement="end"
-                  /> */}
                   <FormControlLabel
                     style={{ alignItems: 'left' }}
                     control={
@@ -348,6 +321,7 @@ export default function Configuracion() {
                 <Switch
                   checked={personalizarCategorias}
                   onChange={handleChange}
+                  disabled={true}
                 /> Personalizar Categorias
               </div>
             }
@@ -372,20 +346,25 @@ export default function Configuracion() {
               <Button
                 variant="contained"
                 style={{ alignItems: 'center', margin: '10px' }}
-                onClick={async () => {                  
-                  actualizarUsuario()
-                  if(Number(nivel) === 3){
-                        //TODO revisar  las desmarcadas
-                        console.log("Categorias originales: ", categoriasPorUsuarioOriginal);
-                        console.log("Categorias filtradas: ", categoriasFiltradas);
-                        let categoriasAEliminar = categoriasPorUsuarioOriginal.filter((cat : ICategoriaPorUsuario) => !categoriasFiltradas.some((c : ICategoria) => c.id === cat.idCategoria));
-                        console.log("Categorias a eliminar: ", categoriasAEliminar);
-                        let categoriasAGuardar = categoriasFiltradas.filter((cat : ICategoria) => !categoriasPorUsuarioOriginal.some((c : ICategoriaPorUsuario) => c.idCategoria === cat.id));
-                        console.log("Categorias a guardar: ", categoriasAGuardar);
-                        insertarCategoriasDeUsuario(categoriasAGuardar);
-                        eliminarCategoriasDeUsuario(categoriasAEliminar);
+                onClick={async () => {                                    
+                  if(isNaN(Number(nivel))) {
+                    alert("Debes Seleccionar un nivel para actualizar el usuario");
+                  }
+                  else {
+                    actualizarUsuario()
+                    if(Number(nivel) === 3){
+                      //TODO revisar  las desmarcadas
+                      console.log("Categorias originales: ", categoriasPorUsuarioOriginal);
+                      console.log("Categorias filtradas: ", categoriasFiltradas);
+                      let categoriasAEliminar = categoriasPorUsuarioOriginal.filter((cat : ICategoriaPorUsuario) => !categoriasFiltradas.some((c : ICategoria) => c.id === cat.idCategoria));
+                      console.log("Categorias a eliminar: ", categoriasAEliminar);
+                      let categoriasAGuardar = categoriasFiltradas.filter((cat : ICategoria) => !categoriasPorUsuarioOriginal.some((c : ICategoriaPorUsuario) => c.idCategoria === cat.id));
+                      console.log("Categorias a guardar: ", categoriasAGuardar);
+                      insertarCategoriasDeUsuario(categoriasAGuardar);
+                      eliminarCategoriasDeUsuario(categoriasAEliminar);
+                    }                  
+                    window.location.reload();
                   }                  
-                  window.location.reload();
                 }}
               >
                 Guardar

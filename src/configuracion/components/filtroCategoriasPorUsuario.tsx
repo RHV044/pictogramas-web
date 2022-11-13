@@ -50,13 +50,13 @@ export default function FiltroCategoriasPorUsuario(props: any) {
             <React.Fragment key={option.id}>
               <Checkbox
                 style={{ color: '#d71920' }}
-                checked={selected} //handleSelected(Number(option.idCategoria))
+                checked={selected}
                 onClick={() => { 
                   if(!selected)
                   { 
                     // if(categoriasPorUsuario.map(cat => cat.idCategoria).includes(option.idCategoria)){
                     //     filtrosDesmarcados.push(option);
-                    // }                   
+                    // }
                     console.log("valor selected: " + selected + " IF");
                     let newFilters = [...filtrosSeleccionados]
                     newFilters.push(option)

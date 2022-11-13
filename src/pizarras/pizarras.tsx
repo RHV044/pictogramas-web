@@ -37,7 +37,7 @@ import {
   ObtenerPictogramas,
 } from '../pictogramas/services/pictogramas-services';
 import { ICategoria } from '../pictogramas/models/categoria';
-import CategoriasRaices from '../pictogramas/components/categorias/categoriasRaices';
+import CategoriasRaices, { verificarValidezDeCategoria } from '../pictogramas/components/categorias/categoriasRaices';
 import CategoriaSeleccionada from '../pictogramas/components/categorias/categoriaSeleccionada';
 import PictogramasPorCategoria from '../pictogramas/components/categorias/pictogramasPorCategoria';
 import { IndexedDbService } from '../services/indexeddb-service';
@@ -53,6 +53,8 @@ import {
 } from '../services/usuarios-services';
 import Categoria from '../pictogramas/components/categorias/categoria';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { IUsuario } from '../login/model/usuario';
+import { ICategoriaPorUsuario } from '../pictogramas/models/categoriaPorUsuario';
 
 export type EstilosPizarras = {
   fila: number;
@@ -67,7 +69,6 @@ export default function Pizarras(this: any) {
   const [columnas, setColumnas] = useState(0);
   const [texto, setTexto] = useState('');
   const movimientos = useMemo(() => new Movimientos(), []);
-  //const movimientos = new Movimientos()
   const [refresco, setRefresco] = useState(false);
   const [mostrarPictogramas, setMostrarPictogramas] = useState(false);
   const [pictogramas, setPictogramas] = useState([] as IPictogram[]);
@@ -90,6 +91,10 @@ export default function Pizarras(this: any) {
   const [nombrePizarra, setNombrePizarra] = useState('' as string);
   const [categorias, setCategorias] = useState([] as ICategoria[]);
   const [pizarra, setPizarra] = useState({} as IPizarra);
+  const [user, setUser] = useState(null as IUsuario | null);
+  const [categoriasPorUsuario, setCategoriasPorUsuario] = useState(
+    [] as ICategoriaPorUsuario[]
+  );
 
   useEffect(() => {
     dispatchEvent(new CustomEvent('sincronizar'));
@@ -99,6 +104,14 @@ export default function Pizarras(this: any) {
         navigate('/cuenta/seleccionar' + location.search);
       } else {
         setUsuarioLogueadoVariable(usuario);
+        setUser(usuario);
+        if ((usuario?.nivel !== undefined ? usuario?.nivel : 0) === 3) {
+          IndexedDbService.create().then(async (db) => {
+            db.searchCategoriasPorUsuarioByUser((usuario && usuario.id) ? usuario.id : 0).then(cxus => {
+              cxus = cxus.filter(c => !c.pendienteEliminar);
+              setCategoriasPorUsuario(cxus);  
+            })})
+        }
       }
     });
 
@@ -391,7 +404,9 @@ export default function Pizarras(this: any) {
   };
 
   const OpcionesDeCategoria = (categoria: ICategoria) => {
-    if (categoria.esCategoriaFinal === true) {
+    let categoriasHijas: ICategoria[];
+    if (categoria.esCategoriaFinal === true &&
+      (user?.nivel !== 3 || verificarValidezDeCategoria(categoria, categorias, categoriasPorUsuario))) {
       // Es categoria final, debo mostrar pictogramas
       return (
         <>
@@ -403,10 +418,25 @@ export default function Pizarras(this: any) {
         </>
       );
     } else {
-      // Es categoria padre, debo mostrar categorias
-      let categoriasHijas = categorias.filter(
-        (c) => c.categoriaPadre === categoria.id
-      );
+            // Es categoria padre, debo mostrar categorias
+            if (
+              (usuarioLogueado?.nivel !== undefined ? usuarioLogueado?.nivel : 0) === 3
+            ) { //nivel personalizado
+              categoriasHijas = categorias.filter(
+                (c) =>            
+                  (c.categoriaPadre === categoria.id && verificarValidezDeCategoria(c, categorias, categoriasPorUsuario))            
+              );
+            } else {
+              categoriasHijas = categorias.filter( 
+                (c) =>
+                  c.categoriaPadre === categoria.id &&
+                  categoria.nivel <=
+                    (usuarioLogueado?.nivel !== undefined
+                      ? usuarioLogueado?.nivel
+                      : 0)
+              );
+            }
+
       return (
         <Container>
           <Grid
@@ -821,6 +851,9 @@ export default function Pizarras(this: any) {
           <CategoriasRaices
             setPictogramas={UpdatePictogramas}
             setCategoriaSeleccionada={setCategoriaSeleccionada}
+            usuarioLogueado={user}
+            categoriasPorUsuario={categoriasPorUsuario}        
+            categorias={categorias}
           />
         </div>
       )}
