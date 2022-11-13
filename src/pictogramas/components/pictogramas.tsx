@@ -197,8 +197,9 @@ export default function Pictogramas(props: any) {
       let pictsFiltrados = pictogramas
         .filter(
           (p) =>
-            p.keywords.some((k) => k.keyword.normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(value.normalize("NFD").replace(/[\u0300-\u036f]/g, ""))) === true ||
-            p.categorias?.some((c) => c.nombre.normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(value.normalize("NFD").replace(/[\u0300-\u036f]/g, ""))) === true
+            (p.keywords.some((k) => k.keyword.normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(value.normalize("NFD").replace(/[\u0300-\u036f]/g, ""))) === true ||
+            p.categorias?.some((c) => c.nombre.normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(value.normalize("NFD").replace(/[\u0300-\u036f]/g, ""))) === true) &&
+            !pictsIguales.some(pic => p.id === pic.id)
         )
         .slice(0, 5);
       const arrayFinal = pictsIguales.concat(pictsFiltrados);
@@ -391,8 +392,8 @@ export default function Pictogramas(props: any) {
           {pictogramasFiltrados.map((pictograma) => {
             return (
               //Como estan dentro de la categoria, se visualizan abajo, habria que extraerlo a otro lugar
-              <Grid key={pictograma.id} item xs={12} sm={4} md={2}>
-                <Container key={pictograma.id}>
+              <Grid key={pictograma.id + '_' + pictograma.keywords[0].keyword + '_' + pictograma.keywords[0].id + '_' + Math.random()} item xs={12} sm={4} md={2}>
+                <Container key={pictograma.id + '_' + pictograma.keywords[0].keyword + '_' + pictograma.keywords[0].id + '_' + Math.random()}>
                   <Card
                     sx={{ maxWidth: 245, minWidth: 150 }}
                     style={{ marginTop: '10px' }}
@@ -419,7 +420,7 @@ export default function Pictogramas(props: any) {
                             ? pictograma.imagen
                             : `data:image/png;base64,${pictograma.imagen}`
                         }
-                        alt={pictograma.keywords.length > 1 ? pictograma.keywords[1].keyword.toLocaleUpperCase() : pictograma.keywords[0].keyword}
+                        alt={pictograma.keywords.length > 1 && pictograma.keywords[0].tipo !== 1 ? pictograma.keywords[1].keyword.toLocaleUpperCase() : pictograma.keywords[0].keyword}
                       ></CardMedia>
                       <CardHeader></CardHeader>
                       <CardContent
@@ -431,7 +432,7 @@ export default function Pictogramas(props: any) {
                           fontWeight: 'bold',
                         }}
                       >
-                        {pictograma.keywords.length > 1 ? pictograma.keywords[1].keyword.toLocaleUpperCase() : pictograma.keywords[0].keyword.toLocaleUpperCase()}
+                        {pictograma.keywords.length > 1 && pictograma.keywords[0].tipo !== 1 ? pictograma.keywords[1].keyword.toLocaleUpperCase() : pictograma.keywords[0].keyword.toLocaleUpperCase()}
                       </CardContent>
                     </CardActionArea>
                   </Card>
