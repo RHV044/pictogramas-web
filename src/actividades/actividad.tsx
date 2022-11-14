@@ -112,21 +112,23 @@ export default function Actividad() {
       setCategoria4(categorias[3]);
   }, [categorias]);
 
+  const obtenerPictograma =  () =>{
+    return pictogramas
+    .sort(() => (Math.random() > 0.5 ? 1 : -1))
+    .find((p: IPictogram) => p.categorias
+      ?.sort(() => (Math.random() > 0.5 ? 1 : -1))
+      .some(
+        (c) => c.id === categoria1?.id &&
+          c.id !== categoria2?.id &&
+          c.id !== categoria3?.id &&
+          c.id !== categoria4?.id
+      )
+    );
+  }
+
   useEffect(() => {
     dispatchEvent(new CustomEvent('sincronizar'));
-    let pic = pictogramas
-      .sort(() => (Math.random() > 0.5 ? 1 : -1))
-      .find((p: IPictogram) =>
-        p.categorias
-          ?.sort(() => (Math.random() > 0.5 ? 1 : -1))
-          .some(
-            (c) =>
-              c.id === categoria1?.id &&
-              c.id !== categoria2?.id &&
-              c.id !== categoria3?.id &&
-              c.id !== categoria4?.id
-          )
-      );
+    let pic = obtenerPictograma();
     //Obtener Imagen de pictograma
     IndexedDbService.create().then(async (db) => {
       if (pic !== undefined) {
@@ -135,25 +137,27 @@ export default function Actividad() {
           imagen !== undefined && imagen !== null ? imagen.imagen : '';
         setPictograma(pic);
         setPictogramaCargado(true);
+              // Reordenar al azar las categorias:
+        var categoriasFinales = [categoria1, categoria2];
+        if (params.nivel !== undefined && parseInt(params.nivel) > 1)
+          categoriasFinales = categoriasFinales.concat([categoria3]);
+        if (params.nivel !== undefined && parseInt(params.nivel) > 2)
+          categoriasFinales = categoriasFinales.concat([categoria4]);
+        var categoriasReorganizadas = categoriasFinales.sort(() =>
+          Math.random() > 0.5 ? 1 : -1
+        );
+        setCategoria1(categoriasReorganizadas[0]);
+        setCategoria2(categoriasReorganizadas[1]);
+        if (params.nivel !== undefined && parseInt(params.nivel) > 1)
+          setCategoria3(categoriasReorganizadas[2]);
+        if (params.nivel !== undefined && parseInt(params.nivel) > 2)
+          setCategoria4(categoriasReorganizadas[3]);
+
+        setCategoriasReorganizadas(true);
       }
-
-      // Reordenar al azar las categorias:
-      var categoriasFinales = [categoria1, categoria2];
-      if (params.nivel !== undefined && parseInt(params.nivel) > 1)
-        categoriasFinales = categoriasFinales.concat([categoria3]);
-      if (params.nivel !== undefined && parseInt(params.nivel) > 2)
-        categoriasFinales = categoriasFinales.concat([categoria4]);
-      var categoriasReorganizadas = categoriasFinales.sort(() =>
-        Math.random() > 0.5 ? 1 : -1
-      );
-      setCategoria1(categoriasReorganizadas[0]);
-      setCategoria2(categoriasReorganizadas[1]);
-      if (params.nivel !== undefined && parseInt(params.nivel) > 1)
-        setCategoria3(categoriasReorganizadas[2]);
-      if (params.nivel !== undefined && parseInt(params.nivel) > 2)
-        setCategoria4(categoriasReorganizadas[3]);
-
-      setCategoriasReorganizadas(true);
+      else {
+        inicializar()
+      }
     });
   }, [pictogramas]);
 
