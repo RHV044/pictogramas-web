@@ -63,10 +63,11 @@ export default function Actividad() {
         navigate('/cuenta/seleccionar' + location.search);
       } else {
         setUser(usuario);
+        console.log('USUARIO: ', usuario);
         if((user?.nivel !== undefined ? user?.nivel : 0) === 3){
           console.log('Nivel personalizado');
           IndexedDbService.create().then(async (db) => {
-            db.searchCategoriasPorUsuarioByUser((user && user.id) ? user.id : 0).then(cxus => {
+            await db.searchCategoriasPorUsuarioByUser((user && user.id) ? user.id : 0).then(cxus => {
               cxus = cxus.filter(c => !c.pendienteEliminar);
               setCategoriasPorUsuario(cxus);
             })});

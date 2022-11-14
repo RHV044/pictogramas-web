@@ -1,6 +1,9 @@
 import { Button, Grid, Typography, Container } from '@mui/material';
 import { useLocation, useNavigate } from 'react-router-dom';
 import ResponsiveAppBar from '../commons/appBar';
+import { IUsuario } from '../login/model/usuario';
+import { IndexedDbService } from '../services/indexeddb-service';
+import { getUsuarioLogueado } from '../services/usuarios-services';
 
 export default function SeleccionDeNivel() {
   let navigate = useNavigate();
@@ -78,4 +81,20 @@ export default function SeleccionDeNivel() {
       </Container>
     </div>
   );
+}
+
+
+async function validarCantidadCategoriasNivel(cantidadCategoriasMinima: number, usuario : IUsuario){
+
+      if ((usuario?.nivel !== undefined ? usuario?.nivel : 0) === 3) {
+        console.log('VALIDANDO CANTIDAD DE CATEGORIAS');
+        IndexedDbService.create().then(async (db) => {
+          await db.searchCategoriasPorUsuarioByUser((usuario && usuario.id) ? usuario.id : 0).then(cxus => {
+            cxus = cxus.filter(c => !c.pendienteEliminar);
+            return cxus.length >= cantidadCategoriasMinima;  
+          })})
+      }
+      else {
+        console.log('no es nivel personlizado');
+      }    
 }
