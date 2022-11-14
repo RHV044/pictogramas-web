@@ -18,6 +18,7 @@ import { IPictogram } from '../pictogramas/models/pictogram';
 import {
   ObtenerCategoriasIndexDB,
   ObtenerPictogramas,
+  PictogramaNoSeDebeTraducir,
 } from '../pictogramas/services/pictogramas-services';
 import { IndexedDbService } from '../services/indexeddb-service';
 import { useSpeechSynthesis } from 'react-speech-kit';
@@ -364,7 +365,7 @@ export default function Actividad() {
               >
                 <CardActionArea
                   onClick={() =>
-                    speak({ text: pictograma.keywords.length > 1 && pictograma.keywords[0].tipo !== 1 ? pictograma.keywords[1].keyword.toLocaleUpperCase() : pictograma.keywords.length > 1 && pictograma.keywords[0].tipo !== 1 ? pictograma.keywords[1].keyword.toLocaleUpperCase() : pictograma.keywords[0].keyword })
+                    speak({ text: pictograma.keywords.length > 1 && pictograma.keywords[0].tipo !== 1 && PictogramaNoSeDebeTraducir(pictograma) ? pictograma.keywords[1].keyword.toLocaleUpperCase() : pictograma.keywords.length > 1 && pictograma.keywords[0].tipo !== 1 && PictogramaNoSeDebeTraducir(pictograma) ? pictograma.keywords[1].keyword.toLocaleUpperCase() : pictograma.keywords[0].keyword })
                   }
                 >
                   <CardMedia
@@ -377,7 +378,7 @@ export default function Actividad() {
                         ? pictograma.imagen
                         : `data:image/png;base64,${pictograma.imagen}`
                     }
-                    alt={pictograma.keywords.length > 1 && pictograma.keywords[0].tipo !== 1 ? pictograma.keywords[1].keyword.toLocaleUpperCase() : pictograma.keywords[0].keyword}
+                    alt={pictograma.keywords.length > 1 && pictograma.keywords[0].tipo !== 1 && PictogramaNoSeDebeTraducir(pictograma) ? pictograma.keywords[1].keyword.toLocaleUpperCase() : pictograma.keywords[0].keyword}
                   ></CardMedia>
                   <CardHeader
                     style={{
@@ -396,7 +397,7 @@ export default function Actividad() {
                       fontWeight: 'bold',
                     }}
                   >
-                    {pictograma.keywords.length > 1 && pictograma.keywords[0].tipo !== 1 ? pictograma.keywords[1].keyword.toLocaleUpperCase() : pictograma.keywords[0].keyword.toLocaleUpperCase()}
+                    {pictograma.keywords.length > 1 && pictograma.keywords[0].tipo !== 1 && PictogramaNoSeDebeTraducir(pictograma) ? pictograma.keywords[1].keyword.toLocaleUpperCase() : pictograma.keywords[0].keyword.toLocaleUpperCase()}
                   </CardContent>
                 </CardActionArea>
               </Card>

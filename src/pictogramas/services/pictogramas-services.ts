@@ -284,3 +284,8 @@ export async function VerificarConexion(){
   else
     throw "No hay conexion"
 }
+
+export function PictogramaNoSeDebeTraducir(pictograma : IPictogram){
+  let pictos = [18,19,1128,2234,3672,5446,5449,5451,5455,7979]
+  return !pictos.includes(pictograma.id)
+}

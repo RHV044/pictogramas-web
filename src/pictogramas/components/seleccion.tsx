@@ -12,7 +12,7 @@ import { useEffect, useRef, useState } from 'react';
 import { IPictogram } from '../models/pictogram';
 import React from 'react';
 import Speech from 'react-speech';
-import { ObtenerInterpretacionNatural } from '../services/pictogramas-services';
+import { ObtenerInterpretacionNatural, PictogramaNoSeDebeTraducir } from '../services/pictogramas-services';
 import { lightBlue } from '@mui/material/colors';
 import { useSpeechSynthesis } from 'react-speech-kit';
 import { Delete, Mic } from '@mui/icons-material';
@@ -101,7 +101,7 @@ export default function Seleccion(props: any) {
                           ? pictograma.imagen
                           : `data:image/png;base64,${pictograma.imagen}`
                       }
-                      alt={pictograma.keywords.length > 1 && pictograma.keywords[0].tipo !== 1 ? pictograma.keywords[1].keyword.toLocaleUpperCase() : pictograma.keywords[0].keyword}
+                      alt={pictograma.keywords.length > 1 && pictograma.keywords[0].tipo !== 1 && PictogramaNoSeDebeTraducir(pictograma) ? pictograma.keywords[1].keyword.toLocaleUpperCase() : pictograma.keywords[0].keyword}
                     ></CardMedia>
                     <CardHeader
                       style={{
@@ -120,7 +120,7 @@ export default function Seleccion(props: any) {
                         fontWeight: 'bold',
                       }}
                     >
-                      {pictograma.keywords.length > 1 && pictograma.keywords[0].tipo !== 1 ? pictograma.keywords[1].keyword.toLocaleUpperCase() : pictograma.keywords[0].keyword.toLocaleUpperCase()}
+                      {pictograma.keywords.length > 1 && pictograma.keywords[0].tipo !== 1 && PictogramaNoSeDebeTraducir(pictograma) ? pictograma.keywords[1].keyword.toLocaleUpperCase() : pictograma.keywords[0].keyword.toLocaleUpperCase()}
                     </CardContent>
                   </CardActionArea>
                 </Card>

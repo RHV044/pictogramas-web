@@ -21,7 +21,7 @@ import { getUsuarioLogueado } from '../../../services/usuarios-services';
 import { IUsuario } from '../../../login/model/usuario';
 import { IPictogram } from '../../models/pictogram';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
-import { ObtenerImagenDePictogramaLocal } from '../../services/pictogramas-services';
+import { ObtenerImagenDePictogramaLocal, PictogramaNoSeDebeTraducir } from '../../services/pictogramas-services';
 import PredictivoImagen from './assets/adivinar.png';
 
 export default function Sugeridos(props: any) {
@@ -147,7 +147,7 @@ export default function Sugeridos(props: any) {
                                 ? pictograma.imagen
                                 : `data:image/png;base64,${pictograma.imagen}`
                             }
-                            alt={pictograma.keywords.length > 1 && pictograma.keywords[0].tipo !== 1 ? pictograma.keywords[1].keyword.toLocaleUpperCase() : pictograma.keywords[0].keyword}
+                            alt={pictograma.keywords.length > 1 && pictograma.keywords[0].tipo !== 1 && PictogramaNoSeDebeTraducir(pictograma) ? pictograma.keywords[1].keyword.toLocaleUpperCase() : pictograma.keywords[0].keyword}
                           ></CardMedia>
                           <CardHeader
                             style={{
@@ -166,7 +166,7 @@ export default function Sugeridos(props: any) {
                               fontWeight: 'bold',
                             }}
                           >
-                            {pictograma.keywords.length > 1 && pictograma.keywords[0].tipo !== 1 ? pictograma.keywords[1].keyword.toLocaleUpperCase() : pictograma.keywords[0].keyword}
+                            {pictograma.keywords.length > 1 && pictograma.keywords[0].tipo !== 1 && PictogramaNoSeDebeTraducir(pictograma) ? pictograma.keywords[1].keyword.toLocaleUpperCase() : pictograma.keywords[0].keyword}
                           </CardContent>
                         </CardActionArea>
 

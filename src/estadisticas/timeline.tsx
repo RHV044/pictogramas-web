@@ -16,6 +16,7 @@ import { IPictogramaEstadistica } from './model/pictogramaEstadistica';
 import {
   ObtenerPictogramaConImagenes,
   ObtenerPictogramasConImagenes,
+  PictogramaNoSeDebeTraducir,
 } from '../pictogramas/services/pictogramas-services';
 import {
   Card,
@@ -156,7 +157,7 @@ export default function TimeLine(props: any) {
                   ? pictograma.imagen
                   : `data:image/png;base64,${pictograma.imagen}`
               }
-              alt={pictograma.keywords.length > 1 && pictograma.keywords[0].tipo !== 1 ? pictograma.keywords[1].keyword.toLocaleUpperCase() : pictograma.keywords[0].keyword}
+              alt={pictograma.keywords.length > 1 && pictograma.keywords[0].tipo !== 1 && PictogramaNoSeDebeTraducir(pictograma) ? pictograma.keywords[1].keyword.toLocaleUpperCase() : pictograma.keywords[0].keyword}
             ></CardMedia>
             <CardHeader
               style={{
@@ -176,7 +177,7 @@ export default function TimeLine(props: any) {
                 paddingBottom: 0,
               }}
             >
-              {pictograma.keywords.length > 1 && pictograma.keywords[0].tipo !== 1 ? pictograma.keywords[1].keyword.toLocaleUpperCase() : pictograma.keywords[0].keyword.toLocaleUpperCase()}
+              {pictograma.keywords.length > 1 && pictograma.keywords[0].tipo !== 1 && PictogramaNoSeDebeTraducir(pictograma) ? pictograma.keywords[1].keyword.toLocaleUpperCase() : pictograma.keywords[0].keyword.toLocaleUpperCase()}
             </CardContent>
           </CardActionArea>
         </Card>
