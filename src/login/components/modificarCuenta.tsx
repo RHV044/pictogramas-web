@@ -7,7 +7,7 @@ import {
   ActualizarUsuarioPassword,
   usuarioLogueado,
 } from '../../services/usuarios-services';
-import Logo from '../../commons/Logo-PictogAR.png';
+import Logo from '../../commons/Logo-PictogAR-viejo.png';
 
 const db = new IndexedDbService();
 

@@ -124,14 +124,14 @@ export default function FormDialog() {
           Sexual <Checkbox checked={sexual} onChange={(e) => setSexual(e.target.checked)}/>
           <br />
           Esquematico <Checkbox checked={esquematico} onChange={(e) => setEsquematico(e.target.checked)}/>
-          <br />
+          {/* <br />
           Aac <Checkbox checked={aac} onChange={(e) => setAac(e.target.checked)}/>
           <br />
           Aac Color <Checkbox checked={aacColor} onChange={(e) => setAacColor(e.target.checked)}/>
           <br />
           Tiene piel <Checkbox checked={skin} onChange={(e) => setSkin(e.target.checked)}/>
           <br />
-          Tiene pelo <Checkbox checked={hair} onChange={(e) => setHair(e.target.checked)}/>
+          Tiene pelo <Checkbox checked={hair} onChange={(e) => setHair(e.target.checked)}/> */}
           <br />
           {/* TODO: Habria que ver tambien de agregar los Tags */}
           {categorias.length > 0 && (

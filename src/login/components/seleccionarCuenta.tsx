@@ -24,7 +24,7 @@ import {
 } from '../../services/usuarios-services';
 import { IndexedDbService } from '../../services/indexeddb-service';
 import imagenUsuario from '../../commons/imagen-usuario.jpg';
-import Logo from '../../commons/Logo-PictogAR.png';
+import Logo from '../../commons/Logo-PictogAR-viejo.png';
 
 const SeleccionarCuenta = (props: any) => {
   let navigate = useNavigate();

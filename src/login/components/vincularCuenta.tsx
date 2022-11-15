@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { CrearUsuario, ObtenerUsuario } from '../../services/usuarios-services';
 import { IndexedDbService } from '../../services/indexeddb-service';
-import Logo from '../../commons/Logo-PictogAR.png';
+import Logo from '../../commons/Logo-PictogAR-viejo.png';
 
 const db = new IndexedDbService();
 
