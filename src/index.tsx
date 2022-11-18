@@ -6,6 +6,9 @@ import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import reportWebVitals from "./reportWebVitals";
 import { Provider } from "react-redux";
 import { store } from "./redux/store";
+import { register } from "./serviceWorkerRegistration";
+
+register()
 
 // Request persistent storage for site
 if (navigator.storage && navigator.storage.persist) {
