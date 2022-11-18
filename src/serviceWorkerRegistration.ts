@@ -28,9 +28,9 @@ export function register(config?: Config) {
   console.log("node_env: ", process.env.NODE_ENV)
   console.log("service worker en navigation: ", 'serviceWorker' in navigator)
   // 'serviceWorker' in navigator si no es https, es false y no entra
-  // if (process.env.NODE_ENV === 'production' && 'serviceWorker' in navigator) {
+  if (process.env.NODE_ENV === 'production' && 'serviceWorker' in navigator) {
     // if ('serviceWorker' in navigator) {
-      if (true){
+      // if (true){
     // The URL constructor is available in all browsers that support SW.
     const publicUrl = new URL(process.env.PUBLIC_URL, window.location.href);
     console.log("public url:", publicUrl)
