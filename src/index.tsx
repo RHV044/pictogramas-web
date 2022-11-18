@@ -10,6 +10,7 @@ import { register } from "./serviceWorkerRegistration";
 
 register()
 
+
 // Request persistent storage for site
 if (navigator.storage && navigator.storage.persist) {
   navigator.storage

@@ -42,9 +42,10 @@ export function register(config?: Config) {
       return;
     }
 
-    console.log('Agregamos event listener para load');
-    window.addEventListener('load', () => {
-      const swUrl = `${process.env.PUBLIC_URL}/service-worker.js`;
+    console.log("Agregamos event listener para load");
+    window.addEventListener('load', () => {      
+      const swUrl = `${process.env.PUBLIC_URL}/service-worker.ts`;
+      console.log("swUrl: ", swUrl);
 
       if (isLocalhost) {
         // This is running on localhost. Let's check if a service worker still exists or not.
@@ -62,7 +63,9 @@ export function register(config?: Config) {
         });
       } else {
         // Is not localhost. Just register service worker
+        console.log('Vamos a registrar service worker valido');
         registerValidSW(swUrl, config);
+        console.log('Terminamos de registrar correctamente un service worker valido');
       }
     });
   }
@@ -72,8 +75,10 @@ function registerValidSW(swUrl: string, config?: Config) {
   navigator.serviceWorker
     .register(swUrl)
     .then((registration) => {
+      console.log("registration: ", registration);
       registration.onupdatefound = () => {
         const installingWorker = registration.installing;
+        console.log("installingWorker: ", installingWorker);
         if (installingWorker == null) {
           return;
         }
