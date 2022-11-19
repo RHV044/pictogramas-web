@@ -121,9 +121,8 @@ export async function ObtenerPictogramasPorCategoria(
         
       if (pictogramasFavoritos !== null && pictogramasFavoritos !== undefined && pictogramasFavoritos.length > 0)
         {
-          const pf = pictogramas.concat(pictogramasFavoritos)
-          let favoritos = pf.filter((p: IPictogram) => p.idUsuario === usuario?.id)
-          return await setPictogramas(favoritos)
+          const pf = pictogramas.filter(p => pictogramasFavoritos.some(pic => pic.idCategoria === p.id))
+          return await setPictogramas(pf)
         }
   }
 
