@@ -36,7 +36,7 @@ import {
 } from '../pizarras/services/pizarras-services';
 import { GuardarPizarra } from '../pizarras/services/pizarras-services';
 import { IUsuario } from '../login/model/usuario';
-import { IFavoritoPorUsuario } from '../pictogramas/models/favoritoPorUsuario';
+import { IFavoritoPorUsuario, IFavoritoPorUsuarioApi } from '../pictogramas/models/favoritoPorUsuario';
 import { ICategoriaPorUsuario, ICategoriaPorUsuarioApi } from '../pictogramas/models/categoriaPorUsuario';
 
 const apiPictogramas =
@@ -623,7 +623,7 @@ export class UpdateService {
       let usuario = await getUsuarioLogueado();
       let usuarioId = usuario !== undefined ? usuario.id : 0;
       ObtenerFavoritosDeUsuario(usuarioId !== undefined ? usuarioId : 0).then(
-        (favoritosApi: IFavoritoPorUsuario[]) => {
+        (favoritosApi: IFavoritoPorUsuarioApi[]) => {
           IndexedDbService.create().then((db) => {
             db.getAllValues('favoritosPorUsuario').then(
               async (favoritos: IFavoritoPorUsuario[]) => {
@@ -636,8 +636,8 @@ export class UpdateService {
                   ) {
                     const favCompleto: IFavoritoPorUsuario = {
                       id: favorito.id,
-                      idUsuario: favorito.idUsuario,
-                      idCategoria: favorito.idCategoria,
+                      idUsuario: favorito.usuarioId,
+                      idPictograma: favorito.pictogramaId,
                       pendienteAgregar: false,
                       pendienteEliminar: false,
                     };
@@ -649,7 +649,7 @@ export class UpdateService {
                   // Creacion del favorito en la api
                   if (favorito.pendienteAgregar) {
                     await GuardarPictogramaFavorito(
-                      favorito.idCategoria,
+                      favorito.idPictograma,
                       usuarioId !== undefined ? usuarioId : 0
                     );
                     favorito.pendienteAgregar = false;
@@ -661,7 +661,7 @@ export class UpdateService {
                   // Eliminacion de favorito en la api
                   if (favorito.pendienteEliminar) {
                     EliminarPictogramaFavorito(
-                      favorito.idCategoria,
+                      favorito.idPictograma,
                       usuarioId !== undefined ? usuarioId : 0
                     ).then(() => {
                       // let idFavorito = usuarioId.toString() + "_" + favorito.idPictograma.toString();
