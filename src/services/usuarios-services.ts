@@ -144,6 +144,9 @@ export async function ActualizarUsuario(
 export async function ActualizarUsuarioPassword(
   usuario:IUsuario
   ) {
+    var tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
+    var localISOTime = (new Date(Date.now() - tzoffset)).toISOString().slice(0, -1);
+    var fechaActualizacion = localISOTime
     // TODO: Revisar porque a la api no le llega el body
     await axios.patch(apiPictogramas + '/usuarios',
       {
@@ -157,7 +160,8 @@ export async function ActualizarUsuarioPassword(
         AacColor: usuario.aacColor,
         Skin: usuario.skin,
         Hair: usuario.hair,
-        Nivel: usuario.nivel
+        Nivel: usuario.nivel,
+        UltimaActualizacion: fechaActualizacion
       },
       {
         headers: {
