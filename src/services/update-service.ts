@@ -347,7 +347,7 @@ export class UpdateService {
       if (
         window.navigator.onLine &&
         //TODO: Remover la depencencia del iniciando, esta puesta para evitar explotar la VM ahora que tiene problemas de memoria
-        !this.state.iniciando &&
+        // !this.state.iniciando &&
         !actualizacionPictogramas &&
         !actualizacionFavoritos &&
         !actualizacionPizarras &&
