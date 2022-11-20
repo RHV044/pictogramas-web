@@ -64,7 +64,7 @@ export default function Recientes(props: any) {
         pictograma.violence === false) &&
       (pictograma.sex === usuario.sex || pictograma.sex === false) &&
       (pictograma.schematic === usuario.schematic ||
-        pictograma.schematic === false)
+        pictograma.schematic === true)
       //   && (pictograma.aacColor === usuario.aacColor ||
       //   pictograma.aacColor === false) &&
       // (pictograma.aac === usuario.aac || pictograma.aac === false)
