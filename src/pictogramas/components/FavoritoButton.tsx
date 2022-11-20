@@ -23,15 +23,18 @@ const generateId = (idUsuario: number, idPictograma: number) => {
 
 const FavoritoButton = (props: any) => {
   let isFav=false
-  const [fav, setFav] = useState(isFav);
+  const [fav, setFav] = useState(false);
   const [db, setDb] = useState(IndexedDbService.create());
 
   useEffect(() => {
-    const setIsFav = async () => {
-      isFav = (await props.favoritos).some(r => r.idPictograma === props.pictograma.id)
-      setFav(isFav)
-    }
-    setIsFav()
+    console.log("SE CARGA FAVORITO: ", props.esFavorito)
+    if(props.esFavorito)
+      setFav(true)
+    // const setIsFav = async () => {
+    //   isFav = (await props.favoritos).some(r => r.idPictograma === props.pictograma.id)
+    //   setFav(isFav)
+    // }
+    // setIsFav()
   }, []);
 
     async function handleFavorito() { 

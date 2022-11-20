@@ -158,6 +158,7 @@ export default function PictogramasPorCategoria(props: any) {
                     </CardActionArea>
 
                     <FavoritoButton
+                      esFavorito={props.categoria === -2}
                       pictograma={pictograma}
                       favoritos={favoritos}
                     />
