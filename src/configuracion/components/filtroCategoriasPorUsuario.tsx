@@ -11,6 +11,7 @@ export default function FiltroCategoriasPorUsuario(props: any) {
   let filtrosDesmarcados = [];
 
   useEffect(() => {
+    console.log("Categorias Finales filtrables: ", filtros)
     console.log("USE EFFECT 1", props.categoriasDeUsuario);
     setCategoriasPorUsuario(props.categoriasDeUsuario);
     setfiltrosSeleccionados(props.filtros.filter(cat => props.categoriasDeUsuario.some(c => c.idCategoria === cat.id)));
