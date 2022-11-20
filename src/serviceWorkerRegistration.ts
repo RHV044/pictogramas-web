@@ -24,17 +24,9 @@ type Config = {
 };
 
 export function register(config?: Config) {
-  console.log("Register service worker")
-  console.log("node_env: ", process.env.NODE_ENV)
-  console.log("service worker en navigation: ", 'serviceWorker' in navigator)
-  // 'serviceWorker' in navigator si no es https, es false y no entra
   if (process.env.NODE_ENV === 'production' && 'serviceWorker' in navigator) {
-    // if ('serviceWorker' in navigator) {
-      // if (true){
     // The URL constructor is available in all browsers that support SW.
     const publicUrl = new URL(process.env.PUBLIC_URL, window.location.href);
-    console.log("public url:", publicUrl)
-    console.log("window.location.origin:", window.location.origin)
     if (publicUrl.origin !== window.location.origin) {
       // Our service worker won't work if PUBLIC_URL is on a different origin
       // from what our page is served on. This might happen if a CDN is used to
@@ -42,17 +34,13 @@ export function register(config?: Config) {
       return;
     }
 
-    console.log("Agregamos event listener para load");
-    window.addEventListener('load', () => {      
-      const swUrl = `${process.env.PUBLIC_URL}/service-worker.ts`;
-      console.log("swUrl: ", swUrl);
+    window.addEventListener('load', () => {
+      const swUrl = `${process.env.PUBLIC_URL}/service-worker.js`;
 
       if (isLocalhost) {
         // This is running on localhost. Let's check if a service worker still exists or not.
-        console.log('es localhost, checqueamos si hay service worker valido');
         checkValidServiceWorker(swUrl, config);
 
-        console.log('superamos chequeo de service worker');
         // Add some additional logging to localhost, pointing developers to the
         // service worker/PWA documentation.
         navigator.serviceWorker.ready.then(() => {
@@ -63,9 +51,7 @@ export function register(config?: Config) {
         });
       } else {
         // Is not localhost. Just register service worker
-        console.log('Vamos a registrar service worker valido');
         registerValidSW(swUrl, config);
-        console.log('Terminamos de registrar correctamente un service worker valido');
       }
     });
   }
@@ -75,10 +61,8 @@ function registerValidSW(swUrl: string, config?: Config) {
   navigator.serviceWorker
     .register(swUrl)
     .then((registration) => {
-      console.log("registration: ", registration);
       registration.onupdatefound = () => {
         const installingWorker = registration.installing;
-        console.log("installingWorker: ", installingWorker);
         if (installingWorker == null) {
           return;
         }
@@ -123,7 +107,6 @@ function checkValidServiceWorker(swUrl: string, config?: Config) {
     headers: { 'Service-Worker': 'script' },
   })
     .then((response) => {
-      console.log('Respuesta de service worker: ', response);
       // Ensure service worker exists, and that we really are getting a JS file.
       const contentType = response.headers.get('content-type');
       if (

@@ -1,7 +1,6 @@
 {
-  "name": "Pictogramas",
-  "short_name": "Pictogramas",
-  "description": "Aplicacion para la utilizacion de pictogramas.",
+  "short_name": "PictogAr",
+  "name": "PictogAr",
   "icons": [
     {
       "src": "favicon.ico",
@@ -26,7 +25,8 @@
     }
   ],
   "start_url": "/",
-  "display": "fullscreen",
-  "theme_color": "#B12A34",
-  "background_color": "#B12A34"
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff",
+  "prefer_related_applications": "false"
 }
