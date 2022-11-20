@@ -58,7 +58,7 @@
   "scripts": {
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build",
-    "start": "set HTTPS=true&&env-cmd -f ./env/dev.env react-scripts start",
+    "start": "env-cmd -f ./env/dev.env react-scripts start",
     "start-prod": "set HTTPS=true&&env-cmd -f ./env/prod.env react-scripts start",
     "build": "react-scripts build",
     "build-prod": "env-cmd -f ./env/prod.env npm run-script build",

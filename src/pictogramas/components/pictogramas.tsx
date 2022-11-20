@@ -262,7 +262,7 @@ export default function Pictogramas(props: any) {
     let categoriasHijas: ICategoria[];
     if (
       categoria.esCategoriaFinal === true &&
-      (user?.nivel !== 3 || verificarValidezDeCategoria(categoria, categorias, categoriasPorUsuario))){
+      (verificarValidezDeCategoria(categoria, categorias, categoriasPorUsuario, user))){
       // Es categoria final, debo mostrar pictogramas
       return (
         <>
@@ -275,24 +275,12 @@ export default function Pictogramas(props: any) {
       );
     } else {
       // Es categoria padre, debo mostrar categorias
-      if (
-        (usuarioLogueado?.nivel !== undefined ? usuarioLogueado?.nivel : 0) === 3
-      ) { //nivel personalizado
+
         categoriasHijas = categorias.filter(
           (c) =>            
-            (c.categoriaPadre === categoria.id && verificarValidezDeCategoria(c, categorias, categoriasPorUsuario))            
-        );
-      } else {
-        categoriasHijas = categorias.filter( 
-          (c) =>
-            c.categoriaPadre === categoria.id &&
-            categoria.nivel <=
-              (usuarioLogueado?.nivel !== undefined
-                ? usuarioLogueado?.nivel
-                : 0)
+            (c.categoriaPadre === categoria.id && verificarValidezDeCategoria(c, categorias, categoriasPorUsuario, user))            
         );
       }
-    }
 
     console.log("categorias hijas: ", categoriasHijas);
     return (

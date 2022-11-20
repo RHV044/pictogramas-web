@@ -37,7 +37,7 @@ import {
 import { GuardarPizarra } from '../pizarras/services/pizarras-services';
 import { IUsuario } from '../login/model/usuario';
 import { IFavoritoPorUsuario } from '../pictogramas/models/favoritoPorUsuario';
-import { ICategoriaPorUsuario } from '../pictogramas/models/categoriaPorUsuario';
+import { ICategoriaPorUsuario, ICategoriaPorUsuarioApi } from '../pictogramas/models/categoriaPorUsuario';
 
 const apiPictogramas =
   process.env.REACT_APP_URL_PICTOGRAMAS ?? 'http://localhost:5000';
@@ -686,10 +686,11 @@ export class UpdateService {
       let usuario = await getUsuarioLogueado();
       let usuarioId = usuario !== undefined ? usuario.id : 0;
       ObtenerCategoriasPorUsuario(usuarioId !== undefined ? usuarioId : 0).then(
-        (categoriasDeUsuarioApi: ICategoriaPorUsuario[]) => {
+        (categoriasDeUsuarioApi: ICategoriaPorUsuarioApi[]) => {
           IndexedDbService.create().then((db) => {
             db.getAllValues('categoriasPorUsuario').then(
               async (categoriasDeUsuario: ICategoriaPorUsuario[]) => {
+                console.log("CATEGORIAS DE USUARIO: ", categoriasDeUsuarioApi)
                 // Carga de categoriaPorUsuario de la api que no esten en el indexDb
                 categoriasDeUsuarioApi.map(async (categoriaDeUsuario) => {
                   if (
@@ -701,13 +702,13 @@ export class UpdateService {
                   ) {
                     const cxuCompleto: ICategoriaPorUsuario = {
                       id: categoriaDeUsuario.id,
-                      idUsuario: categoriaDeUsuario.idUsuario,
-                      idCategoria: categoriaDeUsuario.idCategoria,
+                      idUsuario: categoriaDeUsuario.usuarioId,
+                      idCategoria: categoriaDeUsuario.categoriaId,
                       pendienteAgregar: false,
                       pendienteEliminar: false,
                     };
                     await db.putOrPatchValue(
-                      'favoritosPorUsuario',
+                      'categoriasPorUsuario',
                       cxuCompleto
                     );
                   }

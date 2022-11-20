@@ -37,7 +37,7 @@ export default function CategoriasRaices(props: any) {
         <CategoriaFavoritos setCategoriaSeleccionada={props.setCategoriaSeleccionada} categoriaSeleccionada={categoriaSeleccionada}/>
         {props.categorias.map((categoria) => {
           if ((categoria.categoriaPadre === null || categoria.categoriaPadre === undefined || categoria.categoriaPadre < 1) && 
-              categoria.nivel <= (props.usuarioLogueado?.nivel !== undefined ? props.usuarioLogueado?.nivel : 0) && (props.usuarioLogueado?.nivel !== 3 || verificarValidezDeCategoria(categoria, props.categorias, props.categoriasPorUsuario))) //TODO agregar consideracion para el nivel personalizado.
+              categoria.nivel <= (props.usuarioLogueado?.nivel !== undefined ? props.usuarioLogueado?.nivel : 0) && (props.usuarioLogueado?.nivel !== 3 || verificarValidezDeCategoria(categoria, props.categorias, props.categoriasPorUsuario, props.usuarioLogueado))) //TODO agregar consideracion para el nivel personalizado.
           {
             return (
                 <Grid
@@ -61,17 +61,16 @@ export default function CategoriasRaices(props: any) {
   );
 }
 
-export function verificarValidezDeCategoria(categoria : ICategoria, categorias : ICategoria[], categoriasPorUsuario: ICategoriaPorUsuario[]){
+export function verificarValidezDeCategoria(categoria : ICategoria, categorias : ICategoria[], categoriasPorUsuario: ICategoriaPorUsuario[], user: IUsuario | null){
     if(categoria.esCategoriaFinal){
-      if(categoriasPorUsuario.some(cat => cat.idCategoria === categoria.id)){
-      console.log("CATEGORIA VALIDA: ", categoria.id )
-      return true;
+      if(user && categoria.nivel <= user.nivel && (user.nivel !== 3 || categoriasPorUsuario.some(cat => cat.idCategoria === categoria.id))){
+        return true;
       } else {      
         return false;
       }      
     } else {
       let categoriasHijas = categorias.filter(cat => cat.categoriaPadre === categoria.id);
-      return categoriasHijas.some(c => verificarValidezDeCategoria(c, categorias, categoriasPorUsuario));
+      return categoriasHijas.some(c => verificarValidezDeCategoria(c, categorias, categoriasPorUsuario, user));
     }   
 }
 

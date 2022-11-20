@@ -413,7 +413,7 @@ export default function Pizarras(this: any) {
   const OpcionesDeCategoria = (categoria: ICategoria) => {
     let categoriasHijas: ICategoria[];
     if (categoria.esCategoriaFinal === true &&
-      (user?.nivel !== 3 || verificarValidezDeCategoria(categoria, categorias, categoriasPorUsuario))) {
+      (user?.nivel !== 3 || verificarValidezDeCategoria(categoria, categorias, categoriasPorUsuario, usuarioLogueado))) {
       // Es categoria final, debo mostrar pictogramas
       return (
         <>
@@ -431,7 +431,7 @@ export default function Pizarras(this: any) {
             ) { //nivel personalizado
               categoriasHijas = categorias.filter(
                 (c) =>            
-                  (c.categoriaPadre === categoria.id && verificarValidezDeCategoria(c, categorias, categoriasPorUsuario))            
+                  (c.categoriaPadre === categoria.id && verificarValidezDeCategoria(c, categorias, categoriasPorUsuario, usuarioLogueado))            
               );
             } else {
               categoriasHijas = categorias.filter( 

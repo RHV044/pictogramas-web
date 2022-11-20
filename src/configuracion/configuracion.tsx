@@ -136,6 +136,7 @@ export default function Configuracion() {
 
   const actualizarUsuario = async () => {
     if (userLogueado) {
+      console.log("ACTUALIZACION DE USUARIO")
       let usuario = userLogueado;
       usuario.nombreUsuario = nombreUsuario;
       usuario.violence = violence;
@@ -215,6 +216,7 @@ export default function Configuracion() {
         setCategoriasDeUsuario(cxus);
         setCategoriasPorUsuarioOriginal(cxus);
         setCategoriasFiltradas(categorias.filter(c => cxus.some(cxu => cxu.idCategoria === c.id)));
+        console.log('CATEGORIAS DE USUARIO: ', cxus);
         console.log('categorias: ', categorias);
         console.log('categorias filtradas: ', categorias.filter(c => cxus.some(cxu => cxu.idCategoria === c.id)));
       })
@@ -380,7 +382,8 @@ export default function Configuracion() {
                       await insertarCategoriasDeUsuario(categoriasAGuardar);
                       await eliminarCategoriasDeUsuario(categoriasAEliminar);
                     }                  
-                    window.location.reload();
+                    // window.location.reload();
+                    navigate('../pictogramas');
                   }                  
                 }}
               >

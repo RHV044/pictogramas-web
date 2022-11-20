@@ -5,3 +5,11 @@ export interface ICategoriaPorUsuario {
     pendienteEliminar: boolean,
     pendienteAgregar: boolean
 }
+
+export interface ICategoriaPorUsuarioApi {
+    id: string,
+    usuarioId: number,
+    categoriaId: number,
+    pendienteEliminar: boolean,
+    pendienteAgregar: boolean
+}

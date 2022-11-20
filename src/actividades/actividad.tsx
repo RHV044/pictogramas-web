@@ -78,7 +78,7 @@ export default function Actividad() {
               let categoriasValidadas : ICategoria[] = [];
               console.log('categorias: ', cats);
               cats.forEach(c => {
-                if(verificarValidezDeCategoria(c,cats,categoriasPorUsuario)){
+                if(verificarValidezDeCategoria(c,cats,categoriasPorUsuario, user)){
                   categoriasValidadas.push(c);
                 }                
               });
