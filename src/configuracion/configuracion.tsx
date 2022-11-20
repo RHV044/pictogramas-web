@@ -24,6 +24,7 @@ import {
   Stack,
   Switch,
   TextField,
+  Tooltip,
 } from '@mui/material';
 import { Container } from '@mui/system';
 import { IUsuario } from '../login/model/usuario';
@@ -44,6 +45,7 @@ import FormDialogValidarAcceso from './components/validarCambioConfiguracion';
 import imagenUsuario from '../commons/imagen-usuario.jpg'
 import { ICategoriaPorUsuario } from '../pictogramas/models/categoriaPorUsuario';
 import FiltroCategoriasPorUsuario from './components/filtroCategoriasPorUsuario';
+import { HelpOutline } from '@mui/icons-material';
 
 function agruparElementos(datos, predicado) : ICategoria[] { //agrupar categorias por algun campo en particular
 
@@ -259,7 +261,7 @@ export default function Configuracion() {
                       <CardContent></CardContent>
                     </CardActionArea>
                   </Card>
-                  <Button variant="contained" component="label">
+                  <Button style={{marginTop: 5}} variant="contained" component="label">
                     Adjuntar Imagen para Usuario
                     <input type="file" hidden 
                     onChange={(evt) => { 
@@ -287,11 +289,14 @@ export default function Configuracion() {
                       <MenuItem value={3}>{niveles[3]}</MenuItem> 
 
                     </Select>
+                    <Tooltip title="Nivel Inicial:  - Nivel Intermedio: - Nivel Avanzado: ">
+                      <HelpOutline style={{marginTop:2 }}></HelpOutline>
+                    </Tooltip>
                   </FormControl>
                 </Container>
                 <FormGroup aria-label="center" style={{ paddingRight: 10 }}>
                   <FormControlLabel
-                    style={{ alignItems: 'left' }}
+                    style={{ alignItems: 'left', marginLeft: 2 }}
                     control={
                       <Checkbox
                         checked={violence}
@@ -302,7 +307,7 @@ export default function Configuracion() {
                     labelPlacement="end"
                   />
                   <FormControlLabel
-                    style={{ alignItems: 'left' }}
+                    style={{ alignItems: 'left', marginLeft: 2 }}
                     control={
                       <Checkbox
                         checked={sex}
@@ -313,7 +318,7 @@ export default function Configuracion() {
                     labelPlacement="end"
                   />
                   <FormControlLabel
-                    style={{ alignItems: 'left' }}
+                    style={{ alignItems: 'left', marginLeft: 2 }}
                     control={
                       <Checkbox
                         checked={schematic}
