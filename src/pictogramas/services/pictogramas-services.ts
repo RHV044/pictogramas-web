@@ -107,8 +107,10 @@ export async function ObtenerPictogramasPorCategoria(
     let pictogramasPropios = await db.getAllValues('pictogramasPropios');
     if (pictogramasPropios !== null && pictogramasPropios !== undefined && pictogramasPropios.length > 0)
     {
+      console.log("TODOS LOS PICTOGRAMAS PROPIOS: ", pictogramasPropios)
       const pp = pictogramas.concat(pictogramasPropios)
       let propios = pp.filter((p: IPictogram) => p.idUsuario === usuario?.id)
+      console.log("PICTOGRAMAS PROPIOS FILTRADOS: ", propios)
       return await setPictogramas(propios)
     }
   }
@@ -130,21 +132,23 @@ export async function ObtenerPictogramasPorCategoria(
         }
   }
 
+  if(categoria !== -2 && categoria !== -1)
+  {
+    if(usuario != null && usuario !== undefined && usuario.id != null)
+      pictogramas = pictogramas.filter(p => (p.idUsuario === null || p.idUsuario === usuario?.id || p.idArasaac !== null))
+    else
+      pictogramas = pictogramas.filter(p => (p.idUsuario === null || p.idArasaac !== null))
+    if (pictogramas){
+      let pictogramasFiltrados = pictogramas.filter((p: IPictogram) => p.categorias && p.categorias.some((c: ICategoria) => c.id === categoria))
 
-  if(usuario != null && usuario !== undefined && usuario.id != null)
-    pictogramas = pictogramas.filter(p => (p.idUsuario === null || p.idUsuario === usuario?.id || p.idArasaac !== null))
-  else
-    pictogramas = pictogramas.filter(p => (p.idUsuario === null || p.idArasaac !== null))
-  if (pictogramas){
-    let pictogramasFiltrados = pictogramas.filter((p: IPictogram) => p.categorias && p.categorias.some((c: ICategoria) => c.id === categoria))
+      //TODO: Si el pictograma es propio, la imagen esta en otro indexedDb
+      for(var i=0; i<pictogramasFiltrados.length; ++i){
+        let imagen = (await db.getValue('imagenes', pictogramasFiltrados[i].id))
+        pictogramasFiltrados[i].imagen = imagen !== undefined && imagen !== null ? imagen.imagen : ""
+      }
 
-    //TODO: Si el pictograma es propio, la imagen esta en otro indexedDb
-    for(var i=0; i<pictogramasFiltrados.length; ++i){
-      let imagen = (await db.getValue('imagenes', pictogramasFiltrados[i].id))
-      pictogramasFiltrados[i].imagen = imagen !== undefined && imagen !== null ? imagen.imagen : ""
+      return await setPictogramas(pictogramasFiltrados)
     }
-
-    return await setPictogramas(pictogramasFiltrados)
   }
   else {
   return await axios.get(apiPictogramas + '/pictogramas/categorias/id/'+ categoria)

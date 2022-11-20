@@ -26,10 +26,10 @@ export default function CategoriaFavoritos(props: any) {
 
   return (
     <Grid
-      key={-1}
+      key={-2}
       item xs={4} sm={3} md={2}
     >
-      <Container key={-1}>
+      <Container key={-2}>
         <Card
           sx={{ maxWidth: 240, minWidth:70, maxHeight: 240, minHeight: 50 }}
           style={{ marginTop: '10px' }}
@@ -38,7 +38,7 @@ export default function CategoriaFavoritos(props: any) {
             onClick={() => {
               if (
                 props.categoriaSeleccionada == null ||
-                props.categoriaSeleccionada !== -1
+                props.categoriaSeleccionada !== -2
               ) {
                 let categoria = {id: -2, nombre: "Pictogramas Favoritos", esCategoriaFinal: true, imagen:  userLogueado && userLogueado.imagen && userLogueado.imagen !== "" ? userLogueado.imagen : imagenUsuario} as ICategoria
                 props.setCategoriaSeleccionada(categoria);
