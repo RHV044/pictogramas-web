@@ -1,4 +1,4 @@
-import { Box, Button, Container, TextField } from '@mui/material';
+import { Alert, Box, Button, Container, TextField } from '@mui/material';
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { CrearUsuario, ObtenerUsuario } from '../../services/usuarios-services';
@@ -13,9 +13,11 @@ const VincularCuenta = (props: any) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [usuarioIncorrecto, setUsuarioIncorrecto] = useState(false);
 
   return (
     <Container>
+      {usuarioIncorrecto ? <Alert severity="error">Usuario Invalido</Alert> : <></>}
       <Box
         style={{
           display: 'flex',
@@ -88,10 +90,17 @@ const VincularCuenta = (props: any) => {
                   // Se requiere conexion obligatoria para la vinculacion
                   // Se debe registrar nada mas en el indexdbb
                   let usuario = await ObtenerUsuario(username, password);
-                  console.log('usuario a vincular: ', usuario);
-                  await db.putOrPatchValue('usuarios', usuario);
-                  dispatchEvent(new CustomEvent('sincronizar'));
-                  navigate('/cuenta/seleccionar' + location.search);
+                  if (usuario === null || usuario === undefined) {
+                    setUsuarioIncorrecto(true);
+                    setTimeout(function () {
+                      setUsuarioIncorrecto(false);
+                    }, 1500);
+                  } else {
+                    console.log('usuario a vincular: ', usuario);
+                    await db.putOrPatchValue('usuarios', usuario);
+                    dispatchEvent(new CustomEvent('sincronizar'));
+                    navigate('/cuenta/seleccionar' + location.search);
+                  }
                 }}
               >
                 Vincular Cuenta
