@@ -441,15 +441,17 @@ export class UpdateService {
             ObtenerUsuarioInfo(usuario.id).then(
               async (usuarioApi: IUsuario) => {
                 // Actualizo usuario en el IndexedDb
-                if (
+                if (                  
                   usuario.ultimaActualizacion < usuarioApi.ultimaActualizacion
                 ) {
+                  console.log("ACTUALIZO USUARIO EN INDEXEDDB POR: ", usuarioApi)
                   db.putOrPatchValue('usuarios', usuarioApi);
                 }
                 // Actualizo usuario en la api
                 if (
                   usuarioApi.ultimaActualizacion < usuario.ultimaActualizacion
                 ) {
+                  console.log("ACTUALIZO USUARIO EN API POR: ", usuario)
                   await ActualizarUsuario(usuario);
                 }
               }
