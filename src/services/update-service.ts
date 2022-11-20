@@ -486,21 +486,21 @@ export class UpdateService {
                           !p.pendienteCreacion
                       )
                     ) {
-                      pictograma.imagen = '';
-                      db.putOrPatchValue('pictogramasPropios', pictograma);
                       axios
                         .get(
                           `${apiPictogramas}/pictogramas/${pictograma.id}/obtener/base64`
                         )
                         .then(async (response) => {
-                          let pictogramaImagen = {
-                            identificador: pictograma.identificador,
-                            imagen: response.data,
-                          } as IPictogramaPropioImagen;
-                          await db.putOrPatchValue(
-                            'imagenesPropias',
-                            pictogramaImagen
-                          );
+                          pictograma.imagen = response.data;
+                          db.putOrPatchValue('pictogramasPropios', pictograma);
+                          // let pictogramaImagen = {
+                          //   identificador: pictograma.identificador,
+                          //   imagen: response.data,
+                          // } as IPictogramaPropioImagen;
+                          // await db.putOrPatchValue(
+                          //   'pictogramasPropios',
+                          //   pictogramaImagen
+                          // );
                         });
                     }
                   });
