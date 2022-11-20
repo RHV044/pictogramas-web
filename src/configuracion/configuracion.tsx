@@ -171,10 +171,10 @@ export default function Configuracion() {
     };
  }
 
-  function insertarCategoriasDeUsuario(categorias : ICategoria[]){
+  async function insertarCategoriasDeUsuario(categorias : ICategoria[]){
   
   if(userLogueado){
-  categorias.forEach(c => {
+  categorias.forEach(async c => {
     let categoriaPorUsuario : ICategoriaPorUsuario = {
       id: userLogueado.id?.toString() + '_' + c.id,
       idCategoria: c.id,
@@ -182,7 +182,7 @@ export default function Configuracion() {
       pendienteAgregar: true,
       pendienteEliminar: false
     };
-    IndexedDbService.create().then(async (db) => {
+    await IndexedDbService.create().then(async (db) => {
       await db.putOrPatchValue('categoriasPorUsuario', categoriaPorUsuario);
       dispatchEvent(new CustomEvent('sincronizar'));
     })
@@ -191,9 +191,9 @@ export default function Configuracion() {
     }
  }
 
- function eliminarCategoriasDeUsuario(categorias : ICategoriaPorUsuario[]) {
+ async function eliminarCategoriasDeUsuario(categorias : ICategoriaPorUsuario[]) {
       if(userLogueado){
-        IndexedDbService.create().then(async (db) => {
+        await IndexedDbService.create().then(async (db) => {
           let cxus = await (await db).searchCategoriasPorUsuarioByUser((userLogueado && userLogueado.id) ? userLogueado.id : 0);
           cxus.forEach(async cxu => {
             if(categorias.some(c => c.idCategoria === cxu.idCategoria)){
@@ -368,7 +368,7 @@ export default function Configuracion() {
                     alert("Debes Seleccionar un nivel para actualizar el usuario");
                   }
                   else {
-                    actualizarUsuario()
+                    await actualizarUsuario()
                     if(Number(nivel) === 3){
                       //TODO revisar  las desmarcadas
                       console.log("Categorias originales: ", categoriasPorUsuarioOriginal);
@@ -377,8 +377,8 @@ export default function Configuracion() {
                       console.log("Categorias a eliminar: ", categoriasAEliminar);
                       let categoriasAGuardar = categoriasFiltradas.filter((cat : ICategoria) => !categoriasPorUsuarioOriginal.some((c : ICategoriaPorUsuario) => c.idCategoria === cat.id));
                       console.log("Categorias a guardar: ", categoriasAGuardar);
-                      insertarCategoriasDeUsuario(categoriasAGuardar);
-                      eliminarCategoriasDeUsuario(categoriasAEliminar);
+                      await insertarCategoriasDeUsuario(categoriasAGuardar);
+                      await eliminarCategoriasDeUsuario(categoriasAEliminar);
                     }                  
                     window.location.reload();
                   }                  
