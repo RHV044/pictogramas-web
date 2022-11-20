@@ -191,12 +191,14 @@ export default function Pictogramas(props: any) {
       setPictogramasFiltrados([]);
     } else {
       let pictsIguales = pictogramas
+      .filter(p => (user?.sex === p.sex || p.sex === false) && (user?.violence === p.violence || p.violence === false) && (user?.schematic === p.schematic || p.schematic === false))
       .filter(
         (p) =>
           p.keywords.some((k) => k.keyword.normalize("NFD").replace(/[\u0300-\u036f]/g, "") === value.normalize("NFD").replace(/[\u0300-\u036f]/g, "")) === true 
       )
       .slice(0, 5);
       let pictsFiltrados = pictogramas
+        .filter(p => (user?.sex === p.sex || p.sex === false) && (user?.violence === p.violence || p.violence === false) && (user?.schematic === p.schematic || p.schematic === false))
         .filter(
           (p) =>
             (p.keywords.some((k) => k.keyword.normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(value.normalize("NFD").replace(/[\u0300-\u036f]/g, ""))) === true ||
