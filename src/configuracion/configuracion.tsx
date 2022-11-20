@@ -269,6 +269,7 @@ export default function Configuracion() {
                     onChange={(evt) => { 
                       if (evt.target.files){
                         guardarImagenBase64(evt.target.files[0]) 
+                        navigate('../pictogramas');
                       }          
                       console.log(file)
                     }}/>
