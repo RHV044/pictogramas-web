@@ -63,7 +63,7 @@ export default function CategoriasRaices(props: any) {
 
 export function verificarValidezDeCategoria(categoria : ICategoria, categorias : ICategoria[], categoriasPorUsuario: ICategoriaPorUsuario[], user: IUsuario | null){
     if(categoria.esCategoriaFinal){
-      if(user && categoria.nivel <= user.nivel && (user.nivel !== 3 || categoriasPorUsuario.some(cat => cat.idCategoria === categoria.id))){
+      if(categoria.id < 0 || (user && categoria.nivel <= user.nivel && (user.nivel !== 3 || categoriasPorUsuario.some(cat => cat.idCategoria === categoria.id)))){
         return true;
       } else {      
         return false;
