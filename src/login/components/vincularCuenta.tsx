@@ -12,6 +12,7 @@ const VincularCuenta = (props: any) => {
   let location = useLocation();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   return (
     <Container>
@@ -63,6 +64,7 @@ const VincularCuenta = (props: any) => {
                 id="filled-basic"
                 label="Contraseña"
                 variant="filled"
+                type={showPassword ? 'text' : 'password'}
                 value={password}
                 onChange={(evt) => {
                   setPassword(evt.target.value);
