@@ -142,7 +142,7 @@ export default function TimeLine(props: any) {
             maxWidth: 240 - (index*10),
             minWidth: 100 - (index*10),
             maxHeight: 240 - (index*10),
-            minHeight: 50 - (index*10),
+            minHeight: 100 - (index*10),
           }}
           style={{ marginTop: '10px' }}
           onClick={() => {}}
