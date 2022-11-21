@@ -12,6 +12,7 @@ import { IUsuario } from '../../../login/model/usuario';
 import { getUsuarioLogueado } from '../../../services/usuarios-services';
 import { ICategoria } from '../../models/categoria';
 import imagenUsuario from '../../../commons/imagen-usuario.jpg'
+import LogoFavoritos from '../../../commons/star_icon.png';
 
 export default function CategoriaFavoritos(props: any) {
   const [userLogueado, setUserLogueado] = useState(null as IUsuario | null);
@@ -51,7 +52,7 @@ export default function CategoriaFavoritos(props: any) {
               component="img"
               height="180"
               width="180"
-              src={userLogueado && userLogueado.imagen && userLogueado.imagen !== "" ? userLogueado.imagen : imagenUsuario}
+               src={LogoFavoritos}
               alt="Pictogramas Favoritos"
             ></CardMedia>
             <CardHeader
