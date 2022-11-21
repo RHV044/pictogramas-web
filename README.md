@@ -4,7 +4,7 @@
 
 ### Índice
 
-- Uso e Instalación
+- [Uso e Instalación](#item1)
 - Registro
 - Configuración de cuenta
 - Menú principal
@@ -14,6 +14,7 @@
 - Menú Configuración
 - Sugerencias
 
+<a name="item1"></a>
 #### Uso e Instalación
 
 Para comenzar a usar la aplicación PictogAr, se debe ingresar desde un navegador web a https://pictog.ar
