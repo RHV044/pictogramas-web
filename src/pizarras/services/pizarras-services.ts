@@ -29,7 +29,8 @@ export async function ActualizarPizarra(pizarra: IPizarra){
     Columnas: pizarra.columnas,
     UsuarioId: pizarra.usuarioId,
     Nombre: pizarra.nombre,
-    Celdas: pizarra.celdas
+    Celdas: pizarra.celdas,
+    UltimaActualizacion: pizarra.ultimaActualizacion
   },
   {
     headers: {

@@ -441,6 +441,7 @@ export class UpdateService {
             ObtenerUsuarioInfo(usuario.id).then(
               async (usuarioApi: IUsuario) => {
                 // Actualizo usuario en el IndexedDb
+                console.log("FECHA ULTIMA ACTUALIZACION EN API: " + usuarioApi.ultimaActualizacion + " - FECHA ULTIMA ACTUALIZACION EN INDEXEDDB: " + usuario.ultimaActualizacion)
                 if (                  
                   usuario.ultimaActualizacion < usuarioApi.ultimaActualizacion
                 ) {

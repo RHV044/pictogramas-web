@@ -128,7 +128,8 @@ export async function ActualizarUsuario(
         Skin: usuario.skin,
         Hair: usuario.hair,
         Nivel: usuario.nivel,
-        Imagen: usuario.imagen
+        Imagen: usuario.imagen,
+        UltimaActualizacion: usuario.ultimaActualizacion
       },
       {
         headers: {

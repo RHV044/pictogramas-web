@@ -50,6 +50,9 @@ export default function CargarPizarra(props: any) {
     let pizarra = pizarras.find(p => p.id === idPizarra)
     if (pizarra)
     {
+      var tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
+      var localISOTime = (new Date(Date.now() - tzoffset)).toISOString().slice(0, -1);
+      pizarra.ultimaActualizacion = localISOTime
       pizarra.pendienteEliminacion = true
       IndexedDbService.create().then(async (db) => {
         await db.putOrPatchValue("pizarras", pizarra)
