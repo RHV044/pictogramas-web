@@ -62,7 +62,7 @@ export const Box: FC<BoxProps> = function Box({ name, identificacion, onDrop, mo
       <div ref={drag} style={{ ...style, opacity, transform: `translate(${10}px, ${10}px)`, WebkitTransform: 'translate(${10}px, ${10}px)' }} data-testid={`box`}>
         <Card
           sx={{ maxWidth: 230, minWidth:70, maxHeight: 240, minHeight: 50 }}
-          style={{ marginTop: '10px' }}
+          style={{ marginTop: '10px', paddingLeft: 5, paddingRight: 5, paddingBottom: 20  }}
           onClick={() => {}}
         >
           <CardActionArea

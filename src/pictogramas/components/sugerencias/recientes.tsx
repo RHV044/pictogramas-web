@@ -117,12 +117,17 @@ export default function Recientes(props: any) {
                   >
                     <Card
                       sx={{
-                        maxWidth: 230,
-                        minWidth: 70,
-                        maxHeight: 240,
-                        minHeight: 50,
+                        maxWidth: 250,
+                        minWidth: 160,
+                        maxHeight: 250,
+                        minHeight: 75,
                       }}
-                      style={{ marginTop: '10px' }}
+                      style={{
+                        marginTop: '10px',
+                        paddingLeft: 5,
+                        paddingRight: 5,
+                        paddingBottom: 20,
+                      }}
                       onClick={() => {}}
                     >
                       <CardActionArea
@@ -138,15 +143,21 @@ export default function Recientes(props: any) {
                       >
                         <CardMedia
                           component="img"
-                          height="160"
-                          width="140"
+                          height="170"
+                          width="170"
                           src={
                             pictograma.imagen &&
                             pictograma.imagen.includes('data:image')
                               ? pictograma.imagen
                               : `data:image/png;base64,${pictograma.imagen}`
                           }
-                          alt={pictograma.keywords.length > 1 && pictograma.keywords[0].tipo !== 1 && PictogramaNoSeDebeTraducir(pictograma) ? pictograma.keywords[1].keyword.toLocaleUpperCase() : pictograma.keywords[0].keyword.toLocaleUpperCase()}
+                          alt={
+                            pictograma.keywords.length > 1 &&
+                            pictograma.keywords[0].tipo !== 1 &&
+                            PictogramaNoSeDebeTraducir(pictograma)
+                              ? pictograma.keywords[1].keyword.toLocaleUpperCase()
+                              : pictograma.keywords[0].keyword.toLocaleUpperCase()
+                          }
                         ></CardMedia>
                         <CardHeader
                           style={{
@@ -165,7 +176,11 @@ export default function Recientes(props: any) {
                             fontWeight: 'bold',
                           }}
                         >
-                          {pictograma.keywords.length > 1 && pictograma.keywords[0].tipo !== 1 && PictogramaNoSeDebeTraducir(pictograma) ? pictograma.keywords[1].keyword.toLocaleUpperCase() : pictograma.keywords[0].keyword.toLocaleUpperCase()}
+                          {pictograma.keywords.length > 1 &&
+                          pictograma.keywords[0].tipo !== 1 &&
+                          PictogramaNoSeDebeTraducir(pictograma)
+                            ? pictograma.keywords[1].keyword.toLocaleUpperCase()
+                            : pictograma.keywords[0].keyword.toLocaleUpperCase()}
                         </CardContent>
                       </CardActionArea>
 
@@ -196,8 +211,13 @@ export default function Recientes(props: any) {
 
   const imagen = (
     <Card
-      sx={{ maxWidth: 180, minWidth: 30, maxHeight: 180, minHeight: 30 }}
-      style={{ marginTop: '10px' }}
+      sx={{ maxWidth: 150, minWidth: 40, maxHeight: 150, minHeight: 40 }}
+      style={{
+        marginTop: '10px',
+        paddingLeft: 5,
+        paddingRight: 5,
+        paddingBottom: 60,
+      }}
       onClick={() => {}}
     >
       <CardActionArea
@@ -207,14 +227,14 @@ export default function Recientes(props: any) {
       >
         <CardMedia
           component="img"
-          height="140"
-          width="140"
+          height="160"
+          width="160"
           src={RecientesImagen}
           alt="Recientes"
         ></CardMedia>
         <CardHeader
           style={{
-            height: '50%',
+            height: '100%',
             width: '95%',
             marginBottom: 1,
             paddingBottom: 0,

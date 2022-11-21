@@ -11,7 +11,7 @@ import { useEffect, useState } from 'react';
 import { IUsuario } from '../../../login/model/usuario';
 import { getUsuarioLogueado } from '../../../services/usuarios-services';
 import { ICategoria } from '../../models/categoria';
-import imagenUsuario from '../../../commons/imagen-usuario.jpg'
+import imagenUsuario from '../../../commons/imagen-usuario.jpg';
 
 export default function CategoriaPropios(props: any) {
   const [userLogueado, setUserLogueado] = useState(null as IUsuario | null);
@@ -19,21 +19,21 @@ export default function CategoriaPropios(props: any) {
     getUsuarioLogueado().then((usuario) => {
       if (usuario != undefined) {
         setUserLogueado(usuario);
-
       }
     });
   }, []);
 
-
   return (
-    <Grid
-      key={-1}
-      item xs={4} sm={3} md={2}
-    >
+    <Grid key={-1} item xs={4} sm={3} md={2}>
       <Container key={-1}>
         <Card
-          sx={{ maxWidth: 240, minWidth:70, maxHeight: 240, minHeight: 50 }}
-          style={{ marginTop: '10px' }}
+          sx={{ maxWidth: 250, minWidth: 160, maxHeight: 250, minHeight: 75 }}
+          style={{
+            marginTop: '10px',
+            paddingLeft: 5,
+            paddingRight: 5,
+            paddingBottom: 20,
+          }}
         >
           <CardActionArea
             onClick={() => {
@@ -41,7 +41,17 @@ export default function CategoriaPropios(props: any) {
                 props.categoriaSeleccionada == null ||
                 props.categoriaSeleccionada !== -1
               ) {
-                let categoria = {id: -1, nombre: "Pictogramas Propios", esCategoriaFinal: true, imagen:  userLogueado && userLogueado.imagen && userLogueado.imagen !== "" ? userLogueado.imagen : imagenUsuario} as ICategoria
+                let categoria = {
+                  id: -1,
+                  nombre: 'Pictogramas Propios',
+                  esCategoriaFinal: true,
+                  imagen:
+                    userLogueado &&
+                    userLogueado.imagen &&
+                    userLogueado.imagen !== ''
+                      ? userLogueado.imagen
+                      : imagenUsuario,
+                } as ICategoria;
                 props.setCategoriaSeleccionada(categoria);
               } else {
                 props.setCategoriaSeleccionada(null);
@@ -52,7 +62,13 @@ export default function CategoriaPropios(props: any) {
               component="img"
               height="180"
               width="180"
-              src={userLogueado && userLogueado.imagen && userLogueado.imagen !== "" ? userLogueado.imagen : imagenUsuario}
+              src={
+                userLogueado &&
+                userLogueado.imagen &&
+                userLogueado.imagen !== ''
+                  ? userLogueado.imagen
+                  : imagenUsuario
+              }
               alt="Pictogramas Propios"
             ></CardMedia>
             <CardHeader
@@ -60,20 +76,19 @@ export default function CategoriaPropios(props: any) {
                 height: '100%',
                 width: '95%',
                 marginBottom: 1,
-                paddingBottom: 0
-              }} 
-            >              
-            </CardHeader>
+                paddingBottom: 0,
+              }}
+            ></CardHeader>
             <CardContent
               style={{
                 marginTop: 1,
                 paddingTop: 0,
                 marginLeft: 4,
                 paddingLeft: 0,
-                fontWeight: 'bold'
+                fontWeight: 'bold',
               }}
             >
-            PICTOGRAMAS PROPIOS
+              PICTOGRAMAS PROPIOS
             </CardContent>
           </CardActionArea>
         </Card>

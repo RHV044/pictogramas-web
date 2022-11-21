@@ -32,7 +32,7 @@ export default function CategoriaFavoritos(props: any) {
       <Container key={-2}>
         <Card
           sx={{ maxWidth: 240, minWidth:70, maxHeight: 240, minHeight: 50 }}
-          style={{ marginTop: '10px' }}
+          style={{ marginTop: '10px', paddingLeft: 5, paddingRight: 5, paddingBottom: 20  }}
         >
           <CardActionArea
             onClick={() => {
