@@ -8,8 +8,8 @@ export interface IFavoritoPorUsuario {
 
 export interface IFavoritoPorUsuarioApi {
     id: string,
-    usuarioId: number,
-    pictogramaId: number,
+    idUsuario: number,
+    idPictograma: number,
     pendienteEliminar: boolean,
     pendienteAgregar: boolean
 }

@@ -30,11 +30,11 @@ const FavoritoButton = (props: any) => {
     console.log("SE CARGA FAVORITO: ", props.esFavorito)
     if(props.esFavorito)
       setFav(true)
-    // const setIsFav = async () => {
-    //   isFav = (await props.favoritos).some(r => r.idPictograma === props.pictograma.id)
-    //   setFav(isFav)
-    // }
-    // setIsFav()
+    const setIsFav = async () => {
+      isFav = (await props.favoritos).some(r => r.idPictograma === props.pictograma.id)
+      setFav(isFav)
+    }
+    setIsFav()
   }, []);
 
     async function handleFavorito() { 

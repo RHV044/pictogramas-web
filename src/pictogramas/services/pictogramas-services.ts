@@ -123,7 +123,7 @@ export async function ObtenerPictogramasPorCategoria(
         
       if (pictogramasFavoritos !== null && pictogramasFavoritos !== undefined && pictogramasFavoritos.length > 0)
         {
-          const pf = pictogramas.filter(p => pictogramasFavoritos.some(pic => pic.idCategoria === p.id))
+          const pf = pictogramas.filter(p => pictogramasFavoritos.some(pic => pic.idPictograma === p.id))
           for(var i=0; i<pf.length; ++i){
             let imagen = (await db.getValue('imagenes', pf[i].id))
             pf[i].imagen = imagen !== undefined && imagen !== null ? imagen.imagen : ""
