@@ -258,7 +258,7 @@ export default function Pizarras(this: any) {
               grafico.esPictograma === true ? 'pictograma' : 'texto',
             contenido:
               grafico.esPictograma === true
-                ? grafico.identificadorPictograma
+                ? (grafico.identificadorPictograma !== null && grafico.identificadorPictograma !== undefined)
                   ? grafico.identificadorPictograma
                   : grafico.idPictograma.toString()
                 : grafico.texto,
@@ -324,8 +324,14 @@ export default function Pizarras(this: any) {
       let nuevosEstilos = [] as EstilosPizarras[];
       pizarra.celdas.forEach(async (celda) => {
         let imagenPictograma;
+        let pic;
+        let pictogramaPropio;
         if (celda.tipoContenido === 'pictograma') {
           try {
+            pic = await base.getValue(
+              'pictograms',
+              parseInt(celda.contenido)
+            );
             let pictograma = (imagenPictograma = await base.getValue(
               'imagenes',
               parseInt(celda.contenido)
@@ -333,7 +339,7 @@ export default function Pizarras(this: any) {
             if (pictograma) imagenPictograma = pictograma.imagen;
           } catch (e) {}
           if (imagenPictograma === null || imagenPictograma === undefined) {
-            let pictogramaPropio = await base.getValueByIdentificador(
+            pictogramaPropio = await base.getValueByIdentificador(
               'pictogramasPropios',
               celda.contenido
             );
@@ -348,9 +354,11 @@ export default function Pizarras(this: any) {
             esPictograma: celda.tipoContenido === 'pictograma' ? true : false,
             imagen:
               celda.tipoContenido === 'pictograma' ? imagenPictograma : '',
-            texto: celda.tipoContenido === 'texto' ? celda.contenido : '',
+            texto: celda.tipoContenido === 'texto' ? celda.contenido : (pic !== null && pic !== undefined) ? pic.keywords[0].keyword.toLocaleUpperCase() : pictogramaPropio.keywords[0].keyword.toLocaleUpperCase(),
             posicion: { columna: celda.columna, fila: celda.fila } as Position,
             identificacion: celda.identificacion,
+            identificadorPictograma: (celda.contenido && celda.contenido.includes("_") ? celda.contenido : null),
+            idPictograma: (celda.contenido && !celda.contenido.includes("_") ? parseInt(celda.contenido) : 0),
           } as Grafico;
           movimientos.agregarGrafico(grafico);
           nuevosGraficosSinLugar.push(grafico);

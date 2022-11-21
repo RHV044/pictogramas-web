@@ -552,8 +552,8 @@ export class UpdateService {
       let usuarioId = usuario !== undefined ? usuario.id : 0;
       ObtenerPizarras(usuarioId !== undefined ? usuarioId : 0).then(
         (pizarrasApi: IPizarra[]) => {
-          IndexedDbService.create().then((db) => {
-            db.getAllValues('pizarras').then(async (pizarras: IPizarra[]) => {
+          IndexedDbService.create().then(async (db) => {
+            await db.getAllValues('pizarras').then(async (pizarras: IPizarra[]) => {
               // Carga de pizarras de la api que no esten en el indexDb
               pizarrasApi.map((pizarra) => {
                 if (
@@ -581,20 +581,22 @@ export class UpdateService {
                   pizarrasApi.some(
                     (p) =>
                       p.id === pizarra.id &&
-                      p.ultimaActualizacion < pizarra.ultimaActualizacion
+                      p.ultimaActualizacion > pizarra.ultimaActualizacion
                   )
                 ) {
                   // Debo actualizar la pizarra en el IndexDb
                   console.log('Se actualiza pizarra en indexDb');
-                  let p = pizarras.find((p) => p.id === pizarra.id);
+                  let p = pizarrasApi.find((p) => p.id === pizarra.id);
+                  console.log("PIZARRA API: ", pizarra)
+                  console.log("PIZARRA INDEXEDDB: ", p)
                   pizarra = p ? p : pizarra;
-                  db.putOrPatchValue('pizarras', pizarra);
+                  db.putOrPatchValue('pizarras', p);
                 } else {
                   if (
                     pizarrasApi.some(
                       (p) =>
                         p.id === pizarra.id &&
-                        p.ultimaActualizacion > pizarra.ultimaActualizacion
+                        p.ultimaActualizacion < pizarra.ultimaActualizacion
                     )
                   ) {
                     // Debo actualizar la pizarra en la api
