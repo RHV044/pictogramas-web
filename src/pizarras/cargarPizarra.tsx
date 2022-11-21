@@ -40,7 +40,7 @@ export default function CargarPizarra(props: any) {
     setOpen(false);
   };
 
-  const handleCrear = () => {
+  const handleCargar = () => {
     let pizarra = pizarras.find(p => p.id === idPizarra)
     props.setPizarra(pizarra)
     setOpen(false);
@@ -94,7 +94,7 @@ export default function CargarPizarra(props: any) {
           <br />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCrear}>Cargar</Button>
+          <Button onClick={handleCargar}>Cargar</Button>
           { idPizarra > 0 &&<Button onClick={handleEliminar}>Eliminar Pizarra</Button>}
           <Button onClick={handleClose}>Cancelar</Button>
         </DialogActions>
