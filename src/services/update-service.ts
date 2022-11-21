@@ -532,6 +532,20 @@ export class UpdateService {
                         }
                       );
                     }
+
+                    // ELIMINAR LOCAL SI NO TIENE PENDIENTE DE CREACION NI PENDIENTE DE ELIMINACION Y NO EXISTE EN LA DB
+                    // Pictogramas API: pictogramas
+                    // Pictogramas locales: pictogramasLocales
+                    if (pictograma.pendienteCreacion === false && pictograma.pendienteEliminacion === false && !pictogramas.some(p => p.identificador === pictograma.identificador)) {
+                      db.deleteValueWithIdentificador(
+                        'pictogramasPropios',
+                        pictograma.identificador
+                      );
+                      db.deleteValueWithIdentificador(
+                        'imagenesPropias',
+                        pictograma.identificador
+                      );
+                    }
                   });
                 }
               );
