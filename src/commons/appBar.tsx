@@ -41,11 +41,13 @@ const ResponsiveAppBar = () => {
   );
   const porcentaje = useSelector((state: RootState) => state.porcentaje.value);
   const [renderListo, setRenderListo] = React.useState(false);
+  const [userCargado, setUserCargado] = React.useState(false);
 
   React.useEffect(() => {
     getUsuarioLogueado().then((usuario) => {
       if (usuario != undefined) {
         setUserLogueado(usuario);
+        setUserCargado(true)
       } else {
         navigate('/cuenta/seleccionar' + location.search);
       }
@@ -261,16 +263,18 @@ const ResponsiveAppBar = () => {
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Configuracion">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar
-                  alt="Remy Sharp"
-                  src={
-                    userLogueado &&
-                    userLogueado.imagen &&
-                    userLogueado.imagen !== ''
-                      ? userLogueado.imagen
-                      : imagenUsuario
-                  }
-                />
+                {userCargado && 
+                  <Avatar
+                    alt="Remy Sharp"
+                    src={
+                      userLogueado &&
+                      userLogueado.imagen &&
+                      userLogueado.imagen !== ''
+                        ? userLogueado.imagen
+                        : imagenUsuario
+                    }
+                  />
+                }
               </IconButton>
             </Tooltip>
             <Menu
