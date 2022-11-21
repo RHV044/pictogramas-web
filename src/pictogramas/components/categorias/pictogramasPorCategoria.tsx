@@ -157,11 +157,13 @@ export default function PictogramasPorCategoria(props: any) {
                       </CardContent>
                     </CardActionArea>
 
-                    <FavoritoButton
-                      esFavorito={props.categoria === -2}
-                      pictograma={pictograma}
-                      favoritos={favoritos}
-                    />
+                    { props.categoria !== -1 && 
+                      <FavoritoButton
+                        esFavorito={props.categoria === -2}
+                        pictograma={pictograma}
+                        favoritos={favoritos}
+                      />
+                    }
 
                     {usuarioLogueado?.id === pictograma.idUsuario && (
                       <IconButton
