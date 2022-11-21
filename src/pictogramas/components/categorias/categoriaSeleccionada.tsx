@@ -26,7 +26,10 @@ export default function CategoriaSeleccionada(props: any) {
             component="img"
             height="160"
             width="140"
-            src={props.categoriaSeleccionada.imagen && props.categoriaSeleccionada.imagen.includes('data:image') ? props.categoriaSeleccionada.imagen : `data:image/png;base64,${props.categoriaSeleccionada.imagen}`}
+            src={
+              props.categoriaSeleccionada.id === -1 ? props.categoriaSeleccionada.imagen : 
+              props.categoriaSeleccionada.id === -2 ? props.categoriaSeleccionada.imagen : 
+              props.categoriaSeleccionada.imagen && props.categoriaSeleccionada.imagen.includes('data:image') ? props.categoriaSeleccionada.imagen : `data:image/png;base64,${props.categoriaSeleccionada.imagen}`}
             alt={props.categoriaSeleccionada.nombre}
           ></CardMedia>
           <CardHeader           
