@@ -73,10 +73,10 @@ export default function Seleccion(props: any) {
               <Container key={i++}>
                 <Card
                   sx={{
-                    maxWidth: 230,
-                    minWidth: 70,
-                    maxHeight: 240,
-                    minHeight: 50,
+                    maxWidth: 250,
+                    minWidth: 160,
+                    maxHeight: 250,
+                    minHeight: 75,
                   }}
                   style={{ marginTop: '10px' }}
                   onClick={() => {

@@ -1,21 +1,31 @@
-import { Height } from "@mui/icons-material";
-import { Card, CardActionArea, CardContent, CardHeader, CardMedia } from "@mui/material";
-import { useEffect, useState } from "react";
-import { ICategoria } from "../../models/categoria";
-
+import { Height } from '@mui/icons-material';
+import {
+  Card,
+  CardActionArea,
+  CardContent,
+  CardHeader,
+  CardMedia,
+} from '@mui/material';
+import { useEffect, useState } from 'react';
+import { ICategoria } from '../../models/categoria';
 
 export default function Categoria(props: any) {
-  const [categoria, setCategoria] = useState({} as ICategoria)
-  const [categorias, setCategorias] = useState([] as ICategoria[])
+  const [categoria, setCategoria] = useState({} as ICategoria);
+  const [categorias, setCategorias] = useState([] as ICategoria[]);
 
   useEffect(() => {
-    setCategoria(props.categoria)
-    setCategorias(props.categorias)
-  },[])
-  return(           
+    setCategoria(props.categoria);
+    setCategorias(props.categorias);
+  }, []);
+  return (
     <Card
-      sx={{ maxWidth: 240, minWidth:70, maxHeight: 240, minHeight: 70 }}
-      style={{ marginTop: '10px' }}
+      sx={{ maxWidth: 250, minWidth: 160, maxHeight: 250, minHeight: 75 }}
+      style={{
+        marginTop: '10px',
+        paddingLeft: 5,
+        paddingRight: 5,
+        paddingBottom: 20,
+      }}
       onClick={() => {}}
     >
       <CardActionArea
@@ -38,27 +48,26 @@ export default function Categoria(props: any) {
           src={`data:image/png;base64,${categoria.imagen}`}
           alt={categoria.nombre}
         ></CardMedia>
-        <CardHeader 
+        <CardHeader
           style={{
             height: '100%',
             width: '95%',
             marginBottom: 1,
-            paddingBottom: 0
-          }} 
-          >          
-        </CardHeader>
-        <CardContent 
+            paddingBottom: 0,
+          }}
+        ></CardHeader>
+        <CardContent
           style={{
             marginTop: 1,
             paddingTop: 0,
             marginLeft: 4,
             paddingLeft: 0,
-            fontWeight: 'bold'
+            fontWeight: 'bold',
           }}
         >
           {categoria.nombre ? categoria.nombre.toLocaleUpperCase() : ''}
         </CardContent>
       </CardActionArea>
     </Card>
-  )
+  );
 }

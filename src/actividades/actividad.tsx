@@ -191,7 +191,7 @@ export default function Actividad() {
       <div>
         <Card
           sx={{ maxWidth: 240, minWidth: 100, maxHeight: 240, minHeight: 100 }}
-          style={{ marginTop: '10px' }}
+          style={{ marginTop: '10px', paddingLeft: 5, paddingRight: 5, paddingBottom: 20  }}
           onClick={() => {}}
         >
           <CardActionArea
@@ -356,12 +356,12 @@ export default function Actividad() {
             >
               <Card
                 sx={{
-                  maxWidth: 240,
-                  minWidth: 70,
-                  maxHeight: 240,
-                  minHeight: 70,
+                  maxWidth: 250,
+                  minWidth: 160,
+                  maxHeight: 250,
+                  minHeight: 75,
                 }}
-                style={{ marginTop: '10px' }}
+                style={{ marginTop: '10px', paddingLeft: 5, paddingRight: 5, paddingBottom: 20  }}
               >
                 <CardActionArea
                   onClick={() =>

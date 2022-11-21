@@ -43,12 +43,12 @@ export default function PictogramasMasUtilizados(props: any) {
               >
                 <Card
                   sx={{
-                    maxWidth: 230,
-                    minWidth: 70,
-                    maxHeight: 240,
-                    minHeight: 50,
+                    maxWidth: 250,
+                    minWidth: 160,
+                    maxHeight: 250,
+                    minHeight: 75,
                   }}
-                  style={{ marginTop: '10px' }}
+                  style={{ marginTop: '10px', paddingLeft: 5, paddingRight: 5, paddingBottom: 20  }}
                   onClick={() => {}}
                 >
                   <CardActionArea

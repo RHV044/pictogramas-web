@@ -389,7 +389,7 @@ export default function Pictogramas(props: any) {
                 <Container key={pictograma.id + '_' + pictograma.keywords[0].keyword + '_' + pictograma.keywords[0].id + '_' + Math.random()}>
                   <Card
                     sx={{ maxWidth: 245, minWidth: 150 }}
-                    style={{ marginTop: '10px' }}
+                    style={{ marginTop: '10px', paddingLeft: 5, paddingRight: 5, paddingBottom: 20  }}
                     onClick={() => {}}
                   >
                     <CardActionArea

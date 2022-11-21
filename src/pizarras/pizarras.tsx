@@ -38,7 +38,9 @@ import {
   PictogramaNoSeDebeTraducir,
 } from '../pictogramas/services/pictogramas-services';
 import { ICategoria } from '../pictogramas/models/categoria';
-import CategoriasRaices, { verificarValidezDeCategoria } from '../pictogramas/components/categorias/categoriasRaices';
+import CategoriasRaices, {
+  verificarValidezDeCategoria,
+} from '../pictogramas/components/categorias/categoriasRaices';
 import CategoriaSeleccionada from '../pictogramas/components/categorias/categoriaSeleccionada';
 import PictogramasPorCategoria from '../pictogramas/components/categorias/pictogramasPorCategoria';
 import { IndexedDbService } from '../services/indexeddb-service';
@@ -108,10 +110,13 @@ export default function Pizarras(this: any) {
         setUser(usuario);
         if ((usuario?.nivel !== undefined ? usuario?.nivel : 0) === 3) {
           IndexedDbService.create().then(async (db) => {
-            db.searchCategoriasPorUsuarioByUser((usuario && usuario.id) ? usuario.id : 0).then(cxus => {
-              cxus = cxus.filter(c => !c.pendienteEliminar);
-              setCategoriasPorUsuario(cxus);  
-            })})
+            db.searchCategoriasPorUsuarioByUser(
+              usuario && usuario.id ? usuario.id : 0
+            ).then((cxus) => {
+              cxus = cxus.filter((c) => !c.pendienteEliminar);
+              setCategoriasPorUsuario(cxus);
+            });
+          });
         }
       }
     });
@@ -189,19 +194,47 @@ export default function Pizarras(this: any) {
       setPictogramasFiltrados([]);
     } else {
       let pictsIguales = pictogramas
-      .filter(p => (user?.sex === p.sex || p.sex === false) && (user?.violence === p.violence || p.violence === false) && (user?.schematic === p.schematic || p.schematic === true))
-      .filter(
-        (p) =>
-          p.keywords.some((k) => k.keyword.normalize("NFD").replace(/[\u0300-\u036f]/g, "") === value.normalize("NFD").replace(/[\u0300-\u036f]/g, "")) === true 
-      )
-      .slice(0, 5);
-      let pictsFiltrados = pictogramas
-        .filter(p => (user?.sex === p.sex || p.sex === false) && (user?.violence === p.violence || p.violence === false) && (user?.schematic === p.schematic || p.schematic === true))
         .filter(
           (p) =>
-            (p.keywords.some((k) => k.keyword.normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(value.normalize("NFD").replace(/[\u0300-\u036f]/g, ""))) === true ||
-            p.categorias?.some((c) => c.nombre.normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(value.normalize("NFD").replace(/[\u0300-\u036f]/g, ""))) === true ) &&
-            !pictsIguales.some(pic => p.id === pic.id)
+            (user?.sex === p.sex || p.sex === false) &&
+            (user?.violence === p.violence || p.violence === false) &&
+            (user?.schematic === p.schematic || p.schematic === true)
+        )
+        .filter(
+          (p) =>
+            p.keywords.some(
+              (k) =>
+                k.keyword.normalize('NFD').replace(/[\u0300-\u036f]/g, '') ===
+                value.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+            ) === true
+        )
+        .slice(0, 5);
+      let pictsFiltrados = pictogramas
+        .filter(
+          (p) =>
+            (user?.sex === p.sex || p.sex === false) &&
+            (user?.violence === p.violence || p.violence === false) &&
+            (user?.schematic === p.schematic || p.schematic === true)
+        )
+        .filter(
+          (p) =>
+            (p.keywords.some((k) =>
+              k.keyword
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .includes(
+                  value.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                )
+            ) === true ||
+              p.categorias?.some((c) =>
+                c.nombre
+                  .normalize('NFD')
+                  .replace(/[\u0300-\u036f]/g, '')
+                  .includes(
+                    value.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                  )
+              ) === true) &&
+            !pictsIguales.some((pic) => p.id === pic.id)
         )
         .slice(0, 5);
       const arrayFinal = pictsIguales.concat(pictsFiltrados);
@@ -258,7 +291,8 @@ export default function Pizarras(this: any) {
               grafico.esPictograma === true ? 'pictograma' : 'texto',
             contenido:
               grafico.esPictograma === true
-                ? (grafico.identificadorPictograma !== null && grafico.identificadorPictograma !== undefined)
+                ? grafico.identificadorPictograma !== null &&
+                  grafico.identificadorPictograma !== undefined
                   ? grafico.identificadorPictograma
                   : grafico.idPictograma.toString()
                 : grafico.texto,
@@ -328,10 +362,7 @@ export default function Pizarras(this: any) {
         let pictogramaPropio;
         if (celda.tipoContenido === 'pictograma') {
           try {
-            pic = await base.getValue(
-              'pictograms',
-              parseInt(celda.contenido)
-            );
+            pic = await base.getValue('pictograms', parseInt(celda.contenido));
             let pictograma = (imagenPictograma = await base.getValue(
               'imagenes',
               parseInt(celda.contenido)
@@ -354,11 +385,22 @@ export default function Pizarras(this: any) {
             esPictograma: celda.tipoContenido === 'pictograma' ? true : false,
             imagen:
               celda.tipoContenido === 'pictograma' ? imagenPictograma : '',
-            texto: celda.tipoContenido === 'texto' ? celda.contenido : (pic !== null && pic !== undefined) ? pic.keywords[0].keyword.toLocaleUpperCase() : pictogramaPropio.keywords[0].keyword.toLocaleUpperCase(),
+            texto:
+              celda.tipoContenido === 'texto'
+                ? celda.contenido
+                : pic !== null && pic !== undefined
+                ? pic.keywords[0].keyword.toLocaleUpperCase()
+                : pictogramaPropio.keywords[0].keyword.toLocaleUpperCase(),
             posicion: { columna: celda.columna, fila: celda.fila } as Position,
             identificacion: celda.identificacion,
-            identificadorPictograma: (celda.contenido && celda.contenido.includes("_") ? celda.contenido : null),
-            idPictograma: (celda.contenido && !celda.contenido.includes("_") ? parseInt(celda.contenido) : 0),
+            identificadorPictograma:
+              celda.contenido && celda.contenido.includes('_')
+                ? celda.contenido
+                : null,
+            idPictograma:
+              celda.contenido && !celda.contenido.includes('_')
+                ? parseInt(celda.contenido)
+                : 0,
           } as Grafico;
           movimientos.agregarGrafico(grafico);
           nuevosGraficosSinLugar.push(grafico);
@@ -422,8 +464,16 @@ export default function Pizarras(this: any) {
 
   const OpcionesDeCategoria = (categoria: ICategoria) => {
     let categoriasHijas: ICategoria[];
-    if (categoria.esCategoriaFinal === true &&
-      (user?.nivel !== 3 || verificarValidezDeCategoria(categoria, categorias, categoriasPorUsuario, usuarioLogueado))) {
+    if (
+      categoria.esCategoriaFinal === true &&
+      (user?.nivel !== 3 ||
+        verificarValidezDeCategoria(
+          categoria,
+          categorias,
+          categoriasPorUsuario,
+          usuarioLogueado
+        ))
+    ) {
       // Es categoria final, debo mostrar pictogramas
       return (
         <>
@@ -435,24 +485,32 @@ export default function Pizarras(this: any) {
         </>
       );
     } else {
-            // Es categoria padre, debo mostrar categorias
-            if (
-              (usuarioLogueado?.nivel !== undefined ? usuarioLogueado?.nivel : 0) === 3
-            ) { //nivel personalizado
-              categoriasHijas = categorias.filter(
-                (c) =>            
-                  (c.categoriaPadre === categoria.id && verificarValidezDeCategoria(c, categorias, categoriasPorUsuario, usuarioLogueado))            
-              );
-            } else {
-              categoriasHijas = categorias.filter( 
-                (c) =>
-                  c.categoriaPadre === categoria.id &&
-                  categoria.nivel <=
-                    (usuarioLogueado?.nivel !== undefined
-                      ? usuarioLogueado?.nivel
-                      : 0)
-              );
-            }
+      // Es categoria padre, debo mostrar categorias
+      if (
+        (usuarioLogueado?.nivel !== undefined ? usuarioLogueado?.nivel : 0) ===
+        3
+      ) {
+        //nivel personalizado
+        categoriasHijas = categorias.filter(
+          (c) =>
+            c.categoriaPadre === categoria.id &&
+            verificarValidezDeCategoria(
+              c,
+              categorias,
+              categoriasPorUsuario,
+              usuarioLogueado
+            )
+        );
+      } else {
+        categoriasHijas = categorias.filter(
+          (c) =>
+            c.categoriaPadre === categoria.id &&
+            categoria.nivel <=
+              (usuarioLogueado?.nivel !== undefined
+                ? usuarioLogueado?.nivel
+                : 0)
+        );
+      }
 
       return (
         <Container>
@@ -781,13 +839,13 @@ export default function Pizarras(this: any) {
           />
         </Container>
       )}
-      
+
       <Container>
-        { pictogramasFiltrados.length > 0 && 
+        {pictogramasFiltrados.length > 0 && (
           <Typography>
             Seleccione pictogramas para agregar en el tablero
           </Typography>
-        }
+        )}
         <Grid
           container
           spacing={{ xs: 2, md: 3 }}
@@ -796,16 +854,45 @@ export default function Pizarras(this: any) {
         >
           {pictogramasFiltrados.map((pictograma) => {
             return (
-              <Grid key={pictograma.id + '_' + pictograma.keywords[0].keyword + '_' + pictograma.keywords[0].id + '_' + Math.random()} item xs={12} sm={4} md={2}>
-                <Container key={pictograma.id + '_' + pictograma.keywords[0].keyword + '_' + pictograma.keywords[0].id + '_' + Math.random()}>
+              <Grid
+                key={
+                  pictograma.id +
+                  '_' +
+                  pictograma.keywords[0].keyword +
+                  '_' +
+                  pictograma.keywords[0].id +
+                  '_' +
+                  Math.random()
+                }
+                item
+                xs={12}
+                sm={4}
+                md={2}
+              >
+                <Container
+                  key={
+                    pictograma.id +
+                    '_' +
+                    pictograma.keywords[0].keyword +
+                    '_' +
+                    pictograma.keywords[0].id +
+                    '_' +
+                    Math.random()
+                  }
+                >
                   <Card
                     sx={{
-                      maxWidth: 225,
-                      minWidth: 50,
-                      maxHeight: 225,
-                      minHeight: 50,
+                      maxWidth: 250,
+                      minWidth: 160,
+                      maxHeight: 250,
+                      minHeight: 75,
                     }}
-                    style={{ marginTop: '10px' }}
+                    style={{
+                      marginTop: '10px',
+                      paddingLeft: 5,
+                      paddingRight: 5,
+                      paddingBottom: 20,
+                    }}
                     onClick={() => {}}
                   >
                     <CardActionArea
@@ -827,7 +914,13 @@ export default function Pizarras(this: any) {
                             ? pictograma.imagen
                             : `data:image/png;base64,${pictograma.imagen}`
                         }
-                        alt={pictograma.keywords.length > 1 && pictograma.keywords[0].tipo !== 1 && PictogramaNoSeDebeTraducir(pictograma) ? pictograma.keywords[1].keyword.toLocaleUpperCase() : pictograma.keywords[0].keyword.toLocaleUpperCase()}
+                        alt={
+                          pictograma.keywords.length > 1 &&
+                          pictograma.keywords[0].tipo !== 1 &&
+                          PictogramaNoSeDebeTraducir(pictograma)
+                            ? pictograma.keywords[1].keyword.toLocaleUpperCase()
+                            : pictograma.keywords[0].keyword.toLocaleUpperCase()
+                        }
                       ></CardMedia>
                       <CardHeader></CardHeader>
                       <CardContent
@@ -839,7 +932,11 @@ export default function Pizarras(this: any) {
                           fontWeight: 'bold',
                         }}
                       >
-                        {pictograma.keywords.length > 1 && pictograma.keywords[0].tipo !== 1 && PictogramaNoSeDebeTraducir(pictograma) ? pictograma.keywords[1].keyword.toLocaleUpperCase() : pictograma.keywords[0].keyword.toLocaleUpperCase()}
+                        {pictograma.keywords.length > 1 &&
+                        pictograma.keywords[0].tipo !== 1 &&
+                        PictogramaNoSeDebeTraducir(pictograma)
+                          ? pictograma.keywords[1].keyword.toLocaleUpperCase()
+                          : pictograma.keywords[0].keyword.toLocaleUpperCase()}
                       </CardContent>
                     </CardActionArea>
                   </Card>
@@ -849,7 +946,7 @@ export default function Pizarras(this: any) {
           })}
         </Grid>
       </Container>
-      {mostrarPictogramas && <hr></hr> }
+      {mostrarPictogramas && <hr></hr>}
       <Grid
         container
         spacing={{ xs: 2, md: 3 }}
@@ -869,7 +966,7 @@ export default function Pizarras(this: any) {
             setPictogramas={UpdatePictogramas}
             setCategoriaSeleccionada={setCategoriaSeleccionada}
             usuarioLogueado={user}
-            categoriasPorUsuario={categoriasPorUsuario}        
+            categoriasPorUsuario={categoriasPorUsuario}
             categorias={categorias}
           />
         </div>

@@ -94,12 +94,12 @@ export default function PictogramasPorCategoria(props: any) {
                 >
                   <Card
                     sx={{
-                      maxWidth: 225,
-                      minWidth: 50,
-                      maxHeight: 225,
-                      minHeight: 50,
+                      maxWidth: 250,
+                      minWidth: 160,
+                      maxHeight: 250,
+                      minHeight: 75,
                     }}
-                    style={{ marginTop: '10px' }}
+                    style={{ marginTop: '10px', paddingLeft: 5, paddingRight: 5, paddingBottom: 20   }}
                     onClick={() => {}}
                   >
                     <CardActionArea
