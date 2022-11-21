@@ -639,8 +639,8 @@ export class UpdateService {
                   ) {
                     const favCompleto: IFavoritoPorUsuario = {
                       id: favorito.id,
-                      idUsuario: favorito.usuarioId,
-                      idPictograma: favorito.pictogramaId,
+                      idUsuario: favorito.idUsuario,
+                      idPictograma: favorito.idPictograma,
                       pendienteAgregar: false,
                       pendienteEliminar: false,
                     };
