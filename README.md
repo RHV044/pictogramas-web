@@ -1,16 +1,80 @@
 # Pictogramas-Web / PictogAR
 
-## Getting started
+## Manual de Usuario
 
-npm install  
-npm start
+### Índice
 
-> debug localhost on port 3000
+- Uso e Instalación
+- Registro
+- Configuración de cuenta
+- Menú principal
+- Menú pizarras
+- Menú Actividades
+- Menú Estadísticas
+- Menú Configuración
+- Sugerencias
 
-## Deploy to github pages
+#### Uso e Instalación
 
-npm run deploy
+Para comenzar a usar la aplicación PictogAr, se debe ingresar desde un navegador web a https://pictog.ar
 
-## Material
+El usuario puede utilizarla en el navegador y también, tiene la posibilidad de instalarla como aplicación nativa  en su dispositivo.
 
-Pizarras drag and drop -> https://github.com/react-dnd/react-dnd - https://react-dnd.github.io/react-dnd/examples
+#### Registro
+Encontrará un menú donde podrá Crear/Vincular cuentas.
+Podrá crear una cuenta nueva para utilizar en la aplicación.
+Luego podrá compartirla y acceder desde  otro dispositivo mediante la vinculación de cuentas.
+
+Vincular una cuenta implica asociar una cuenta ya existente, permitirá compartir cuentas entre distintos usuarios.
+
+Una vez se haya vinculado/creado por lo menos una cuenta, podrá seleccionar la que se desee utilizar desde la pantalla principal, asi como tambien desvincularla o modificar la contraseña.
+
+#### Configuración de Cuenta
+Se podrá acceder a la configuración de cuenta respondiendo una cuenta matemática sencilla
+
++ Modificacion de Nombre de Usuario
++ Personalizar imagen de Usuario
++ Configurar Nivel de vocabulario
++ FIltrar pictogramas
++ Personalizar categorías si el nivel fuera personalizado
+
+#### Menú Principal
+- Filtrar pictogramas
+- Visualizar pictogramas recientemente utilizados
+- Seleccionar/Deseleccionar pictogramas
+- Obtener y escuchar interpretaciones
+- Visualizar pictogramas sugeridos que evolucionarán mediante el uso de la aplicación
+
+Podrá crear pictogramas personalizados asignando:
+- Palabra asociada
+- Filtros para pictograma
+- Categorías asociadas
+
+#### Menú Pizarras
+Este menú permite crear pizarras para trabajar con actividades, agendas, tableros de conductas y más.
+Inicialmente podrá configurar filas y columnas de la pizarra, o cargar una pizarra existente.
+
+Se podrán dar estilos a las pizarras
+Se podrán utilizar pictogramas y texto en la pizarra y luego de seleccionarlos, se utilizaran arrastrandolos 
+
+Posibilidad de Guardar pizarras, esto permite que se pueda cargar desde otro dispositivo para seguir trabajando con la misma
+
+#### Menú Actividades
+Contará con un juego para categorizar los pictogramas que aparezcan y con posibilidad de jugar en distintos niveles que ampliarán la cantidad de categorías
+
+#### Menú Estadísticas
+Podrá visualizar las estadísticas del usuario
++ Pictogramas más utilizados
++ Categorías más utilizadas
++ Línea de tiempo con los pictogramas más utilizados según rango horario
+
+#### Menú Configuración
+En este menú se podrá editar el nombre del usuario, su imágen de perfil, su nivel y editar las preferencias en cuanto a si se muestran o no pictogramas con contenido violento o sexual y pictogramas esquemáticos
+
+Si el nivel elegido para el usuario es “Personalizado”, se desplegará un menú en el cual podrán elegirse cuáles serán las categorías con las que va a trabajar el paciente.
+
+#### Sugerencias
+A medida que se utilice el sistema, este irá aprendiendo y realizará sugerencias, busca ayudar al usuario a encontrar el pictograma que busca, al intentar predecir cuál será el próximo pictograma que el usuario seleccionará
+
+Al desplegar el ícono de “sugeridos” nos mostrará qué pictograma o pictogramas considera el sistema que podría ser el siguiente.
+
