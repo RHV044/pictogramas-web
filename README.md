@@ -75,7 +75,7 @@ Podrá visualizar las estadísticas del usuario
 + Categorías más utilizadas
 + Línea de tiempo con los pictogramas más utilizados según rango horario
 
-<a name="#config"></a>
+<a name="config"></a>
 #### Menú Configuración
 En este menú se podrá editar el nombre del usuario, su imágen de perfil, su nivel y editar las preferencias en cuanto a si se muestran o no pictogramas con contenido violento o sexual y pictogramas esquemáticos
 
