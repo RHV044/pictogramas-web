@@ -322,7 +322,9 @@ export default function Pictogramas(props: any) {
 
   return (
     <div>
-      <ResponsiveAppBar />
+      {user && 
+        <ResponsiveAppBar />
+      }
       {pictogramasSeleccionados && pictogramasSeleccionados.length > 0 && (
         <>
           <Seleccion
