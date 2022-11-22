@@ -24,6 +24,7 @@ import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import {
   ObtenerImagenDePictogramaLocal,
   PictogramaNoSeDebeTraducir,
+  TraducirKeyword,
 } from '../../services/pictogramas-services';
 import PredictivoImagen from './assets/adivinar.png';
 import { AutoAwesome, QuestionMarkRounded, SettingsSuggestRounded, StarsRounded } from '@mui/icons-material';
@@ -157,12 +158,12 @@ export default function Sugeridos(props: any) {
                                 ? pictograma.imagen
                                 : `data:image/png;base64,${pictograma.imagen}`
                             }
-                            alt={
+                            alt={TraducirKeyword(
                               pictograma.keywords.length > 1 &&
                               pictograma.keywords[0].tipo !== 1 &&
                               PictogramaNoSeDebeTraducir(pictograma)
                                 ? pictograma.keywords[1].keyword.toLocaleUpperCase()
-                                : pictograma.keywords[0].keyword.toLocaleUpperCase()
+                                : pictograma.keywords[0].keyword.toLocaleUpperCase())
                             }
                           ></CardMedia>
                           <CardHeader
@@ -182,11 +183,11 @@ export default function Sugeridos(props: any) {
                               fontWeight: 'bold',
                             }}
                           >
-                            {pictograma.keywords.length > 1 &&
+                            {TraducirKeyword(pictograma.keywords.length > 1 &&
                             pictograma.keywords[0].tipo !== 1 &&
                             PictogramaNoSeDebeTraducir(pictograma)
                               ? pictograma.keywords[1].keyword.toLocaleUpperCase()
-                              : pictograma.keywords[0].keyword.toLocaleUpperCase()}
+                              : pictograma.keywords[0].keyword.toLocaleUpperCase())}
                           </CardContent>
                         </CardActionArea>
 

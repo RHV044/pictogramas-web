@@ -109,7 +109,7 @@ export async function ObtenerPictogramasPorCategoria(
     {
       console.log("TODOS LOS PICTOGRAMAS PROPIOS: ", pictogramasPropios)
       const pp = pictogramas.concat(pictogramasPropios)
-      let propios = pp.filter((p: IPictogram) => p.idUsuario === usuario?.id && (p.pendienteEliminacion === null || p.pendienteEliminacion === undefined ||p.pendienteEliminacion === false))
+      let propios = pp.filter((p: IPictogram) => p.idUsuario === usuario?.id && (p.pendienteEliminacion === null || p.pendienteEliminacion === undefined || p.pendienteEliminacion === false))
       console.log("PICTOGRAMAS PROPIOS FILTRADOS: ", propios)
       return await setPictogramas(propios)
     }
@@ -168,6 +168,11 @@ export async function ObtenerPictogramasConImagenes(ids : number[]){
     pictogramasFiltrados[i].imagen = (await db.getValue('imagenes', pictogramasFiltrados[i].id)).imagen
 
   return pictogramasFiltrados
+}
+
+export function TraducirKeyword(keyword : string){
+  // if(keyword === 'BALÓN') return 'PELOTA'
+  return keyword.toLocaleUpperCase()
 }
 
 export async function ObtenerPictogramaConImagenes(id : number){

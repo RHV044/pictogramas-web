@@ -36,6 +36,7 @@ import {
   ObtenerCategorias,
   ObtenerPictogramas,
   PictogramaNoSeDebeTraducir,
+  TraducirKeyword,
 } from '../pictogramas/services/pictogramas-services';
 import { ICategoria } from '../pictogramas/models/categoria';
 import CategoriasRaices, {
@@ -389,7 +390,7 @@ export default function Pizarras(this: any) {
               celda.tipoContenido === 'texto'
                 ? celda.contenido
                 : pic !== null && pic !== undefined
-                ? pic.keywords[0].keyword.toLocaleUpperCase()
+                ? TraducirKeyword(pic.keywords[0].keyword.toLocaleUpperCase())
                 : pictogramaPropio.keywords[0].keyword.toLocaleUpperCase(),
             posicion: { columna: celda.columna, fila: celda.fila } as Position,
             identificacion: celda.identificacion,
@@ -918,11 +919,12 @@ export default function Pizarras(this: any) {
                             : `data:image/png;base64,${pictograma.imagen}`
                         }
                         alt={
+                          TraducirKeyword(
                           pictograma.keywords.length > 1 &&
                           pictograma.keywords[0].tipo !== 1 &&
                           PictogramaNoSeDebeTraducir(pictograma)
                             ? pictograma.keywords[1].keyword.toLocaleUpperCase()
-                            : pictograma.keywords[0].keyword.toLocaleUpperCase()
+                            : pictograma.keywords[0].keyword.toLocaleUpperCase())
                         }
                       ></CardMedia>
                       <CardHeader></CardHeader>
@@ -935,11 +937,11 @@ export default function Pizarras(this: any) {
                           fontWeight: 'bold',
                         }}
                       >
-                        {pictograma.keywords.length > 1 &&
+                        {TraducirKeyword(pictograma.keywords.length > 1 &&
                         pictograma.keywords[0].tipo !== 1 &&
                         PictogramaNoSeDebeTraducir(pictograma)
                           ? pictograma.keywords[1].keyword.toLocaleUpperCase()
-                          : pictograma.keywords[0].keyword.toLocaleUpperCase()}
+                          : pictograma.keywords[0].keyword.toLocaleUpperCase())}
                       </CardContent>
                     </CardActionArea>
                   </Card>
