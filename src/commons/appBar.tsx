@@ -99,7 +99,7 @@ const ResponsiveAppBar = () => {
   };
 
   return (
-    <AppBar position="static" style={{ marginBottom: 0 }}>
+    <AppBar position="static" style={{ marginBottom: 0, background: '#003882' }}>
       <Container maxWidth="xl" style={{ background: '#003882' }}>
         <Toolbar disableGutters>
           {configuracionOpen && (
