@@ -70,6 +70,13 @@ function App() {
             } , 5000);         
             return;
           }
+
+          setTimeout(function(){
+            console.log("CANCELAMOS SYNC")
+            dispatch(changeValue(100));
+            clearInterval(timer);
+            setUpdating(false)
+          },60000);
         }, 5000);
       }
     });
