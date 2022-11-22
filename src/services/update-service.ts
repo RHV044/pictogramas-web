@@ -82,9 +82,9 @@ export class UpdateService {
 
   porcentajeDeDescarga() {
     let porcentaje = 5;
-    if (this.state.categoriasDescargadas) porcentaje = porcentaje + 10; // 15 
-    if (this.state.pictogramasDescargados) porcentaje = porcentaje + 15; // 20
-    if (this.state.imagenesDescargadas) porcentaje = porcentaje + 50; // 60
+    // if (this.state.categoriasDescargadas) porcentaje = porcentaje + 10; // 15 
+    // if (this.state.pictogramasDescargados) porcentaje = porcentaje + 15; // 20
+    // if (this.state.imagenesDescargadas) porcentaje = porcentaje + 50; // 60
 
     if (this.state.categoriasDescargadas) porcentaje = porcentaje + 15; // 15 
     if (this.state.pictogramasDescargados) porcentaje = porcentaje + 20; // 20
