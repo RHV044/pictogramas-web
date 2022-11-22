@@ -33,7 +33,7 @@ export default function Estadisticas() {
     <div
       style={{ 
         width: '100vw',
-        height: '100vh',
+        minHeight: '100vh',
         backgroundColor: "#e7ebf0" }}>
       <ResponsiveAppBar />
       <Box

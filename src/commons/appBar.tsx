@@ -265,18 +265,11 @@ const ResponsiveAppBar = () => {
               </Box>
             )}
             <Box>
-              <Button
-                key={'Sincronizar'}
-                onClick={() => {
-                  // let updateService = new UpdateService();
-                  // updateService.initialize();
-                  // updateService.sincronizar();
-                  dispatchEvent(new CustomEvent('BotonSincronizar'));
-                }}
-                sx={{ my: 2, color: 'white', display: 'block' }}
-              >
-                Sincronizar
-              </Button>
+              <IconButton aria-label="sincronizar" key={'Sincronizar'}
+              onClick={() => { dispatchEvent(new CustomEvent('BotonSincronizar')); }}
+              size="large" sx={{color: 'white'}}>
+                <SyncRounded></SyncRounded>
+              </IconButton>
             </Box>
           </Box>
           <Box sx={{
