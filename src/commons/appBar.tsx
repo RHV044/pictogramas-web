@@ -160,13 +160,15 @@ const ResponsiveAppBar = () => {
               >
                 <Check></Check>
               </Box>
-            )}
+            )}            
             <Box>
-              <IconButton aria-label="sincronizar" key={'Sincronizar'}
-              onClick={() => { dispatchEvent(new CustomEvent('BotonSincronizar')); }}
-              size="large" sx={{color: 'white'}}>
-                <SyncRounded></SyncRounded>
-              </IconButton>
+              {!(porcentaje === 100 && renderListo) &&
+                <IconButton aria-label="sincronizar" key={'Sincronizar'}
+                onClick={() => { dispatchEvent(new CustomEvent('BotonSincronizar')); }}
+                size="large" sx={{color: 'white'}}>
+                  <SyncRounded></SyncRounded>
+                </IconButton>
+              }
             </Box>
           </Box>
 
@@ -265,11 +267,13 @@ const ResponsiveAppBar = () => {
               </Box>
             )}
             <Box>
-              <IconButton aria-label="sincronizar" key={'Sincronizar'}
-              onClick={() => { dispatchEvent(new CustomEvent('BotonSincronizar')); }}
-              size="large" sx={{color: 'white'}}>
-                <SyncRounded></SyncRounded>
-              </IconButton>
+            {!(porcentaje === 100 && renderListo) &&
+                <IconButton aria-label="sincronizar" key={'Sincronizar'}
+                onClick={() => { dispatchEvent(new CustomEvent('BotonSincronizar')); }}
+                size="large" sx={{color: 'white'}}>
+                  <SyncRounded></SyncRounded>
+                </IconButton>
+              }
             </Box>
           </Box>
           <Box sx={{
