@@ -1,8 +1,9 @@
-import { Button, Dialog, DialogContent, DialogContentText, DialogTitle, Input, TextField } from "@mui/material";
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Input, TextField } from "@mui/material";
 import { SourceMap } from "module";
 import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import Operacion from './operacion';
+import { AddRounded, AttachFileRounded, CancelRounded, CheckRounded, PlusOneRounded, SaveRounded } from '@mui/icons-material';
 
 export default function FormDialogValidarAcceso(props: any) {
     const [resultado, setResultado] = useState(null as number | null);
@@ -17,7 +18,7 @@ export default function FormDialogValidarAcceso(props: any) {
     return (
         <div>
             <Dialog open={true} onClose={handleClose}>
-                <DialogTitle>Control de acceso</DialogTitle>
+                <DialogTitle sx={{color: "#00A7E1"}}>Control de acceso</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
                         <Operacion setResultadoCorrecto={setResultadoCorrecto} />
@@ -38,30 +39,26 @@ export default function FormDialogValidarAcceso(props: any) {
                         }
                         type="number"
                         /> 
-                    <br /> <br />
-                    <Button
-                        variant="contained"
-                        style={{ alignItems: 'center', margin: '10px' }}
-                        onClick={() => {
-                            handleClose()
-                            if(resultado === resultadoCorrecto){
-                            navigate('../configuracion');
-                            } else {
-                                alert("resultado incorrecto");
-                            }
-                        }}>
-                        Confirmar
-                    </Button>
-                    <Button
-                        variant="outlined"
-                        style={{ alignItems: 'center', margin: '10px' }}
-                        onClick={() => {
-                            handleClose()
-                        }}
-                    >
-                        Cancelar
-                    </Button>
                 </DialogContent>
+                    <DialogActions>
+                        <Button onClick={() => { handleClose() }} variant="outlined" 
+                            startIcon={<CancelRounded />}
+                            sx={{fontFamily:'Arial', fontWeight:'bold', color:'#00A7E1'}}>
+                                Cancelar
+                        </Button>
+                        <Button onClick={() => {
+                                handleClose()
+                                if(resultado === resultadoCorrecto){
+                                navigate('../configuracion');
+                                } else {
+                                    alert("resultado incorrecto");
+                                }
+                            }} variant="contained" startIcon={<CheckRounded />}
+                            sx={{fontFamily:'Arial', fontWeight:'bold', background:'#00A7E1'}}>
+                                Confirmar
+                        </Button>
+                    </DialogActions>
+                
             </Dialog>
         </div>
     )

@@ -30,8 +30,10 @@ export default function CategoriasRaices(props: any) {
   }, []);
 
   return (
-    <Container maxWidth="xl">
-      <Grid container spacing={{ xs: 3, md: 3 }} columns={{ xs: 10, sm: 10, md: 12 }} style={{marginTop: 1, marginLeft: 0, marginRight: 0}}>
+    <Container>
+      <Grid container 
+        rowSpacing={{ xs: 2, sm: 2, md: 2}}
+        style={{marginTop: 1, marginLeft: 0, marginRight: 0}} >
         {/* TODO: Agregar pictogramas recientes si fuera necesario */}
         <CategoriaPropios setCategoriaSeleccionada={props.setCategoriaSeleccionada} categoriaSeleccionada={categoriaSeleccionada}/>
         <CategoriaFavoritos setCategoriaSeleccionada={props.setCategoriaSeleccionada} categoriaSeleccionada={categoriaSeleccionada}/>
@@ -40,10 +42,8 @@ export default function CategoriasRaices(props: any) {
               categoria.nivel <= (props.usuarioLogueado?.nivel !== undefined ? props.usuarioLogueado?.nivel : 0) && (props.usuarioLogueado?.nivel !== 3 || verificarValidezDeCategoria(categoria, props.categorias, props.categoriasPorUsuario, props.usuarioLogueado))) //TODO agregar consideracion para el nivel personalizado.
           {
             return (
-                <Grid
-                  key={categoria.id + '-' + categoria.nombre}
-                  item xs={4} sm={3} md={2}
-                >
+                <Grid item xs={6} sm={3} md={2}
+                  key={categoria.id + '-' + categoria.nombre} >
                   <Container key={categoria.id + '-' + categoria.nombre}>
                     <Categoria 
                       setCategoriaSeleccionada={props.setCategoriaSeleccionada} 

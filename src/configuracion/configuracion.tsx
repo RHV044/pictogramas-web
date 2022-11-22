@@ -43,10 +43,12 @@ import { ICategoria } from '../pictogramas/models/categoria';
 import { formatDate, ObtenerCategorias } from '../pictogramas/services/pictogramas-services';
 import React from 'react';
 import FormDialogValidarAcceso from './components/validarCambioConfiguracion';
-import imagenUsuario from '../commons/imagen-usuario.jpg'
+import imagenUsuario from '../commons/imagen-usuario.png'
 import { ICategoriaPorUsuario } from '../pictogramas/models/categoriaPorUsuario';
 import FiltroCategoriasPorUsuario from './components/filtroCategoriasPorUsuario';
-import { HelpOutline } from '@mui/icons-material';
+import { AttachFile, HelpOutline, HelpRounded } from '@mui/icons-material';
+import IconButton from '@mui/material/IconButton';
+import { AddRounded, AttachFileRounded, CancelRounded, PlusOneRounded, SaveRounded } from '@mui/icons-material';
 
 function agruparElementos(datos, predicado) : ICategoria[] { //agrupar categorias por algun campo en particular
 
@@ -225,131 +227,138 @@ export default function Configuracion() {
  }
 
   return (
-    <div>
+    <div
+      style={{ 
+        width: '100vw',
+        minHeight: '100vh',
+        backgroundColor: "#e7ebf0" }}>
       {userLogueado && (
         <div>
           <ResponsiveAppBar />
           <Container>
-            <FormControl component="fieldset" style={{ width: "50%" }}>
-              <FormLabel style={{ padding: 10 }}>
+            <FormControl component="fieldset" style={{ width: "100%" }}>
+              <FormLabel sx={{color: '#00A7E1'}}>
                 <h1>
-                  {" "}
-                  <SettingsIcon color="action" /> Configuración
+                  <SettingsIcon /> Configuración
                 </h1>
               </FormLabel>
-              <Paper style={{ width: "100%" }}>
-                <Container style={{ padding: 10 }}>
-                  {/* {userLogueado.nombreUsuario} */}
-                  {/* <TextField
-                    type="text"
-                    defaultValue={userLogueado.nombreUsuario}
-                    onChange={(evt) => setNombreUsuario(evt.target.value)}
-                  />{" "} */}
-                  <br /> <br /> <br />
-                  <Card
-                    sx={{ maxWidth: 245 }}
-                    style={{ marginTop: "5px" }}
-                    onClick={() => {}}
-                  >
-                    <CardActionArea>
-                      <CardMedia
-                        component="img"
-                        height="140"
-                        src={
-                          userLogueado &&
-                          userLogueado.imagen &&
-                          userLogueado.imagen !== ""
-                            ? userLogueado.imagen
-                            : imagenUsuario
-                        }
-                        alt={userLogueado.nombreUsuario}
-                      ></CardMedia>
-                      <CardHeader
-                        title={userLogueado.nombreUsuario}
-                      ></CardHeader>
-                      <CardContent></CardContent>
-                    </CardActionArea>
-                  </Card>
-                  <Button
-                    style={{ marginTop: 5 }}
-                    variant="contained"
-                    component="label"
-                  >
-                    Adjuntar Imagen para Usuario
-                    <input
-                      type="file"
-                      hidden
-                      onChange={(evt) => {
-                        if (evt.target.files) {
-                          guardarImagenBase64(evt.target.files[0]);
-                          navigate("../pictogramas");
-                        }
-                        console.log(file);
-                      }}
-                    />
-                  </Button>
-                  <br></br>
-                  <br></br>
-                  <FormControl sx={{ m: 1, minWidth: 120 }}>
-                    <InputLabel id="nivel-select-label">Nivel</InputLabel>
-                    <Select
-                      labelId="nivel-select-label"
-                      id="nivel-select"
-                      value={nivel}
-                      label="Nivel"
-                      onChange={handleChange}
-                      fullWidth
-                    >
-                      <MenuItem value={0}>{niveles[0]}</MenuItem>
-                      <MenuItem value={1}>{niveles[1]}</MenuItem>
-                      <MenuItem value={2}>{niveles[2]}</MenuItem>
-                      <MenuItem value={3}>{niveles[3]}</MenuItem>
-                    </Select>
-                    <Tooltip title="Nivel personalizado: permite elegir las categorías a mostrar">
-                      <HelpOutline style={{ marginTop: 2 }}></HelpOutline>
-                    </Tooltip>
-                  </FormControl>
-                </Container>
-                <FormGroup aria-label="center" style={{ paddingRight: 10 }}>
-                  <FormControlLabel
-                    style={{ alignItems: "left", marginLeft: 2 }}
-                    control={
-                      <Checkbox
-                        checked={violence}
-                        onChange={(evt) => setViolence(evt?.target?.checked)}
-                      />
-                    }
-                    label="Permitir Contenido violento"
-                    labelPlacement="end"
-                  />
-                  <FormControlLabel
-                    style={{ alignItems: "left", marginLeft: 2 }}
-                    control={
-                      <Checkbox
-                        checked={sex}
-                        onChange={(evt) => setSex(evt?.target?.checked)}
-                      />
-                    }
-                    label="Permitir Contenido sexual"
-                    labelPlacement="end"
-                  />
-                  <FormControlLabel
-                    style={{ alignItems: "left", marginLeft: 2 }}
-                    control={
-                      <Checkbox
-                        checked={schematic}
-                        onChange={(evt) => setSchematic(evt?.target?.checked)}
-                      />
-                    }
-                    label="Sólo pictogramas simples"
-                    labelPlacement="end"
-                  />
-                </FormGroup>
+              <Paper 
+                style={{ width: "100%" }}>
+                <Container>
+                  <Grid container 
+                    direction="row"
+                    justifyContent="center"
+                    alignItems="flex-start"
+                    rowSpacing={{ xs: 2, sm: 2, md: 2 }}
+                    columnSpacing={{ xs: 1, sm: 1, md: 1 }}>
+                    <Grid item sx={{marginTop: 2, marginBottom: 2}}>
+                      <Grid item>
+                        <Card
+                        onClick={() => {}}>
+                          <CardActionArea>
+                            <CardMedia
+                              component="img"
+                              height="140"
+                              src={
+                                userLogueado &&
+                                userLogueado.imagen &&
+                                userLogueado.imagen !== ""
+                                  ? userLogueado.imagen
+                                  : imagenUsuario
+                              }
+                              alt={userLogueado.nombreUsuario}>
+                            </CardMedia>
+                            <CardHeader
+                              title={userLogueado.nombreUsuario}>
+                            </CardHeader>
+                            <CardContent></CardContent>
+                          </CardActionArea>
+                        </Card>
+                      </Grid>
+                      <Grid item>
+                      <Button variant="contained" 
+                        startIcon={<AttachFileRounded />} sx={{fontFamily:'Arial', fontWeight:'bold', background: '#00A7E1'}}>
+                          Adjuntar nueva foto
+                        <input
+                            type="file"
+                            hidden
+                            onChange={(evt) => {
+                              if (evt.target.files) {
+                                guardarImagenBase64(evt.target.files[0]);
+                                navigate("../pictogramas");
+                              }
+                              console.log(file);
+                            }}
+                          />
+                        </Button>
+                      </Grid>
+                    </Grid>
+                    <Grid item>
+                      <Grid item>
+                        <FormControl sx={{ marginTop: 2 }}>
+                          <InputLabel id="nivel-select-label">Nivel</InputLabel>
+                          <Select
+                            labelId="nivel-select-label"
+                            id="nivel-select"
+                            value={nivel}
+                            label="Nivel"
+                            onChange={handleChange}
+                            fullWidth >
+                            <MenuItem value={0}>{niveles[0]}</MenuItem>
+                            <MenuItem value={1}>{niveles[1]}</MenuItem>
+                            <MenuItem value={2}>{niveles[2]}</MenuItem>
+                            <MenuItem value={3}>{niveles[3]}</MenuItem>
+                          </Select>
+                        </FormControl>
+                        <Tooltip title="El nivel Personalizado permite elegir las categorías a mostrar." >
+                          <IconButton 
+                            size="large" sx={{color: '#00A7E1'}}>
+                              <HelpRounded></HelpRounded>
+                          </IconButton>  
+                        </Tooltip>
+                      </Grid>
+                      <Grid item>
+                        <FormGroup aria-label="center" style={{ paddingRight: 10 }}>
+                          <FormControlLabel
+                            style={{ alignItems: "left", marginLeft: 2 }}
+                            control={
+                              <Checkbox
+                                checked={violence}
+                                onChange={(evt) => setViolence(evt?.target?.checked)}
+                              />
+                            }
+                            label="Permitir contenido violento"
+                            labelPlacement="end"
+                          />
+                          <FormControlLabel
+                            style={{ alignItems: "left", marginLeft: 2 }}
+                            control={
+                              <Checkbox
+                                checked={sex}
+                                onChange={(evt) => setSex(evt?.target?.checked)}
+                              />
+                            }
+                            label="Permitir contenido sexual"
+                            labelPlacement="end"
+                          />
+                          <FormControlLabel
+                            style={{ alignItems: "left", marginLeft: 2 }}
+                            control={
+                              <Checkbox
+                                checked={schematic}
+                                onChange={(evt) => setSchematic(evt?.target?.checked)}
+                              />
+                            }
+                            label="Sólo pictogramas simples"
+                            labelPlacement="end"
+                          />
+                        </FormGroup>
+                      </Grid>
+                    </Grid>
+                  </Grid>
+                </Container>          
               </Paper>
             </FormControl>
-
-            <br />
-            <br />
             {
               <div>
                 <Switch
@@ -381,13 +390,10 @@ export default function Configuracion() {
             )}
 
             <Stack spacing={2} direction="row">
-              <Button
-                variant="contained"
-                style={{ alignItems: "center", margin: "10px" }}
-                onClick={async () => {
+              <Button  onClick={async () => {
                   if (isNaN(Number(nivel))) {
                     alert(
-                      "Debes Seleccionar un nivel para actualizar el usuario"
+                      "Debes seleccionar un nivel para actualizar el usuario."
                     );
                   } else {
                     await actualizarUsuario();
@@ -427,18 +433,8 @@ export default function Configuracion() {
                     navigate("../pictogramas");
                   }
                 }}
-              >
-                Guardar
-              </Button>
-              <Button
-                variant="outlined"
-                style={{ alignItems: "center", margin: "10px" }}
-                onClick={() => {
-                  navigate("../pictogramas");
-                }}
-              >
-                Cancelar
-              </Button>
+                variant="contained" 
+                startIcon={<SaveRounded />} sx={{fontFamily:'Arial', fontWeight:'bold', background: '#00A7E1'}}>Guardar</Button>
             </Stack>
           </Container>
         </div>

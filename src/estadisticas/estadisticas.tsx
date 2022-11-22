@@ -30,17 +30,27 @@ export default function Estadisticas() {
   }, []);
 
   return (
-    <div>
+    <div
+      style={{ 
+        width: '100vw',
+        minHeight: '100vh',
+        backgroundColor: "#e7ebf0" }}>
       <ResponsiveAppBar />
       <Box
         style={{
           display: 'flex',
-          alignItems: 'center',
           justifyContent: 'center',
+          marginTop: 10,
+          marginBottom: 10
         }}
       >
-        <Typography variant="h5" gutterBottom>
-          Estadisticas
+       <Typography
+          variant="h5"
+          fontFamily="Arial"
+          fontWeight="medium"
+          align='center'
+          color="#00A7E1" >
+          Estadísticas de uso
         </Typography>
       </Box>
       {estadisticas && (
@@ -60,7 +70,7 @@ export default function Estadisticas() {
                   id="panel1a-header"
                 >
                   <Typography variant="h6" gutterBottom>
-                    Pictogramas Mas Utilizados
+                    Pictogramas más utilizados
                   </Typography>
                 </AccordionSummary>
               </Box>
@@ -80,7 +90,7 @@ export default function Estadisticas() {
                   }}
                 >
                   <Typography variant="button" display="block" gutterBottom>
-                    Total Pictogramas distintos utilizados:{' '}
+                    Total de pictogramas distintos utilizados:{' '}
                     {estadisticas.cantidadDePictogramasDistintosUtilizados}
                   </Typography>
                 </Box>
@@ -102,7 +112,7 @@ export default function Estadisticas() {
                   id="panel1a-header"
                 >
                   <Typography variant="h6" gutterBottom>
-                    Categorias Mas Utilizadas
+                    Categorías más utilizadas
                   </Typography>
                 </AccordionSummary>
               </Box>
@@ -121,7 +131,7 @@ export default function Estadisticas() {
                   }}
                 >
                   <Typography variant="button" display="block" gutterBottom>
-                    Total Categorias distintas utilizadas:{' '}
+                    Total de categorias distintas utilizadas:{' '}
                     {estadisticas.cantidadDeCategoriasDistintasUtilizadas}
                   </Typography>
                 </Box>
@@ -143,7 +153,7 @@ export default function Estadisticas() {
                   id="panel1a-header"
                 >
                   <Typography variant="h6" gutterBottom>
-                    Pictogramas mas utilizados por rangos horarios
+                    Pictogramas más utilizados por rangos horarios
                   </Typography>
                 </AccordionSummary>
               </Box>

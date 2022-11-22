@@ -10,91 +10,93 @@ export default function SeleccionDeNivel() {
   let location = useLocation();
 
   return (
-    <div>
+    <div 
+      style={{ 
+        width: '100vw',
+        height: '100vh',
+        backgroundColor: "#e7ebf0" }}>
       <ResponsiveAppBar />
       <Container
         style={{
           display: 'flex',
-          alignItems: 'center',
           justifyContent: 'center',
           marginTop: 10,
-        }}
-      >
-        <Typography variant="h5" gutterBottom>
-          Juego de Categorizar los Pictogramas
+          marginBottom: 10
+        }} >
+        <Typography
+          variant="h5"
+          fontFamily="Arial"
+          fontWeight="medium"
+          align='center'
+          color="#00A7E1" >
+          Determine la categoría del pictograma
         </Typography>
       </Container>
-      <Container
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          marginTop: 10,
-          marginBottom: 5,
-        }}
-      >
-        <Grid
-          container
+        <Grid container 
+          spacing={5}
+          direction="row"
           justifyContent="center"
-          alignItems="center"
-          spacing={{ xs: 2, md: 3 }}
-          columns={{ xs: 4, sm: 10, md: 12 }}
-          style={{ marginTop: 2, position: 'relative', marginLeft: 30 }}
-        >
-          <Grid key={1} item xs={12} sm={4} md={2}>
+          alignItems="stretch" >
+          <Grid item key={1}>
             <Button
-              style={{ marginLeft: 5, marginRight: 5 }}
               variant="contained"
               component="label"
+              sx={{
+                fontFamily:'Arial',
+                fontWeight:'bold',
+                background: '#00A7E1'}}
               onClick={() => {
                 navigate('/actividad/1' + location.search);
-              }}
-            >
+              }} >
               Nivel 1
             </Button>
           </Grid>
-          <Grid key={2} item xs={12} sm={4} md={2}>
+          <Grid item key={2}>
             <Button
-              style={{ marginLeft: 5, marginRight: 5 }}
               variant="contained"
               component="label"
+              sx={{
+                fontFamily:'Arial',
+                fontWeight:'bold',
+                background: '#00A7E1'}}
               onClick={() => {
                 navigate('/actividad/2' + location.search);
-              }}
-            >
+              }} >
               Nivel 2
             </Button>
           </Grid>
-          <Grid key={3} item xs={12} sm={4} md={2}>
+          <Grid item key={3}>
             <Button
-              style={{ marginLeft: 5, marginRight: 5 }}
               variant="contained"
               component="label"
+              sx={{
+                fontFamily:'Arial',
+                fontWeight:'bold',
+                background: '#00A7E1'}}
               onClick={() => {
                 navigate('/actividad/3' + location.search);
-              }}
-            >
+              }} >
               Nivel 3
             </Button>
           </Grid>
         </Grid>
-      </Container>
     </div>
   );
 }
 
 
-async function validarCantidadCategoriasNivel(cantidadCategoriasMinima: number, usuario : IUsuario){
+async function validarCantidadCategoriasNivel(cantidadCategoriasMinima: number, usuario: IUsuario) {
 
-      if ((usuario?.nivel !== undefined ? usuario?.nivel : 0) === 3) {
-        console.log('VALIDANDO CANTIDAD DE CATEGORIAS');
-        IndexedDbService.create().then(async (db) => {
-          await db.searchCategoriasPorUsuarioByUser((usuario && usuario.id) ? usuario.id : 0).then(cxus => {
-            cxus = cxus.filter(c => !c.pendienteEliminar);
-            return cxus.length >= cantidadCategoriasMinima;  
-          })})
-      }
-      else {
-        console.log('no es nivel personlizado');
-      }    
+  if ((usuario?.nivel !== undefined ? usuario?.nivel : 0) === 3) {
+    console.log('VALIDANDO CANTIDAD DE CATEGORIAS');
+    IndexedDbService.create().then(async (db) => {
+      await db.searchCategoriasPorUsuarioByUser((usuario && usuario.id) ? usuario.id : 0).then(cxus => {
+        cxus = cxus.filter(c => !c.pendienteEliminar);
+        return cxus.length >= cantidadCategoriasMinima;
+      })
+    })
+  }
+  else {
+    console.log('no es nivel personlizado');
+  }
 }

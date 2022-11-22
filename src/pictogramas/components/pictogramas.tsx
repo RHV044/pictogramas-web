@@ -45,6 +45,7 @@ import Sugeridos from './sugerencias/sugeridos';
 import { CurrencyBitcoin } from '@mui/icons-material';
 import { ICategoriaPorUsuario } from '../models/categoriaPorUsuario';
 import { IUsuario } from '../../login/model/usuario';
+import Box from '@mui/material/Box';
 const db = new IndexedDbService();
 
 export default function Pictogramas(props: any) {
@@ -174,8 +175,9 @@ export default function Pictogramas(props: any) {
           IndexedDbService.create().then(async (db) => {
             db.searchCategoriasPorUsuarioByUser((usuario && usuario.id) ? usuario.id : 0).then(cxus => {
               cxus = cxus.filter(c => !c.pendienteEliminar);
-              setCategoriasPorUsuario(cxus);  
-            })})
+              setCategoriasPorUsuario(cxus);
+            })
+          })
         }
       }
     });
@@ -192,18 +194,18 @@ export default function Pictogramas(props: any) {
       setPictogramasFiltrados([]);
     } else {
       let pictsIguales = pictogramas
-      .filter(p => (user?.sex === p.sex || p.sex === false) && (user?.violence === p.violence || p.violence === false) && (user?.schematic === p.schematic || p.schematic === true))
-      .filter(
-        (p) =>
-          p.keywords.some((k) => k.keyword.normalize("NFD").replace(/[\u0300-\u036f]/g, "") === value.normalize("NFD").replace(/[\u0300-\u036f]/g, "")) === true 
-      )
-      .slice(0, 5);
+        .filter(p => (user?.sex === p.sex || p.sex === false) && (user?.violence === p.violence || p.violence === false) && (user?.schematic === p.schematic || p.schematic === true))
+        .filter(
+          (p) =>
+            p.keywords.some((k) => k.keyword.normalize("NFD").replace(/[\u0300-\u036f]/g, "") === value.normalize("NFD").replace(/[\u0300-\u036f]/g, "")) === true
+        )
+        .slice(0, 5);
       let pictsFiltrados = pictogramas
         .filter(p => (user?.sex === p.sex || p.sex === false) && (user?.violence === p.violence || p.violence === false) && (user?.schematic === p.schematic || p.schematic === true))
         .filter(
           (p) =>
             (p.keywords.some((k) => k.keyword.normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(value.normalize("NFD").replace(/[\u0300-\u036f]/g, ""))) === true ||
-            p.categorias?.some((c) => c.nombre.normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(value.normalize("NFD").replace(/[\u0300-\u036f]/g, ""))) === true) &&
+              p.categorias?.some((c) => c.nombre.normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(value.normalize("NFD").replace(/[\u0300-\u036f]/g, ""))) === true) &&
             !pictsIguales.some(pic => p.id === pic.id)
         )
         .slice(0, 5);
@@ -259,13 +261,13 @@ export default function Pictogramas(props: any) {
     return <>{ObtenerCategoriaPadre(categoria)}</>;
   };
 
-  const filtrarCategorias = (categorias: ICategoria[]) => {};
+  const filtrarCategorias = (categorias: ICategoria[]) => { };
 
   const OpcionesDeCategoria = (categoria: ICategoria) => {
     let categoriasHijas: ICategoria[];
     if (
       categoria.esCategoriaFinal === true &&
-      (verificarValidezDeCategoria(categoria, categorias, categoriasPorUsuario, user))){
+      (verificarValidezDeCategoria(categoria, categorias, categoriasPorUsuario, user))) {
       // Es categoria final, debo mostrar pictogramas
       return (
         <>
@@ -279,33 +281,27 @@ export default function Pictogramas(props: any) {
     } else {
       // Es categoria padre, debo mostrar categorias
 
-        categoriasHijas = categorias.filter(
-          (c) =>            
-            (c.categoriaPadre === categoria.id && verificarValidezDeCategoria(c, categorias, categoriasPorUsuario, user))            
-        );
-      }
+      categoriasHijas = categorias.filter(
+        (c) =>
+          (c.categoriaPadre === categoria.id && verificarValidezDeCategoria(c, categorias, categoriasPorUsuario, user))
+      );
+    }
 
     console.log("categorias hijas: ", categoriasHijas);
     return (
-      <Container maxWidth="xl">
-        <Grid
-          container
+      <Container>
+        <Grid container
           spacing={{ xs: 2, md: 3 }}
-          columns={{ xs: 4, sm: 10, md: 12 }}
-        >
+          columns={{ xs: 6, sm: 10, md: 12 }} >
           {categoriasHijas.map((categoria) => {
             return (
-              <Grid
+              <Grid item
                 key={categoria.id + '-' + categoria.nombre}
-                item
-                xs={12}
+                xs={6}
                 sm={4}
-                md={2}
-              >
+                md={2} >
                 <Container
-                  key={categoria.id + '-' + categoria.nombre}
-                  maxWidth="xl"
-                >
+                  key={categoria.id + '-' + categoria.nombre} >
                   <Categoria
                     setCategoriaSeleccionada={setCategoriaSeleccionada}
                     categoria={categoria}
@@ -322,8 +318,11 @@ export default function Pictogramas(props: any) {
   };
 
   return (
-    <div>
-      {user && 
+    <Box component="div" 
+      sx={{ width: '100vw',
+        minHeight: '100vh',
+        backgroundColor: "#e7ebf0" }}>
+      {user &&
         <ResponsiveAppBar />
       }
       {pictogramasSeleccionados && pictogramasSeleccionados.length > 0 && (
@@ -338,34 +337,15 @@ export default function Pictogramas(props: any) {
       {/* TODO: Extraer esto en otro lado para poder mostrar cuanto descargo el updateService */}
       {/* <CircularProgress variant="determinate" value={downloadPercentage} /> */}
 
-      <Recientes
-        setPictogramas={UpdatePictogramas}
-        pictogramas={pictogramasSeleccionados}
-      />
-      {pictogramasSeleccionados &&
-        pictogramasSeleccionados.length > 0 &&
-        pictogramasPredecidos &&
-        pictogramasPredecidos.length > 0 &&
-        pictogramasPredecidos[0] && (
-          <Sugeridos
-            setPictogramas={UpdatePictogramas}
-            pictogramas={pictogramasSeleccionados}
-            pictogramasPredecidos={pictogramasPredecidos}
-          />
-        )}
 
-      <Grid
-        container
-        spacing={{ xs: 2, md: 3 }}
-        columns={{ xs: 4, sm: 10, md: 12 }}
+      <Grid container
         alignItems="center"
         justifyContent="center"
-        style={{ marginTop: 0 }}
-      >
+        style={{ marginTop: 0 }} >
         <Grid key="Filtros" item xs={12} sm={4} md={2}>
           <TextField
             id="input-tag-filter"
-            label="Filtrar pictogramas por palabra clave o categoria"
+            label="Buscar pictogramas por nombre o categoría"
             variant="standard"
             style={{ marginBottom: 5, width: '100%' }}
             onChange={(event) => {
@@ -378,11 +358,9 @@ export default function Pictogramas(props: any) {
         </Grid>
       </Grid>
       <Container>
-        <Grid
-          container
+        <Grid container
           spacing={{ xs: 2, md: 3 }}
-          columns={{ xs: 4, sm: 10, md: 12 }}
-        >
+          columns={{ xs: 4, sm: 10, md: 12 }} >
           {pictogramasFiltrados.map((pictograma) => {
             return (
               //Como estan dentro de la categoria, se visualizan abajo, habria que extraerlo a otro lugar
@@ -390,8 +368,8 @@ export default function Pictogramas(props: any) {
                 <Container key={pictograma.id + '_' + pictograma.keywords[0].keyword + '_' + pictograma.keywords[0].id + '_' + Math.random()}>
                   <Card
                     sx={{ maxWidth: 245, minWidth: 150 }}
-                    style={{ marginTop: '10px', paddingLeft: 5, paddingRight: 5, paddingBottom: 20  }}
-                    onClick={() => {}}
+                    style={{ marginTop: '10px', paddingLeft: 5, paddingRight: 5, paddingBottom: 20 }}
+                    onClick={() => { }}
                   >
                     <CardActionArea
                       onClick={() => {
@@ -403,14 +381,13 @@ export default function Pictogramas(props: any) {
                             setPictogramasSeleccionados(pictogramasSel);
                           }
                         }
-                      }}
-                    >
+                      }} >
                       <CardMedia
                         component="img"
                         height="140"
                         src={
                           pictograma.imagen &&
-                          pictograma.imagen.includes('data:image')
+                            pictograma.imagen.includes('data:image')
                             ? pictograma.imagen
                             : `data:image/png;base64,${pictograma.imagen}`
                         }
@@ -438,32 +415,54 @@ export default function Pictogramas(props: any) {
       </Container>
       <br></br>
       <hr />
-      <Grid
-        container
+      
+      {/* Muestra categoría seleccionada y sus subcategorías */}
+      <Grid container
         spacing={{ xs: 2, md: 3 }}
         columns={{ xs: 4, sm: 10, md: 12 }}
-        style={{ marginTop: 5 }}
-      >
+        style={{ marginTop: 5 }} >
         {/* TODO: Mejorar diseño */}
         {categoriaSeleccionada && ListaCategorias(categoriaSeleccionada)}
-        {categoriaSeleccionada && OpcionesDeCategoria(categoriaSeleccionada)}
+        {categoriaSeleccionada && OpcionesDeCategoria(categoriaSeleccionada)} 
       </Grid>
+      
       <br />
       {/* TODO: Agregar algun separador para separar las raices */}
       <br />
+
+      <Container>
+        <Grid container 
+          rowSpacing={{ xs: 2, sm: 2, md: 2}} >  
+        </Grid>
+          <Recientes
+            setPictogramas={UpdatePictogramas}
+            pictogramas={pictogramasSeleccionados} />
+            {pictogramasSeleccionados &&
+              pictogramasSeleccionados.length > 0 &&
+              pictogramasPredecidos &&
+              pictogramasPredecidos.length > 0 &&
+              pictogramasPredecidos[0] && (
+                <Sugeridos
+                  setPictogramas={UpdatePictogramas}
+                  pictogramas={pictogramasSeleccionados}
+                  pictogramasPredecidos={pictogramasPredecidos}
+                />
+            )}
+      </Container>
+        
       {
-      user !== null &&
-      categorias.length > 0 && 
-      (user.nivel !== 3 || categoriasPorUsuario.length > 0) &&
-      <CategoriasRaices
-        setPictogramas={UpdatePictogramas}
-        setCategoriaSeleccionada={setCategoriaSeleccionada}
-        usuarioLogueado={user}
-        categoriasPorUsuario={categoriasPorUsuario}        
-        categorias={categorias}
-      />
+        user !== null &&
+        categorias.length > 0 &&
+        (user.nivel !== 3 || categoriasPorUsuario.length > 0) &&
+        <CategoriasRaices
+          setPictogramas={UpdatePictogramas}
+          setCategoriaSeleccionada={setCategoriaSeleccionada}
+          usuarioLogueado={user}
+          categoriasPorUsuario={categoriasPorUsuario}
+          categorias={categorias}
+        />
       }
-    </div>
+    </Box>
   );
 }
 async function selectPictogramIdChanged(value: string, setImageUrl: any) {

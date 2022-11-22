@@ -28,6 +28,9 @@ import {
   TraducirKeyword,
 } from '../../services/pictogramas-services';
 import RecientesImagen from './assets/recientes.png';
+import Icon, { AccessTimeRounded } from '@mui/icons-material';
+import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
 
 export default function Recientes(props: any) {
   const [checked, setChecked] = useState(false);
@@ -211,53 +214,30 @@ export default function Recientes(props: any) {
   );
 
   const imagen = (
-    <Card
-      sx={{ maxWidth: 150, minWidth: 40, maxHeight: 150, minHeight: 40 }}
-      style={{
-        marginTop: '10px',
-        paddingLeft: 5,
-        paddingRight: 5,
-        paddingBottom: 60,
-      }}
-      onClick={() => {}}
-    >
-      <CardActionArea
-        onClick={() => {
-          handleChange();
-        }}
-      >
-        <CardMedia
-          component="img"
-          height="160"
-          width="160"
-          src={RecientesImagen}
-          alt="Recientes"
-        ></CardMedia>
-        <CardHeader
-          style={{
-            height: '100%',
-            width: '95%',
-            marginBottom: 1,
-            paddingBottom: 0,
-          }}
-        ></CardHeader>
-        <CardContent
-          style={{
-            marginTop: 1,
-            paddingTop: 0,
-            marginLeft: 4,
-            paddingLeft: 0,
-            fontWeight: 'bold',
-          }}
-        >
-          RECIENTES
-        </CardContent>
-      </CardActionArea>
-    </Card>
+    <Grid item
+      key={0}
+       xs={4} sm={4} md={4} >
+      <Container key={0}>
+        <Card>
+          <CardActionArea
+            onClick={() => {
+              handleChange();
+            }} >
+            <CardContent>
+              <Button variant="text"
+                startIcon={<AccessTimeRounded />}
+                sx={{typography: { sm: 'body1', xs: 'body2', color: '#00A7E1'}, fontFamily:'Arial', 
+                  fontWeight:'medium'}}> RECIENTES
+              </Button>
+            </CardContent>
+          </CardActionArea>
+        </Card>
+      </Container>
+    </Grid>
   );
 
   return (
-    <Box style={{ marginLeft: 20 }}>
+    <Box>
       {pictogramas.length > 0 && (
         <>
           {imagen}

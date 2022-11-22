@@ -4,7 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { CrearUsuario } from '../../services/usuarios-services';
 import { IndexedDbService } from '../../services/indexeddb-service';
 import { IUsuario } from '../model/usuario';
-import Logo from '../../commons/Logo-PictogAR-viejo.png';
+import Logo from '../../commons/Logo-PictogAR.png';
 
 const CrearCuenta = (props: any) => {
   let navigate = useNavigate();
@@ -37,99 +37,106 @@ const CrearCuenta = (props: any) => {
   }
 
   return (
-    <Container>
-      <Box
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
-        <img alt="Qries" src={Logo} height="65" />
-      </Box>
-      <Box
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
-        <Container>
-          <Box
-            border={4}
-            borderLeft={2}
-            borderRight={2}
-            borderColor="primary.main"
-            style={{ marginTop: 10, padding: 10, backgroundColor: 'white' }}
-          >
+    <div 
+      style={{ 
+        width: '100vw',
+        minHeight: '100vh',
+        backgroundColor: "#003882" }} >
+      <Container>
+        <Box
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            paddingTop: 10,
+            paddingBottom: 10
+          }}
+        >
+          <img alt="PictogAr" src={Logo} height="65" />
+        </Box>
+        <Box
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <Container>
             <Box
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
+              border={4}
+              borderLeft={2}
+              borderRight={2}
+              borderColor="primary.main"
+              style={{ marginTop: 10, padding: 10, backgroundColor: 'white' }}
             >
-              <TextField
-                id="filled-basic"
-                label="Usuario"
-                variant="filled"
-                value={username}
-                onChange={(evt) => {
-                  setUsername(evt.target.value);
-                }}
-              />
-              <TextField
-                id="filled-basic"
-                label="Contraseña"
-                variant="filled"
-                type={showPassword ? 'text' : 'password'}
-                value={password}
-                onChange={(evt) => {
-                  setPassword(evt.target.value);
-                }}
-              />
-            </Box>
-            <Box
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              <Button
-                type="button"
-                color="primary"
-                className="form__custom-button"
-                variant="outlined"
-                style={{ margin: 5 }}
-                onClick={async () => {
-                  await crearUsuario();
+              <Box
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
                 }}
               >
-                Crear Cuenta
-              </Button>
-            </Box>
-            <Box
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              <Button
-                variant="contained"
-                style={{ alignItems: 'center', marginBottom: '10px' }}
-                onClick={() => {
-                  navigate('/cuenta/seleccionar' + location.search);
+                <TextField
+                  id="filled-basic"
+                  label="Usuario"
+                  variant="filled"
+                  value={username}
+                  onChange={(evt) => {
+                    setUsername(evt.target.value);
+                  }}
+                />
+                <TextField
+                  id="filled-basic"
+                  label="Contraseña"
+                  variant="filled"
+                  type={showPassword ? 'text' : 'password'}
+                  value={password}
+                  onChange={(evt) => {
+                    setPassword(evt.target.value);
+                  }}
+                />
+              </Box>
+              <Box
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
                 }}
               >
-                Volver a Seleccion de Cuenta
-              </Button>
+                <Button
+                  type="button"
+                  color="primary"
+                  className="form__custom-button"
+                  variant="outlined"
+                  style={{ margin: 5 }}
+                  onClick={async () => {
+                    await crearUsuario();
+                  }}
+                >
+                  Crear Cuenta
+                </Button>
+              </Box>
+              <Box
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <Button
+                  variant="contained"
+                  style={{ alignItems: 'center', marginBottom: '10px' }}
+                  onClick={() => {
+                    navigate('/cuenta/seleccionar' + location.search);
+                  }}
+                >
+                  Volver a Seleccion de Cuenta
+                </Button>
+              </Box>
             </Box>
-          </Box>
-        </Container>
-      </Box>
-    </Container>
+          </Container>
+        </Box>
+      </Container>
+    </div>
   );
 };
 

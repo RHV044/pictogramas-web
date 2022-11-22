@@ -27,6 +27,8 @@ import {
   TraducirKeyword,
 } from '../../services/pictogramas-services';
 import PredictivoImagen from './assets/adivinar.png';
+import { AutoAwesome, QuestionMarkRounded, SettingsSuggestRounded, StarsRounded } from '@mui/icons-material';
+import Button from '@mui/material/Button';
 
 export default function Sugeridos(props: any) {
   const [checked, setChecked] = useState(false);
@@ -215,53 +217,29 @@ export default function Sugeridos(props: any) {
   );
 
   const imagen = (
-    <Card
-    sx={{ maxWidth: 150, minWidth: 40, maxHeight: 150, minHeight: 40 }}
-    style={{
-      marginTop: '10px',
-      paddingLeft: 5,
-      paddingRight: 5,
-      paddingBottom: 60,
-    }}
-      onClick={() => {}}
-    >
-      <CardActionArea
-        onClick={() => {
-          handleChange();
-        }}
-      >
-        <CardMedia
-          component="img"
-          height="160"
-          width="160"
-          src={PredictivoImagen}
-          alt="Recientes"
-        ></CardMedia>
-        <CardHeader
-          style={{
-            height: '50%',
-            width: '95%',
-            marginBottom: 1,
-            paddingBottom: 0,
-          }}
-        ></CardHeader>
-        <CardContent
-          style={{
-            marginTop: 1,
-            paddingTop: 0,
-            marginLeft: 4,
-            paddingLeft: 0,
-            fontWeight: 'bold',
-          }}
-        >
-          SUGERIDOS
-        </CardContent>
-      </CardActionArea>
-    </Card>
+    <Grid item
+       xs={4} sm={4} md={4} >
+      <Container>
+        <Card>
+          <CardActionArea
+            onClick={() => {
+              handleChange();
+            }} >
+            <CardContent>
+              <Button variant="text"
+                startIcon={<AutoAwesome />}
+                sx={{typography: { sm: 'body1', xs: 'body2', color: '#00A7E1'}, fontFamily:'Arial', 
+                  fontWeight:'medium'}}> SUGERIDOS
+              </Button>
+            </CardContent>
+          </CardActionArea>
+        </Card>
+      </Container>
+    </Grid>
   );
 
   return (
-    <Box style={{ marginLeft: 20 }}>
+    <Box style={{ paddingTop: 16 }}>
       {imagen}
       {checked && <Box sx={{ display: 'flex' }}>{pictogramasRecientes}</Box>}
     </Box>
