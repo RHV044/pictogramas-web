@@ -41,7 +41,7 @@ export const Trash: FC<TrashDrops> = memo(function CellDrop({
   }))
 
   const isActive = canDrop && isOver
-  let backgroundColor = 'white'
+  let backgroundColor = '#e7ebf0'
   if (isActive) {
     backgroundColor = 'grey'
   } else if (canDrop) {
