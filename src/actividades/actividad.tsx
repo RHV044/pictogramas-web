@@ -79,11 +79,12 @@ export default function Actividad() {
               console.log('categorias: ', cats);
               cats.forEach(c => {
                 if(verificarValidezDeCategoria(c,cats,categoriasPorUsuario, user)){
-                  categoriasValidadas.push(c);
+                  if(c.esCategoriaFinal)
+                    categoriasValidadas.push(c);
                 }                
               });
               console.log('categorias en base a la validez obtenidas: ', categoriasValidadas);              
-              setCategorias(categoriasValidadas.filter((c :ICategoria) => c.nombre !== "Vocabulario nuclear" && c.nombre !== "Vocabulario central").sort(() => (Math.random() > 0.5 ? 1 : -1)));
+              setCategorias(categoriasValidadas.filter((c :ICategoria) => c.nombre !== "Vocabulario nuclear" && c.nombre !== "Vocabulario central" && c.esCategoriaFinal === true).sort(() => (Math.random() > 0.5 ? 1 : -1)));
               ObtenerPictogramas().then((pics: IPictogram[]) => {
                 let picsArasaac = pics.filter((p) => p.idArasaac > 0);
                 setPictogramas(picsArasaac);
