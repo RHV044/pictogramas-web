@@ -24,8 +24,8 @@ import { CircularProgress } from '@mui/material';
 import { Check } from '@mui/icons-material';
 import { UpdateService } from '../services/update-service';
 
-const pages = ['Pizarras', 'Actividades', 'Estadisticas'];
-const settings = ['Configuracion', 'Cambiar Cuenta'];
+const pages = ['Pizarras', 'Actividades', 'Estadísticas'];
+const settings = ['Configuración', 'Cambiar Cuenta'];
 
 const ResponsiveAppBar = () => {
   let navigate = useNavigate();
@@ -79,11 +79,11 @@ const ResponsiveAppBar = () => {
   };
 
   const handleChange = (page: string) => {
-    if (page === 'Configuracion') {
+    if (page === 'Configuración') {
       setConfiguracionOpen(true);
     } else {
       navigate(
-        `/${page.toLocaleLowerCase().replace(/ /g, '')}` + location.search
+        `/${page.toLocaleLowerCase().replace(/ /g, '').normalize("NFD").replace(/[\u0300-\u036f]/g, "")}` + location.search
       );
     }
   };
