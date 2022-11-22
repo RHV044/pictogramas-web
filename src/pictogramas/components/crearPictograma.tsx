@@ -15,6 +15,8 @@ import { usuarioLogueado } from '../../services/usuarios-services';
 import { IndexedDbService } from '../../services/indexeddb-service';
 import { IPictogram } from '../models/pictogram';
 import { IPictogramaImagen, IPictogramaPropioImagen } from '../models/pictogramaImagen';
+import { AddRounded, AttachFileRounded, CancelRounded, PlusOneRounded, SaveRounded } from '@mui/icons-material';
+import { textTransform } from '@mui/system';
 
 export default function FormDialog() {
   const [open, setOpen] = useState(false);
@@ -105,25 +107,26 @@ export default function FormDialog() {
 
   return (
     <div>
-      <Button style={{marginBottom: 0}} variant="outlined" onClick={handleClickOpen}>
-        Crear Pictograma
+      <Button style={{marginBottom: 0}} variant="contained" onClick={handleClickOpen} 
+      startIcon={<AddRounded />} sx={{fontFamily:'Arial', fontWeight:'bold', background: '#00A7E1'}}>
+        Nuevo Pictograma
       </Button>
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Creacion de Pictograma</DialogTitle>
+        <DialogTitle>Agregar un pictograma propio</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Seleccione las propiedades y categorias con las que cumple el
-            pictograma para ayudar en la busqueda y filtrado
+            Ingrese el nombre del pictograma propio que desea crear, las propiedades que cumple, 
+            la imagen del mismo y las categorías a las que aplica.
           </DialogContentText>
           <br />
-          <TextField id="outlined-basic" label="Palabra" variant="outlined" 
+          <TextField id="outlined-basic" label="Nombre del pictograma" variant="outlined" 
             value={keyword} onChange={(evt) => setKeyword(evt.target.value)} />
           <br />
-          Violento <Checkbox checked={violento} onChange={(e) => setViolento(e.target.checked)} />
+          <Checkbox checked={violento} onChange={(e) => setViolento(e.target.checked)} /> Contenido violento
           <br />
-          Sexual <Checkbox checked={sexual} onChange={(e) => setSexual(e.target.checked)}/>
+          <Checkbox checked={sexual} onChange={(e) => setSexual(e.target.checked)}/> Contenido sexual
           <br />
-          Pictograma simple <Checkbox checked={esquematico} onChange={(e) => setEsquematico(e.target.checked)}/>
+          <Checkbox checked={esquematico} onChange={(e) => setEsquematico(e.target.checked)}/> Pictograma simple
           {/* <br />
           Aac <Checkbox checked={aac} onChange={(e) => setAac(e.target.checked)}/>
           <br />
@@ -138,12 +141,13 @@ export default function FormDialog() {
             <Filtros
               filtros={categorias.filter(c => c.esCategoriaFinal === true).sort((c1, c2) => c1.nombre.localeCompare(c2.nombre))}
               setFiltros={setCategoriasFiltradas}
-              filtro={'Categorias'}
+              filtro={'Categorías a las que aplica'}
             />
           )}
           <br />
-          <Button variant="contained" component="label">
-            Adjuntar Archivo
+          <Button variant="contained" component="label" 
+          startIcon={<AttachFileRounded />} sx={{fontFamily:'Arial', fontWeight:'bold', background: '#00A7E1'}}>
+            Adjuntar imagen
             <input type="file" hidden 
             onChange={(evt) => { 
               if (evt.target.files){
@@ -158,8 +162,10 @@ export default function FormDialog() {
           {fileName !== "" && <div> Archivo: {fileName} </div>}
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCrear}>Crear</Button>
-          <Button onClick={handleClose}>Cancelar</Button>
+          <Button onClick={handleClose} variant="outlined" 
+      startIcon={<CancelRounded />} sx={{fontFamily:'Arial', fontWeight:'bold', color:'#00A7E1'}}>Cancelar</Button>
+          <Button onClick={handleCrear} variant="contained" 
+      startIcon={<SaveRounded />} sx={{fontFamily:'Arial', fontWeight:'bold', background: '#00A7E1'}}>Crear</Button>
         </DialogActions>
       </Dialog>
     </div>

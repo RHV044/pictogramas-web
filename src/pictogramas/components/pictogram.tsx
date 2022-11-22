@@ -16,7 +16,6 @@ export default function Pictogram({
           component="img"
           height="300"
           image={pictoImageUrl}
-          alt="green iguana"
         />
         <CardContent>
           <Typography gutterBottom variant="h5" component="div">
