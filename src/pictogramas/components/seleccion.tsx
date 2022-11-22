@@ -12,7 +12,7 @@ import { useEffect, useRef, useState } from 'react';
 import { IPictogram } from '../models/pictogram';
 import React from 'react';
 import Speech from 'react-speech';
-import { ObtenerInterpretacionNatural, PictogramaNoSeDebeTraducir } from '../services/pictogramas-services';
+import { ObtenerInterpretacionNatural, PictogramaNoSeDebeTraducir, TraducirKeyword } from '../services/pictogramas-services';
 import { lightBlue } from '@mui/material/colors';
 import { useSpeechSynthesis } from 'react-speech-kit';
 import { Delete, DeleteRounded, Mic, MicRounded } from '@mui/icons-material';
@@ -34,7 +34,7 @@ export default function Seleccion(props: any) {
   }, [props.pictogramas]);
 
   useEffect(() => {
-    let texto = props.pictogramas.map((p) => p.keywords[0].keyword).toString();
+    let texto = props.pictogramas.map((p) => TraducirKeyword(p.keywords[0].keyword)).toString();
     // ObtenerInterpretacionNatural(texto).then(interpretacion => {
     //   setTextoInterpretado(interpretacion)
     // })
@@ -91,9 +91,9 @@ export default function Seleccion(props: any) {
                           ? pictograma.imagen
                           : `data:image/png;base64,${pictograma.imagen}`
                       }
-                      alt={pictograma.keywords.length > 1 && pictograma.keywords[0].tipo !== 1 &&
+                      alt={TraducirKeyword(pictograma.keywords.length > 1 && pictograma.keywords[0].tipo !== 1 &&
                         PictogramaNoSeDebeTraducir(pictograma) ? pictograma.keywords[1].keyword.toLocaleUpperCase() :
-                        pictograma.keywords[0].keyword.toLocaleUpperCase()}
+                        pictograma.keywords[0].keyword.toLocaleUpperCase())}
                     ></CardMedia>
                     <CardContent style={{ paddingTop: 4, paddingLeft: 4}} >
                       <Typography 
@@ -101,9 +101,9 @@ export default function Seleccion(props: any) {
                         fontFamily="Arial"
                         fontWeight="medium"
                         color="#00A7E1" >
-                        {pictograma.keywords.length > 1 && pictograma.keywords[0].tipo !== 1 && 
+                        {TraducirKeyword(pictograma.keywords.length > 1 && pictograma.keywords[0].tipo !== 1 && 
                           PictogramaNoSeDebeTraducir(pictograma) ? pictograma.keywords[1].keyword.toLocaleUpperCase() : 
-                          pictograma.keywords[0].keyword.toLocaleUpperCase()}  
+                          pictograma.keywords[0].keyword.toLocaleUpperCase())}  
                       </Typography>
                     </CardContent>
                   </CardActionArea>

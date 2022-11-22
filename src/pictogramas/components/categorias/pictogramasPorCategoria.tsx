@@ -19,7 +19,7 @@ import {
   usuarioLogueado,
 } from '../../../services/usuarios-services';
 import { IPictogram } from '../../models/pictogram';
-import { ObtenerPictogramasPorCategoria, PictogramaNoSeDebeTraducir } from '../../services/pictogramas-services';
+import { ObtenerPictogramasPorCategoria, PictogramaNoSeDebeTraducir, TraducirKeyword } from '../../services/pictogramas-services';
 import { IndexedDbService } from '../../../services/indexeddb-service';
 import FavoritoButton from '../FavoritoButton';
 import Categoria from './categoria';
@@ -123,7 +123,7 @@ export default function PictogramasPorCategoria(props: any) {
                             ? pictograma.imagen
                             : `data:image/png;base64,${pictograma.imagen}`
                         }
-                        alt={pictograma.keywords.length > 1 && pictograma.keywords[0].tipo !== 1 && PictogramaNoSeDebeTraducir(pictograma) ? pictograma.keywords[1].keyword.toLocaleUpperCase() : pictograma.keywords[0].keyword.toLocaleUpperCase()}
+                        alt={TraducirKeyword(pictograma.keywords.length > 1 && pictograma.keywords[0].tipo !== 1 && PictogramaNoSeDebeTraducir(pictograma) ? pictograma.keywords[1].keyword.toLocaleUpperCase() : pictograma.keywords[0].keyword.toLocaleUpperCase())}
                       ></CardMedia>
                       <CardHeader
                         style={{
@@ -152,7 +152,7 @@ export default function PictogramasPorCategoria(props: any) {
                           }}
                           gutterBottom
                         > */}
-                          {pictograma.keywords.length > 1 && pictograma.keywords[0].tipo !== 1 && PictogramaNoSeDebeTraducir(pictograma) ? pictograma.keywords[1].keyword.toLocaleUpperCase() : pictograma.keywords[0].keyword.toLocaleUpperCase()}
+                          {TraducirKeyword(pictograma.keywords.length > 1 && pictograma.keywords[0].tipo !== 1 && PictogramaNoSeDebeTraducir(pictograma) ? pictograma.keywords[1].keyword.toLocaleUpperCase() : pictograma.keywords[0].keyword.toLocaleUpperCase())}
                         {/* </Typography> */}
                       </CardContent>
                     </CardActionArea>
