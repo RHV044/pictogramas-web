@@ -86,13 +86,17 @@ export class UpdateService {
     if (this.state.pictogramasDescargados) porcentaje = porcentaje + 15; // 20
     if (this.state.imagenesDescargadas) porcentaje = porcentaje + 50; // 60
 
+    if (this.state.categoriasDescargadas) porcentaje = porcentaje + 15; // 15 
+    if (this.state.pictogramasDescargados) porcentaje = porcentaje + 20; // 20
+    if (this.state.imagenesDescargadas) porcentaje = porcentaje + 60; // 60
+
     // SACAR SI EL PORCENTAJE ES RARO
-    if (this.state.actualizacionPizarras) porcentaje = porcentaje + 5;
-    if (this.state.actualizacionUsuarios) porcentaje = porcentaje + 5;
-    if (this.state.actualizacionPictogramas) porcentaje = porcentaje + 5;
-    if (this.state.actualizacionFavoritos) porcentaje = porcentaje + 5;
-    if (this.state.actualizacionCategoriasPorUsuario) porcentaje = porcentaje + 5;
-    if (this.state.actualizacionRecientes) porcentaje = porcentaje + 5;
+    // if (this.state.actualizacionPizarras) porcentaje = porcentaje + 5;
+    // if (this.state.actualizacionUsuarios) porcentaje = porcentaje + 5;
+    // if (this.state.actualizacionPictogramas) porcentaje = porcentaje + 5;
+    // if (this.state.actualizacionFavoritos) porcentaje = porcentaje + 5;
+    // if (this.state.actualizacionCategoriasPorUsuario) porcentaje = porcentaje + 5;
+    // if (this.state.actualizacionRecientes) porcentaje = porcentaje + 5;
     return porcentaje;
   }
 
