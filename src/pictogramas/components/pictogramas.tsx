@@ -318,7 +318,10 @@ export default function Pictogramas(props: any) {
   };
 
   return (
-    <Box component="div" sx={{ backgroundColor: "#e7ebf0" }}>
+    <Box component="div" 
+      sx={{ width: '100vw',
+        minHeight: '100vh',
+        backgroundColor: "#e7ebf0" }}>
       {user &&
         <ResponsiveAppBar />
       }
