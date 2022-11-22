@@ -599,27 +599,27 @@ export class UpdateService {
                       'PICTOGRAMAS PROPIOS LOCALES: ',
                       pictogramasLocales
                     );
-                    if (
-                      (pictograma.pendienteCreacion === false ||
-                        pictograma.pendienteCreacion === undefined ||
-                        pictograma.pendienteCreacion === null) &&
-                      (pictograma.pendienteEliminacion === false ||
-                        pictograma.pendienteEliminacion === undefined ||
-                        pictograma.pendienteEliminacion === null) &&
-                        usuarioId === pictograma.idUsuario && 
-                      !pictogramas.some(
-                        (p) => p.identificador === pictograma.identificador && p.idUsuario === pictograma.idUsuario
-                      )
-                    ) {
-                      db.deleteValueWithIdentificador(
-                        'pictogramasPropios',
-                        pictograma.identificador
-                      );
-                      db.deleteValueWithIdentificador(
-                        'imagenesPropias',
-                        pictograma.identificador
-                      );
-                    }
+                    // if (
+                    //   (pictograma.pendienteCreacion === false ||
+                    //     pictograma.pendienteCreacion === undefined ||
+                    //     pictograma.pendienteCreacion === null) &&
+                    //   (pictograma.pendienteEliminacion === false ||
+                    //     pictograma.pendienteEliminacion === undefined ||
+                    //     pictograma.pendienteEliminacion === null) &&
+                    //     usuarioId === pictograma.idUsuario && 
+                    //   !pictogramas.some(
+                    //     (p) => p.identificador === pictograma.identificador && p.idUsuario === pictograma.idUsuario
+                    //   )
+                    // ) {
+                    //   db.deleteValueWithIdentificador(
+                    //     'pictogramasPropios',
+                    //     pictograma.identificador
+                    //   );
+                    //   db.deleteValueWithIdentificador(
+                    //     'imagenesPropias',
+                    //     pictograma.identificador
+                    //   );
+                    // }
                   });
                 }
               );
