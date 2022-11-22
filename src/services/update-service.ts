@@ -69,14 +69,14 @@ export class UpdateService {
 
   constructor() {
     console.log('Inicializando UPDATE SERVICE');
-    this.initialize();
-    this.addEventsListener();
-    this.sincronizar();
+    // this.initialize();
+    // this.addEventsListener();
+    // this.sincronizar();
   }
 
   porcentajeDeDescarga() {
-    let porcentaje = 0;
-    if (this.state.categoriasDescargadas) porcentaje = porcentaje + 20;
+    let porcentaje = 5;
+    if (this.state.categoriasDescargadas) porcentaje = porcentaje + 15;
     if (this.state.pictogramasDescargados) porcentaje = porcentaje + 20;
     if (this.state.imagenesDescargadas) porcentaje = porcentaje + 60;
     return porcentaje
