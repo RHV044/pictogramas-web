@@ -24,7 +24,7 @@ import {
 } from '../../services/usuarios-services';
 import { IndexedDbService } from '../../services/indexeddb-service';
 import imagenUsuario from '../../commons/imagen-usuario.png';
-import Logo from '../../commons/Logo-PictogAR-viejo.png';
+import Logo from '../../commons/Logo-PictogAR.png';
 
 const SeleccionarCuenta = (props: any) => {
   let navigate = useNavigate();
@@ -59,11 +59,11 @@ const SeleccionarCuenta = (props: any) => {
       <Box
         style={{
           display: 'flex',
-          alignItems: 'center',
           justifyContent: 'center',
-        }}
-      >
-        <img alt="Qries" src={Logo} height="65" />
+          marginTop: 10,
+          marginBottom: 10
+        }} >
+        <img alt="PictogAr" src={Logo} height="65" />
       </Box>
       <Box
         style={{
