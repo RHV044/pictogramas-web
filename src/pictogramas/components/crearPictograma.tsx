@@ -123,7 +123,7 @@ export default function FormDialog() {
           <br />
           Sexual <Checkbox checked={sexual} onChange={(e) => setSexual(e.target.checked)}/>
           <br />
-          Esquematico <Checkbox checked={esquematico} onChange={(e) => setEsquematico(e.target.checked)}/>
+          Pictograma simple <Checkbox checked={esquematico} onChange={(e) => setEsquematico(e.target.checked)}/>
           {/* <br />
           Aac <Checkbox checked={aac} onChange={(e) => setAac(e.target.checked)}/>
           <br />
