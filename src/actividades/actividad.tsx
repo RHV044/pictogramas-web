@@ -46,9 +46,6 @@ export default function Actividad() {
   const [categoriasReorganizadas, setCategoriasReorganizadas] = useState(false);
   const [racha, setRacha] = useState(0);
   const { speak } = useSpeechSynthesis();
-  const [categoriasPorUsuario, setCategoriasPorUsuario] = useState(
-    [] as ICategoriaPorUsuario[]
-  );
   const [user, setUser] = useState(null as IUsuario | null);
 
   useEffect(() => {
@@ -58,37 +55,15 @@ export default function Actividad() {
   const inicializar = () => {
     setPictogramaCargado(false);
     setCategoriasReorganizadas(false);
-    getUsuarioLogueado().then((usuario) => {
+    getUsuarioLogueado().then(async (usuario) => {
       if(usuario === null || usuario === undefined){
         // Redirijo a seleccionar cuenta
         navigate('/cuenta/seleccionar' + location.search);
       } else {
         setUser(usuario);
         console.log('USUARIO: ', usuario);
-        if((user?.nivel !== undefined ? user?.nivel : 0) === 3){
-          console.log('Nivel personalizado');
-          IndexedDbService.create().then(async (db) => {
-            await db.searchCategoriasPorUsuarioByUser((user && user.id) ? user.id : 0).then(cxus => {
-              cxus = cxus.filter(c => !c.pendienteEliminar);
-              setCategoriasPorUsuario(cxus);
-            })});
-          console.log('categoriasPorUsuario seteadas: ', categoriasPorUsuario);
-            ObtenerCategoriasIndexDB().then(async (cats) => {
-              //setCategorias(cats);
-              let categoriasValidadas : ICategoria[] = [];
-              console.log('categorias: ', cats);
-              cats.forEach(c => {
-                if(verificarValidezDeCategoria(c,cats,categoriasPorUsuario, user)){
-                  categoriasValidadas.push(c);
-                }                
-              });
-              console.log('categorias en base a la validez obtenidas: ', categoriasValidadas);              
-              setCategorias(categoriasValidadas.filter((c :ICategoria) => c.nombre !== "Vocabulario nuclear" && c.nombre !== "Vocabulario central").sort(() => (Math.random() > 0.5 ? 1 : -1)));
-              ObtenerPictogramas().then((pics: IPictogram[]) => {
-                let picsArasaac = pics.filter((p) => p.idArasaac > 0);
-                setPictogramas(picsArasaac);
-              });
-            });
+        if((usuario?.nivel !== undefined ? usuario?.nivel : 0) === 3){
+          await InicializarActividadNivelPersonalizado();
         } else {
           ObtenerCategoriasIndexDB().then((cats) => {            
             let categoriasParaUsuario = cats.filter(c => c.nivel <=  (user === undefined || user === null || user?.nivel === undefined ? 0 : user?.nivel)); //TODO chequear si dejo ese valor en 0 o en 1 para que por lo menos matchee con algo
@@ -99,6 +74,52 @@ export default function Actividad() {
             });
           });
         }
+      }
+
+      async function InicializarActividadNivelPersonalizado() {
+        let catsPorUsuario;
+        console.log('Nivel personalizado');
+        await IndexedDbService.create().then(async (db) => {
+          catsPorUsuario = await db.searchCategoriasPorUsuarioByUser(user && user.id ? user.id : 0)
+          catsPorUsuario = catsPorUsuario.filter((c) => !c.pendienteEliminar);
+            // .then((cxus) => {
+            //   catsPorUsuario = cxus.filter((c) => !c.pendienteEliminar);
+            // });
+          console.log(
+            'categoriasPorUsuario seteadas: ',
+            catsPorUsuario
+          );
+            await ObtenerCategoriasIndexDB().then(async (cats) => {
+              //setCategorias(cats);
+              let categoriasValidadas: ICategoria[] = [];
+              console.log('categorias: ', cats);
+              cats.forEach((c) => {
+                if (
+                  verificarValidezDeCategoria(c, cats, catsPorUsuario, user)
+                ) {
+                  if (c.esCategoriaFinal) categoriasValidadas.push(c);
+                }
+              });
+              console.log(
+                'categorias en base a la validez obtenidas: ',
+                categoriasValidadas
+              );
+              setCategorias(
+                categoriasValidadas
+                  .filter(
+                    (c: ICategoria) =>
+                      c.nombre !== 'Vocabulario nuclear' &&
+                      c.nombre !== 'Vocabulario central' &&
+                      c.esCategoriaFinal === true
+                  )
+                  .sort(() => (Math.random() > 0.5 ? 1 : -1))
+              );
+              ObtenerPictogramas().then((pics: IPictogram[]) => {
+                let picsArasaac = pics.filter((p) => p.idArasaac > 0);
+                setPictogramas(picsArasaac);
+              });
+            });
+        });
       }
     }) 
   };

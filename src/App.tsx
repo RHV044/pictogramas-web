@@ -13,7 +13,7 @@ import SeleccionDeNivel from './actividades/seleccionDeNivel';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import Actividad from './actividades/actividad';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { UpdateService } from './services/update-service';
 import { TouchBackend } from 'react-dnd-touch-backend';
 import '@fontsource/roboto/300.css';
@@ -26,21 +26,53 @@ import { changeValue } from './redux/slices/porcentajeSlice';
 function App() {
   const isMobile = window.innerWidth < 600;
   const dispatch = useDispatch();
+  const [updating, setUpdating] = useState(false)
 
   useEffect(() => {
-    let updateService = new UpdateService();
     console.log('URL PICTOGRAMAS: ', process.env.REACT_APP_URL_PICTOGRAMAS);
     console.log('es mobile? : ', isMobile);
-    let porcentajeActual = updateService.porcentajeDeDescarga();
-    let timer = setInterval(function () {
-      porcentajeActual = updateService.porcentajeDeDescarga();
-      dispatch(changeValue(porcentajeActual));
-      console.log('Porcentaje de descarga de update service: ', porcentajeActual);
-      if (porcentajeActual >= 100) {
-        clearInterval(timer);
-        return;
+    // let porcentajeActual = updateService.porcentajeDeDescarga();
+    // let timer = setInterval(function () {
+    //   porcentajeActual = updateService.porcentajeDeDescarga();
+    //   dispatch(changeValue(porcentajeActual));
+    //   console.log('Porcentaje de descarga de update service: ', porcentajeActual);
+    //   if (porcentajeActual >= 100) {
+    //     clearInterval(timer);
+    //     return;
+    //   }
+    // }, 5000);
+    window.addEventListener('BotonSincronizar', () => {
+      if (!updating){
+        setUpdating(true)
+        console.log('SE UTILIZA BOTON SINCRONIZAR');
+        let updateService = new UpdateService();
+        updateService.initialize();
+        updateService.sincronizar();
+        let nuevoPorcentaje = 5
+        let porcentajeActual = updateService.porcentajeDeDescarga();
+        if (porcentajeActual > nuevoPorcentaje){
+          nuevoPorcentaje = porcentajeActual
+        }
+        dispatch(changeValue(nuevoPorcentaje));
+
+        let timer = setInterval(function () {
+          porcentajeActual = updateService.porcentajeDeDescarga();
+          if (porcentajeActual > nuevoPorcentaje){
+            nuevoPorcentaje = porcentajeActual
+          }
+          dispatch(changeValue(nuevoPorcentaje));
+          console.log('Porcentaje de descarga de update service: ', porcentajeActual);
+          if (porcentajeActual >= 100) {
+            clearInterval(timer);
+            let timer2 = setInterval(function () {
+              // updateService.reiniciarState();
+              setUpdating(false)
+            } , 5000);         
+            return;
+          }
+        }, 5000);
       }
-    }, 5000);
+    });
   }, []);
 
   function verificarDescarga() {}

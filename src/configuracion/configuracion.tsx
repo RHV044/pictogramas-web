@@ -4,6 +4,7 @@ import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import {
   Autocomplete,
+  Box,
   Button,
   Card,
   CardActionArea,
@@ -229,59 +230,72 @@ export default function Configuracion() {
         <div>
           <ResponsiveAppBar />
           <Container>
-            <FormControl component="fieldset" style={{ width: '50%' }}>
+            <FormControl component="fieldset" style={{ width: "50%" }}>
               <FormLabel style={{ padding: 10 }}>
                 <h1>
-                  {' '}
+                  {" "}
                   <SettingsIcon color="action" /> Configuración
                 </h1>
               </FormLabel>
-              <Paper style={{ width: '100%' }}>                
-                <Container style={{ padding: 10 }}>                  
-                  Nombre{' '}
+              <Paper style={{ width: "100%" }}>
+                <Container style={{ padding: 10 }}>
+                  Nombre{" "}
                   <TextField
                     type="text"
                     defaultValue={userLogueado.nombreUsuario}
                     onChange={(evt) => setNombreUsuario(evt.target.value)}
-                  />{' '}
+                  />{" "}
                   <br /> <br /> <br />
-                  <Card                        
-                    sx={{ maxWidth: 245 }}               
-                    style={{ marginTop: '5px' }}
-                    onClick={() => {
-                    }}
+                  <Card
+                    sx={{ maxWidth: 245 }}
+                    style={{ marginTop: "5px" }}
+                    onClick={() => {}}
                   >
                     <CardActionArea>
                       <CardMedia
                         component="img"
                         height="140"
-                        src={userLogueado && userLogueado.imagen && userLogueado.imagen !== "" ? userLogueado.imagen : imagenUsuario}
+                        src={
+                          userLogueado &&
+                          userLogueado.imagen &&
+                          userLogueado.imagen !== ""
+                            ? userLogueado.imagen
+                            : imagenUsuario
+                        }
                         alt={userLogueado.nombreUsuario}
-                      >
-                      </CardMedia>
-                      <CardHeader title={userLogueado.nombreUsuario}></CardHeader>
+                      ></CardMedia>
+                      <CardHeader
+                        title={userLogueado.nombreUsuario}
+                      ></CardHeader>
                       <CardContent></CardContent>
                     </CardActionArea>
                   </Card>
-                  <Button style={{marginTop: 5}} variant="contained" component="label">
+                  <Button
+                    style={{ marginTop: 5 }}
+                    variant="contained"
+                    component="label"
+                  >
                     Adjuntar Imagen para Usuario
-                    <input type="file" hidden 
-                    onChange={(evt) => { 
-                      if (evt.target.files){
-                        guardarImagenBase64(evt.target.files[0]) 
-                        navigate('../pictogramas');
-                      }          
-                      console.log(file)
-                    }}/>
+                    <input
+                      type="file"
+                      hidden
+                      onChange={(evt) => {
+                        if (evt.target.files) {
+                          guardarImagenBase64(evt.target.files[0]);
+                          navigate("../pictogramas");
+                        }
+                        console.log(file);
+                      }}
+                    />
                   </Button>
                   <br></br>
                   <br></br>
-                  <FormControl sx={{ m: 1, minWidth: 120 }}>                     
+                  <FormControl sx={{ m: 1, minWidth: 120 }}>
                     <InputLabel id="nivel-select-label">Nivel</InputLabel>
                     <Select
                       labelId="nivel-select-label"
-                      id="nivel-select"                      
-                      value={nivel}                      
+                      id="nivel-select"
+                      value={nivel}
                       label="Nivel"
                       onChange={handleChange}
                       fullWidth
@@ -289,17 +303,16 @@ export default function Configuracion() {
                       <MenuItem value={0}>{niveles[0]}</MenuItem>
                       <MenuItem value={1}>{niveles[1]}</MenuItem>
                       <MenuItem value={2}>{niveles[2]}</MenuItem>
-                      <MenuItem value={3}>{niveles[3]}</MenuItem> 
-
+                      <MenuItem value={3}>{niveles[3]}</MenuItem>
                     </Select>
-                    <Tooltip title="Nivel Inicial:  - Nivel Intermedio: - Nivel Avanzado: ">
-                      <HelpOutline style={{marginTop:2 }}></HelpOutline>
+                    <Tooltip title="Nivel personalizado: permite elegir las categorías a mostrar">
+                      <HelpOutline style={{ marginTop: 2 }}></HelpOutline>
                     </Tooltip>
                   </FormControl>
                 </Container>
                 <FormGroup aria-label="center" style={{ paddingRight: 10 }}>
                   <FormControlLabel
-                    style={{ alignItems: 'left', marginLeft: 2 }}
+                    style={{ alignItems: "left", marginLeft: 2 }}
                     control={
                       <Checkbox
                         checked={violence}
@@ -310,7 +323,7 @@ export default function Configuracion() {
                     labelPlacement="end"
                   />
                   <FormControlLabel
-                    style={{ alignItems: 'left', marginLeft: 2 }}
+                    style={{ alignItems: "left", marginLeft: 2 }}
                     control={
                       <Checkbox
                         checked={sex}
@@ -321,80 +334,107 @@ export default function Configuracion() {
                     labelPlacement="end"
                   />
                   <FormControlLabel
-                    style={{ alignItems: 'left', marginLeft: 2 }}
+                    style={{ alignItems: "left", marginLeft: 2 }}
                     control={
                       <Checkbox
                         checked={schematic}
                         onChange={(evt) => setSchematic(evt?.target?.checked)}
                       />
                     }
-                    label="Esquematico"
+                    label="Sólo pictogramas simples"
                     labelPlacement="end"
                   />
                 </FormGroup>
               </Paper>
             </FormControl>
 
-            <br /><br />
+            <br />
+            <br />
             {
               <div>
                 <Switch
                   checked={personalizarCategorias}
                   onChange={handleChange}
                   disabled={true}
-                /> Personalizar Categorias
+                />{" "}
+                Personalizar Categorias
               </div>
             }
-            {
-              personalizarCategorias &&
+            {personalizarCategorias && (
               <div>
                 Seleccione las categorías que desea visualizar
                 {categorias.length > 0 && (
                   <FiltroCategoriasPorUsuario
                     // filtros={categorias.sort((a,b) => a.categoriaPadre - b.categoriaPadre)} //TODO ver si este ordenamiento se puede usar como corte
-                    filtros = {agruparElementos(categorias, (c => c.esCategoriaFinal === true))[0]}
+                    filtros={
+                      agruparElementos(
+                        categorias,
+                        (c) => c.esCategoriaFinal === true
+                      )[0]
+                    }
                     setFiltros={setCategoriasFiltradas}
                     categoriasDeUsuario={categoriasDeUsuario}
-                    filtro={'Categorias'}
+                    filtro={"Categorias"}
                   />
                 )}
               </div>
-            }
-
+            )}
 
             <Stack spacing={2} direction="row">
               <Button
                 variant="contained"
-                style={{ alignItems: 'center', margin: '10px' }}
-                onClick={async () => {                                    
-                  if(isNaN(Number(nivel))) {
-                    alert("Debes Seleccionar un nivel para actualizar el usuario");
-                  }
-                  else {
-                    await actualizarUsuario()
-                    if(Number(nivel) === 3){
+                style={{ alignItems: "center", margin: "10px" }}
+                onClick={async () => {
+                  if (isNaN(Number(nivel))) {
+                    alert(
+                      "Debes Seleccionar un nivel para actualizar el usuario"
+                    );
+                  } else {
+                    await actualizarUsuario();
+                    if (Number(nivel) === 3) {
                       //TODO revisar  las desmarcadas
-                      console.log("Categorias originales: ", categoriasPorUsuarioOriginal);
-                      console.log("Categorias filtradas: ", categoriasFiltradas);
-                      let categoriasAEliminar = categoriasPorUsuarioOriginal.filter((cat : ICategoriaPorUsuario) => !categoriasFiltradas.some((c : ICategoria) => c.id === cat.idCategoria));
-                      console.log("Categorias a eliminar: ", categoriasAEliminar);
-                      let categoriasAGuardar = categoriasFiltradas.filter((cat : ICategoria) => !categoriasPorUsuarioOriginal.some((c : ICategoriaPorUsuario) => c.idCategoria === cat.id));
+                      console.log(
+                        "Categorias originales: ",
+                        categoriasPorUsuarioOriginal
+                      );
+                      console.log(
+                        "Categorias filtradas: ",
+                        categoriasFiltradas
+                      );
+                      let categoriasAEliminar =
+                        categoriasPorUsuarioOriginal.filter(
+                          (cat: ICategoriaPorUsuario) =>
+                            !categoriasFiltradas.some(
+                              (c: ICategoria) => c.id === cat.idCategoria
+                            )
+                        );
+                      console.log(
+                        "Categorias a eliminar: ",
+                        categoriasAEliminar
+                      );
+                      let categoriasAGuardar = categoriasFiltradas.filter(
+                        (cat: ICategoria) =>
+                          !categoriasPorUsuarioOriginal.some(
+                            (c: ICategoriaPorUsuario) =>
+                              c.idCategoria === cat.id
+                          )
+                      );
                       console.log("Categorias a guardar: ", categoriasAGuardar);
                       await insertarCategoriasDeUsuario(categoriasAGuardar);
                       await eliminarCategoriasDeUsuario(categoriasAEliminar);
-                    }                  
+                    }
                     // window.location.reload();
-                    navigate('../pictogramas');
-                  }                  
+                    navigate("../pictogramas");
+                  }
                 }}
               >
                 Guardar
               </Button>
               <Button
                 variant="outlined"
-                style={{ alignItems: 'center', margin: '10px' }}
+                style={{ alignItems: "center", margin: "10px" }}
                 onClick={() => {
-                  navigate('../pictogramas');
+                  navigate("../pictogramas");
                 }}
               >
                 Cancelar

@@ -24,10 +24,11 @@ import { RootState } from '../redux/store';
 import { CircularProgress } from '@mui/material';
 import { Check, MenuRounded } from '@mui/icons-material';
 import Icon from '@mui/icons-material';
+import { UpdateService } from '../services/update-service';
 
 
-const pages = ['Principal', 'Pizarras', 'Actividades', 'Estadisticas'];
-const settings = ['Configuracion', 'Cambiar Cuenta'];
+const pages = ['Principal', 'Pizarras', 'Actividades', 'Estadísticas'];
+const settings = ['Configuración', 'Cambiar Cuenta'];
 
 const ResponsiveAppBar = () => {
   let navigate = useNavigate();
@@ -81,11 +82,11 @@ const ResponsiveAppBar = () => {
   };
 
   const handleChange = (page: string) => {
-    if (page === 'Configuracion') {
+    if (page === 'Configuración') {
       setConfiguracionOpen(true);
     } else {
       navigate(
-        `/${page.toLocaleLowerCase().replace(/ /g, '')}` + location.search
+        `/${page.toLocaleLowerCase().replace(/ /g, '').normalize("NFD").replace(/[\u0300-\u036f]/g, "")}` + location.search
       );
     }
   };
@@ -114,7 +115,7 @@ const ResponsiveAppBar = () => {
             <a href="/pictogramas">
               <img alt="PictogAr" src={Logo} height="40" />
             </a>
-            {porcentaje < 100 && (
+            {porcentaje > 0 && porcentaje < 100 && (
               <Box style={{ marginLeft: 25 }}>
                 <Box
                   sx={{
@@ -160,6 +161,20 @@ const ResponsiveAppBar = () => {
                 <Check></Check>
               </Box>
             )}
+            <Box>
+              <Button
+                key={'Sincronizar'}
+                onClick={() => {
+                  // let updateService = new UpdateService();
+                  // updateService.initialize();
+                  // updateService.sincronizar();
+                  dispatchEvent(new CustomEvent('BotonSincronizar'));
+                }}
+                sx={{ my: 2, color: 'white', display: 'block' }}
+              >
+                Sincronizar
+              </Button>
+            </Box>
           </Box>
 
           <Box sx={{ flexGrow: 0, display: { xs: 'flex', md: 'none' } }}>
@@ -213,7 +228,7 @@ const ResponsiveAppBar = () => {
             <a href="/pictogramas">
               <img alt="PictogAr" src={Logo} height="40" />
             </a>
-            {porcentaje < 100 && (
+            {porcentaje > 0 && porcentaje < 100 && (
               <Box style={{ marginLeft: 10 }}>
                 <Box
                   sx={{
@@ -256,6 +271,20 @@ const ResponsiveAppBar = () => {
                 <Check></Check>
               </Box>
             )}
+            <Box>
+              <Button
+                key={'Sincronizar'}
+                onClick={() => {
+                  // let updateService = new UpdateService();
+                  // updateService.initialize();
+                  // updateService.sincronizar();
+                  dispatchEvent(new CustomEvent('BotonSincronizar'));
+                }}
+                sx={{ my: 2, color: 'white', display: 'block' }}
+              >
+                Sincronizar
+              </Button>
+            </Box>
           </Box>
           <Box sx={{
             flexGrow: 1,
@@ -283,7 +312,7 @@ const ResponsiveAppBar = () => {
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Configuración">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                {userCargado &&
+                {userCargado && (
                   <Avatar
                     alt="Remy Sharp"
                     src={
@@ -294,7 +323,7 @@ const ResponsiveAppBar = () => {
                         : imagenUsuario
                     }
                   />
-                }
+                )}
               </IconButton>
             </Tooltip>
             <Menu
