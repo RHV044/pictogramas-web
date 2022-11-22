@@ -109,7 +109,7 @@ export async function ObtenerPictogramasPorCategoria(
     {
       console.log("TODOS LOS PICTOGRAMAS PROPIOS: ", pictogramasPropios)
       const pp = pictogramas.concat(pictogramasPropios)
-      let propios = pp.filter((p: IPictogram) => p.idUsuario === usuario?.id && p.pendienteEliminacion === false)
+      let propios = pp.filter((p: IPictogram) => p.idUsuario === usuario?.id && (p.pendienteEliminacion === null || p.pendienteEliminacion === undefined ||p.pendienteEliminacion === false))
       console.log("PICTOGRAMAS PROPIOS FILTRADOS: ", propios)
       return await setPictogramas(propios)
     }
