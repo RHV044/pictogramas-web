@@ -546,7 +546,10 @@ export default function Pizarras(this: any) {
   };
 
   return (
-    <div>
+    <div style={{
+      width: '100vw',
+      height: '100vh',
+      backgroundColor: "#e7ebf0" }}>
       <ResponsiveAppBar />
       <Container>
         <Container

@@ -16,14 +16,17 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import FormDialogValidarAcceso from '../configuracion/components/validarCambioConfiguracion';
 import { getUsuarioLogueado } from '../services/usuarios-services';
 import { IUsuario } from '../login/model/usuario';
-import imagenUsuario from '../commons/imagen-usuario.jpg';
+import imagenUsuario from '../commons/imagen-usuario.png';
+import imagenMenu from '../commons/imagen-menu.png';
 import Logo from '../commons/Logo-PictogAR.png';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
 import { CircularProgress } from '@mui/material';
-import { Check } from '@mui/icons-material';
+import { Check, MenuRounded } from '@mui/icons-material';
+import Icon from '@mui/icons-material';
 
-const pages = ['Pizarras', 'Actividades', 'Estadisticas'];
+
+const pages = ['Principal', 'Pizarras', 'Actividades', 'Estadisticas'];
 const settings = ['Configuracion', 'Cambiar Cuenta'];
 
 const ResponsiveAppBar = () => {
@@ -95,29 +98,34 @@ const ResponsiveAppBar = () => {
   };
 
   return (
-    <AppBar position="static" style={{ marginBottom: 10 }}>
-      <Container maxWidth="xl">
+    <AppBar position="static" style={{ marginBottom: 0 }}>
+      <Container maxWidth="xl" style={{ background: '#003882' }}>
         <Toolbar disableGutters>
           {configuracionOpen && (
             <FormDialogValidarAcceso
               cerrarValidarConfiguracion={cerrarValidarConfiguracion}
             />
           )}
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+          <Box sx={{
+            display: { xs: 'none', md: 'flex' },
+            flexGrow: 0,
+            alignItems: 'center'
+          }}>
             <a href="/pictogramas">
-              <img alt="Qries" src={Logo} height="65" />
+              <img alt="PictogAr" src={Logo} height="40" />
             </a>
             {porcentaje < 100 && (
-              <Box style={{ marginLeft: 10 }}>
+              <Box style={{ marginLeft: 25 }}>
                 <Box
                   sx={{
                     position: 'relative',
+                    alignContent: 'center',
                     display: 'inline-flex',
-                    marginTop: 0,
-                    paddingTop: 1.5,
+                    align: 'center',
+                    marginLeft: 3
                   }}
                 >
-                  <CircularProgress color="warning" />
+                  <CircularProgress color="inherit" />
                   <Box
                     sx={{
                       top: 0,
@@ -128,13 +136,12 @@ const ResponsiveAppBar = () => {
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      marginTop: 2,
                     }}
                   >
                     <Typography
                       variant="button"
                       component="div"
-                      color="text.secondary"
+                      color="#fff"
                       display="block"
                     >{`${porcentaje.toString()}%`}</Typography>
                   </Box>
@@ -146,9 +153,8 @@ const ResponsiveAppBar = () => {
                 sx={{
                   position: 'relative',
                   display: 'inline-flex',
-                  marginTop: 1,
-                  paddingTop: 1.5,
-                  marginLeft: 3,
+                  align: 'center',
+                  marginLeft: 3
                 }}
               >
                 <Check></Check>
@@ -156,16 +162,16 @@ const ResponsiveAppBar = () => {
             )}
           </Box>
 
-          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+          <Box sx={{ flexGrow: 0, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
               size="large"
-              aria-label="account of current user"
+              aria-label="Menú"
               aria-controls="menu-appbar"
               aria-haspopup="true"
               onClick={handleOpenNavMenu}
               color="inherit"
             >
-              <MenuIcon />
+              <MenuRounded />
             </IconButton>
             <Menu
               id="menu-appbar"
@@ -182,24 +188,30 @@ const ResponsiveAppBar = () => {
               open={Boolean(anchorElNav)}
               onClose={handleCloseNavMenu}
               sx={{
-                display: { xs: 'block', md: 'none' },
-              }}
-            >
+                display: { xs: 'block', md: 'none' }
+              }} >
               {pages.map((page) => (
                 <MenuItem
                   key={page}
                   onClick={() => {
                     handleChange(page);
                   }}
-                >
-                  <Typography textAlign="center">{page}</Typography>
+                  sx={{
+                    color: 'black',
+                    display: 'block',
+                    fontFamily: 'Arial',
+                    fontWeight: 'bold',
+                    fontSize: 'large',
+                    textTransform: 'capitalize'
+                  }} >
+                  <Typography textAlign="left">{page}</Typography>
                 </MenuItem>
               ))}
             </Menu>
           </Box>
-          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' }}}>
             <a href="/pictogramas">
-              <img alt="Qries" src={Logo} height="65" />
+              <img alt="PictogAr" src={Logo} height="40" />
             </a>
             {porcentaje < 100 && (
               <Box style={{ marginLeft: 10 }}>
@@ -207,11 +219,10 @@ const ResponsiveAppBar = () => {
                   sx={{
                     position: 'relative',
                     display: 'inline-flex',
-                    marginTop: 0,
-                    paddingTop: 1.5,
+                    align: 'center'
                   }}
                 >
-                  <CircularProgress color="warning" />
+                  <CircularProgress color="inherit" />
                   <Box
                     sx={{
                       top: 0,
@@ -221,14 +232,13 @@ const ResponsiveAppBar = () => {
                       position: 'absolute',
                       display: 'flex',
                       alignItems: 'center',
-                      justifyContent: 'center',
-                      marginTop: 2,
+                      justifyContent: 'center'
                     }}
                   >
                     <Typography
                       variant="button"
                       component="div"
-                      color="text.secondary"
+                      color="#fff"
                       display="block"
                     >{`${porcentaje.toString()}%`}</Typography>
                   </Box>
@@ -240,20 +250,30 @@ const ResponsiveAppBar = () => {
                 sx={{
                   position: 'relative',
                   display: 'inline-flex',
-                  marginTop: 0,
-                  paddingTop: 1.5,
+                  align: 'center'
                 }}
               >
                 <Check></Check>
               </Box>
             )}
           </Box>
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+          <Box sx={{
+            flexGrow: 1,
+            justifyContent: 'space-evenly',
+            display: { xs: 'none', md: 'flex' }
+          }}>
             {pages.map((page) => (
               <Button
                 key={page}
                 onClick={() => handleChange(page)}
-                sx={{ my: 2, color: 'white', display: 'block' }}
+                sx={{
+                  color: 'white',
+                  display: 'block',
+                  fontFamily: 'Arial',
+                  fontWeight: 'bold',
+                  fontSize: 'large',
+                  textTransform: 'capitalize'
+                }}
               >
                 {page}
               </Button>
@@ -261,15 +281,15 @@ const ResponsiveAppBar = () => {
           </Box>
           {/* TODO: Podriamos agregar aca un mensaje y porcentaje de sincronizacion */}
           <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Configuracion">
+            <Tooltip title="Configuración">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                {userCargado && 
+                {userCargado &&
                   <Avatar
                     alt="Remy Sharp"
                     src={
                       userLogueado &&
-                      userLogueado.imagen &&
-                      userLogueado.imagen !== ''
+                        userLogueado.imagen &&
+                        userLogueado.imagen !== ''
                         ? userLogueado.imagen
                         : imagenUsuario
                     }

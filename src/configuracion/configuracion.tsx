@@ -42,7 +42,7 @@ import { ICategoria } from '../pictogramas/models/categoria';
 import { formatDate, ObtenerCategorias } from '../pictogramas/services/pictogramas-services';
 import React from 'react';
 import FormDialogValidarAcceso from './components/validarCambioConfiguracion';
-import imagenUsuario from '../commons/imagen-usuario.jpg'
+import imagenUsuario from '../commons/imagen-usuario.png'
 import { ICategoriaPorUsuario } from '../pictogramas/models/categoriaPorUsuario';
 import FiltroCategoriasPorUsuario from './components/filtroCategoriasPorUsuario';
 import { HelpOutline } from '@mui/icons-material';

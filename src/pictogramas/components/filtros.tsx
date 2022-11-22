@@ -21,7 +21,7 @@ export default function Filtros(props: any) {
           renderOption={(propps, option: any, { selected }) => (
             <React.Fragment key={option.id}>
               <Checkbox
-                style={{ color: '#d71920' }}
+                style={{ color: '#00A7E1' }}
                 checked={selected}
                 onClick={() => { 
                   if(!selected)
@@ -46,7 +46,7 @@ export default function Filtros(props: any) {
               {...params}
               variant="standard"
               label={props.filtro}
-              placeholder="Seleccione uno o varios filtros"
+              placeholder="Seleccione una o más categorías"
             />
           )}
         />

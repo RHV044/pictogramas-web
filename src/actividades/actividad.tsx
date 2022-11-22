@@ -247,7 +247,7 @@ export default function Actividad() {
             }}
           >
             <Typography variant="h5" gutterBottom>
-              Juego de Categorizar los Pictogramas
+              Determine la categoría del pictograma
             </Typography>
           </Box>
           <Box
@@ -299,7 +299,7 @@ export default function Actividad() {
             }}
           >
             <Typography variant="h5" gutterBottom>
-              Categorias:
+              Categorías:
             </Typography>
           </Box>
           {categoriasReorganizadas && (

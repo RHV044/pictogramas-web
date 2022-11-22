@@ -23,7 +23,7 @@ import {
   usuarioLogueado,
 } from '../../services/usuarios-services';
 import { IndexedDbService } from '../../services/indexeddb-service';
-import imagenUsuario from '../../commons/imagen-usuario.jpg';
+import imagenUsuario from '../../commons/imagen-usuario.png';
 import Logo from '../../commons/Logo-PictogAR-viejo.png';
 
 const SeleccionarCuenta = (props: any) => {

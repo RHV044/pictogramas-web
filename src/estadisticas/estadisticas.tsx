@@ -30,7 +30,11 @@ export default function Estadisticas() {
   }, []);
 
   return (
-    <div>
+    <div
+      style={{ 
+        width: '100vw',
+        height: '100vh',
+        backgroundColor: "#e7ebf0" }}>
       <ResponsiveAppBar />
       <Box
         style={{
@@ -39,8 +43,13 @@ export default function Estadisticas() {
           justifyContent: 'center',
         }}
       >
-        <Typography variant="h5" gutterBottom>
-          Estadisticas
+       <Typography
+          variant="h5"
+          fontFamily="Arial"
+          fontWeight="medium"
+          align='center'
+          color="#00A7E1" >
+          Estadísticas de uso
         </Typography>
       </Box>
       {estadisticas && (

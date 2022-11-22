@@ -8,6 +8,7 @@ import {
 } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { ICategoria } from '../../models/categoria';
+import Typography from '@mui/material/Typography';
 
 export default function Categoria(props: any) {
   const [categoria, setCategoria] = useState({} as ICategoria);
@@ -19,15 +20,7 @@ export default function Categoria(props: any) {
   }, []);
   return (
     <Card
-      sx={{ maxWidth: 250, minWidth: 160, maxHeight: 250, minHeight: 75 }}
-      style={{
-        marginTop: '10px',
-        paddingLeft: 5,
-        paddingRight: 5,
-        paddingBottom: 20,
-      }}
-      onClick={() => {}}
-    >
+      onClick={() => {}}>
       <CardActionArea
         onClick={() => {
           console.log('Clickearon una categoria: ', categoria.id);
@@ -39,33 +32,21 @@ export default function Categoria(props: any) {
           } else {
             props.setCategoriaSeleccionada(null);
           }
-        }}
-      >
+        }}>
         <CardMedia
           component="img"
-          height="180"
-          width="180"
           src={`data:image/png;base64,${categoria.imagen}`}
           alt={categoria.nombre}
         ></CardMedia>
-        <CardHeader
-          style={{
-            height: '100%',
-            width: '95%',
-            marginBottom: 1,
-            paddingBottom: 0,
-          }}
-        ></CardHeader>
-        <CardContent
-          style={{
-            marginTop: 1,
-            paddingTop: 0,
-            marginLeft: 4,
-            paddingLeft: 0,
-            fontWeight: 'bold',
-          }}
-        >
-          {categoria.nombre ? categoria.nombre.toLocaleUpperCase() : ''}
+        <CardContent 
+          style={{ paddingTop: 4, paddingLeft: 4}} >
+          <Typography 
+            sx = {{typography: { sm: 'body1', xs: 'body2' } }} 
+            fontFamily="Arial"
+            fontWeight="medium"
+            color="#00A7E1" >
+            {categoria.nombre ? categoria.nombre.toLocaleUpperCase() : ''}
+          </Typography>
         </CardContent>
       </CardActionArea>
     </Card>
