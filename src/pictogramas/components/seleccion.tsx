@@ -15,7 +15,8 @@ import Speech from 'react-speech';
 import { ObtenerInterpretacionNatural, PictogramaNoSeDebeTraducir } from '../services/pictogramas-services';
 import { lightBlue } from '@mui/material/colors';
 import { useSpeechSynthesis } from 'react-speech-kit';
-import { Delete, Mic } from '@mui/icons-material';
+import { Delete, DeleteRounded, Mic, MicRounded } from '@mui/icons-material';
+import Typography from '@mui/material/Typography';
 
 const apiPictogramas = process.env.REACT_APP_URL_PICTOGRAMAS ?? 'http://localhost:5000';
 
@@ -61,24 +62,15 @@ export default function Seleccion(props: any) {
   }
 
   return (
-    <Container style={{ padding: 10 }}>
-      <Grid
-        container
-        spacing={{ xs: 2, md: 3 }}
-        columns={{ xs: 4, sm: 10, md: 12 }}
-      >
+    <Container style={{ paddingTop: 10 }}>
+      <Grid container
+        rowSpacing={{ xs: 2, sm: 2, md: 2 }}
+        columnSpacing={{ xs: 1, sm: 1, md: 1 }} >
         {pictogramas.map((pictograma: IPictogram) => {
           return (
-            <Grid key={i++} item xs={12} sm={4} md={2}>
+            <Grid item key={i++} xs={12} sm={4} md={2}>
               <Container key={i++}>
                 <Card
-                  sx={{
-                    maxWidth: 250,
-                    minWidth: 160,
-                    maxHeight: 250,
-                    minHeight: 75,
-                  }}
-                  style={{ marginTop: '10px' }}
                   onClick={() => {
                     let nuevaLista = pictogramas.filter(
                       (p: IPictogram) => p.id != pictograma.id
@@ -93,34 +85,26 @@ export default function Seleccion(props: any) {
                   <CardActionArea>
                     <CardMedia
                       component="img"
-                      height="160"
-                      width="140"
                       src={
                         pictograma.imagen &&
                         pictograma.imagen.includes('data:image')
                           ? pictograma.imagen
                           : `data:image/png;base64,${pictograma.imagen}`
                       }
-                      alt={pictograma.keywords.length > 1 && pictograma.keywords[0].tipo !== 1 && PictogramaNoSeDebeTraducir(pictograma) ? pictograma.keywords[1].keyword.toLocaleUpperCase() : pictograma.keywords[0].keyword.toLocaleUpperCase()}
+                      alt={pictograma.keywords.length > 1 && pictograma.keywords[0].tipo !== 1 &&
+                        PictogramaNoSeDebeTraducir(pictograma) ? pictograma.keywords[1].keyword.toLocaleUpperCase() :
+                        pictograma.keywords[0].keyword.toLocaleUpperCase()}
                     ></CardMedia>
-                    <CardHeader
-                      style={{
-                        height: '100%',
-                        width: '95%',
-                        marginBottom: 1,
-                        paddingBottom: 0,
-                      }}
-                    ></CardHeader>
-                    <CardContent
-                      style={{
-                        marginTop: 1,
-                        paddingTop: 0,
-                        marginLeft: 4,
-                        paddingLeft: 0,
-                        fontWeight: 'bold',
-                      }}
-                    >
-                      {pictograma.keywords.length > 1 && pictograma.keywords[0].tipo !== 1 && PictogramaNoSeDebeTraducir(pictograma) ? pictograma.keywords[1].keyword.toLocaleUpperCase() : pictograma.keywords[0].keyword.toLocaleUpperCase()}
+                    <CardContent style={{ paddingTop: 4, paddingLeft: 4}} >
+                      <Typography 
+                        sx = {{typography: { sm: 'body1', xs: 'body2' } }} 
+                        fontFamily="Arial"
+                        fontWeight="medium"
+                        color="#00A7E1" >
+                        {pictograma.keywords.length > 1 && pictograma.keywords[0].tipo !== 1 && 
+                          PictogramaNoSeDebeTraducir(pictograma) ? pictograma.keywords[1].keyword.toLocaleUpperCase() : 
+                          pictograma.keywords[0].keyword.toLocaleUpperCase()}  
+                      </Typography>
                     </CardContent>
                   </CardActionArea>
                 </Card>
@@ -138,56 +122,30 @@ export default function Seleccion(props: any) {
           justifyContent="center"
           style={{ marginTop: 0 }}
         >
-          <Grid key="Literal" item xs={12} sm={4} md={2}>
-            <Button
-              style={{
-                marginLeft: 5,
-                marginRight: 5,
-                marginTop: 5,
-                width: '100%',
-              }}
-              variant="contained"
-              component="label"
-              onClick={() => {
-                speak({ text: textoAInterpretar });
-              }}
-            >
-              <Mic>
-              </Mic>
-              Interpretacion Literal
-            </Button>
-          </Grid>
+        <Grid item key="Literal">
+          <Button onClick={() => { speak({ text: textoAInterpretar }); }} 
+            variant="contained" 
+            startIcon={<MicRounded />} 
+            sx={{fontFamily:'Arial', fontWeight:'bold', background:'#00A7E1'}}>
+              Interpretación Literal</Button>
+         </Grid>
           {textoAInterpretar.length > 0 && (
-            <Grid key="Natural" item xs={12} sm={4} md={2}>
-              <Button
-                style={{
-                  marginLeft: 5,
-                  marginRight: 5,
-                  marginTop: 5,
-                  width: '100%',
-                }}
-                variant="contained"
-                component="label"
-                onClick={async () => {
-                  let texto = await ObtenerInterpretacion();
-                  speak({ text: texto });
-                }}
-              >
-                <Mic>
-                </Mic>
-                Interpretacion Natural
-              </Button>
-            </Grid>
+          <Grid item key="Natural">
+            <Button onClick={async () => {
+              let texto = await ObtenerInterpretacion();
+              speak({ text: texto }); }}
+              variant="contained" 
+              startIcon={<MicRounded />} 
+              sx={{fontFamily:'Arial', fontWeight:'bold', background:'#00A7E1'}}>
+                Interpretación Natural</Button>
+          </Grid>
           )}
-          <Grid key="ReiniciarSeleccion" item xs={12} sm={4} md={2}>
-            <Button 
-              variant="outlined"
-              onClick={() => props.setPictogramas([])}
-            >
-              <Delete>                
-              </Delete>
-              Reiniciar Seleccion
-            </Button>
+          <Grid item key="ReiniciarSeleccion">
+          <Button onClick={() => props.setPictogramas([])}
+            variant="outlined" 
+            startIcon={<DeleteRounded />} 
+            sx={{fontFamily:'Arial', fontWeight:'bold', color:'#00A7E1'}}>
+              Borrar frase</Button>
           </Grid>
         </Grid>
       )}

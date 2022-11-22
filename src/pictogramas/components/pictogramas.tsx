@@ -427,8 +427,8 @@ export default function Pictogramas(props: any) {
 
       <Container>
         <Grid container 
-          rowSpacing={{ xs: 2, sm: 2, md: 2}}
-          style={{marginTop: 1, marginLeft: 0, marginRight: 0}} ></Grid>
+          rowSpacing={{ xs: 2, sm: 2, md: 2}} >  
+        </Grid>
           <Recientes
             setPictogramas={UpdatePictogramas}
             pictogramas={pictogramasSeleccionados} />

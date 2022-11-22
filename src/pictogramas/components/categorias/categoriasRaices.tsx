@@ -32,7 +32,7 @@ export default function CategoriasRaices(props: any) {
   return (
     <Container>
       <Grid container 
-        rowSpacing={{ xs: 4, sm: 4, md: 2}}
+        rowSpacing={{ xs: 2, sm: 2, md: 2}}
         style={{marginTop: 1, marginLeft: 0, marginRight: 0}} >
         {/* TODO: Agregar pictogramas recientes si fuera necesario */}
         <CategoriaPropios setCategoriaSeleccionada={props.setCategoriaSeleccionada} categoriaSeleccionada={categoriaSeleccionada}/>

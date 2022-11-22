@@ -213,9 +213,9 @@ export default function Recientes(props: any) {
   );
 
   const imagen = (
-    <Grid
+    <Grid item
       key={0}
-      item xs={4} sm={4} md={4} >
+       xs={4} sm={4} md={4} >
       <Container key={0}>
         <Card>
           <CardActionArea
