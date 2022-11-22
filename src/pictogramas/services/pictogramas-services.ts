@@ -171,7 +171,7 @@ export async function ObtenerPictogramasConImagenes(ids : number[]){
 }
 
 export function TraducirKeyword(keyword : string){
-  if(keyword === 'BALÓN') return 'PELOTA'
+  // if(keyword === 'BALÓN') return 'PELOTA'
   return keyword.toLocaleUpperCase()
 }
 
