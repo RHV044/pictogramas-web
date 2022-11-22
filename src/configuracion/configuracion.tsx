@@ -239,12 +239,12 @@ export default function Configuracion() {
               </FormLabel>
               <Paper style={{ width: "100%" }}>
                 <Container style={{ padding: 10 }}>
-                  Nombre{" "}
-                  <TextField
+                  {/* {userLogueado.nombreUsuario} */}
+                  {/* <TextField
                     type="text"
                     defaultValue={userLogueado.nombreUsuario}
                     onChange={(evt) => setNombreUsuario(evt.target.value)}
-                  />{" "}
+                  />{" "} */}
                   <br /> <br /> <br />
                   <Card
                     sx={{ maxWidth: 245 }}
