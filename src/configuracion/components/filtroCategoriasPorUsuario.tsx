@@ -49,7 +49,7 @@ export default function FiltroCategoriasPorUsuario(props: any) {
           renderOption={(propps, option: any, { selected }) => (            
             <React.Fragment key={option.id}>
               <Checkbox
-                style={{ color: '#d71920' }}
+                style={{ color: '#00A7E1' }}
                 checked={selected}
                 onClick={() => { 
                   if(!selected)

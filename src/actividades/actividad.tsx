@@ -19,7 +19,7 @@ import {
   ObtenerCategoriasIndexDB,
   ObtenerPictogramas,
   PictogramaNoSeDebeTraducir,
-  TraducirKeyword,
+  TraducirKeyword
 } from '../pictogramas/services/pictogramas-services';
 import { IndexedDbService } from '../services/indexeddb-service';
 import { useSpeechSynthesis } from 'react-speech-kit';
@@ -27,6 +27,7 @@ import { verificarValidezDeCategoria } from '../pictogramas/components/categoria
 import { ICategoriaPorUsuario } from '../pictogramas/models/categoriaPorUsuario';
 import { getUsuarioLogueado } from '../services/usuarios-services';
 import { IUsuario } from '../login/model/usuario';
+import { ArrowBackRounded } from '@mui/icons-material';
 
 export default function Actividad() {
   let navigate = useNavigate();
@@ -212,18 +213,13 @@ export default function Actividad() {
     return (
       <div>
         <Card
-          sx={{ maxWidth: 240, minWidth: 100, maxHeight: 240, minHeight: 100 }}
-          style={{ marginTop: '10px', paddingLeft: 5, paddingRight: 5, paddingBottom: 20  }}
-          onClick={() => {}}
-        >
+          onClick={() => {}}>
           <CardActionArea
-            onClick={() => {
+             onClick={() => {
               verificar(categoria.id, categoria.nombre);
-            }}
-          >
+            }}>
             <CardMedia
               component="img"
-              style={{ height: 180, width: 180 }}
               src={
                 categoria.imagen && categoria.imagen.includes('data:image')
                   ? categoria.imagen
@@ -231,24 +227,15 @@ export default function Actividad() {
               }
               alt={categoria.nombre}
             ></CardMedia>
-            <CardHeader
-              style={{
-                height: '100%',
-                width: '95%',
-                marginBottom: 1,
-                paddingBottom: 0,
-              }}
-            ></CardHeader>
-            <CardContent
-              style={{
-                marginTop: 1,
-                paddingTop: 0,
-                marginLeft: 4,
-                paddingLeft: 0,
-                fontWeight: 'bold',
-              }}
-            >
-              {categoria.nombre.toLocaleUpperCase()}
+            <CardContent 
+              style={{ paddingTop: 4, paddingLeft: 4}} >
+              <Typography 
+                sx = {{typography: { sm: 'body1', xs: 'body2' } }} 
+                fontFamily="Arial"
+                fontWeight="medium"
+                color="#00A7E1" >
+                {categoria.nombre.toLocaleUpperCase()}
+              </Typography>
             </CardContent>
           </CardActionArea>
         </Card>
@@ -257,18 +244,28 @@ export default function Actividad() {
   };
 
   return (
-    <div>
+    <div 
+      style={{ 
+        width: '100vw',
+        minHeight: '100vh',
+        backgroundColor: "#e7ebf0" }}>
       {categoria1 && categoria2 && pictograma && (
         <div>
           <ResponsiveAppBar />
           <Box
             style={{
               display: 'flex',
-              alignItems: 'center',
               justifyContent: 'center',
+              marginTop: 10,
+              marginBottom: 10
             }}
           >
-            <Typography variant="h5" gutterBottom>
+            <Typography
+              variant="h5"
+              fontFamily="Arial"
+              fontWeight="medium"
+              align='center'
+              color="#00A7E1" >
               Determine la categoría del pictograma
             </Typography>
           </Box>
@@ -277,29 +274,15 @@ export default function Actividad() {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-            }}
-          >
-            <Typography variant="h6" gutterBottom>
-              Nivel {params.nivel} - Racha actual: {racha}
-            </Typography>
-          </Box>
-          <Box
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <Button
-              style={{ marginLeft: 5, marginRight: 5 }}
-              variant="contained"
-              component="label"
-              onClick={() => {
-                navigate('/actividades' + location.search);
-              }}
-            >
-              Volver a seleccion de nivel
-            </Button>
+            }} >
+          <Typography
+            variant="h6"
+            fontFamily="Arial"
+            fontWeight="medium"
+            align='center'
+            color="#00A7E1" >
+            Nivel {params.nivel} - Racha actual: {racha}
+          </Typography>
           </Box>
           {resultadoCorrecto ? (
             <Alert severity="success">Correcto!</Alert>
@@ -311,7 +294,6 @@ export default function Actividad() {
           ) : (
             <></>
           )}
-          <br />
           <Box
             style={{
               display: 'flex',
@@ -320,9 +302,14 @@ export default function Actividad() {
               marginTop: 10,
             }}
           >
-            <Typography variant="h5" gutterBottom>
-              Categorías:
-            </Typography>
+             <Typography
+              variant="h5"
+              fontFamily="Arial"
+              fontWeight="medium"
+              align='center'
+              color="#00A7E1" >
+                Categorías
+              </Typography>
           </Box>
           {categoriasReorganizadas && (
             <Grid
@@ -364,8 +351,13 @@ export default function Actividad() {
               marginTop: 30,
             }}
           >
-            <Typography variant="h5" gutterBottom>
-              Pictograma:
+             <Typography
+              variant="h5"
+              fontFamily="Arial"
+              fontWeight="medium"
+              align='center'
+              color="#00A7E1" >
+                Pictograma
             </Typography>
           </Box>
           {pictogramaCargado && (
@@ -374,57 +366,52 @@ export default function Actividad() {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-              }}
-            >
+              }} >
               <Card
-                sx={{
-                  maxWidth: 250,
-                  minWidth: 160,
-                  maxHeight: 250,
-                  minHeight: 75,
-                }}
-                style={{ marginTop: '10px', paddingLeft: 5, paddingRight: 5, paddingBottom: 20  }}
-              >
+                onClick={() => {}}>
                 <CardActionArea
                   onClick={() =>
                     speak({ text: TraducirKeyword(pictograma.keywords.length > 1 && pictograma.keywords[0].tipo !== 1 && PictogramaNoSeDebeTraducir(pictograma) ? pictograma.keywords[1].keyword.toLocaleUpperCase() : pictograma.keywords.length > 1 && pictograma.keywords[0].tipo !== 1 && PictogramaNoSeDebeTraducir(pictograma) ? pictograma.keywords[1].keyword.toLocaleUpperCase() : pictograma.keywords[0].keyword.toLocaleUpperCase() )})
-                  }
-                >
+                  } >
                   <CardMedia
                     component="img"
-                    height="180"
-                    width="180"
                     src={
                       pictograma.imagen &&
                       pictograma.imagen.includes('data:image')
                         ? pictograma.imagen
                         : `data:image/png;base64,${pictograma.imagen}`
                     }
-                    alt={TraducirKeyword(pictograma.keywords.length > 1 && pictograma.keywords[0].tipo !== 1 && PictogramaNoSeDebeTraducir(pictograma) ? pictograma.keywords[1].keyword.toLocaleUpperCase() : pictograma.keywords[0].keyword.toLocaleUpperCase())}
-                  ></CardMedia>
-                  <CardHeader
-                    style={{
-                      height: '100%',
-                      width: '95%',
-                      marginBottom: 1,
-                      paddingBottom: 0,
-                    }}
-                  ></CardHeader>
-                  <CardContent
-                    style={{
-                      marginTop: 1,
-                      paddingTop: 0,
-                      marginLeft: 4,
-                      paddingLeft: 0,
-                      fontWeight: 'bold',
-                    }}
-                  >
-                    {TraducirKeyword(pictograma.keywords.length > 1 && pictograma.keywords[0].tipo !== 1 && PictogramaNoSeDebeTraducir(pictograma) ? pictograma.keywords[1].keyword.toLocaleUpperCase() : pictograma.keywords[0].keyword.toLocaleUpperCase())}
+                    alt={TraducirKeyword(pictograma.keywords.length > 1 && pictograma.keywords[0].tipo !== 1 && PictogramaNoSeDebeTraducir(pictograma) ? pictograma.keywords[1].keyword.toLocaleUpperCase() : pictograma.keywords[0].keyword.toLocaleUpperCase())} >  
+                  </CardMedia>
+                  <CardContent 
+                    style={{ paddingTop: 4, paddingLeft: 4}} >
+                    <Typography 
+                      sx = {{typography: { sm: 'body1', xs: 'body2' } }} 
+                      fontFamily="Arial"
+                      fontWeight="medium"
+                      color="#00A7E1" >
+                      {TraducirKeyword(pictograma.keywords.length > 1 && pictograma.keywords[0].tipo !== 1 && PictogramaNoSeDebeTraducir(pictograma) ? pictograma.keywords[1].keyword.toLocaleUpperCase() : pictograma.keywords[0].keyword.toLocaleUpperCase())}
+                    </Typography>
                   </CardContent>
                 </CardActionArea>
               </Card>
             </Box>
           )}
+          <Box
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginTop: 10
+            }} >
+            <Button onClick={() => {
+                navigate('/actividades' + location.search);
+              }}
+              variant="contained" startIcon={<ArrowBackRounded />} 
+              sx={{fontFamily:'Arial', fontWeight:'bold', background: '#00A7E1'}}>
+                Volver a la selección de nivel
+            </Button>
+          </Box>
         </div>
       )}
     </div>
