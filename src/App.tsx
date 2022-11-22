@@ -26,7 +26,7 @@ import { changeValue } from './redux/slices/porcentajeSlice';
 function App() {
   const isMobile = window.innerWidth < 600;
   const dispatch = useDispatch();
-  const [updateService, setUpdateService] = useState(new UpdateService())
+  const [updating, setUpdating] = useState(false)
 
   useEffect(() => {
     console.log('URL PICTOGRAMAS: ', process.env.REACT_APP_URL_PICTOGRAMAS);
@@ -42,20 +42,36 @@ function App() {
     //   }
     // }, 5000);
     window.addEventListener('BotonSincronizar', () => {
-      console.log('SE UTILIZA BOTON SINCRONIZAR');
-      updateService.initialize();
-      updateService.sincronizar();
-      let porcentajeActual = updateService.porcentajeDeDescarga();
-      dispatch(changeValue(porcentajeActual));
-      let timer = setInterval(function () {
-        porcentajeActual = updateService.porcentajeDeDescarga();
-        dispatch(changeValue(porcentajeActual));
-        console.log('Porcentaje de descarga de update service: ', porcentajeActual);
-        if (porcentajeActual >= 100) {
-          clearInterval(timer);
-          return;
+      if (!updating){
+        setUpdating(true)
+        console.log('SE UTILIZA BOTON SINCRONIZAR');
+        let updateService = new UpdateService();
+        updateService.initialize();
+        updateService.sincronizar();
+        let nuevoPorcentaje = 5
+        let porcentajeActual = updateService.porcentajeDeDescarga();
+        if (porcentajeActual > nuevoPorcentaje){
+          nuevoPorcentaje = porcentajeActual
         }
-      }, 5000);
+        dispatch(changeValue(nuevoPorcentaje));
+
+        let timer = setInterval(function () {
+          porcentajeActual = updateService.porcentajeDeDescarga();
+          if (porcentajeActual > nuevoPorcentaje){
+            nuevoPorcentaje = porcentajeActual
+          }
+          dispatch(changeValue(nuevoPorcentaje));
+          console.log('Porcentaje de descarga de update service: ', porcentajeActual);
+          if (porcentajeActual >= 100) {
+            clearInterval(timer);
+            let timer2 = setInterval(function () {
+              // updateService.reiniciarState();
+              setUpdating(false)
+            } , 5000);         
+            return;
+          }
+        }, 5000);
+      }
     });
   }, []);
 

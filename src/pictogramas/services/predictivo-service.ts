@@ -14,12 +14,12 @@ let classifier = async () => {
 
   let classifierObject = await (
     await db
-  ).getValue("historicoUsoPictogramas", BAYES_CLASSIFIER_DB_ID + '_' + usuarioId);
+  ).getValue("historicoUsoPictogramas", (BAYES_CLASSIFIER_DB_ID + '_' + usuarioId));
 
   if (typeof classifierObject?.classifier === "object") {
     inMemoryClassifier = bayes.importFromObject(classifierObject?.classifier);
   } else if (typeof classifierObject?.classifier === "string") {
-    (await db).deleteValue("historicoUsoPictogramas", BAYES_CLASSIFIER_DB_ID + '_' + usuarioId);
+    (await db).deleteValue("historicoUsoPictogramas", (BAYES_CLASSIFIER_DB_ID + '_' + usuarioId));
     inMemoryClassifier = bayes.importFromJson(classifierObject?.classifier);
   } else inMemoryClassifier = bayes();
 
@@ -46,7 +46,7 @@ export async function learn(seleccionPictogramas: IPictogram[]) {
     classifierObject.learn(keywords, nuevoPicto.id ?? nuevoPicto.identificador);
 
     (await db).putOrPatchValue("historicoUsoPictogramas", {
-      id: BAYES_CLASSIFIER_DB_ID + '_' + usuarioId,
+      id: (BAYES_CLASSIFIER_DB_ID + '_' + usuarioId),
       classifier: classifierObject.exportToObject(),
     });
 

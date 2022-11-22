@@ -48,15 +48,14 @@ type MyState = {
   pictogramasDescargados: boolean;
   imagenesDescargadas: boolean;
   iniciando: boolean;
+  actualizacionPizarras: boolean;
+  actualizacionUsuarios: boolean;
+  actualizacionPictogramas: boolean;
+  actualizacionFavoritos: boolean;
+  actualizacionEstadisticas: boolean;
+  actualizacionCategoriasPorUsuario: boolean;
+  actualizacionRecientes: boolean;
 };
-
-let actualizacionPizarras = false;
-let actualizacionUsuarios = false;
-let actualizacionPictogramas = false;
-let actualizacionFavoritos = false;
-let actualizacionEstadisticas = false;
-let actualizacionCategoriasPorUsuario = false;
-let actualizacionRecientes = false;
 
 export class UpdateService {
   state: MyState = {
@@ -65,6 +64,13 @@ export class UpdateService {
     pictogramasDescargados: false,
     imagenesDescargadas: false,
     iniciando: false,
+    actualizacionPizarras: false,
+    actualizacionUsuarios: false,
+    actualizacionPictogramas: false,
+    actualizacionFavoritos: false,
+    actualizacionEstadisticas: false,
+    actualizacionCategoriasPorUsuario: false,
+    actualizacionRecientes: false,
   };
 
   constructor() {
@@ -79,7 +85,21 @@ export class UpdateService {
     if (this.state.categoriasDescargadas) porcentaje = porcentaje + 15;
     if (this.state.pictogramasDescargados) porcentaje = porcentaje + 20;
     if (this.state.imagenesDescargadas) porcentaje = porcentaje + 60;
-    return porcentaje
+    return porcentaje;
+  }
+
+  reiniciarState() {
+    this.state.categoriasDescargadas = false;
+    this.state.pictogramasDescargados = false;
+    this.state.imagenesDescargadas = false;
+    this.state.iniciando = false;
+    this.state.actualizacionPizarras = false;
+    this.state.actualizacionUsuarios = false;
+    this.state.actualizacionPictogramas = false;
+    this.state.actualizacionFavoritos = false;
+    this.state.actualizacionEstadisticas = false;
+    this.state.actualizacionCategoriasPorUsuario = false;
+    this.state.actualizacionRecientes = false;
   }
 
   async initialize() {
@@ -95,19 +115,23 @@ export class UpdateService {
         );
         if (totalCategoriasLocales.length < totalCategorias) {
           await ObtenerYGuardarCategorias(async (cats: ICategoria[]) => {
-            cats = cats.filter(c => !totalCategoriasLocales.some(cl => cl.id === c.id))
+            cats = cats.filter(
+              (c) => !totalCategoriasLocales.some((cl) => cl.id === c.id)
+            );
             cats.forEach((cat) => {
               if (!cats.some((c) => c.categoriaPadre === cat.id))
                 cat.esCategoriaFinal = true;
               else cat.esCategoriaFinal = false;
 
-              cat.imagen = ''
+              cat.imagen = '';
             });
             await db.putBulkValue('categorias', cats);
             // Obtencion imagenes de categorias
-            
+
             cats = await db.getAllValues('categorias');
-            cats = cats.filter(c => c.imagen.length < 2 || c.imagen.includes("Error"))
+            cats = cats.filter(
+              (c) => c.imagen.length < 2 || c.imagen.includes('Error')
+            );
             const maxParallelRequests = 500;
             let count = 0;
             let start = 0;
@@ -131,7 +155,7 @@ export class UpdateService {
                       `${apiPictogramas}/categorias/${cat.id}/obtener/base64`
                     )
                     .then(async (response) => {
-                      if (!response.data.includes("Error")){
+                      if (!response.data.includes('Error')) {
                         cat.imagen = response.data;
                         await db.putOrPatchValue('categorias', cat);
                       }
@@ -140,8 +164,8 @@ export class UpdateService {
               );
             }
           });
-        }    
-        this.state.categoriasDescargadas = true    
+        }
+        this.state.categoriasDescargadas = true;
 
         let usuario = await getUsuarioLogueado();
         let totalPictogramasLocales = 1;
@@ -179,7 +203,8 @@ export class UpdateService {
                       p.idArasaac !== null) &&
                     (p.imagen === '' ||
                       p.imagen === null ||
-                      p.imagen === undefined || p.imagen.includes("Error"))
+                      p.imagen === undefined ||
+                      p.imagen.includes('Error'))
                 );
               else
                 pictogramas = pictogramas.filter(
@@ -187,7 +212,8 @@ export class UpdateService {
                     (p.idUsuario === null || p.idArasaac !== null) &&
                     (p.imagen === '' ||
                       p.imagen === null ||
-                      p.imagen === undefined || p.imagen.includes("Error"))
+                      p.imagen === undefined ||
+                      p.imagen.includes('Error'))
                 );
               const maxParallelRequests = 500;
               let count = 0;
@@ -213,7 +239,7 @@ export class UpdateService {
                           `${apiPictogramas}/pictogramas/${pictoInfo.id}/obtener/base64`
                         )
                         .then(async (response) => {
-                          if (!response.data.includes("Error")){
+                          if (!response.data.includes('Error')) {
                             pictoInfo.imagen = response.data;
                             await db.putOrPatchValue(
                               'pictogramasPropios',
@@ -229,13 +255,13 @@ export class UpdateService {
             }
           );
         }
-        this.state.pictogramasDescargados = true  
+        this.state.pictogramasDescargados = true;
 
         let totalImagenesEnApi = await ObtenerTotalImagenesPictogramas();
-        console.log("TOTAL IMAGENES EN STORAGE: ", totalImagenesEnApi.length)
-        console.log("IMAGENES EN STORAGE: ", totalImagenesEnApi)
+        console.log('TOTAL IMAGENES EN STORAGE: ', totalImagenesEnApi.length);
+        console.log('IMAGENES EN STORAGE: ', totalImagenesEnApi);
         let totalImagenesLocales = await db.getAllValues('imagenes');
-        console.log("IMAGENES LOCALES: ", totalImagenesLocales)
+        console.log('IMAGENES LOCALES: ', totalImagenesLocales);
         if (totalImagenesLocales.length < totalImagenesEnApi.length) {
           // Obtencion imagenes de pictogramas arasaac
           db.getAllValues('pictograms').then(
@@ -252,7 +278,8 @@ export class UpdateService {
                       p.idArasaac !== null) &&
                     (p.imagen === '' ||
                       p.imagen === null ||
-                      p.imagen === undefined || p.imagen.includes("Error"))
+                      p.imagen === undefined ||
+                      p.imagen.includes('Error'))
                 );
               else
                 pictogramas = pictogramas.filter(
@@ -260,14 +287,19 @@ export class UpdateService {
                     (p.idUsuario === null || p.idArasaac !== null) &&
                     (p.imagen === '' ||
                       p.imagen === null ||
-                      p.imagen === undefined || p.imagen.includes("Error"))
+                      p.imagen === undefined ||
+                      p.imagen.includes('Error'))
                 );
               const maxParallelRequests = 500;
               let count = 0;
               let start = 0;
               let end = 1;
-              pictogramas = pictogramas.filter(p => !totalImagenesLocales.some(imagen => imagen.id === p.id) && totalImagenesEnApi.includes(p.id.toString()))
-              console.log("Pictogramas faltantes de imagenes: ", pictogramas)
+              pictogramas = pictogramas.filter(
+                (p) =>
+                  !totalImagenesLocales.some((imagen) => imagen.id === p.id) &&
+                  totalImagenesEnApi.includes(p.id.toString())
+              );
+              console.log('Pictogramas faltantes de imagenes: ', pictogramas);
               while (count < pictogramas.length) {
                 end =
                   pictogramas.length - count <= maxParallelRequests
@@ -289,7 +321,7 @@ export class UpdateService {
                           `${apiPictogramas}/pictogramas/${pictoInfo.id}/obtener/base64`
                         )
                         .then(async (response) => {
-                          if (!response.data.includes("Error")){
+                          if (!response.data.includes('Error')) {
                             let pictogramaImagen = {
                               id: pictoInfo.id,
                               imagen: response.data,
@@ -304,9 +336,12 @@ export class UpdateService {
                             );
                           }
                         })
-                        .catch(err => {
-                          console.log("No se pudo descargar la imagen del pictograma: ", err)
-                        })
+                        .catch((err) => {
+                          console.log(
+                            'No se pudo descargar la imagen del pictograma: ',
+                            err
+                          );
+                        });
                     }
                   );
 
@@ -315,14 +350,14 @@ export class UpdateService {
             }
           );
         }
-        this.state.imagenesDescargadas = true 
+        this.state.imagenesDescargadas = true;
 
         this.state.iniciando = false;
       } catch (ex) {
         console.log('OCURRIO UN ERROR INICIALIZANDO UPDATE SERVICE');
-        this.state.categoriasDescargadas = true 
-        this.state.pictogramasDescargados = true 
-        this.state.imagenesDescargadas = true 
+        this.state.categoriasDescargadas = true;
+        this.state.pictogramasDescargados = true;
+        this.state.imagenesDescargadas = true;
         this.state.iniciando = false;
       }
     }
@@ -348,19 +383,19 @@ export class UpdateService {
         window.navigator.onLine &&
         //TODO: Remover la depencencia del iniciando, esta puesta para evitar explotar la VM ahora que tiene problemas de memoria
         // !this.state.iniciando &&
-        !actualizacionPictogramas &&
-        !actualizacionFavoritos &&
-        !actualizacionPizarras &&
-        !actualizacionUsuarios &&
-        !actualizacionEstadisticas &&
-        !actualizacionRecientes
+        !this.state.actualizacionPictogramas &&
+        !this.state.actualizacionFavoritos &&
+        !this.state.actualizacionPizarras &&
+        !this.state.actualizacionUsuarios &&
+        !this.state.actualizacionEstadisticas &&
+        !this.state.actualizacionRecientes
       ) {
-        actualizacionPictogramas = true;
-        actualizacionFavoritos = true;
-        actualizacionPizarras = true;
-        actualizacionUsuarios = true;
-        actualizacionEstadisticas = true;
-        actualizacionRecientes = true;
+        this.state.actualizacionPictogramas = true;
+        this.state.actualizacionFavoritos = true;
+        this.state.actualizacionPizarras = true;
+        this.state.actualizacionUsuarios = true;
+        this.state.actualizacionEstadisticas = true;
+        this.state.actualizacionRecientes = true;
         this.actualizarPizarras();
         this.actualizarUsuarios();
         this.actualizarPictogramas();
@@ -370,12 +405,12 @@ export class UpdateService {
         this.actualizarRecientes();
       }
     } catch (ex) {
-      actualizacionPictogramas = false;
-      actualizacionFavoritos = false;
-      actualizacionPizarras = false;
-      actualizacionUsuarios = false;
-      actualizacionEstadisticas = false;
-      actualizacionRecientes = false;
+      this.state.actualizacionPictogramas = false;
+      this.state.actualizacionFavoritos = false;
+      this.state.actualizacionPizarras = false;
+      this.state.actualizacionUsuarios = false;
+      this.state.actualizacionEstadisticas = false;
+      this.state.actualizacionRecientes = false;
     }
   }
 
@@ -394,12 +429,12 @@ export class UpdateService {
                 );
               }
             });
-            actualizacionEstadisticas = false;
+            this.state.actualizacionEstadisticas = false;
           }
         );
       });
     } catch (ex) {
-      actualizacionEstadisticas = false;
+      this.state.actualizacionEstadisticas = false;
     }
   }
 
@@ -420,11 +455,11 @@ export class UpdateService {
                 await db.deleteValue('recientes', registro.id);
             });
           }
-          actualizacionEstadisticas = false;
+          this.state.actualizacionEstadisticas = false;
         });
       });
     } catch (ex) {
-      actualizacionRecientes = false;
+      this.state.actualizacionRecientes = false;
     }
   }
 
@@ -441,28 +476,36 @@ export class UpdateService {
             ObtenerUsuarioInfo(usuario.id).then(
               async (usuarioApi: IUsuario) => {
                 // Actualizo usuario en el IndexedDb
-                console.log("FECHA ULTIMA ACTUALIZACION EN API: " + usuarioApi.ultimaActualizacion + " - FECHA ULTIMA ACTUALIZACION EN INDEXEDDB: " + usuario.ultimaActualizacion)
-                if (                  
+                console.log(
+                  'FECHA ULTIMA ACTUALIZACION EN API: ' +
+                    usuarioApi.ultimaActualizacion +
+                    ' - FECHA ULTIMA ACTUALIZACION EN INDEXEDDB: ' +
+                    usuario.ultimaActualizacion
+                );
+                if (
                   usuario.ultimaActualizacion < usuarioApi.ultimaActualizacion
                 ) {
-                  console.log("ACTUALIZO USUARIO EN INDEXEDDB POR: ", usuarioApi)
+                  console.log(
+                    'ACTUALIZO USUARIO EN INDEXEDDB POR: ',
+                    usuarioApi
+                  );
                   db.putOrPatchValue('usuarios', usuarioApi);
                 }
                 // Actualizo usuario en la api
                 if (
                   usuarioApi.ultimaActualizacion < usuario.ultimaActualizacion
                 ) {
-                  console.log("ACTUALIZO USUARIO EN API POR: ", usuario)
+                  console.log('ACTUALIZO USUARIO EN API POR: ', usuario);
                   await ActualizarUsuario(usuario);
                 }
               }
             );
           });
-          actualizacionUsuarios = false;
+          this.state.actualizacionUsuarios = false;
         });
       });
     } catch (ex) {
-      actualizacionUsuarios = false;
+      this.state.actualizacionUsuarios = false;
     }
   }
 
@@ -536,12 +579,25 @@ export class UpdateService {
                     // ELIMINAR LOCAL SI NO TIENE PENDIENTE DE CREACION NI PENDIENTE DE ELIMINACION Y NO EXISTE EN LA DB
                     // Pictogramas API: pictogramas
                     // Pictogramas locales: pictogramasLocales
-                    console.log("PICTOGRAMAS PROPIOS EN LA API: ", pictogramasFiltrados);
-                    console.log("PICTOGRAMAS PROPIOS LOCALES: ", pictogramasLocales);
-                    if ((pictograma.pendienteCreacion === false || pictograma.pendienteCreacion === undefined || pictograma.pendienteCreacion === null) 
-                      && (pictograma.pendienteEliminacion === false || pictograma.pendienteEliminacion === undefined || pictograma.pendienteEliminacion === null) 
-                      && !pictogramas.some(p => p.identificador === pictograma.identificador)) 
-                    {
+                    console.log(
+                      'PICTOGRAMAS PROPIOS EN LA API: ',
+                      pictogramasFiltrados
+                    );
+                    console.log(
+                      'PICTOGRAMAS PROPIOS LOCALES: ',
+                      pictogramasLocales
+                    );
+                    if (
+                      (pictograma.pendienteCreacion === false ||
+                        pictograma.pendienteCreacion === undefined ||
+                        pictograma.pendienteCreacion === null) &&
+                      (pictograma.pendienteEliminacion === false ||
+                        pictograma.pendienteEliminacion === undefined ||
+                        pictograma.pendienteEliminacion === null) &&
+                      !pictogramas.some(
+                        (p) => p.identificador === pictograma.identificador
+                      )
+                    ) {
                       db.deleteValueWithIdentificador(
                         'pictogramasPropios',
                         pictograma.identificador
@@ -556,11 +612,11 @@ export class UpdateService {
               );
             }
           );
-          actualizacionPictogramas = false;
+          this.state.actualizacionPictogramas = false;
         });
       });
     } catch (ex) {
-      actualizacionPictogramas = false;
+      this.state.actualizacionPictogramas = false;
       console.log(ex);
     }
   }
@@ -572,72 +628,74 @@ export class UpdateService {
       ObtenerPizarras(usuarioId !== undefined ? usuarioId : 0).then(
         (pizarrasApi: IPizarra[]) => {
           IndexedDbService.create().then(async (db) => {
-            await db.getAllValues('pizarras').then(async (pizarras: IPizarra[]) => {
-              // Carga de pizarras de la api que no esten en el indexDb
-              pizarrasApi.map((pizarra) => {
-                if (
-                  !pizarras.some(
-                    (p) => p.id === pizarra.id && !p.pendienteCreacion
-                  )
-                ) {
-                  db.putOrPatchValue('pizarras', pizarra);
-                }
-              });
+            await db
+              .getAllValues('pizarras')
+              .then(async (pizarras: IPizarra[]) => {
+                // Carga de pizarras de la api que no esten en el indexDb
+                pizarrasApi.map((pizarra) => {
+                  if (
+                    !pizarras.some(
+                      (p) => p.id === pizarra.id && !p.pendienteCreacion
+                    )
+                  ) {
+                    db.putOrPatchValue('pizarras', pizarra);
+                  }
+                });
 
-              console.log('Pizarras api: ', pizarrasApi);
-              console.log('Pizarras locales: ', pizarras);
-              pizarras.map(async (pizarra) => {
-                // Creacion de pizarra en la api
-                if (pizarra.pendienteCreacion) {
-                  await GuardarPizarra(pizarra);
-                  pizarra.pendienteCreacion = false;
-                  db.putOrPatchValue('pizarras', pizarra);
-                }
+                console.log('Pizarras api: ', pizarrasApi);
+                console.log('Pizarras locales: ', pizarras);
+                pizarras.map(async (pizarra) => {
+                  // Creacion de pizarra en la api
+                  if (pizarra.pendienteCreacion) {
+                    await GuardarPizarra(pizarra);
+                    pizarra.pendienteCreacion = false;
+                    db.putOrPatchValue('pizarras', pizarra);
+                  }
 
-                //TODO: Verificar funcionamiento de actualizacion
-                // Actualizacion de pizarra
-                if (
-                  pizarrasApi.some(
-                    (p) =>
-                      p.id === pizarra.id &&
-                      p.ultimaActualizacion > pizarra.ultimaActualizacion
-                  )
-                ) {
-                  // Debo actualizar la pizarra en el IndexDb
-                  console.log('Se actualiza pizarra en indexDb');
-                  let p = pizarrasApi.find((p) => p.id === pizarra.id);
-                  console.log("PIZARRA API: ", pizarra)
-                  console.log("PIZARRA INDEXEDDB: ", p)
-                  pizarra = p ? p : pizarra;
-                  db.putOrPatchValue('pizarras', p);
-                } else {
+                  //TODO: Verificar funcionamiento de actualizacion
+                  // Actualizacion de pizarra
                   if (
                     pizarrasApi.some(
                       (p) =>
                         p.id === pizarra.id &&
-                        p.ultimaActualizacion < pizarra.ultimaActualizacion
+                        p.ultimaActualizacion > pizarra.ultimaActualizacion
                     )
                   ) {
-                    // Debo actualizar la pizarra en la api
-                    console.log('Se actualiza pizarra en la api');
-                    await ActualizarPizarra(pizarra);
+                    // Debo actualizar la pizarra en el IndexDb
+                    console.log('Se actualiza pizarra en indexDb');
+                    let p = pizarrasApi.find((p) => p.id === pizarra.id);
+                    console.log('PIZARRA API: ', pizarra);
+                    console.log('PIZARRA INDEXEDDB: ', p);
+                    pizarra = p ? p : pizarra;
+                    db.putOrPatchValue('pizarras', p);
+                  } else {
+                    if (
+                      pizarrasApi.some(
+                        (p) =>
+                          p.id === pizarra.id &&
+                          p.ultimaActualizacion < pizarra.ultimaActualizacion
+                      )
+                    ) {
+                      // Debo actualizar la pizarra en la api
+                      console.log('Se actualiza pizarra en la api');
+                      await ActualizarPizarra(pizarra);
+                    }
                   }
-                }
 
-                // Eliminacion de pizarra en la api
-                if (pizarra.pendienteEliminacion) {
-                  EliminarPizarra(pizarra).then(() => {
-                    db.deleteValue('pizarras', pizarra.id);
-                  });
-                }
+                  // Eliminacion de pizarra en la api
+                  if (pizarra.pendienteEliminacion) {
+                    EliminarPizarra(pizarra).then(() => {
+                      db.deleteValue('pizarras', pizarra.id);
+                    });
+                  }
+                });
               });
-            });
-            actualizacionPizarras = false;
+              this.state.actualizacionPizarras = false;
           });
         }
       );
     } catch (ex) {
-      actualizacionPizarras = false;
+      this.state.actualizacionPizarras = false;
       console.log(ex);
     }
   }
@@ -695,12 +753,12 @@ export class UpdateService {
                 });
               }
             );
-            actualizacionFavoritos = false;
+            this.state.actualizacionFavoritos = false;
           });
         }
       );
     } catch (ex) {
-      actualizacionFavoritos = false;
+      this.state.actualizacionFavoritos = false;
       console.log(ex);
     }
   }
@@ -714,7 +772,7 @@ export class UpdateService {
           IndexedDbService.create().then((db) => {
             db.getAllValues('categoriasPorUsuario').then(
               async (categoriasDeUsuario: ICategoriaPorUsuario[]) => {
-                console.log("CATEGORIAS DE USUARIO: ", categoriasDeUsuarioApi)
+                console.log('CATEGORIAS DE USUARIO: ', categoriasDeUsuarioApi);
                 // Carga de categoriaPorUsuario de la api que no esten en el indexDb
                 categoriasDeUsuarioApi.map(async (categoriaDeUsuario) => {
                   if (
@@ -768,12 +826,12 @@ export class UpdateService {
                 });
               }
             );
-            actualizacionCategoriasPorUsuario = false;
+            this.state.actualizacionCategoriasPorUsuario = false;
           });
         }
       );
     } catch (ex) {
-      actualizacionCategoriasPorUsuario = false;
+      this.state.actualizacionCategoriasPorUsuario = false;
       console.log(ex);
     }
   }
