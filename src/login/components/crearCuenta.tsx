@@ -4,7 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { CrearUsuario } from '../../services/usuarios-services';
 import { IndexedDbService } from '../../services/indexeddb-service';
 import { IUsuario } from '../model/usuario';
-import Logo from '../../commons/Logo-PictogAR-viejo.png';
+import Logo from '../../commons/Logo-PictogAR.png';
 
 const CrearCuenta = (props: any) => {
   let navigate = useNavigate();
@@ -47,8 +47,8 @@ const CrearCuenta = (props: any) => {
           style={{
             display: 'flex',
             justifyContent: 'center',
-            marginTop: 10,
-            marginBottom: 10
+            paddingTop: 10,
+            paddingBottom: 10
           }}
         >
           <img alt="PictogAr" src={Logo} height="65" />

@@ -78,13 +78,7 @@ const SeleccionarCuenta = (props: any) => {
           }}
         >
           <Container>
-            <Box
-              border={4}
-              borderLeft={2}
-              borderRight={2}
-              borderColor="primary.main"
-              style={{ marginTop: 10, padding: 10, backgroundColor: 'white' }}
-            >
+            <Box style={{ marginTop: 10, padding: 10, backgroundColor: 'white' }}>
               <Grid
                 container
                 alignItems="center"
