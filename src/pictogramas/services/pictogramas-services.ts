@@ -170,6 +170,11 @@ export async function ObtenerPictogramasConImagenes(ids : number[]){
   return pictogramasFiltrados
 }
 
+export function TraducirKeyword(keyword : string){
+  if(keyword === 'BALÓN') return 'PELOTA'
+  return keyword.toLocaleUpperCase()
+}
+
 export async function ObtenerPictogramaConImagenes(id : number){
   let db = await IndexedDbService.create();
   let pictograma = await db.getValue('pictograms', id);

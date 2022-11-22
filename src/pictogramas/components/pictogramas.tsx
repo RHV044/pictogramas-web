@@ -31,6 +31,7 @@ import {
   ObtenerCategorias,
   ObtenerPictogramas,
   PictogramaNoSeDebeTraducir,
+  TraducirKeyword,
 } from '../services/pictogramas-services';
 import Categoria from './categorias/categoria';
 import {
@@ -142,7 +143,7 @@ export default function Pictogramas(props: any) {
       `Proximos Pictogramas sugerido: ${
         prediccionProximosPictos && prediccionProximosPictos.length > 0
           ? prediccionProximosPictos
-              .map((x) => x.keywords[0].keyword)
+              .map((x) => TraducirKeyword(x.keywords[0].keyword))
               .reduce((prev, curr) => prev + ', ' + curr)
           : 'no prediction'
       }`
@@ -413,7 +414,7 @@ export default function Pictogramas(props: any) {
                             ? pictograma.imagen
                             : `data:image/png;base64,${pictograma.imagen}`
                         }
-                        alt={pictograma.keywords.length > 1 && pictograma.keywords[0].tipo !== 1 && PictogramaNoSeDebeTraducir(pictograma) ? pictograma.keywords[1].keyword.toLocaleUpperCase() : pictograma.keywords[0].keyword.toLocaleUpperCase()}
+                        alt={TraducirKeyword(pictograma.keywords.length > 1 && pictograma.keywords[0].tipo !== 1 && PictogramaNoSeDebeTraducir(pictograma) ? pictograma.keywords[1].keyword.toLocaleUpperCase() : pictograma.keywords[0].keyword.toLocaleUpperCase())}
                       ></CardMedia>
                       <CardHeader></CardHeader>
                       <CardContent
@@ -425,7 +426,7 @@ export default function Pictogramas(props: any) {
                           fontWeight: 'bold',
                         }}
                       >
-                        {pictograma.keywords.length > 1 && pictograma.keywords[0].tipo !== 1 && PictogramaNoSeDebeTraducir(pictograma) ? pictograma.keywords[1].keyword.toLocaleUpperCase() : pictograma.keywords[0].keyword.toLocaleUpperCase()}
+                        {TraducirKeyword(pictograma.keywords.length > 1 && pictograma.keywords[0].tipo !== 1 && PictogramaNoSeDebeTraducir(pictograma) ? pictograma.keywords[1].keyword.toLocaleUpperCase() : pictograma.keywords[0].keyword.toLocaleUpperCase())}
                       </CardContent>
                     </CardActionArea>
                   </Card>

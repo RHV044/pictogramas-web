@@ -1,4 +1,5 @@
 import { IPictogram } from "../pictogramas/models/pictogram"
+import { TraducirKeyword } from "../pictogramas/services/pictogramas-services"
 
 export type Position = {
   fila: number,
@@ -79,7 +80,7 @@ export class Movimientos {
     this.graficos.push({
       esPictograma: true,
       imagen: pic.imagen, 
-      texto: pic.keywords[0].keyword.toLocaleUpperCase(), 
+      texto: TraducirKeyword(pic.keywords[0].keyword.toLocaleUpperCase()), 
       posicion: {columna: -1, fila: -1}, 
       identificacion:Date.now().toString(),
       idPictograma: pic.id,

@@ -10,7 +10,7 @@ import {
 import { useEffect, useState } from 'react';
 import { IPictogram } from '../pictogramas/models/pictogram';
 import {
-  ObtenerPictogramasConImagenes, PictogramaNoSeDebeTraducir,
+  ObtenerPictogramasConImagenes, PictogramaNoSeDebeTraducir, TraducirKeyword,
 } from '../pictogramas/services/pictogramas-services';
 
 export default function PictogramasMasUtilizados(props: any) {
@@ -65,7 +65,7 @@ export default function PictogramasMasUtilizados(props: any) {
                           ? pictograma.imagen
                           : `data:image/png;base64,${pictograma.imagen}`
                       }
-                      alt={pictograma.keywords.length > 1 && pictograma.keywords[0].tipo !== 1 && PictogramaNoSeDebeTraducir(pictograma) ? pictograma.keywords[1].keyword.toLocaleUpperCase() : pictograma.keywords[0].keyword.toLocaleUpperCase()}
+                      alt={TraducirKeyword(pictograma.keywords.length > 1 && pictograma.keywords[0].tipo !== 1 && PictogramaNoSeDebeTraducir(pictograma) ? pictograma.keywords[1].keyword.toLocaleUpperCase() : pictograma.keywords[0].keyword.toLocaleUpperCase())}
                     ></CardMedia>
                     <CardHeader
                       style={{
@@ -85,7 +85,7 @@ export default function PictogramasMasUtilizados(props: any) {
                         paddingBottom: 0,
                       }}
                     >
-                      {pictograma.keywords.length > 1 && pictograma.keywords[0].tipo !== 1 && PictogramaNoSeDebeTraducir(pictograma) ? pictograma.keywords[1].keyword.toLocaleUpperCase() : pictograma.keywords[0].keyword.toLocaleUpperCase()}
+                      {TraducirKeyword(pictograma.keywords.length > 1 && pictograma.keywords[0].tipo !== 1 && PictogramaNoSeDebeTraducir(pictograma) ? pictograma.keywords[1].keyword.toLocaleUpperCase() : pictograma.keywords[0].keyword.toLocaleUpperCase())}
                     </CardContent>
                   </CardActionArea>
                 </Card>
